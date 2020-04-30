@@ -1,0 +1,89 @@
+{
+  "integrationsart": "PAYMENT_PAGE",
+  "shopKennung": "2.de.9999.10003",
+  "bestellwert": 500.99,
+  "laufzeit": 12,
+  "personendaten": {
+    "anrede": "HERR",
+    "vorname": "Max",
+    "nachname": "Mustermann",
+    "geburtsdatum": "1988-02-01"
+  },
+  "beschaeftigungsdaten": {
+    "beschaeftigung": "ANGESTELLTER",
+    "monatlichesNettoeinkommen": "4200"
+  },
+  "rechnungsadresse": {
+    "strasseHausNr": "Beuthener Str. 25",
+    "adresszusatz": "",
+    "plz": "90471",
+    "ort": "Nürnberg",
+    "land": "DE"
+  },
+  "lieferadresse": {
+    "vorname": "Max",
+    "nachname": "Mustermann",
+    "strasseHausNr": "Beuthener Str. 25",
+    "adresszusatz": "",
+    "plz": "90471",
+    "ort": "Nürnberg",
+    "land": "DE",
+    "packstation": false
+  },
+  "kontakt": {
+    "email": "max.mustermann@teambank.de",
+    "mobilfunknummer": "0171-1231231",
+    "pruefungMobilfunknummerUebergehen": false
+  },
+  "bankdatenInput": {
+    "bankverbindung": {
+      "iban": "AD1200012030200359100100",
+      "bic": "PBNKDEFF",
+      "kontoinhaber": "Max Mustermann",
+      "kreditinstitut": "Musterbank"
+    },
+    "bankverbindungKtoBlz": {
+      "ktoNr": "",
+      "blz": ""
+    }
+  },
+  "weitereKaeuferangaben": {
+    "geburtsname": "Max",
+    "geburtsort": "Karlsruhe"
+  },
+  "risikorelevanteAngaben": {
+    "bestellungErfolgtUeberLogin": true,
+    "kundeSeit": "2016-01-01",
+    "anzahlBestellungen": "3",
+    "kundenstatus": "NEUKUNDE",
+    "anzahlProdukteImWarenkorb": "2",
+    "negativeZahlungsinformation": "KEINE_ZAHLUNGSSTOERUNGEN",
+    "risikoartikelImWarenkorb": "true",
+    "logistikDienstleister": "Hermes"
+  },
+  "vorgangskennungShop": "string",
+  "ruecksprungadressen": {
+    "urlErfolg": "https://localhost",
+    "urlAbbruch": "https://localhost",
+    "urlAblehnung": "https://localhost"
+  },
+  "warenkorbinfos": [
+    {
+      "produktbezeichnung": "Waschmaschine",
+      "menge": "1",
+      "preis": "590.99",
+      "hersteller": "Mustertechnik",
+      "produktkategorie": "Haushaltsgeräte",
+      "artikelnummern": [
+        {
+          "nummerntyp": "GTIN",
+          "nummer": "10101010"
+        }
+      ]
+    }
+  ],
+  "technischeShopparameter": {
+    "shopSystemHersteller": "MamutShop4000",
+    "shopSystemModulversion": "4.0.1"
+  }
+}

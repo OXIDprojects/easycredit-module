@@ -1,0 +1,27 @@
+.easycredit-widget {
+    background-image: url(../bg/ratenkauf_42_55.png);
+    background-size: 55px 42px;
+    background-repeat: no-repeat;
+    padding: 10px 0 20px 60px;
+    background-position-y: center;
+}
+
+.easycredit-link {
+    cursor: pointer;
+}
+
+.easycredit-embed-responsive iframe {
+    width: 100%;
+    height: 100%;
+}
+
+.easycreditdisabled {
+    color: #aaa;
+}
+.payment-logo-easycredit {
+    display: block;
+    width:100%;
+    max-width:200px;
+    margin-top:1em;
+    margin-bottom:1em;
+}

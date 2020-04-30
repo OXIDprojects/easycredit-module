@@ -1,0 +1,54 @@
+{
+  "v1_modellrechnung_durchfuehren": [
+    {
+      "fieldname": "ergebnis",
+      "required": true
+    }
+  ],
+  "v1_modellrechnung_guenstigsterRatenplan": [
+    {
+      "fieldname": "betragRate",
+      "required": true
+    }
+  ],
+  "v1_texte_zustimmung": [
+    {
+      "fieldname": "zustimmungDatenuebertragungPaymentPage",
+      "required": true
+    }
+  ],
+  "v1_vorgang": [
+    {
+      "fieldname": "tbVorgangskennung",
+      "required": true
+    }
+  ],
+  "v1_decision": [
+    {
+      "fieldname": "entscheidung",
+      "required": true
+    }
+  ],
+  "v1_financialinformation": [
+    {
+      "fieldname": "allgemeineVorgangsdaten",
+      "required": true
+    },
+    {
+      "fieldname": "tilgungsplanText",
+      "required": true
+    }
+  ],
+  "v1_finanzierung": [
+    {
+      "fieldname": "ratenplan",
+      "required": true
+    }
+  ],
+  "v1_aquisition": [
+    {
+      "fieldname": "restbetrag",
+      "required": true
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+    "name": "oxid-professional-services/easycredit-module",
+    "description": "The payment module by EasyCredit.",
+    "type": "oxideshop-module",
+    "keywords": ["oxid", "modules", "eShop"],
+    "homepage": "https://www.oxid-esales.com/en/home.html",
+    "license": [
+        "GPL-3.0-only",
+        "proprietary"
+    ],
+    "extra": {
+        "oxideshop": {
+            "blacklist-filter": [
+                "documentation/**/*.*"
+            ],
+            "target-directory": "oxps/easycredit"
+        }
+    },
+    "require": {
+        "oxid-esales/oxideshop-ce": ">=v6.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "OxidProfessionalServices\\PayPalPlus\\": "../../../source/modules/oxps/easycredit"
+        }
+    }
+}
