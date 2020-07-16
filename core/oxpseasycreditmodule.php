@@ -166,7 +166,7 @@ class oxpsEasyCreditModule extends oxModule
     {
         try {
             $oDb  = oxDb::getDb();
-            $sSql = file_get_contents(dirname(__FILE__) . '/../docs/' . (string) $sSqlFile);
+            $sSql = file_get_contents(dirname(__FILE__) . '/../installments/' . (string) $sSqlFile);
             $aSql = (array) explode(';', $sSql);
 
             foreach ($aSql as $sQuery) {
@@ -233,7 +233,7 @@ class oxpsEasyCreditModule extends oxModule
 
         $oDb = oxDb::getDb();
 
-        $dbStructure = file_get_contents(dirname(__FILE__) . '/../docs/install_adddbcolumns.json');
+        $dbStructure = file_get_contents(dirname(__FILE__) . '/../installments/install_adddbcolumns.json');
         if(!$dbStructure ) {
             return;
         }
@@ -280,7 +280,7 @@ class oxpsEasyCreditModule extends oxModule
      */
     protected static function _dbEventShopSpecific($sSqlFile, $sFailureError = 'Operation failed: ')
     {
-        $sqls = file_get_contents(dirname(__FILE__) . '/../docs/' . (string) $sSqlFile);
+        $sqls = file_get_contents(dirname(__FILE__) . '/../installments/' . (string) $sSqlFile);
         $aShops = oxDb::getDb()->getAll('SELECT oxid FROM oxshops');
 
         // Iterate all SubShops
