@@ -38,3 +38,8 @@ composer update
 ### Version 2.0.0
 
 * Version for OXID6 installable via Composer
+
+### Version 2.0.4
+
+* Function-Check for OXID 6.2.3
+* easyCredit Orders are not changable (Discounts, add Articles...) in OXID-Backend
