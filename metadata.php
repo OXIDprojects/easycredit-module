@@ -227,6 +227,12 @@ $aModule = array(
             'value' => true,
         ),
         array(
+            'group' => 'oxpsEasyCreditExampleCalculation',
+            'name'  => 'oxpsECExampleUseOwnjQueryUI',
+            'type'  => 'bool',
+            'value' => true,
+        ),
+        array(
             'group' => 'oxpsEasyCreditLogging',
             'name'  => 'oxpsECLogging',
             'type'  => 'bool',
