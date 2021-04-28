@@ -1,11 +1,13 @@
 <?php
 
+namespace OxidProfessionalServices\EasyCredit\Core\Domain;
+
 /**
  * Class oxpsEasyCreditOxSession
  *
  * Enhancement for oxSession to handle easyCredit payment information (as a storage)
  */
-class oxpsEasyCreditOxSession extends oxpsEasyCreditOxSession_parent
+class EasyCreditSession extends EasyCreditSession_parent
 {
     const API_CONFIG_STORAGE = 'oxpsEasyCreditStorage';
 

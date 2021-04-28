@@ -1,9 +1,11 @@
 <?php
 
+namespace OxidProfessionalServices\EasyCredit\Core\Domain;
+
 /**
  * Class oxpsEasyCreditOxOrder
  */
-class oxpsEasyCreditOxOrder extends oxpsEasyCreditOxOrder_parent {
+class EasyCreditOrder extends EasyCreditOrder_parent {
 
     /** @var string */
     const EASYCREDIT_BESTELLUNG_BESTAETIGT = "BestellungBestaetigenServiceActivity.Infos.ERFOLGREICH";

@@ -1,9 +1,11 @@
 <?php
 
+namespace OxidProfessionalServices\EasyCredit\Core\Domain;
+
 /**
  * Class oxpsEasyCreditOxPayment
  */
-class oxpsEasyCreditOxPayment extends oxpsEasyCreditOxPayment_parent
+class EasyCreditPayment extends EasyCreditPayment_parent
 {
     /** string paymentid */
     const EASYCREDIT_PAYMENTID = "easycreditinstallment";

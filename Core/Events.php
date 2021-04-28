@@ -14,19 +14,22 @@
  * @copyright (C) OXID eSales AG 2003-2018
  */
 
+namespace OxidProfessionalServices\EasyCredit\Core;
+
 /**
  * Class oxpsEasyCreditModule
  * Handles module setup, provides additional tools and module related helpers.
  *
  * @codeCoverageIgnore
  */
-class oxpsEasyCreditModule extends oxModule
+class Events
 {
 
     /**
      * Class constructor.
      * Sets current module main data and loads the rest module info.
-     */
+     *
+     * Can see no reason for this
     function __construct()
     {
         $sModuleId = 'oxpseasycredit';
@@ -42,7 +45,7 @@ class oxpsEasyCreditModule extends oxModule
         $this->load($sModuleId);
 
         oxRegistry::set('oxpsEasyCreditModule', $this);
-    }
+    }*/
 
 
     /**

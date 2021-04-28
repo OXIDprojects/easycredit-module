@@ -12,10 +12,12 @@
  * @version   OXID eShop EE
  */
 
+namespace OxidProfessionalServices\EasyCredit\Core\Domain;
+
 /**
  * Basket manager
  */
-class oxpsEasyCreditOxBasket extends oxpsEasyCreditOxBasket_parent
+class EasyCreditBasket extends EasyCreditBasket_parent
 {
     /** @var bool flag to mark, if instalment costs are included in totals */
     private $excludeInstalmentsCosts = false;
