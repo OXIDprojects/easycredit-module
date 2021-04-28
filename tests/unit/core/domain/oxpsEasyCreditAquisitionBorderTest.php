@@ -42,7 +42,7 @@ class oxpsEasyCreditAquisitionBorderTest extends OxidTestCase
     public function testUpdateAquisitionBorderIfNeededNoUpdate()
     {
         /** @var oxpsEasyCreditAquisitionBorder $aquisitionBorder */
-        $aquisitionBorder = oxNew('oxpsEasyCreditAquisitionBorder');
+        $aquisitionBorder = oxNew('EasyCreditAquisitionBorder');
         $aquisitionBorder->updateAquisitionBorderIfNeeded();
     }
 
@@ -52,7 +52,7 @@ class oxpsEasyCreditAquisitionBorderTest extends OxidTestCase
         $dic->getConfig()->setConfigParam('oxpsECAquBorderUpdateIntervalMin', 'XYZ');
 
         /** @var oxpsEasyCreditAquisitionBorder $aquisitionBorder */
-        $aquisitionBorder = oxNew('oxpsEasyCreditAquisitionBorder');
+        $aquisitionBorder = oxNew('EasyCreditAquisitionBorder');
         $aquisitionBorder->updateAquisitionBorderIfNeeded();
     }
 
@@ -62,7 +62,7 @@ class oxpsEasyCreditAquisitionBorderTest extends OxidTestCase
         $dic->getConfig()->setConfigParam('oxpsECAquBorderUpdateIntervalMin', 1800);
 
 
-        $webServiceClient = $this->getMock('oxpsEasyCreditWebServiceClient', array('execute'));
+        $webServiceClient = $this->getMock('EasyCreditWebServiceClient', array('execute'));
         $webServiceClient->expects($this->any())->method('execute')->willReturnCallback(
             function() {
                 $r = new stdClass();
@@ -72,7 +72,7 @@ class oxpsEasyCreditAquisitionBorderTest extends OxidTestCase
         );
 
         $aquisitionBorder = $this->getMock(
-            'oxpsEasyCreditAquisitionBorder',
+            'EasyCreditAquisitionBorder',
             array('getWebServiceClient', 'getShopId')
         );
         $aquisitionBorder->expects($this->any())->method('getWebServiceClient')->willReturn($webServiceClient);
@@ -87,7 +87,7 @@ class oxpsEasyCreditAquisitionBorderTest extends OxidTestCase
         $dic->getConfig()->setConfigParam('oxpsECAquBorderUpdateIntervalMin', 1800);
         $dic->getConfig()->setConfigParam('oxpsECAquisitionBorderLastUpdate', date('Y-m-d H:i', 0));
 
-        $webServiceClient = $this->getMock('oxpsEasyCreditWebServiceClient', array('execute'));
+        $webServiceClient = $this->getMock('EasyCreditWebServiceClient', array('execute'));
         $webServiceClient->expects($this->any())->method('execute')->willReturnCallback(
             function() {
                 $r = new stdClass();
@@ -97,7 +97,7 @@ class oxpsEasyCreditAquisitionBorderTest extends OxidTestCase
         );
 
         $aquisitionBorder = $this->getMock(
-            'oxpsEasyCreditAquisitionBorder',
+            'EasyCreditAquisitionBorder',
             array('getWebServiceClient', 'getShopId')
         );
         $aquisitionBorder->expects($this->any())->method('getWebServiceClient')->willReturn($webServiceClient);
@@ -109,14 +109,14 @@ class oxpsEasyCreditAquisitionBorderTest extends OxidTestCase
     public function testUpdateAquisitionBorderFailure()
     {
         /** @var oxpsEasyCreditAquisitionBorder $aquisitionBorder */
-        $aquisitionBorder = oxNew('oxpsEasyCreditAquisitionBorder');
+        $aquisitionBorder = oxNew('EasyCreditAquisitionBorder');
         $this->assertFalse($aquisitionBorder->updateAquisitionBorder());
     }
 
     public function testGetCurrentAquisitionBorderValueNull()
     {
         /** @var oxpsEasyCreditAquisitionBorder $aquisitionBorder */
-        $aquisitionBorder = oxNew('oxpsEasyCreditAquisitionBorder');
+        $aquisitionBorder = oxNew('EasyCreditAquisitionBorder');
         $this->assertNull($aquisitionBorder->getCurrentAquisitionBorderValue());
     }
 
@@ -126,7 +126,7 @@ class oxpsEasyCreditAquisitionBorderTest extends OxidTestCase
         $dic->getConfig()->setConfigParam('oxpsECAquisitionBorderValue', 400);
 
         /** @var oxpsEasyCreditAquisitionBorder $aquisitionBorder */
-        $aquisitionBorder = oxNew('oxpsEasyCreditAquisitionBorder');
+        $aquisitionBorder = oxNew('EasyCreditAquisitionBorder');
         $borderValue = $aquisitionBorder->getCurrentAquisitionBorderValue();
         $this->assertNotNull($borderValue);
         $this->assertEquals(400.0, $borderValue);
@@ -135,7 +135,7 @@ class oxpsEasyCreditAquisitionBorderTest extends OxidTestCase
     public function testConsiderInFrontend()
     {
         /** @var oxpsEasyCreditAquisitionBorder $aquisitionBorder */
-        $aquisitionBorder = oxNew('oxpsEasyCreditAquisitionBorder');
+        $aquisitionBorder = oxNew('EasyCreditAquisitionBorder');
         $this->assertNotTrue($aquisitionBorder->considerInFrontend());
 
         $dic = oxpsEasyCreditDicFactory::getDic();

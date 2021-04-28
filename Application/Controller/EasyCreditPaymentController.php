@@ -77,11 +77,11 @@ class EasyCreditPaymentController extends EasyCreditPayment_parent
     public function isEasyCreditPermitted()
     {
         /** @var $aquisitionBorder oxpsEasyCreditAquisitionBorder */
-        $aquisitionBorder = oxNew("oxpsEasyCreditAquisitionBorder");
+        $aquisitionBorder = oxNew("EasyCreditAquisitionBorder");
         $aquisitionBorder->updateAquisitionBorderIfNeeded();
 
         /** @var $aquisitionBorder oxpsEasyCreditAquisitionBorder */
-        $aquisitionBorder = oxNew("oxpsEasyCreditAquisitionBorder");
+        $aquisitionBorder = oxNew("EasyCreditAquisitionBorder");
 
         if(!$aquisitionBorder->considerInFrontend() ) {
             return true;

@@ -1,6 +1,11 @@
 <?php
 
-class oxpsEasyCreditConfigException extends oxException
+namespace OxidProfessionalServices\EasyCredit\Core\Di;
+
+
+use OxidEsales\Eshop\Core\Exception\StandardException;
+
+class EasyCreditConfigException extends StandardException
 {
     /**
      * oxpsEasyCreditConfigException constructor.

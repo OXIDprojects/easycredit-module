@@ -14,12 +14,14 @@
  * @copyright (C) OXID eSales AG 2003-2018
  */
 
+namespace OxidProfessionalServices\EasyCredit\Core\Helper;
+
 /**
- * Interface oxpsEasyCreditInitializeRequestBuilderInterface
+ * Interface EasyCreditInitializeRequestBuilderInterface
  *
  * Builds data used by request to initialize new order process
  */
-interface oxpsEasyCreditInitializeRequestBuilderInterface
+interface EasyCreditInitializeRequestBuilderInterface
 {
     /**
      * Builds and gets request body content for VorgangInitialisierenRequest

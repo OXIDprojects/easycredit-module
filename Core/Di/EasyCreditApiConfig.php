@@ -1,4 +1,8 @@
 <?php
+
+namespace OxidProfessionalServices\EasyCredit\Core\Di;
+
+
 /**
  * This Software is the property of OXID eSales and is protected
  * by copyright law - it is NOT Freeware.
@@ -19,7 +23,7 @@
  *
  * Providing the api config (i.e. module config) read-only.
  */
-class oxpsEasyCreditApiConfig
+class EasyCreditApiConfig
 {
     const API_CONFIG_EASYCREDIT_MODULE_ID = "oxpseasycredit";
 

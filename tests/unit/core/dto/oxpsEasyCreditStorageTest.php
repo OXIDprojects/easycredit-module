@@ -54,7 +54,7 @@ class oxpsEasyCreditStorageTest extends OxidTestCase
     public function testHasExpiredExpiredLastUpdate()
     {
         $oTest = $this->getMock(
-            'oxpsEasyCreditStorage',
+            'EasyCreditStorage',
             array('getStorageExpiredTimeRange'),
             array('TEST', 'TEST', 'TEST', 450.0)
         );

@@ -14,7 +14,20 @@
  * @copyright (C) OXID eSales AG 2003-2018
  */
 
-class oxpsEasyCreditPayloadFactory
-{
+namespace OxidProfessionalServices\EasyCredit\Core\Api;
 
+use OxidEsales\Eshop\Core\Exception\StandardException;
+
+class EasyCreditCurlException extends StandardException
+{
+    /**
+     * EasyCreditCurlException constructor.
+     *
+     * @param string $sMessage
+     * @param int $iCode
+     */
+    public function __construct($sMessage = "not set", $iCode = 0)
+    {
+        parent::__construct($sMessage, $iCode);
+    }
 }

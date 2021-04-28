@@ -50,10 +50,10 @@ class oxpsEasyCreditOxSessionTest extends OxidTestCase
         $session = oxNew('oxsession');
 
         $storage = $this->getMock(
-            'oxpsEasyCreditStorage',
+            'EasyCreditStorage',
             array('hasExpired'),
             array(
-                'oxpsEasyCreditStorage',
+                'EasyCreditStorage',
                 'tbVorgangskennung',
                 'fachlicheVorgangskennung',
                 'authorizationHash',

@@ -1,7 +1,7 @@
 {
     "name": "oxid-professional-services/easycredit-module",
     "description": "The payment module by EasyCredit.",
-    "version": "2.0.0-dev",
+    "version": "3.0.0-dev",
     "type": "oxideshop-module",
     "keywords": ["oxid", "modules", "eShop"],
     "homepage": "https://www.oxid-esales.com/en/home.html",

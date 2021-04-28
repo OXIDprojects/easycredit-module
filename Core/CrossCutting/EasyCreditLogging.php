@@ -14,7 +14,9 @@
  * @copyright (C) OXID eSales AG 2003-2018
  */
 
-class oxpsEasyCreditLogging
+namespace OxidProfessionalServices\EasyCredit\Core\CrossCutting;
+
+class EasyCreditLogging
 {
     const LOG_CONFIG_LOG_DIR = 'logDir';
     const LOG_CONFIG_LOG_ENABLED = 'logEnabled';

@@ -1,10 +1,12 @@
 <?php
 
+namespace OxidProfessionalServices\EasyCredit\Core\Dto;
+
 /**
  * Class capsulates financial information about a certain user process
  * Data Transfer Object
  */
-class oxpsEasyCreditStorage
+class EasyCreditStorage
 {
     /** @var  int */
     private $lastUpdate;

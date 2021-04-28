@@ -41,13 +41,13 @@ class oxpsEasyCreditExampleCalculationPopupTest extends OxidTestCase
 
     public function testGetExampleCalculationRate()
     {
-        $popup = oxNew('oxpsEasyCreditExampleCalculationPopup');
+        $popup = oxNew('EasyCreditExampleCalculationPopup');
         $this->assertNotNull($popup->getDic());
     }
 
     public function testGetBasket()
     {
-        $popup = oxNew('oxpsEasyCreditExampleCalculationPopup');
+        $popup = oxNew('EasyCreditExampleCalculationPopup');
         $basket = $popup->getBasket();
         $this->assertNotNull($basket);
         $price = $basket->getPrice();
@@ -57,7 +57,7 @@ class oxpsEasyCreditExampleCalculationPopupTest extends OxidTestCase
 
     public function testGetPrice()
     {
-        $popup = oxNew('oxpsEasyCreditExampleCalculationPopup');
+        $popup = oxNew('EasyCreditExampleCalculationPopup');
         $price = $popup->getPrice();
         $this->assertNotNull($price);
         $this->assertEquals(0.0, $price->getPrice());
@@ -65,7 +65,7 @@ class oxpsEasyCreditExampleCalculationPopupTest extends OxidTestCase
 
     public function testGetIFrameUrl()
     {
-        $popup = oxNew('oxpsEasyCreditExampleCalculationPopup');
+        $popup = oxNew('EasyCreditExampleCalculationPopup');
         $this->assertEquals('https://ratenkauf.easycredit.de/ratenkauf/content/intern/paymentPageBeispielrechnung.jsf?shopKennung=&bestellwert=0', $popup->getIFrameUrl());
     }
 }

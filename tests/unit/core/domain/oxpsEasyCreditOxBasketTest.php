@@ -51,14 +51,14 @@ class oxpsEasyCreditOxBasketTest extends OxidTestCase
         $session->setVariable('paymentid', oxpsEasyCreditOxPayment::EASYCREDIT_PAYMENTID);
 
         $dic = $this->getMock(
-            'oxpsEasyCreditDic',
+            'EasyCreditDic',
             array('getSession'),
             array(null, null, null, null, null)
         );
         $dic->expects($this->any())->method('getSession')->willReturn($session);
 
         /** @var oxpsEasyCreditStorage $storage */
-        $storage = oxNew('oxpsEasyCreditStorage', "TEST", "TEST", "TEST", 500.0);
+        $storage = oxNew('EasyCreditStorage', "TEST", "TEST", "TEST", 500.0);
         $storage->setInterestAmount(20.7);
         $dic->getSession()->setStorage($storage);
 
@@ -74,7 +74,7 @@ class oxpsEasyCreditOxBasketTest extends OxidTestCase
         $session->setVariable('paymentid', oxpsEasyCreditOxPayment::EASYCREDIT_PAYMENTID);
 
         $dic = $this->getMock(
-            'oxpsEasyCreditDic',
+            'EasyCreditDic',
             array('getSession'),
             array(null, null, null, null, null)
         );
@@ -133,14 +133,14 @@ class oxpsEasyCreditOxBasketTest extends OxidTestCase
         $session->setVariable('paymentid', oxpsEasyCreditOxPayment::EASYCREDIT_PAYMENTID);
 
         $dic = $this->getMock(
-            'oxpsEasyCreditDic',
+            'EasyCreditDic',
             array('getSession'),
             array(null, null, null, null, null)
         );
         $dic->expects($this->any())->method('getSession')->willReturn($session);
 
         /** @var oxpsEasyCreditStorage $storage */
-        $storage = oxNew('oxpsEasyCreditStorage', "TEST", "TEST", "TEST", 500.0);
+        $storage = oxNew('EasyCreditStorage', "TEST", "TEST", "TEST", 500.0);
         $storage->setInterestAmount(20.7);
         $dic->getSession()->setStorage($storage);
 

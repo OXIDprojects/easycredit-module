@@ -14,12 +14,14 @@
  * @copyright (C) OXID eSales AG 2003-2018
  */
 
+namespace OxidProfessionalServices\EasyCredit\Core\Di;
+
 /**
  * Interface DicConfigInterface
  *
  * Providing a interface for http and unittest.
  */
-interface oxpsEasyCreditDicConfigInterface
+interface EasyCreditDicConfigInterface
 {
     /**
      * Returns active shop ID.

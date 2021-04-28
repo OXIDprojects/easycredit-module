@@ -1,10 +1,12 @@
 <?php
 
+namespace OxidProfessionalServices\EasyCredit\Core\Helper;
+
 /**
  * Class to build the data for request "VorgangInitialisierenRequest" as part of initialization of easyCredit
  * This class is isolated and prepared to use in unit tests. For this case please set all members from outside.
  */
-class oxpsEasyCreditInitializeRequestBuilder implements oxpsEasyCreditInitializeRequestBuilderInterface
+class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestBuilderInterface
 {
     const INTEGRATIONSART           = 'PAYMENT_PAGE';
     const DEFAULT_INSTALMENT_TIME   = 36;
@@ -239,7 +241,7 @@ class oxpsEasyCreditInitializeRequestBuilder implements oxpsEasyCreditInitialize
                 "plz" => $delivadr->oxaddress__oxzip->value,
                 "ort" => $delivadr->oxaddress__oxcity->value,
                 "land" => $countryIso2,
-                "packstation" => oxpsEasyCreditHelper::hasPackstationFormat($street, $streetNr)
+                "packstation" => EasyCreditHelper::hasPackstationFormat($street, $streetNr)
             );
         }
         else {

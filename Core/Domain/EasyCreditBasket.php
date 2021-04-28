@@ -14,6 +14,8 @@
 
 namespace OxidProfessionalServices\EasyCredit\Core\Domain;
 
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicFactory;
+
 /**
  * Basket manager
  */
@@ -39,7 +41,7 @@ class EasyCreditBasket extends EasyCreditBasket_parent
      */
     public function getInterestsAmount()
     {
-        if ( oxpsEasyCreditOxPayment::isEasyCreditInstallmentById($this->getPaymentId())) {
+        if ( EasyCreditPayment::isEasyCreditInstallmentById($this->getPaymentId())) {
 
             $storage = $this->getDic()->getSession()->getStorage();
             if( $storage ) {
@@ -58,7 +60,7 @@ class EasyCreditBasket extends EasyCreditBasket_parent
      */
     protected function getDic()
     {
-        return oxpsEasyCreditDicFactory::getDic();
+        return EasyCreditDicFactory::getDic();
     }
 
     /**

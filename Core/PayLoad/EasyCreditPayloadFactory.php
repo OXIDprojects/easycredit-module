@@ -14,16 +14,16 @@
  * @copyright (C) OXID eSales AG 2003-2018
  */
 
-class oxpsEasyCreditCurlException extends oxException
+namespace OxidProfessionalServices\EasyCredit\Core\PayLoad;
+
+/**
+ * Class EasyCreditPayloadFactory
+ *
+ * @package OxidProfessionalServices\EasyCredit\Core\PayLoad
+ *
+ * @ToDo: Why empty? It is needed?
+ */
+class EasyCreditPayloadFactory
 {
-    /**
-     * oxpsEasyCreditCurlException constructor.
-     *
-     * @param string $sMessage
-     * @param int $iCode
-     */
-    public function __construct($sMessage = "not set", $iCode = 0)
-    {
-        parent::__construct($sMessage, $iCode);
-    }
+
 }

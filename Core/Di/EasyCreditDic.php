@@ -14,12 +14,14 @@
  * @copyright (C) OXID eSales AG 2003-2018
  */
 
+namespace OxidProfessionalServices\EasyCredit\Core\Di;
+
 /**
  * Class Dic
  *
  * Providing session-, config-data and payload factory instance.
  */
-class oxpsEasyCreditDic
+class EasyCreditDic
 {
     /** @var oxpsEasyCreditDicSession */
     private $dicSession;
@@ -30,20 +32,20 @@ class oxpsEasyCreditDic
     /** @var oxpsEasyCreditPayloadFactory */
     private $payloadFactory;
 
-    /** @var oxpsEasyCreditLogging */
+    /** @var EasyCreditLogging */
     private $logging;
 
-    /** @var oxpsEasyCreditDicConfig */
+    /** @var EasyCreditDicConfig */
     private $dicConfig;
 
     /**
      * Dic constructor.
      *
-     * @param oxpsEasyCreditDicSession $dicSession
-     * @param oxpsEasyCreditApiConfig $apiConfig
+     * @param oxpsEasyCreditDicSession     $dicSession
+     * @param oxpsEasyCreditApiConfig      $apiConfig
      * @param oxpsEasyCreditPayloadFactory $payloadFactory
-     * @param oxpsEasyCreditLogging $logging
-     * @param oxpsEasyCreditDicConfig $dicConfig
+     * @param EasyCreditLogging        $logging
+     * @param EasyCreditDicConfig          $dicConfig
      */
     public function __construct($dicSession, $apiConfig, $payloadFactory, $logging, $dicConfig)
     {
@@ -82,7 +84,7 @@ class oxpsEasyCreditDic
     }
 
     /**
-     * @return oxpsEasyCreditLogging
+     * @return EasyCreditLogging
      * @codeCoverageIgnore
      */
     public function getLogging()
@@ -91,7 +93,7 @@ class oxpsEasyCreditDic
     }
 
     /**
-     * @return oxpsEasyCreditDicConfig
+     * @return EasyCreditDicConfig
      * @codeCoverageIgnore
      */
     public function getConfig()

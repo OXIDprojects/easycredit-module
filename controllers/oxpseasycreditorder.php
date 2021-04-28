@@ -147,7 +147,7 @@ class oxpsEasyCreditOrder extends oxpsEasyCreditOrder_parent
     }
 
     /**
-     * @return oxpsEasyCreditDicSession
+     * @return EasyCreditDicSession
      * @throws oxSystemComponentException
      */
     protected function getDicSession()

@@ -74,7 +74,7 @@ class oxpsEasyCreditOxOrderTest extends OxidTestCase
         $dicSession->set('paymentid', oxpsEasyCreditOxPayment::EASYCREDIT_PAYMENTID);
         $dicSession->setStorage(
             oxNew(
-                'oxpsEasyCreditStorage',
+                'EasyCreditStorage',
                 'tbVorgangskennung',
                 'fachlicheVorgangskennung',
                 'authorizationHash',
@@ -138,7 +138,7 @@ class oxpsEasyCreditOxOrderTest extends OxidTestCase
         $paymentHash = $this->getPaymentHash($oxUser, $oxBasket, $dic);
 
         $storage = oxNew(
-            'oxpsEasyCreditStorage',
+            'EasyCreditStorage',
             'tbVorgangskennung',
             'fachlicheVorgangskennung',
             $paymentHash,
@@ -176,7 +176,7 @@ class oxpsEasyCreditOxOrderTest extends OxidTestCase
         $paymentHash = $this->getPaymentHash($oxUser, $oxBasket, $dic);
 
         $storage = oxNew(
-            'oxpsEasyCreditStorage',
+            'EasyCreditStorage',
             'tbVorgangskennung',
             'fachlicheVorgangskennung',
             $paymentHash,
@@ -215,7 +215,7 @@ class oxpsEasyCreditOxOrderTest extends OxidTestCase
         $paymentHash = $this->getPaymentHash($oxUser, $oxBasket, $dic);
 
         $storage = oxNew(
-            'oxpsEasyCreditStorage',
+            'EasyCreditStorage',
             'tbVorgangskennung',
             'fachlicheVorgangskennung',
             $paymentHash,
@@ -255,7 +255,7 @@ class oxpsEasyCreditOxOrderTest extends OxidTestCase
         $paymentHash = $this->getPaymentHash($oxUser, $oxBasket, $dic);
 
         $storage = oxNew(
-            'oxpsEasyCreditStorage',
+            'EasyCreditStorage',
             'tbVorgangskennung',
             'fachlicheVorgangskennung',
             $paymentHash,
@@ -295,7 +295,7 @@ class oxpsEasyCreditOxOrderTest extends OxidTestCase
         $paymentHash = $this->getPaymentHash($oxUser, $oxBasket, $dic);
 
         $storage = oxNew(
-            'oxpsEasyCreditStorage',
+            'EasyCreditStorage',
             'tbVorgangskennung',
             'fachlicheVorgangskennung',
             $paymentHash,
@@ -353,7 +353,7 @@ class oxpsEasyCreditOxOrderTest extends OxidTestCase
         $paymentHash = $this->getPaymentHash($oxUser, $oxBasket, $dic);
 
         $storage = oxNew(
-            'oxpsEasyCreditStorage',
+            'EasyCreditStorage',
             'tbVorgangskennung',
             'fachlicheVorgangskennung',
             $paymentHash,
@@ -413,7 +413,7 @@ class oxpsEasyCreditOxOrderTest extends OxidTestCase
         $paymentHash = $this->getPaymentHash($oxUser, $oxBasket, $dic);
 
         $storage = oxNew(
-            'oxpsEasyCreditStorage',
+            'EasyCreditStorage',
             'tbVorgangskennung',
             'fachlicheVorgangskennung',
             $paymentHash,
@@ -475,7 +475,7 @@ class oxpsEasyCreditOxOrderTest extends OxidTestCase
         $paymentHash = $this->getPaymentHash($oxUser, $oxBasket, $dic);
 
         $storage = oxNew(
-            'oxpsEasyCreditStorage',
+            'EasyCreditStorage',
             'tbVorgangskennung',
             'fachlicheVorgangskennung',
             $paymentHash,
@@ -536,7 +536,7 @@ class oxpsEasyCreditOxOrderTest extends OxidTestCase
         $paymentHash = $this->getPaymentHash($oxUser, $oxBasket, $dic);
 
         $storage = oxNew(
-            'oxpsEasyCreditStorage',
+            'EasyCreditStorage',
             'tbVorgangskennung',
             'fachlicheVorgangskennung',
             $paymentHash,
@@ -591,7 +591,7 @@ class oxpsEasyCreditOxOrderTest extends OxidTestCase
         $dicSession->set('paymentid', oxpsEasyCreditOxPayment::EASYCREDIT_PAYMENTID);
 
         $storage = oxNew(
-            'oxpsEasyCreditStorage',
+            'EasyCreditStorage',
             null,
             'fachlicheVorgangskennung',
             '3faa449deae074523887722643ca8796',
@@ -639,7 +639,7 @@ class oxpsEasyCreditOxOrderTest extends OxidTestCase
         $dicSession->set('paymentid', oxpsEasyCreditOxPayment::EASYCREDIT_PAYMENTID);
 
         $storage = oxNew(
-            'oxpsEasyCreditStorage',
+            'EasyCreditStorage',
             'tbVorgangskennung',
             null,
             '3faa449deae074523887722643ca8796',
@@ -687,7 +687,7 @@ class oxpsEasyCreditOxOrderTest extends OxidTestCase
         $dicSession->set('paymentid', oxpsEasyCreditOxPayment::EASYCREDIT_PAYMENTID);
 
         $storage = oxNew(
-            'oxpsEasyCreditStorage',
+            'EasyCreditStorage',
             'tbVorgangskennung',
             'fachlicheVorgangskennung',
             '3faa449deae074523887722643ca8796',
@@ -735,7 +735,7 @@ class oxpsEasyCreditOxOrderTest extends OxidTestCase
         $dicSession->set('paymentid', oxpsEasyCreditOxPayment::EASYCREDIT_PAYMENTID);
 
         $storage = oxNew(
-            'oxpsEasyCreditStorage',
+            'EasyCreditStorage',
             'tbVorgangskennung',
             'fachlicheVorgangskennung',
             '3faa449deae074523887722643ca8796',
@@ -783,7 +783,7 @@ class oxpsEasyCreditOxOrderTest extends OxidTestCase
         $dicSession->set('paymentid', oxpsEasyCreditOxPayment::EASYCREDIT_PAYMENTID);
 
         $storage = oxNew(
-            'oxpsEasyCreditStorage',
+            'EasyCreditStorage',
             'tbVorgangskennung',
             'fachlicheVorgangskennung',
             '3faa449deae074523887722643ca8796',
@@ -840,12 +840,12 @@ class oxpsEasyCreditOxOrderTest extends OxidTestCase
     private function getMockedDic($apiConfigured = false)
     {
         return oxNew(
-'oxpsEasyCreditDic',
-           oxNew('oxpsEasyCreditDicSession', oxNew('oxpsEasyCreditOxSession')),
+'EasyCreditDic',
+           oxNew('EasyCreditDicSession', oxNew('oxpsEasyCreditOxSession')),
            oxNew('oxpsEasyCreditApiConfig', $apiConfigured ? oxpsEasyCreditDicFactory::getApiConfigArray() : array()),
-            oxNew('oxpsEasyCreditPayloadFactory'),
-            oxNew('oxpsEasyCreditLogging', array()),
-            oxNew('oxpsEasyCreditDicConfig', oxRegistry::getConfig())
+            oxNew('EasyCreditPayloadFactory'),
+            oxNew('EasyCreditLogging', array()),
+            oxNew('EasyCreditDicConfig', oxRegistry::getConfig())
         );
     }
 
@@ -883,7 +883,7 @@ class oxpsEasyCreditOxOrderTest extends OxidTestCase
 
     protected function getCurrentInitializationData($oUser, $oBasket, $dic)
     {
-        $requestBuilder = oxNew('oxpsEasyCreditInitializeRequestBuilder');
+        $requestBuilder = oxNew('EasyCreditInitializeRequestBuilder');
 
         $requestBuilder->setUser($oUser);
         $requestBuilder->setBasket($oBasket);

@@ -1,9 +1,11 @@
 <?php
 
+namespace OxidProfessionalServices\EasyCredit\Core\Helper;
+
 /**
  * Helper class with common used business methods.
  */
-class oxpsEasyCreditHelper
+class EasyCreditHelper
 {
     /**
      * Returns the price relevant for the example calculation.

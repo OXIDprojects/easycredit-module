@@ -14,10 +14,12 @@
  * @copyright (C) OXID eSales AG 2003-2018
  */
 
+namespace OxidProfessionalServices\EasyCredit\Core\Api;
+
 /**
- * Class oxpsEasyCreditWebServiceClient
+ * Class EasyCreditWebServiceClient
  */
-class oxpsEasyCreditWebServiceClient extends oxpsEasyCreditHttpClient
+class EasyCreditWebServiceClient extends oxpsEasyCreditHttpClient
 {
     /**
      * @var string Url for the method relatively to the base url.

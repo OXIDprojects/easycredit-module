@@ -84,7 +84,7 @@ class oxpsEasyCreditDicConfigTest extends OxidTestCase
             }
         );
 
-        $this->dicConfig = oxNew('oxpsEasyCreditDicConfig', $oxConfig);
+        $this->dicConfig = oxNew('EasyCreditDicConfig', $oxConfig);
     }
 
     /**

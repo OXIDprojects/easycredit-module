@@ -14,57 +14,38 @@
  * @copyright (C) OXID eSales AG 2003-2018
  */
 
+namespace OxidProfessionalServices\EasyCredit\Core\Di;
+
 /**
- * Class DicSession
+ * Interface DicSessionInterface
  *
- * Pipe get, set and delete to underlying oxSession.
+ * Providing a session interface for http and unittest.
  */
-class oxpsEasyCreditDicSession implements oxpsEasyCreditDicSessionInterface
+interface EasyCreditDicSessionInterface
 {
-    /** @var oxSession */
-    private $session;
-
-    /**
-     * DicSession constructor.
-     *
-     * @param oxSession $session
-     */
-    public function __construct(oxSession $session)
-    {
-        $this->session = $session;
-    }
-
     /**
      * Returns the value for the key.
      *
      * @param string $key
      * @return mixed
      */
-    public function get($key)
-    {
-        return $this->session->getVariable($key);
-    }
+    public function get($key);
 
     /**
      * Sets the value for the key.
      *
      * @param string $key
      * @param mixed $value
+     * @return string
      */
-    public function set($key, $value)
-    {
-        $this->session->setVariable($key, $value);
-    }
+    public function set($key, $value);
 
     /**
      * Deletes the key/value pair.
      *
      * @param string $key
      */
-    public function delete($key)
-    {
-        $this->session->deleteVariable($key);
-    }
+    public function delete($key);
 
     /**
      * Appends url with session ID, but only if oxSession::_isSidNeeded() returns true
@@ -77,46 +58,31 @@ class oxpsEasyCreditDicSession implements oxpsEasyCreditDicSessionInterface
      *
      * @return string
      */
-    public function processUrl($sUrl)
-    {
-        return $this->session->processUrl($sUrl);
-    }
+    public function processUrl($sUrl);
 
     /**
      * Returns session ID
      *
      * @return string
      */
-    public function getId()
-    {
-        return $this->session->getId();
-    }
+    public function getId();
 
     /**
      * Sets storage for easyCredit information
      *
      * @param $storage oxpsEasyCreditStorage
      */
-    public function setStorage($storage)
-    {
-        $this->session->setStorage($storage);
-    }
+    public function setStorage($storage);
 
     /**
      * Returns storage for easyCredit information
      *
      * @return null|oxpsEasyCreditStorage
      */
-    public function getStorage() {
-
-        return $this->session->getStorage();
-    }
+    public function getStorage();
 
     /**
      * Clears storage for easyCredit information
      */
-    public function clearStorage() {
-
-        $this->session->clearStorage();
-    }
+    public function clearStorage();
 }

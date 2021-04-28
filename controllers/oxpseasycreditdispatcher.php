@@ -137,7 +137,7 @@ class oxpsEasyCreditDispatcher extends oxUBase
             , array()
             , $data);
 
-        $storage = oxNew("oxpsEasyCreditStorage",
+        $storage = oxNew("EasyCreditStorage",
             $response->tbVorgangskennung,
             $response->fachlicheVorgangskennung,
             $authorizationHash,
@@ -391,7 +391,7 @@ class oxpsEasyCreditDispatcher extends oxUBase
      */
     protected function getInitializationRequestBuilder()
     {
-        return oxNew('oxpsEasyCreditInitializeRequestBuilder');
+        return oxNew('EasyCreditInitializeRequestBuilder');
     }
 
     /**
@@ -468,7 +468,7 @@ class oxpsEasyCreditDispatcher extends oxUBase
     /**
      * Returns dic session
      *
-     * @return oxpsEasyCreditDicSession
+     * @return EasyCreditDicSession
      */
     protected function getDicSession()
     {

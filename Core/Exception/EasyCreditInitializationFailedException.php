@@ -11,13 +11,15 @@
  * @copyright (C) OXID eSales AG 2003-2018
  */
 
+namespace OxidProfessionalServices\EasyCredit\Core\Exception;
+
 /**
  * Exception base class for easyCredit, specialized about failed initialization data
  */
-class oxpsEasyCreditInitializationFailedException extends oxpsEasyCreditException
+class EasyCreditInitializationFailedException extends EasyCreditException
 {
     /**
-     * oxpsEasyCreditInitializationFailedException constructor.
+     * EasyCreditInitializationFailedException constructor.
      *
      * @param string $sMessage
      * @param int    $iCode

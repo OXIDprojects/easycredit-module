@@ -14,12 +14,14 @@
  * @copyright (C) OXID eSales AG 2003-2018
  */
 
+namespace OxidProfessionalServices\EasyCredit\Core\Di;
+
 /**
  * Class DicConfig
  *
  * Pipe to underlying oxConfig.
  */
-class oxpsEasyCreditDicConfig implements oxpsEasyCreditDicConfigInterface
+class EasyCreditDicConfig implements EasyCreditDicConfigInterface
 {
     /** @var oxConfig */
     private $config;

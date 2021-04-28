@@ -13,6 +13,8 @@
 
 namespace OxidProfessionalServices\EasyCredit\Application\Controller;
 
+use OxidProfessionalServices\EasyCredit\Core\Dto\EasyCreditStorage;
+
 /**
  * EasyCredit checkout dispatcher class
  *
@@ -139,7 +141,7 @@ class EasyCreditDispatcherController extends oxUBase
             , array()
             , $data);
 
-        $storage = oxNew("oxpsEasyCreditStorage",
+        $storage = oxNew(EasyCreditStorage::class,
             $response->tbVorgangskennung,
             $response->fachlicheVorgangskennung,
             $authorizationHash,
@@ -393,7 +395,7 @@ class EasyCreditDispatcherController extends oxUBase
      */
     protected function getInitializationRequestBuilder()
     {
-        return oxNew('oxpsEasyCreditInitializeRequestBuilder');
+        return oxNew('EasyCreditInitializeRequestBuilder');
     }
 
     /**

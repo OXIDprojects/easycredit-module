@@ -4,5 +4,5 @@
 
 [{$smarty.block.parent}]
 [{if $oConfig->getConfigParam('oxpsECExampleCalcMinibasket')}]
-    [{oxid_include_widget cl="oxpsEasyCreditExampleCalculation" _parent=$oView->getClassName() placeholderId="oxpseasycredit-example-minibasket"}]
+    [{oxid_include_widget cl="EasyCreditExampleCalculation" _parent=$oView->getClassName() placeholderId="oxpseasycredit-example-minibasket"}]
 [{/if}]

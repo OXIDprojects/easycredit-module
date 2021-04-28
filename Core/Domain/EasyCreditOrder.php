@@ -129,8 +129,8 @@ class EasyCreditOrder extends EasyCreditOrder_parent {
      */
     protected function updateAquisitionBorder()
     {
-        /** @var $aquisitionBorder oxpsEasyCreditAquisitionBorder */
-        $aquisitionBorder = oxNew("oxpsEasyCreditAquisitionBorder");
+        /** @var $aquisitionBorder EasyCreditAquisitionBorder */
+        $aquisitionBorder = oxNew("EasyCreditAquisitionBorder");
         $aquisitionBorder->updateAquisitionBorder();
     }
 
@@ -241,7 +241,7 @@ class EasyCreditOrder extends EasyCreditOrder_parent {
      */
     protected function getCurrentInitializationData($oUser, $oBasket)
     {
-        $requestBuilder = oxNew('oxpsEasyCreditInitializeRequestBuilder');
+        $requestBuilder = oxNew('EasyCreditInitializeRequestBuilder');
 
         $requestBuilder->setUser($oUser);
         $requestBuilder->setBasket($oBasket);

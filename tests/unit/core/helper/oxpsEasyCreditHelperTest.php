@@ -107,7 +107,7 @@ class oxpsEasyCreditHelperTest extends OxidTestCase
     public function testGetModuleVersionOk()
     {
         $apiConfig = oxNew('oxpsEasyCreditApiConfig', array());
-        $dic = oxNew('oxpsEasyCreditDic', null, $apiConfig, null, null, null);
+        $dic = oxNew('EasyCreditDic', null, $apiConfig, null, null, null);
 
         $this->assertEquals('1.0.1', oxpsEasyCreditHelper::getModuleVersion($dic));
     }
@@ -116,7 +116,7 @@ class oxpsEasyCreditHelperTest extends OxidTestCase
     {
         $apiConfig = $this->getMock('oxpsEasyCreditApiConfig', array('getEasyCreditModuleId'), array(array()));
         $apiConfig->expects($this->any())->method('getEasyCreditModuleId')->willReturn('dummy');
-        $dic = oxNew('oxpsEasyCreditDic', null, $apiConfig, null, null, null);
+        $dic = oxNew('EasyCreditDic', null, $apiConfig, null, null, null);
 
         $this->assertEquals('', oxpsEasyCreditHelper::getModuleVersion($dic));
     }

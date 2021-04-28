@@ -1,6 +1,8 @@
 <?php
 
-class oxpsEasyCreditResponseValidator
+namespace OxidProfessionalServices\EasyCredit\Core\Api;
+
+class EasyCreditResponseValidator
 {
     const VALIDATION_KEY_FIELDNAME = 'fieldname';
     const VALIDATION_KEY_REQUIRED = 'required';
@@ -15,7 +17,7 @@ class oxpsEasyCreditResponseValidator
     private $dic = false;
 
     /**
-     * oxpsEasyCreditResponseValidator constructor.
+     * EasyCreditResponseValidator constructor.
      *
      * @param array $validationScheme
      */
@@ -63,7 +65,7 @@ class oxpsEasyCreditResponseValidator
 
     private function getExceptionClassname($validation)
     {
-        return isset($validation[self::VALIDATION_KEY_ERROR_EXCEPTION]) ? $validation[self::VALIDATION_KEY_ERROR_EXCEPTION] : 'oxpsEasyCreditValidationException';
+        return isset($validation[self::VALIDATION_KEY_ERROR_EXCEPTION]) ? $validation[self::VALIDATION_KEY_ERROR_EXCEPTION] : 'EasyCreditValidationException';
     }
 
     private function getValidationExceptionMessage(array $validation)

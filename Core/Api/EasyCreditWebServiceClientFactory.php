@@ -14,12 +14,14 @@
  * @copyright (C) OXID eSales AG 2003-2018
  */
 
+namespace OxidProfessionalServices\EasyCredit\Core\Api;
+
 /**
- * Class oxpsEasyCreditWebServiceClientFactory
+ * Class EasyCreditWebServiceClientFactory
  *
  * Builds a web service client capable for the specified rest function.
  */
-class oxpsEasyCreditWebServiceClientFactory
+class EasyCreditWebServiceClientFactory
 {
     /**
      * @param string $serviceName
@@ -41,7 +43,7 @@ class oxpsEasyCreditWebServiceClientFactory
         $addheaders = false
     ) {
         /** @var oxpsEasyCreditWebServiceClient $client */
-        $client = oxNew('oxpsEasyCreditWebServiceClient');
+        $client = oxNew('EasyCreditWebServiceClient');
 
         $apiConfig = $dic->getApiConfig();
 
@@ -58,7 +60,7 @@ class oxpsEasyCreditWebServiceClientFactory
         if ($scheme) {
             $client->setResponseValidator(
                 oxNew(
-                    'oxpsEasyCreditResponseValidator',
+                    'EasyCreditResponseValidator',
                     $scheme
                 )
             );

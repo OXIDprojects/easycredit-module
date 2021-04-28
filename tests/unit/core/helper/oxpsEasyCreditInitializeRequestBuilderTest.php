@@ -63,7 +63,7 @@ class oxpsEasyCreditInitializeRequestBuilderTest extends OxidTestCase
 
         $user = oxNew('oxUser');
 
-        $rb = oxNew('oxpsEasyCreditInitializeRequestBuilder');
+        $rb = oxNew('EasyCreditInitializeRequestBuilder');
         $rb->setBasket($basket);
         $rb->setUser($user);
 
@@ -142,7 +142,7 @@ class oxpsEasyCreditInitializeRequestBuilderTest extends OxidTestCase
         $user->expects($this->any())->method('getUserGroups')->willReturn($groups);
         $user->oxuser__oxpassword = new oxField('password');
 
-        $rb = oxNew('oxpsEasyCreditInitializeRequestBuilder');
+        $rb = oxNew('EasyCreditInitializeRequestBuilder');
         $rb->setBasket($basket);
         $rb->setUser($user);
 
@@ -184,7 +184,7 @@ class oxpsEasyCreditInitializeRequestBuilderTest extends OxidTestCase
         $user                = $this->getMock('oxUser', array('getUserGroups'));
         $user->oxuser__oxsal = new oxField('MRS');
 
-        $rb = oxNew('oxpsEasyCreditInitializeRequestBuilder');
+        $rb = oxNew('EasyCreditInitializeRequestBuilder');
         $rb->setBasket($basket);
         $rb->setUser($user);
 
@@ -229,7 +229,7 @@ class oxpsEasyCreditInitializeRequestBuilderTest extends OxidTestCase
         $user                      = $this->getMock('oxUser', array('getUserGroups'));
         $user->oxuser__oxbirthdate = new oxField('1985-07-13');
 
-        $rb = oxNew('oxpsEasyCreditInitializeRequestBuilder');
+        $rb = oxNew('EasyCreditInitializeRequestBuilder');
         $rb->setBasket($basket);
         $rb->setUser($user);
 
@@ -274,7 +274,7 @@ class oxpsEasyCreditInitializeRequestBuilderTest extends OxidTestCase
         $user                      = $this->getMock('oxUser', array('getUserGroups'));
         $user->oxuser__oxbirthdate = new oxField('12345');
 
-        $rb = oxNew('oxpsEasyCreditInitializeRequestBuilder');
+        $rb = oxNew('EasyCreditInitializeRequestBuilder');
         $rb->setBasket($basket);
         $rb->setUser($user);
 
@@ -317,7 +317,7 @@ class oxpsEasyCreditInitializeRequestBuilderTest extends OxidTestCase
 
         $deliveryAddress = oxNew('oxaddress');
 
-        $rb = oxNew('oxpsEasyCreditInitializeRequestBuilder');
+        $rb = oxNew('EasyCreditInitializeRequestBuilder');
         $rb->setBasket($basket);
         $rb->setUser($user);
         $rb->setShippingAddress($deliveryAddress);
@@ -360,7 +360,7 @@ class oxpsEasyCreditInitializeRequestBuilderTest extends OxidTestCase
         $user                         = $this->getMock('oxUser', array('getUserGroups'));
         $user->oxuser__oxcountryid = new oxField('a7c40f631fc920687.20179984');
 
-        $rb = oxNew('oxpsEasyCreditInitializeRequestBuilder');
+        $rb = oxNew('EasyCreditInitializeRequestBuilder');
         $rb->setBasket($basket);
         $rb->setUser($user);
 
@@ -408,7 +408,7 @@ class oxpsEasyCreditInitializeRequestBuilderTest extends OxidTestCase
         $user                         = $this->getMock('oxUser', array('getUserGroups'));
         $user->oxuser__oxfon = new oxField('+49 123-1234');
 
-        $rb = oxNew('oxpsEasyCreditInitializeRequestBuilder');
+        $rb = oxNew('EasyCreditInitializeRequestBuilder');
         $rb->setBasket($basket);
         $rb->setUser($user);
 
@@ -482,7 +482,7 @@ class oxpsEasyCreditInitializeRequestBuilderTest extends OxidTestCase
 
         $user = oxNew('oxUser');
 
-        $rb = oxNew('oxpsEasyCreditInitializeRequestBuilder');
+        $rb = oxNew('EasyCreditInitializeRequestBuilder');
         $rb->setBasket($basket);
         $rb->setUser($user);
 

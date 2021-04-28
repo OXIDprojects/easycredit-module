@@ -1,6 +1,10 @@
 <?php
 
-class oxpsEasyCreditExampleCalculationPopup extends oxWidget
+namespace OxidProfessionalServices\EasyCredit\Application\Component\Widget;
+
+use OxidEsales\Eshop\Application\Component\Widget\WidgetController;
+
+class EasyCreditExampleCalculationPopup extends WidgetController
 {
     protected $_sThisTemplate = 'oxpseasycredit_examplecalculation_popup.tpl';
 

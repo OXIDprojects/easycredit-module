@@ -15,9 +15,9 @@
  */
 
 /**
- * Class oxpsEasyCreditLoggingTest
+ * Class EasyCreditLoggingTest
  */
-class oxpsEasyCreditLoggingTest extends OxidTestCase
+class EasyCreditLoggingTest extends OxidTestCase
 {
     /**
      * Set up test environment
@@ -41,8 +41,8 @@ class oxpsEasyCreditLoggingTest extends OxidTestCase
 
     public function testLog()
     {
-        /** @var oxpsEasyCreditLogging $logging */
-        $logging = oxNew('oxpsEasyCreditLogging', array());
+        /** @var EasyCreditLogging $logging */
+        $logging = oxNew(\OxidProfessionalServices\EasyCredit\Core\CrossCutting\EasyCreditLogging::class, array());
 
         // 26 characters output expected
         $this->assertEquals(26, $logging->log('TEST'));
@@ -51,12 +51,12 @@ class oxpsEasyCreditLoggingTest extends OxidTestCase
     public function testLogRequestEnabled()
     {
         $logConfig = array(
-            oxpsEasyCreditLogging::LOG_CONFIG_LOG_ENABLED => true,
-            oxpsEasyCreditLogging::LOG_CONFIG_LOG_DIR => 'test'
+            EasyCreditLogging::LOG_CONFIG_LOG_ENABLED => true,
+            EasyCreditLogging::LOG_CONFIG_LOG_DIR => 'test'
         );
 
-        /** @var oxpsEasyCreditLogging $logging */
-        $logging = oxNew('oxpsEasyCreditLogging', $logConfig);
+        /** @var EasyCreditLogging $logging */
+        $logging = oxNew('EasyCreditLogging', $logConfig);
 
         // 377 characters output expected
         $this->assertEquals(377, $logging->logRestRequest('TestRequest', 'TestResponse', 'https://test.url', 350));
@@ -65,12 +65,12 @@ class oxpsEasyCreditLoggingTest extends OxidTestCase
     public function testLogRequestDisabled()
     {
         $logConfig = array(
-            oxpsEasyCreditLogging::LOG_CONFIG_LOG_ENABLED => false,
-            oxpsEasyCreditLogging::LOG_CONFIG_LOG_DIR => 'test'
+            EasyCreditLogging::LOG_CONFIG_LOG_ENABLED => false,
+            EasyCreditLogging::LOG_CONFIG_LOG_DIR => 'test'
         );
 
-        /** @var oxpsEasyCreditLogging $logging */
-        $logging = oxNew('oxpsEasyCreditLogging', $logConfig);
+        /** @var EasyCreditLogging $logging */
+        $logging = oxNew('EasyCreditLogging', $logConfig);
 
         // 377 characters output expected
         $this->assertNull($logging->logRestRequest('TestRequest', 'TestResponse', 'https://test.url', 350));

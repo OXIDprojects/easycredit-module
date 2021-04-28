@@ -41,7 +41,7 @@ class oxpsEasyCreditWebServiceClientTest extends OxidTestCase
 
     public function testSetFunctionOnlyFunction()
     {
-        $client = oxNew('oxpsEasyCreditWebServiceClient');
+        $client = oxNew('EasyCreditWebServiceClient');
         $this->assertNull($client->setFunction('test'));
     }
 
@@ -52,7 +52,7 @@ class oxpsEasyCreditWebServiceClientTest extends OxidTestCase
             'p2' => 'v2'
         );
 
-        $client = oxNew('oxpsEasyCreditWebServiceClient');
+        $client = oxNew('EasyCreditWebServiceClient');
         $this->assertNull($client->setFunction('test', $sprintfArgs));
     }
 
@@ -67,7 +67,7 @@ class oxpsEasyCreditWebServiceClientTest extends OxidTestCase
             'p2' => null
         );
 
-        $client = oxNew('oxpsEasyCreditWebServiceClient');
+        $client = oxNew('EasyCreditWebServiceClient');
         $client->setFunction('test', $sprintfArgs);
     }
 }

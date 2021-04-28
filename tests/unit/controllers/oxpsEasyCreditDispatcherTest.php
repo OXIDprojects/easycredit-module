@@ -43,11 +43,11 @@ class oxpsEasyCreditDispatcherTest extends OxidTestCase
     {
         $mockOxConfig = $this->getMock('oxConfig', array(), array());
 
-        $session = oxNew('oxpsEasyCreditDicSession', $oxSession);
+        $session = oxNew('EasyCreditDicSession', $oxSession);
         $mockApiConfig = oxNew('oxpsEasyCreditApiConfig', oxpsEasyCreditDicFactory::getApiConfigArray());
-        $mockLogging = $this->getMock('oxpsEasyCreditLogging', array(), array(array()));
-        $mockPayloadFactory = $this->getMock('oxpsEasyCreditPayloadFactory', array(), array());
-        $mockDicConfig = $this->getMock('oxpsEasyCreditDicConfig', array(), array($mockOxConfig));
+        $mockLogging = $this->getMock('EasyCreditLogging', array(), array(array()));
+        $mockPayloadFactory = $this->getMock('EasyCreditPayloadFactory', array(), array());
+        $mockDicConfig = $this->getMock('EasyCreditDicConfig', array(), array($mockOxConfig));
 
         $mockDic = oxNew(
             'oxpseasycreditdic',
@@ -67,7 +67,7 @@ class oxpsEasyCreditDispatcherTest extends OxidTestCase
         $dic = $this->buildDic($session);
 
         $storage = oxNew(
-            'oxpsEasyCreditStorage',
+            'EasyCreditStorage',
             'tbVorgangskennung',
             'fachlicheVorgangskennung',
             'b8d01510bbbf5fe767f068122ba0b0c4',
@@ -122,7 +122,7 @@ class oxpsEasyCreditDispatcherTest extends OxidTestCase
         $paymentHash = $this->getPaymentHash($user, $oxBasket, $dic);
 
         $storage = oxNew(
-            'oxpsEasyCreditStorage',
+            'EasyCreditStorage',
             'tbVorgangskennung',
             'fachlicheVorgangskennung',
             $paymentHash,
@@ -167,7 +167,7 @@ class oxpsEasyCreditDispatcherTest extends OxidTestCase
         $dic = $this->buildDic($session);
 
         $storage = oxNew(
-            'oxpsEasyCreditStorage',
+            'EasyCreditStorage',
             null,
             null,
             null,
@@ -192,7 +192,7 @@ class oxpsEasyCreditDispatcherTest extends OxidTestCase
         $dic = $this->buildDic($session);
 
         $storage = oxNew(
-            'oxpsEasyCreditStorage',
+            'EasyCreditStorage',
             'tbVorgangskennung',
             'fachlicheVorgangskennung',
             'dummy',
@@ -238,7 +238,7 @@ class oxpsEasyCreditDispatcherTest extends OxidTestCase
         $dic = $this->buildDic($session);
 
         $storage = oxNew(
-            'oxpsEasyCreditStorage',
+            'EasyCreditStorage',
             'tbVorgangskennung',
             'fachlicheVorgangskennung',
             'b8d01510bbbf5fe767f068122ba0b0c4',
@@ -310,7 +310,7 @@ class oxpsEasyCreditDispatcherTest extends OxidTestCase
         $dic = $this->buildDic($session);
 
         $storage = oxNew(
-            'oxpsEasyCreditStorage',
+            'EasyCreditStorage',
             'tbVorgangskennung',
             'fachlicheVorgangskennung',
             'b8d01510bbbf5fe767f068122ba0b0c4',
@@ -368,7 +368,7 @@ class oxpsEasyCreditDispatcherTest extends OxidTestCase
         $dic = $this->buildDic($session);
 
         $storage = oxNew(
-            'oxpsEasyCreditStorage',
+            'EasyCreditStorage',
             'tbVorgangskennung',
             'fachlicheVorgangskennung',
             'b8d01510bbbf5fe767f068122ba0b0c4',
@@ -404,7 +404,7 @@ class oxpsEasyCreditDispatcherTest extends OxidTestCase
 
     protected function getCurrentInitializationData($oUser, $oBasket, $dic)
     {
-        $requestBuilder = oxNew('oxpsEasyCreditInitializeRequestBuilder');
+        $requestBuilder = oxNew('EasyCreditInitializeRequestBuilder');
 
         $requestBuilder->setUser($oUser);
         $requestBuilder->setBasket($oBasket);

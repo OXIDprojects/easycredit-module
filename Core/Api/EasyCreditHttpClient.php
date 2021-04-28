@@ -14,10 +14,14 @@
  * @copyright (C) OXID eSales AG 2003-2018
  */
 
+namespace OxidProfessionalServices\EasyCredit\Core\Api;
+
+use OxidProfessionalServices\EasyCredit\Core\CrossCutting\EasyCreditLogging;
+
 /**
  * Class HttpClient: Client for the easycredit webservice.
  */
-class oxpsEasyCreditHttpClient
+class EasyCreditHttpClient
 {
     /**
      * @var resource Curl session handle.
@@ -35,16 +39,16 @@ class oxpsEasyCreditHttpClient
     protected $_baseUrl;
 
     /**
-     * @var oxpsEasyCreditLogging
+     * @var EasyCreditLogging
      */
     protected $logging;
 
     /**
      * Sets the logging instance.
      *
-     * @param oxpsEasyCreditLogging $logging
+     * @param EasyCreditLogging $logging
      */
-    public function setLogging(oxpsEasyCreditLogging $logging)
+    public function setLogging(EasyCreditLogging $logging)
     {
         $this->logging = $logging;
     }

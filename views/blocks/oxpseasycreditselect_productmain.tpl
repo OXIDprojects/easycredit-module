@@ -4,5 +4,5 @@
 
 [{$smarty.block.parent}]
 [{if $oConfig->getConfigParam('oxpsECExampleCalcArticle')}]
-    [{oxid_include_widget cl="oxpsEasyCreditExampleCalculation" _parent=$oView->getClassName() articleId=$oDetailsProduct->getId() placeholderId="oxpseasycredit-example-product"}]
+    [{oxid_include_widget cl="EasyCreditExampleCalculation" _parent=$oView->getClassName() articleId=$oDetailsProduct->getId() placeholderId="oxpseasycredit-example-product"}]
 [{/if}]

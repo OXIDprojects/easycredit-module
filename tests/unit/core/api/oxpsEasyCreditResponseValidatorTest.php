@@ -41,7 +41,7 @@ class oxpsEasyCreditResponseValidatorTest extends OxidTestCase
 
     public function testValidateMissingScheme()
     {
-        $validator = oxNew('oxpsEasyCreditResponseValidator', array());
+        $validator = oxNew('EasyCreditResponseValidator', array());
         $this->assertNull($validator->validate(new stdClass()));
     }
 
@@ -58,7 +58,7 @@ class oxpsEasyCreditResponseValidatorTest extends OxidTestCase
         $response           = new stdClass();
         $response->ergebnis = 'success';
 
-        $validator = oxNew('oxpsEasyCreditResponseValidator', $scheme);
+        $validator = oxNew('EasyCreditResponseValidator', $scheme);
         $this->assertNull($validator->validate($response));
     }
 
@@ -78,7 +78,7 @@ class oxpsEasyCreditResponseValidatorTest extends OxidTestCase
         $response           = new stdClass();
         $response->ergebnis = 'failure';
 
-        $validator = oxNew('oxpsEasyCreditResponseValidator', $scheme);
+        $validator = oxNew('EasyCreditResponseValidator', $scheme);
         $validator->validate($response);
     }
 }

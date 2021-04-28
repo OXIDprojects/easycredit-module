@@ -44,7 +44,7 @@ class oxpsEasyCreditHttpClientTest extends OxidTestCase
      */
     public function testExecuteJsonRequestWithoutHttpMethod()
     {
-        $client = oxNew('oxpsEasyCreditHttpClient');
+        $client = oxNew('EasyCreditHttpClient');
         $client->executeJsonRequest(null, null);
     }
 
@@ -53,16 +53,16 @@ class oxpsEasyCreditHttpClientTest extends OxidTestCase
      */
     public function testExecuteJsonRequestWithoutServiceUrl()
     {
-        $client = oxNew('oxpsEasyCreditHttpClient');
+        $client = oxNew('EasyCreditHttpClient');
         $client->executeJsonRequest('GET', null);
     }
 
     public function testExecuteJsonRequestWithData()
     {
-        $client = $this->getMock('oxpsEasyCreditHttpClient', array('executeHttpRequest'));
+        $client = $this->getMock('EasyCreditHttpClient', array('executeHttpRequest'));
         $client->expects($this->any())->method('executeHttpRequest')->willReturn('{"success": true}');
 
-        $logging = oxNew('oxpsEasyCreditLogging', array());
+        $logging = oxNew('EasyCreditLogging', array());
         $client->setLogging($logging);
 
         $expected = new stdClass();
@@ -75,7 +75,7 @@ class oxpsEasyCreditHttpClientTest extends OxidTestCase
      */
     public function testExecuteHttpRequestWithoutHttpMethod()
     {
-        $client = oxNew('oxpsEasyCreditHttpClient');
+        $client = oxNew('EasyCreditHttpClient');
         $client->executeHttpRequest(null, null);
     }
 
@@ -84,8 +84,8 @@ class oxpsEasyCreditHttpClientTest extends OxidTestCase
      */
     public function testExecuteHttpRequestWithWrongHttpMethod()
     {
-        $client = oxNew('oxpsEasyCreditHttpClient');
-        $client->executeHttpRequest('PUT', 'https://test.url'); // PUT is not supported by oxpsEasyCreditHttpClient
+        $client = oxNew('EasyCreditHttpClient');
+        $client->executeHttpRequest('PUT', 'https://test.url'); // PUT is not supported by EasyCreditHttpClient
     }
 
     /**
@@ -93,7 +93,7 @@ class oxpsEasyCreditHttpClientTest extends OxidTestCase
      */
     public function testExecuteHttpRequestWithoutServiceUrl()
     {
-        $client = oxNew('oxpsEasyCreditHttpClient');
+        $client = oxNew('EasyCreditHttpClient');
         $client->executeHttpRequest('GET', null);
     }
 
@@ -101,7 +101,7 @@ class oxpsEasyCreditHttpClientTest extends OxidTestCase
     {
         $expected = '{"success": true}';
 
-        $client = $this->getMock('oxpsEasyCreditHttpClient', array('curl_exec'));
+        $client = $this->getMock('EasyCreditHttpClient', array('curl_exec'));
         $client->expects($this->any())->method('curl_exec')->willReturn($expected);
 
         $this->assertEquals($expected, $client->executeHttpRequest('POST', 'https://test.url', new stdClass()));

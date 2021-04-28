@@ -12,10 +12,14 @@
  * @version   OXID eShop EE
  */
 
+namespace OxidProfessionalServices\EasyCredit\Core\Domain;
+
+use OxidEsales\Eshop\Core\Base;
+
 /**
  * Returns and updates aquisition border values about easyCredit
  */
-class oxpsEasyCreditAquisitionBorder extends oxSuperCfg {
+class EasyCreditAquisitionBorder extends Base {
 
     /** @var oxpsEasyCreditDic */
     private $dic = false;

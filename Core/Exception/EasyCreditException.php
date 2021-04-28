@@ -11,13 +11,17 @@
  * @copyright (C) OXID eSales AG 2003-2018
  */
 
+namespace OxidProfessionalServices\EasyCredit\Core\Exception;
+
+use OxidEsales\Eshop\Core\Exception\StandardException;
+
 /**
  * Exception base class for easyCredit
  */
-class oxpsEasyCreditException extends oxException
+class EasyCreditException extends StandardException
 {
     /**
-     * oxpsEasyCreditException constructor.
+     * EasyCreditException constructor.
      *
      * @param string $sMessage
      * @param int    $iCode

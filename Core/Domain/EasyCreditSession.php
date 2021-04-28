@@ -9,7 +9,7 @@ namespace OxidProfessionalServices\EasyCredit\Core\Domain;
  */
 class EasyCreditSession extends EasyCreditSession_parent
 {
-    const API_CONFIG_STORAGE = 'oxpsEasyCreditStorage';
+    const API_CONFIG_STORAGE = 'EasyCreditStorage';
 
     /**
      * Sets storage for easyCredit information
