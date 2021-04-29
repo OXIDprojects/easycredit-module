@@ -1,5 +1,7 @@
 [{if $sPaymentID == "easycreditinstallment"}]
-    [{include file="page/checkout/inc/payment_easycreditinstallment.tpl"}]
+    <div class="well well-sm">
+        [{include file="page/checkout/inc/payment_easycreditinstallment.tpl"}]
+    </div>
 [{else}]
     [{$smarty.block.parent}]
 [{/if}]

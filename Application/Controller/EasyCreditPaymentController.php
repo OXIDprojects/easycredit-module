@@ -525,7 +525,7 @@ class EasyCreditPaymentController extends EasyCreditPayment_parent
      */
     public function isProfileDataMissing()
     {
-        return !$this->hasBirthday() || !$this->hasSalutation();
+        return !$this->hasSalutation();
     }
 
     /**
@@ -547,17 +547,6 @@ class EasyCreditPaymentController extends EasyCreditPayment_parent
     protected function isValidSalutation($salutation)
     {
         return !empty($salutation) && ($salutation == "MR" || $salutation == "MRS");
-    }
-
-    /**
-     * Is date of in user profile?
-     *
-     * @return bool
-     */
-    public function hasBirthday()
-    {
-        $birthday = $this->getUser()->oxuser__oxbirthdate->value;
-        return $birthday && $birthday != "0000-00-00";
     }
 
     /**
