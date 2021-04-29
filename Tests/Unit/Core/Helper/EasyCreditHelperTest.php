@@ -14,17 +14,28 @@
  * @copyright (C) OXID eSales AG 2003-2018
  */
 
+namespace OxidProfessionalServices\EasyCredit\Tests\Unit\Core\Helper;
+
+use OxidEsales\Eshop\Application\Model\Basket;
+use OxidEsales\Eshop\Application\Model\Shop;
+use OxidEsales\Eshop\Core\Field;
+use OxidEsales\Eshop\Core\Price;
+use OxidEsales\TestingLibrary\UnitTestCase;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditApiConfig;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDic;
+use OxidProfessionalServices\EasyCredit\Core\Helper\EasyCreditHelper;
+
 /**
- * Class oxpsEasyCreditHelperTest
+ * Class EasyCreditHelperTest
  */
-class oxpsEasyCreditHelperTest extends OxidTestCase
+class EasyCreditHelperTest extends UnitTestCase
 {
     /**
      * Set up test environment
      *
      * @return null
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
     }
@@ -34,90 +45,90 @@ class oxpsEasyCreditHelperTest extends OxidTestCase
      *
      * @return null
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
     }
 
-    public function testGetExampleCalculationPriceFromBasket()
+    public function testGetExampleCalculationPriceFromBasket(): void
     {
-        $price = oxNew('oxprice');
+        $price = oxNew(Price::class);
         $price->setPrice(450.99);
 
-        $basket = $this->getMock('oxbasket');
+        $basket = $this->getMock(Basket::class);
         $basket->expects($this->any())->method('getPrice')->willReturn($price);
 
-        $this->assertEquals($price, oxpsEasyCreditHelper::getExampleCalculationPrice(null, $basket));
+        $this->assertEquals($price, EasyCreditHelper::getExampleCalculationPrice(null, $basket));
     }
 
-    public function testHasPackstationFormatNormal()
+    public function testHasPackstationFormatNormal(): void
     {
-        $this->assertFalse(oxpsEasyCreditHelper::hasPackstationFormat('Teststraße', '7'));
+        $this->assertFalse(EasyCreditHelper::hasPackstationFormat('Teststraße', '7'));
     }
 
-    public function testHasPackstationFormatNumericNoNumericPackStation1()
+    public function testHasPackstationFormatNumericNoNumericPackStation1(): void
     {
-        $this->assertFalse(oxpsEasyCreditHelper::hasPackstationFormat('014', ''));
+        $this->assertFalse(EasyCreditHelper::hasPackstationFormat('014', ''));
     }
 
-    public function testHasPackstationFormatNumericNoNumericPackStation2()
+    public function testHasPackstationFormatNumericNoNumericPackStation2(): void
     {
-        $this->assertFalse(oxpsEasyCreditHelper::hasPackstationFormat('', '014'));
+        $this->assertFalse(EasyCreditHelper::hasPackstationFormat('', '014'));
     }
 
-    public function testHasPackstationFormatNumericPackStation()
+    public function testHasPackstationFormatNumericPackStation(): void
     {
-        $this->assertTrue(oxpsEasyCreditHelper::hasPackstationFormat('014', '4711'));
+        $this->assertTrue(EasyCreditHelper::hasPackstationFormat('014', '4711'));
     }
 
-    public function testHasPackstationFormatNonNumericPackStation1()
+    public function testHasPackstationFormatNonNumericPackStation1(): void
     {
-        $this->assertTrue(oxpsEasyCreditHelper::hasPackstationFormat('Packstation 014', ''));
+        $this->assertTrue(EasyCreditHelper::hasPackstationFormat('Packstation 014', ''));
     }
 
-    public function testHasPackstationFormatNonNumericPackStation2()
+    public function testHasPackstationFormatNonNumericPackStation2(): void
     {
-        $this->assertTrue(oxpsEasyCreditHelper::hasPackstationFormat('', 'Packstation 4711'));
+        $this->assertTrue(EasyCreditHelper::hasPackstationFormat('', 'Packstation 4711'));
     }
 
-    public function testGetShopSystemCE()
+    public function testGetShopSystemCE(): void
     {
-        $shop = oxNew('oxshop');
-        $shop->oxshops__oxedition = new oxField('CE');
+        $shop                     = oxNew(Shop::class);
+        $shop->oxshops__oxedition = new Field('CE');
 
-        $this->assertEquals('Community Edition', oxpsEasyCreditHelper::getShopSystem($shop));
+        $this->assertEquals('Community Edition', EasyCreditHelper::getShopSystem($shop));
     }
 
-    public function testGetShopSystemPE()
+    public function testGetShopSystemPE(): void
     {
-        $shop = oxNew('oxshop');
-        $shop->oxshops__oxedition = new oxField('PE');
+        $shop                     = oxNew(Shop::class);
+        $shop->oxshops__oxedition = new Field('PE');
 
-        $this->assertEquals('Professional Edition', oxpsEasyCreditHelper::getShopSystem($shop));
+        $this->assertEquals('Professional Edition', EasyCreditHelper::getShopSystem($shop));
     }
 
-    public function testGetShopSystemEE()
+    public function testGetShopSystemEE(): void
     {
-        $shop = oxNew('oxshop');
-        $shop->oxshops__oxedition = new oxField('EE');
+        $shop                     = oxNew(Shop::class);
+        $shop->oxshops__oxedition = new Field('EE');
 
-        $this->assertEquals('Enterprise Edition', oxpsEasyCreditHelper::getShopSystem($shop));
+        $this->assertEquals('Enterprise Edition', EasyCreditHelper::getShopSystem($shop));
     }
 
-    public function testGetModuleVersionOk()
+    public function testGetModuleVersionOk(): void
     {
         $apiConfig = oxNew(EasyCreditApiConfig::class, array());
-        $dic = oxNew('EasyCreditDic', null, $apiConfig, null, null, null);
+        $dic       = oxNew(EasyCreditDic::class, null, $apiConfig, null, null, null);
 
-        $this->assertEquals('1.0.1', oxpsEasyCreditHelper::getModuleVersion($dic));
+        $this->assertEquals('1.0.1', EasyCreditHelper::getModuleVersion($dic));
     }
 
-    public function testGetModuleVersionWrongModuleId()
+    public function testGetModuleVersionWrongModuleId(): void
     {
-        $apiConfig = $this->getMock('oxpsEasyCreditApiConfig', array('getEasyCreditModuleId'), array(array()));
+        $apiConfig = $this->getMock(EasyCreditApiConfig::class, array('getEasyCreditModuleId'), array(array()));
         $apiConfig->expects($this->any())->method('getEasyCreditModuleId')->willReturn('dummy');
-        $dic = oxNew('EasyCreditDic', null, $apiConfig, null, null, null);
+        $dic = oxNew(EasyCreditDic::class, null, $apiConfig, null, null, null);
 
-        $this->assertEquals('', oxpsEasyCreditHelper::getModuleVersion($dic));
+        $this->assertEquals('', EasyCreditHelper::getModuleVersion($dic));
     }
 }
