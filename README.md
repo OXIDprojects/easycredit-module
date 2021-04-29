@@ -43,3 +43,13 @@ composer update
 
 * Function-Check for OXID 6.2.3
 * easyCredit Orders are not changable (Discounts, add Articles...) in OXID-Backend
+
+### Version 2.0.5
+
+* Birthday is not required
+* Possiblility to use own jqueryUI-Lib in Frontend
+
+### Version 2.1.0
+
+* Introduce Namespaces
+* No more support for OXID <= v6.0
