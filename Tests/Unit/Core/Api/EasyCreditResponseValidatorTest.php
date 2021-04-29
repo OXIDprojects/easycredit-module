@@ -54,13 +54,13 @@ class EasyCreditResponseValidatorTest extends UnitTestCase
     public function testValidateWithValidationSchemeInvalid()
     {
         $this->expectException(oxpsEasyCreditValidationException::class);
-        $scheme = array(
-            array(
+        $scheme = [
+            [
                 "fieldname"     => "ergebnis",
                 "required"      => true,
                 "requiredValue" => success
-            )
-        );
+            ]
+        ];
 
         $response           = new \stdClass();
         $response->ergebnis = 'failure';

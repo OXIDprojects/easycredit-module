@@ -29,7 +29,6 @@ class EasyCreditAquisitionBorderTest extends UnitTestCase
     /**
      * Set up test environment
      *
-     * @return null
      */
     public function setUp(): void
     {
@@ -39,7 +38,6 @@ class EasyCreditAquisitionBorderTest extends UnitTestCase
     /**
      * Tear down test environment
      *
-     * @return null
      */
     public function tearDown(): void
     {
@@ -67,7 +65,7 @@ class EasyCreditAquisitionBorderTest extends UnitTestCase
         $dic->getConfig()->setConfigParam('oxpsECAquBorderUpdateIntervalMin', 1800);
 
 
-        $webServiceClient = $this->getMock(EasyCreditWebServiceClient::class, array('execute'));
+        $webServiceClient = $this->getMock(EasyCreditWebServiceClient::class, ['execute']);
         $webServiceClient->expects($this->any())->method('execute')->willReturnCallback(
             function () {
                 $r             = new \stdClass();
@@ -78,7 +76,7 @@ class EasyCreditAquisitionBorderTest extends UnitTestCase
 
         $aquisitionBorder = $this->getMock(
             EasyCreditAquisitionBorder::class,
-            array('getWebServiceClient', 'getShopId')
+            ['getWebServiceClient', 'getShopId']
         );
         $aquisitionBorder->expects($this->any())->method('getWebServiceClient')->willReturn($webServiceClient);
         $aquisitionBorder->expects($this->any())->method('getShopId')->willReturn(3);
@@ -92,7 +90,7 @@ class EasyCreditAquisitionBorderTest extends UnitTestCase
         $dic->getConfig()->setConfigParam('oxpsECAquBorderUpdateIntervalMin', 1800);
         $dic->getConfig()->setConfigParam('oxpsECAquisitionBorderLastUpdate', date('Y-m-d H:i', 0));
 
-        $webServiceClient = $this->getMock(EasyCreditWebServiceClient::class, array('execute'));
+        $webServiceClient = $this->getMock(EasyCreditWebServiceClient::class, ['execute']);
         $webServiceClient->expects($this->any())->method('execute')->willReturnCallback(
             function () {
                 $r             = new \stdClass();
@@ -103,7 +101,7 @@ class EasyCreditAquisitionBorderTest extends UnitTestCase
 
         $aquisitionBorder = $this->getMock(
             EasyCreditAquisitionBorder::class,
-            array('getWebServiceClient', 'getShopId')
+            ['getWebServiceClient', 'getShopId']
         );
         $aquisitionBorder->expects($this->any())->method('getWebServiceClient')->willReturn($webServiceClient);
         $aquisitionBorder->expects($this->any())->method('getShopId')->willReturn(3);

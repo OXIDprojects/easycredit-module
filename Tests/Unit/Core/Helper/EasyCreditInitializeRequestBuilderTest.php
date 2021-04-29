@@ -38,7 +38,6 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
     /**
      * Set up test environment
      *
-     * @return null
      */
     public function setUp(): void
     {
@@ -48,7 +47,6 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
     /**
      * Tear down test environment
      *
-     * @return null
      */
     public function tearDown(): void
     {
@@ -57,23 +55,23 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
 
     public function testGetInitializationDataWithBasketItems(): void
     {
-        $articleIds = array('1000', '2000');
-        $articles   = array(
+        $articleIds = ['1000', '2000'];
+        $articles   = [
             oxNew(Article::class),
             oxNew(Article::class)
-        );
+        ];
 
-        $basketContents = array();
+        $basketContents = [];
         foreach ($articles as $i => $article) {
             $id = $articleIds[$i];
             $article->setId($id);
 
-            $basketItem = $this->getMock(BasketItem::class, array('getArticle'));
+            $basketItem = $this->getMock(BasketItem::class, ['getArticle']);
             $basketItem->expects($this->any())->method('getArticle')->willReturn($article);
             $basketContents[$id] = $basketItem;
         }
 
-        $basket = $this->getMock(Basket::class, array('getBasketArticles', 'getContents'));
+        $basket = $this->getMock(Basket::class, ['getBasketArticles', 'getContents']);
         $basket->expects($this->any())->method('getBasketArticles')->willReturn($basketContents);
         $basket->expects($this->any())->method('getContents')->willReturn($basketContents);
 
@@ -86,18 +84,18 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
         $config = Registry::getConfig();
 
         $sslShopUrl = EasyCreditDicFactory::getDic()->getConfig()->getSslShopUrl();
-        $expected   = array(
+        $expected   = [
             'integrationsart'         => 'PAYMENT_PAGE',
             'laufzeit'                => 36,
-            'ruecksprungadressen'     => array(
+            'ruecksprungadressen'     => [
                 'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
                 'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditDetails',
                 'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
-            ),
-            'kontakt'                 => array(
+            ],
+            'kontakt'                 => [
                 'email' => null
-            ),
-            'risikorelevanteAngaben'  => array(
+            ],
+            'risikorelevanteAngaben'  => [
                 'bestellungErfolgtUeberLogin' => false,
                 'kundeSeit'                   => '',
                 'anzahlBestellungen'          => 0,
@@ -106,39 +104,39 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
                 'negativeZahlungsinformation' => 'KEINE_INFORMATION',
                 'risikoartikelImWarenkorb'    => false,
                 'logistikDienstleister'       => ''
-            ),
-            'technischeShopparameter' => array(
+            ],
+            'technischeShopparameter' => [
                 'shopSystemHersteller' => 'OXID eShop '
-            ),
-            'warenkorbinfos'          => array(
-                0 => array(
+            ],
+            'warenkorbinfos'          => [
+                0 => [
                     'produktbezeichnung' => null,
                     'menge'              => 0.0,
                     'preis'              => '',
                     'hersteller'         => '',
                     'produktkategorie'   => 'Bindungen',
-                    'artikelnummern'     => array(
-                        0 => array(
+                    'artikelnummern'     => [
+                        0 => [
                             'nummerntyp' => 'GTIN',
                             'nummer'     => null
-                        )
-                    )
-                ),
-                1 => array(
+                        ]
+                    ]
+                ],
+                1 => [
                     'produktbezeichnung' => null,
                     'menge'              => 0.0,
                     'preis'              => '',
                     'hersteller'         => '',
                     'produktkategorie'   => 'Bindungen',
-                    'artikelnummern'     => array(
-                        0 => array(
+                    'artikelnummern'     => [
+                        0 => [
                             'nummerntyp' => 'GTIN',
                             'nummer'     => null
-                        )
-                    )
-                )
-            )
-        );
+                        ]
+                    ]
+                ]
+            ]
+        ];
         $this->assertEquals($expected, $rb->getInitializationData());
     }
 
@@ -146,15 +144,15 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
     {
         $basket = oxNew(Basket::class);
 
-        $groupIds = array('dummy', 'oxidnotyetordered');
-        $groups   = array();
+        $groupIds = ['dummy', 'oxidnotyetordered'];
+        $groups   = [];
         foreach ($groupIds as $groupId) {
             $group = oxNew(Groups::class);
             $group->setId($groupId);
             $groups[$groupId] = $group;
         }
 
-        $user = $this->getMock(User::class, array('getUserGroups'));
+        $user = $this->getMock(User::class, ['getUserGroups']);
         $user->expects($this->any())->method('getUserGroups')->willReturn($groups);
         $user->oxuser__oxpassword = new Field('password');
 
@@ -165,18 +163,18 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
         $config = Registry::getConfig();
 
         $sslShopUrl = EasyCreditDicFactory::getDic()->getConfig()->getSslShopUrl();
-        $expected   = array(
+        $expected   = [
             'integrationsart'         => 'PAYMENT_PAGE',
             'laufzeit'                => 36,
-            'ruecksprungadressen'     => array(
+            'ruecksprungadressen'     => [
                 'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
                 'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditDetails',
                 'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
-            ),
-            'kontakt'                 => array(
+            ],
+            'kontakt'                 => [
                 'email' => null
-            ),
-            'risikorelevanteAngaben'  => array(
+            ],
+            'risikorelevanteAngaben'  => [
                 'bestellungErfolgtUeberLogin' => true,
                 'kundeSeit'                   => '',
                 'anzahlBestellungen'          => 0,
@@ -185,11 +183,11 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
                 'negativeZahlungsinformation' => 'KEINE_INFORMATION',
                 'risikoartikelImWarenkorb'    => false,
                 'logistikDienstleister'       => ''
-            ),
-            'technischeShopparameter' => array(
+            ],
+            'technischeShopparameter' => [
                 'shopSystemHersteller' => 'OXID eShop '
-            )
-        );
+            ]
+        ];
         $this->assertEquals($expected, $rb->getInitializationData());
     }
 
@@ -197,7 +195,7 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
     {
         $basket = oxNew(Basket::class);
 
-        $user                = $this->getMock(User::class, array('getUserGroups'));
+        $user                = $this->getMock(User::class, ['getUserGroups']);
         $user->oxuser__oxsal = new Field('MRS');
 
         $rb = oxNew(EasyCreditInitializeRequestBuilder::class);
@@ -207,21 +205,21 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
         $config = Registry::getConfig();
 
         $sslShopUrl = EasyCreditDicFactory::getDic()->getConfig()->getSslShopUrl();
-        $expected   = array(
+        $expected   = [
             'integrationsart'         => 'PAYMENT_PAGE',
             'laufzeit'                => 36,
-            'ruecksprungadressen'     => array(
+            'ruecksprungadressen'     => [
                 'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
                 'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditDetails',
                 'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
-            ),
-            'personendaten'           => array(
+            ],
+            'personendaten'           => [
                 'anrede' => 'FRAU'
-            ),
-            'kontakt'                 => array(
+            ],
+            'kontakt'                 => [
                 'email' => null
-            ),
-            'risikorelevanteAngaben'  => array(
+            ],
+            'risikorelevanteAngaben'  => [
                 'bestellungErfolgtUeberLogin' => false,
                 'kundeSeit'                   => '',
                 'anzahlBestellungen'          => 0,
@@ -230,11 +228,11 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
                 'negativeZahlungsinformation' => 'KEINE_INFORMATION',
                 'risikoartikelImWarenkorb'    => false,
                 'logistikDienstleister'       => ''
-            ),
-            'technischeShopparameter' => array(
+            ],
+            'technischeShopparameter' => [
                 'shopSystemHersteller' => 'OXID eShop '
-            )
-        );
+            ]
+        ];
         $this->assertEquals($expected, $rb->getInitializationData());
     }
 
@@ -242,7 +240,7 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
     {
         $basket = oxNew(Basket::class);
 
-        $user                      = $this->getMock(User::class, array('getUserGroups'));
+        $user                      = $this->getMock(User::class, ['getUserGroups']);
         $user->oxuser__oxbirthdate = new Field('1985-07-13');
 
         $rb = oxNew(EasyCreditInitializeRequestBuilder::class);
@@ -252,21 +250,21 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
         $config = Registry::getConfig();
 
         $sslShopUrl = EasyCreditDicFactory::getDic()->getConfig()->getSslShopUrl();
-        $expected   = array(
+        $expected   = [
             'integrationsart'         => 'PAYMENT_PAGE',
             'laufzeit'                => 36,
-            'ruecksprungadressen'     => array(
+            'ruecksprungadressen'     => [
                 'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
                 'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditDetails',
                 'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
-            ),
-            'personendaten'           => array(
+            ],
+            'personendaten'           => [
                 'geburtsdatum' => '1985-07-13'
-            ),
-            'kontakt'                 => array(
+            ],
+            'kontakt'                 => [
                 'email' => null
-            ),
-            'risikorelevanteAngaben'  => array(
+            ],
+            'risikorelevanteAngaben'  => [
                 'bestellungErfolgtUeberLogin' => false,
                 'kundeSeit'                   => '',
                 'anzahlBestellungen'          => 0,
@@ -275,11 +273,11 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
                 'negativeZahlungsinformation' => 'KEINE_INFORMATION',
                 'risikoartikelImWarenkorb'    => false,
                 'logistikDienstleister'       => ''
-            ),
-            'technischeShopparameter' => array(
+            ],
+            'technischeShopparameter' => [
                 'shopSystemHersteller' => 'OXID eShop '
-            )
-        );
+            ]
+        ];
         $this->assertEquals($expected, $rb->getInitializationData());
     }
 
@@ -287,7 +285,7 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
     {
         $basket = oxNew(Basket::class);
 
-        $user                      = $this->getMock('oxUser', array('getUserGroups'));
+        $user                      = $this->getMock('oxUser', ['getUserGroups']);
         $user->oxuser__oxbirthdate = new Field('12345');
 
         $rb = oxNew(EasyCreditInitializeRequestBuilder::class);
@@ -297,18 +295,18 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
         $config = Registry::getConfig();
 
         $sslShopUrl = EasyCreditDicFactory::getDic()->getConfig()->getSslShopUrl();
-        $expected   = array(
+        $expected   = [
             'integrationsart'         => 'PAYMENT_PAGE',
             'laufzeit'                => 36,
-            'ruecksprungadressen'     => array(
+            'ruecksprungadressen'     => [
                 'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
                 'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=oxpsEasyCreditDispatcher&fnc=getEasyCreditDetails',
                 'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
-            ),
-            'kontakt'                 => array(
+            ],
+            'kontakt'                 => [
                 'email' => null
-            ),
-            'risikorelevanteAngaben'  => array(
+            ],
+            'risikorelevanteAngaben'  => [
                 'bestellungErfolgtUeberLogin' => false,
                 'kundeSeit'                   => '',
                 'anzahlBestellungen'          => 0,
@@ -317,11 +315,11 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
                 'negativeZahlungsinformation' => 'KEINE_INFORMATION',
                 'risikoartikelImWarenkorb'    => false,
                 'logistikDienstleister'       => ''
-            ),
-            'technischeShopparameter' => array(
+            ],
+            'technischeShopparameter' => [
                 'shopSystemHersteller' => 'OXID eShop '
-            )
-        );
+            ]
+        ];
         $this->assertEquals($expected, $rb->getInitializationData());
     }
 
@@ -329,7 +327,7 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
     {
         $basket = oxNew(Basket::class);
 
-        $user = $this->getMock('oxUser', array('getUserGroups'));
+        $user = $this->getMock('oxUser', ['getUserGroups']);
 
         $deliveryAddress = oxNew(Address::class);
 
@@ -341,18 +339,18 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
         $config = Registry::getConfig();
 
         $sslShopUrl = EasyCreditDicFactory::getDic()->getConfig()->getSslShopUrl();
-        $expected   = array(
+        $expected   = [
             'integrationsart'         => 'PAYMENT_PAGE',
             'laufzeit'                => 36,
-            'ruecksprungadressen'     => array(
+            'ruecksprungadressen'     => [
                 'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
                 'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditDetails',
                 'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
-            ),
-            'kontakt'                 => array(
+            ],
+            'kontakt'                 => [
                 'email' => null
-            ),
-            'risikorelevanteAngaben'  => array(
+            ],
+            'risikorelevanteAngaben'  => [
                 'bestellungErfolgtUeberLogin' => false,
                 'kundeSeit'                   => '',
                 'anzahlBestellungen'          => 0,
@@ -361,11 +359,11 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
                 'negativeZahlungsinformation' => 'KEINE_INFORMATION',
                 'risikoartikelImWarenkorb'    => false,
                 'logistikDienstleister'       => ''
-            ),
-            'technischeShopparameter' => array(
+            ],
+            'technischeShopparameter' => [
                 'shopSystemHersteller' => 'OXID eShop '
-            )
-        );
+            ]
+        ];
         $this->assertEquals($expected, $rb->getInitializationData());
     }
 
@@ -373,8 +371,8 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
     {
         $basket = oxNew(Basket::class);
 
-        $user                      = $this->getMock(User::class, array('getUserGroups'));
-        $user->oxuser__oxcountryid = new oxField('a7c40f631fc920687.20179984');
+        $user                      = $this->getMock(User::class, ['getUserGroups']);
+        $user->oxuser__oxcountryid = new Field('a7c40f631fc920687.20179984');
 
         $rb = oxNew(EasyCreditInitializeRequestBuilder::class);
         $rb->setBasket($basket);
@@ -383,18 +381,18 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
         $config = Registry::getConfig();
 
         $sslShopUrl = EasyCreditDicFactory::getDic()->getConfig()->getSslShopUrl();
-        $expected   = array(
+        $expected   = [
             'integrationsart'         => 'PAYMENT_PAGE',
             'laufzeit'                => 36,
-            'ruecksprungadressen'     => array(
+            'ruecksprungadressen'     => [
                 'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
                 'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditDetails',
                 'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
-            ),
-            'kontakt'                 => array(
+            ],
+            'kontakt'                 => [
                 'email' => null
-            ),
-            'risikorelevanteAngaben'  => array(
+            ],
+            'risikorelevanteAngaben'  => [
                 'bestellungErfolgtUeberLogin' => false,
                 'kundeSeit'                   => '',
                 'anzahlBestellungen'          => 0,
@@ -403,17 +401,17 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
                 'negativeZahlungsinformation' => 'KEINE_INFORMATION',
                 'risikoartikelImWarenkorb'    => false,
                 'logistikDienstleister'       => ''
-            ),
-            'technischeShopparameter' => array(
+            ],
+            'technischeShopparameter' => [
                 'shopSystemHersteller' => 'OXID eShop '
-            ),
-            'rechnungsadresse'        => array(
+            ],
+            'rechnungsadresse'        => [
                 'land' => 'DE'
-            ),
-            'lieferadresse'           => array(
+            ],
+            'lieferadresse'           => [
                 'land' => 'DE'
-            )
-        );
+            ]
+        ];
         $this->assertEquals($expected, $rb->getInitializationData());
     }
 
@@ -421,7 +419,7 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
     {
         $basket = oxNew(Basket::class);
 
-        $user                = $this->getMock(User::class, array('getUserGroups'));
+        $user                = $this->getMock(User::class, ['getUserGroups']);
         $user->oxuser__oxfon = new Field('+49 123-1234');
 
         $rb = oxNew('EasyCreditInitializeRequestBuilder');
@@ -431,20 +429,20 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
         $config = Registry::getConfig();
 
         $sslShopUrl = EasyCreditDicFactory::getDic()->getConfig()->getSslShopUrl();
-        $expected   = array(
+        $expected   = [
             'integrationsart'         => 'PAYMENT_PAGE',
             'laufzeit'                => 36,
-            'ruecksprungadressen'     => array(
+            'ruecksprungadressen'     => [
                 'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
                 'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditDetails',
                 'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
-            ),
-            'kontakt'                 => array(
+            ],
+            'kontakt'                 => [
                 'email'                             => null,
                 'mobilfunknummer'                   => '+49 123-1234',
                 'pruefungMobilfunknummerUebergehen' => true
-            ),
-            'risikorelevanteAngaben'  => array(
+            ],
+            'risikorelevanteAngaben'  => [
                 'bestellungErfolgtUeberLogin' => false,
                 'kundeSeit'                   => '',
                 'anzahlBestellungen'          => 0,
@@ -453,14 +451,14 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
                 'negativeZahlungsinformation' => 'KEINE_INFORMATION',
                 'risikoartikelImWarenkorb'    => false,
                 'logistikDienstleister'       => ''
-            ),
-            'technischeShopparameter' => array(
+            ],
+            'technischeShopparameter' => [
                 'shopSystemHersteller' => 'OXID eShop '
-            ),
-            'weitereKaeuferangaben'   => array(
+            ],
+            'weitereKaeuferangaben'   => [
                 'telefonnummer' => '+49 123-1234'
-            )
-        );
+            ]
+        ];
         $this->assertEquals($expected, $rb->getInitializationData());
     }
 
@@ -477,22 +475,22 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
         $unitPrice = oxNew(Price::class);
         $unitPrice->setPrice(250.72);
 
-        $articleIds = array('1000', '2000');
+        $articleIds = ['1000', '2000'];
 
-        $basketContents = array();
+        $basketContents = [];
         foreach ($articleIds as $i => $articleId) {
-            $article = $this->getMock(Article::class, array('getManufacturer', 'getCategory'));
+            $article = $this->getMock(Article::class, ['getManufacturer', 'getCategory']);
             $article->expects($this->any())->method('getManufacturer')->willReturn($manufacturer);
             $article->expects($this->any())->method('getCategory')->willReturn($category);
             $article->setId($articleId);
 
-            $basketItem = $this->getMock(BasketItem::class, array('getArticle', 'getUnitPrice'));
+            $basketItem = $this->getMock(BasketItem::class, ['getArticle', 'getUnitPrice']);
             $basketItem->expects($this->any())->method('getArticle')->willReturn($article);
             $basketItem->expects($this->any())->method('getUnitPrice')->willReturn($unitPrice);
             $basketContents[$articleId] = $basketItem;
         }
 
-        $basket = $this->getMock(Basket::class, array('getBasketArticles', 'getContents'));
+        $basket = $this->getMock(Basket::class, ['getBasketArticles', 'getContents']);
         $basket->expects($this->any())->method('getBasketArticles')->willReturn($basketContents);
         $basket->expects($this->any())->method('getContents')->willReturn($basketContents);
 
@@ -505,18 +503,18 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
         $config = Registry::getConfig();
 
         $sslShopUrl = EasyCreditDicFactory::getDic()->getConfig()->getSslShopUrl();
-        $expected   = array(
+        $expected   = [
             'integrationsart'         => 'PAYMENT_PAGE',
             'laufzeit'                => 36,
-            'ruecksprungadressen'     => array(
+            'ruecksprungadressen'     => [
                 'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
                 'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditDetails',
                 'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
-            ),
-            'kontakt'                 => array(
+            ],
+            'kontakt'                 => [
                 'email' => null
-            ),
-            'risikorelevanteAngaben'  => array(
+            ],
+            'risikorelevanteAngaben'  => [
                 'bestellungErfolgtUeberLogin' => false,
                 'kundeSeit'                   => '',
                 'anzahlBestellungen'          => 0,
@@ -525,39 +523,39 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
                 'negativeZahlungsinformation' => 'KEINE_INFORMATION',
                 'risikoartikelImWarenkorb'    => false,
                 'logistikDienstleister'       => ''
-            ),
-            'technischeShopparameter' => array(
+            ],
+            'technischeShopparameter' => [
                 'shopSystemHersteller' => 'OXID eShop '
-            ),
-            'warenkorbinfos'          => array(
-                0 => array(
+            ],
+            'warenkorbinfos'          => [
+                0 => [
                     'produktbezeichnung' => null,
                     'menge'              => 0.0,
                     'preis'              => 250.72,
                     'hersteller'         => null,
                     'produktkategorie'   => 'testcategory',
-                    'artikelnummern'     => array(
-                        0 => array(
+                    'artikelnummern'     => [
+                        0 => [
                             'nummerntyp' => 'GTIN',
                             'nummer'     => null
-                        )
-                    )
-                ),
-                1 => array(
+                        ]
+                    ]
+                ],
+                1 => [
                     'produktbezeichnung' => null,
                     'menge'              => 0.0,
                     'preis'              => 250.72,
                     'hersteller'         => null,
                     'produktkategorie'   => 'testcategory',
-                    'artikelnummern'     => array(
-                        0 => array(
+                    'artikelnummern'     => [
+                        0 => [
                             'nummerntyp' => 'GTIN',
                             'nummer'     => null
-                        )
-                    )
-                )
-            )
-        );
+                        ]
+                    ]
+                ]
+            ]
+        ];
         $this->assertEquals($expected, $rb->getInitializationData());
     }
 }

@@ -48,7 +48,7 @@ class EasyCreditDicSessionTest extends UnitTestCase
 
         $oxSession = $this->getMock(
             Session::class,
-            array('getVariable', 'setVariable', 'deleteVariable', 'processUrl', 'getId', 'setStorage', 'getStorage', 'clearStorage')
+            ['getVariable', 'setVariable', 'deleteVariable', 'processUrl', 'getId', 'setStorage', 'getStorage', 'clearStorage']
         );
 
         $oxSession->expects($this->any())->method('getVariable')->willReturnCallback(

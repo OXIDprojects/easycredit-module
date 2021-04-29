@@ -81,7 +81,7 @@ class EasyCreditApiConfigTest extends UnitTestCase
 
     public function testGetServiceRestFunctionArguments()
     {
-        $expected = array(EasyCreditDicFactory::API_CONFIG_SERVICE_REST_ARGUMENT_WEBSHOP_ID => self::WEBSHOP_ID);
+        $expected = [EasyCreditDicFactory::API_CONFIG_SERVICE_REST_ARGUMENT_WEBSHOP_ID => self::WEBSHOP_ID];
         $this->assertEquals($expected, $this->apiConfig->getServiceRestFunctionArguments(EasyCreditDicFactory::API_CONFIG_SERVICE_NAME_V1_ZUSTIMMUNGSTEXTE));
     }
 

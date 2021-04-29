@@ -33,7 +33,6 @@ class EasyCreditHelperTest extends UnitTestCase
     /**
      * Set up test environment
      *
-     * @return null
      */
     public function setUp(): void
     {
@@ -43,7 +42,6 @@ class EasyCreditHelperTest extends UnitTestCase
     /**
      * Tear down test environment
      *
-     * @return null
      */
     public function tearDown(): void
     {
@@ -117,7 +115,7 @@ class EasyCreditHelperTest extends UnitTestCase
 
     public function testGetModuleVersionOk(): void
     {
-        $apiConfig = oxNew(EasyCreditApiConfig::class, array());
+        $apiConfig = oxNew(EasyCreditApiConfig::class, []);
         $dic       = oxNew(EasyCreditDic::class, null, $apiConfig, null, null, null);
 
         $this->assertEquals('1.0.1', EasyCreditHelper::getModuleVersion($dic));
@@ -125,7 +123,7 @@ class EasyCreditHelperTest extends UnitTestCase
 
     public function testGetModuleVersionWrongModuleId(): void
     {
-        $apiConfig = $this->getMock(EasyCreditApiConfig::class, array('getEasyCreditModuleId'), array(array()));
+        $apiConfig = $this->getMock(EasyCreditApiConfig::class, ['getEasyCreditModuleId'], [[]]);
         $apiConfig->expects($this->any())->method('getEasyCreditModuleId')->willReturn('dummy');
         $dic = oxNew(EasyCreditDic::class, null, $apiConfig, null, null, null);
 

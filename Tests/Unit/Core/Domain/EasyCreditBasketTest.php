@@ -33,7 +33,6 @@ class EasyCreditOxBasketTest extends UnitTestCase
     /**
      * Set up test environment
      *
-     * @return null
      */
     public function setUp(): void
     {
@@ -43,7 +42,6 @@ class EasyCreditOxBasketTest extends UnitTestCase
     /**
      * Tear down test environment
      *
-     * @return null
      */
     public function tearDown(): void
     {
@@ -63,8 +61,8 @@ class EasyCreditOxBasketTest extends UnitTestCase
 
         $dic = $this->getMock(
             EasyCreditDic::class,
-            array('getSession'),
-            array(null, null, null, null, null)
+            ['getSession'],
+            [null, null, null, null, null]
         );
         $dic->expects($this->any())->method('getSession')->willReturn($session);
 
@@ -72,7 +70,7 @@ class EasyCreditOxBasketTest extends UnitTestCase
         $storage->setInterestAmount(20.7);
         $dic->getSession()->setStorage($storage);
 
-        $oxBasket = $this->getMock('oxpsEasyCreditOxBasket', array('getDic'));
+        $oxBasket = $this->getMock('oxpsEasyCreditOxBasket', ['getDic']);
         $oxBasket->expects($this->any())->method('getDic')->willReturn($dic);
 
         $this->assertEquals(20.7, $oxBasket->getInterestsAmount());
@@ -85,12 +83,12 @@ class EasyCreditOxBasketTest extends UnitTestCase
 
         $dic = $this->getMock(
             EasyCreditDic::class,
-            array('getSession'),
-            array(null, null, null, null, null)
+            ['getSession'],
+            [null, null, null, null, null]
         );
         $dic->expects($this->any())->method('getSession')->willReturn($session);
 
-        $oxBasket = $this->getMock(EasyCreditBasket::class, array('getDic'));
+        $oxBasket = $this->getMock(EasyCreditBasket::class, ['getDic']);
         $oxBasket->expects($this->any())->method('getDic')->willReturn($dic);
 
         $this->assertNull($oxBasket->getInterestsAmount());
@@ -109,7 +107,7 @@ class EasyCreditOxBasketTest extends UnitTestCase
 
         $costs = $oxBasket->getCosts();
         $this->assertNotNull($costs);
-        $this->assertTrue(is_array($costs));
+        $this->assertIsArray($costs);
         $this->assertTrue(isset($costs[$costName]));
 
         $p = $costs[$costName];
@@ -128,7 +126,7 @@ class EasyCreditOxBasketTest extends UnitTestCase
 
         $costs = $oxBasket->getCosts();
         $this->assertNotNull($costs);
-        $this->assertTrue(is_array($costs));
+        $this->assertIsArray($costs);
         $this->assertTrue(isset($costs[$costName]));
 
         $p = $costs[$costName];
@@ -142,8 +140,8 @@ class EasyCreditOxBasketTest extends UnitTestCase
 
         $dic = $this->getMock(
             EasyCreditDic::class,
-            array('getSession'),
-            array(null, null, null, null, null)
+            ['getSession'],
+            [null, null, null, null, null]
         );
         $dic->expects($this->any())->method('getSession')->willReturn($session);
 
@@ -151,7 +149,7 @@ class EasyCreditOxBasketTest extends UnitTestCase
         $storage->setInterestAmount(20.7);
         $dic->getSession()->setStorage($storage);
 
-        $oxBasket = $this->getMock(EasyCreditBasket::class, array('getDic'));
+        $oxBasket = $this->getMock(EasyCreditBasket::class, ['getDic']);
         $oxBasket->expects($this->any())->method('getDic')->willReturn($dic);
 
         $interestCost = $oxBasket->calcInterestsCost();

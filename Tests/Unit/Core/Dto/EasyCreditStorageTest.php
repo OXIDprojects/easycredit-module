@@ -26,7 +26,6 @@ class EasyCreditStorageTest extends \OxidEsales\TestingLibrary\UnitTestCase
     /**
      * Set up test environment
      *
-     * @return null
      */
     public function setUp(): void
     {
@@ -36,7 +35,6 @@ class EasyCreditStorageTest extends \OxidEsales\TestingLibrary\UnitTestCase
     /**
      * Tear down test environment
      *
-     * @return null
      */
     public function tearDown(): void
     {
@@ -59,8 +57,8 @@ class EasyCreditStorageTest extends \OxidEsales\TestingLibrary\UnitTestCase
     {
         $oTest = $this->getMock(
             EasyCreditStorage::class,
-            array('getStorageExpiredTimeRange'),
-            array('TEST', 'TEST', 'TEST', 450.0)
+            ['getStorageExpiredTimeRange'],
+            ['TEST', 'TEST', 'TEST', 450.0]
         );
 
         sleep(2);

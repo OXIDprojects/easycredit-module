@@ -20,7 +20,6 @@ class EasyCreditPaymentTest extends UnitTestCase
     /**
      * Set up test environment
      *
-     * @return null
      */
     public function setUp():void
     {
@@ -30,7 +29,6 @@ class EasyCreditPaymentTest extends UnitTestCase
     /**
      * Tear down test environment
      *
-     * @return null
      */
     public function tearDown():void
     {
@@ -82,9 +80,9 @@ class EasyCreditPaymentTest extends UnitTestCase
 //        $session = oxNew(EasyCreditSession::class);
 //        $dic = $this->buildDic($session);
 //
-//        $dic->getConfig()->setConfigParam('oxpsECAquBorderConsiderFrontend', true);
+//        $dic->getConfig()->setConfigParam('ECAquBorderConsiderFrontend', true);
 //
-//        $payment = $this->getMock(Payment::class, array('getDic'));
+//        $payment = $this->getMock(Payment::class, ['getDic']);
 //        $payment->expects($this->any())->method('getDic')->willReturn($dic);
 //
 //        $this->assertTrue($payment->isEasyCreditPermitted());
@@ -149,7 +147,7 @@ class EasyCreditPaymentTest extends UnitTestCase
         $delAddress = oxNew(Address::class);
         $user = oxNew(User::class);
 
-        $payment = $this->getMock(EasyCreditPayment::class, array('getDelAddress', 'getUser'));
+        $payment = $this->getMock(EasyCreditPayment::class, ['getDelAddress', 'getUser']);
         $payment->expects($this->any())->method('getDelAddress')->willReturn($delAddress);
         $payment->expects($this->any())->method('getUser')->willReturn($user);
 
@@ -298,13 +296,13 @@ class EasyCreditPaymentTest extends UnitTestCase
     {
         $this->expectExceptionMessage(OXPS_EASY_CREDIT_ERROR_DATEOFBIRTH_INVALID);
         $this->expectException(EasyCreditException::class);
-        $requestData = array(
-            'oxuser__oxbirthdate' => array(
+        $requestData = [
+            'oxuser__oxbirthdate' => [
                 'year' => 2100,
                 'month' => 1,
                 'day' => 1,
-            )
-        );
+            ]
+        ];
 
         $user = oxNew(User::class);
 

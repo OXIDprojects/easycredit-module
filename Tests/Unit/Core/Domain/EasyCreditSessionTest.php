@@ -28,7 +28,6 @@ class oxpsEasyCreditOxSessionTest extends UnitTestCase
     /**
      * Set up test environment
      *
-     * @return null
      */
     public function setUp(): void
     {
@@ -38,7 +37,6 @@ class oxpsEasyCreditOxSessionTest extends UnitTestCase
     /**
      * Tear down test environment
      *
-     * @return null
      */
     public function tearDown(): void
     {
@@ -57,14 +55,14 @@ class oxpsEasyCreditOxSessionTest extends UnitTestCase
 
         $storage = $this->getMock(
             EasyCreditStorage::class,
-            array('hasExpired'),
-            array(
+            ['hasExpired'],
+            [
                 'EasyCreditStorage',
                 'tbVorgangskennung',
                 'fachlicheVorgangskennung',
                 'authorizationHash',
                 500.50
-            )
+            ]
         );
         $storage->expects($this->any())->method('hasExpired')->willReturn(true);
         $session->setStorage($storage);

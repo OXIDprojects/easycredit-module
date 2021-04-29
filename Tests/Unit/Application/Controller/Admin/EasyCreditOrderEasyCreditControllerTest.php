@@ -53,7 +53,7 @@ class EasyCreditOrderEasyCreditControllerTest extends UnitTestCase
         $order = oxNew(Order::class);
         $order->oxorder__ecredconfirmresponse = new Field(base64_encode(serialize($response)));
 
-        $controller = $this->getMock(EasyCreditOrderEasyCreditController::class, array('getOrder'));
+        $controller = $this->getMock(EasyCreditOrderEasyCreditController::class, ['getOrder']);
         $controller->expects($this->any())->method('getOrder')->willReturn($order);
 
         $this->assertEquals('{

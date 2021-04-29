@@ -47,7 +47,6 @@ class EasyCreditOxOrderTest extends UnitTestCase
     /**
      * Set up test environment
      *
-     * @return null
      */
     public function setUp(): void
     {
@@ -57,7 +56,6 @@ class EasyCreditOxOrderTest extends UnitTestCase
     /**
      * Tear down test environment
      *
-     * @return null
      */
     public function tearDown(): void
     {
@@ -79,7 +77,7 @@ class EasyCreditOxOrderTest extends UnitTestCase
      */
     public function testFinalizeOrderNoStorage(): void
     {
-        $oxBasket = $this->getMock(EasyCreditBasket::class, array('getPaymentId'));
+        $oxBasket = $this->getMock(EasyCreditBasket::class, ['getPaymentId']);
         $oxBasket->expects($this->any())->method('getPaymentId')->willReturn(EasyCreditPayment::EASYCREDIT_PAYMENTID);
 
         $oxUser = oxNew(User::class);
@@ -107,12 +105,12 @@ class EasyCreditOxOrderTest extends UnitTestCase
             )
         );
 
-        $oxBasket = $this->getMock(EasyCreditBasket::class, array('getDic'));
+        $oxBasket = $this->getMock(EasyCreditBasket::class, ['getDic']);
         $oxBasket->expects($this->any())->method('getDic')->willReturn($dic);
 
         $oxUser = oxNew(User::class);
 
-        $oxOrder = $this->getMock(EasyCreditOrder::class, array('getDic'));
+        $oxOrder = $this->getMock(EasyCreditOrder::class, ['getDic']);
         $oxOrder->expects($this->any())->method('getDic')->willReturn($dic);
 
         $oxOrder->finalizeOrder($oxBasket, $oxUser);
@@ -129,7 +127,7 @@ class EasyCreditOxOrderTest extends UnitTestCase
         $dicSession->set('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
         $dicSession->setStorage(null);
 
-        $oxBasket = $this->getMock(EasyCreditBasket::class, array('getDic', 'getPrice'));
+        $oxBasket = $this->getMock(EasyCreditBasket::class, ['getDic', 'getPrice']);
         $oxBasket->expects($this->any())->method('getDic')->willReturn($dic);
 
         $price = oxNew(Price::class);
@@ -138,7 +136,7 @@ class EasyCreditOxOrderTest extends UnitTestCase
 
         $oxUser = oxNew(User::class);
 
-        $oxOrder = $this->getMock(EasyCreditOrder::class, array('getDic'));
+        $oxOrder = $this->getMock(EasyCreditOrder::class, ['getDic']);
         $oxOrder->expects($this->any())->method('getDic')->willReturn($dic);
 
         $oxOrder->finalizeOrder($oxBasket, $oxUser);
@@ -151,7 +149,7 @@ class EasyCreditOxOrderTest extends UnitTestCase
         $dicSession = $dic->getSession();
         $dicSession->set('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
 
-        $oxBasket = $this->getMock(EasyCreditBasket::class, array('getDic', 'getPrice'));
+        $oxBasket = $this->getMock(EasyCreditBasket::class, ['getDic', 'getPrice']);
         $oxBasket->expects($this->any())->method('getDic')->willReturn($dic);
 
         $price = oxNew(Price::class);
@@ -175,7 +173,7 @@ class EasyCreditOxOrderTest extends UnitTestCase
         $dicSession->setStorage($storage);
 
 
-        $oxOrder = $this->getMock(EasyCreditOrder::class, array('getDic', 'validatePayment'));
+        $oxOrder = $this->getMock(EasyCreditOrder::class, ['getDic', 'validatePayment']);
         $oxOrder->expects($this->any())->method('getDic')->willReturn($dic);
         $oxOrder->expects($this->any())->method('validatePayment')->willReturn(Order::ORDER_STATE_INVALIDPAYMENT);
 
@@ -189,7 +187,7 @@ class EasyCreditOxOrderTest extends UnitTestCase
         $dicSession = $dic->getSession();
         $dicSession->set('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
 
-        $oxBasket = $this->getMock(EasyCreditBasket::class, array('getDic', 'getPrice'));
+        $oxBasket = $this->getMock(EasyCreditBasket::class, ['getDic', 'getPrice']);
         $oxBasket->expects($this->any())->method('getDic')->willReturn($dic);
 
         $price = oxNew(Price::class);
@@ -213,7 +211,7 @@ class EasyCreditOxOrderTest extends UnitTestCase
         $dicSession->setStorage($storage);
 
 
-        $oxOrder = $this->getMock(EasyCreditOrder::class, array('getDic', 'validateOrder'));
+        $oxOrder = $this->getMock(EasyCreditOrder::class, ['getDic', 'validateOrder']);
         $oxOrder->expects($this->any())->method('getDic')->willReturn($dic);
         $oxOrder->expects($this->any())->method('validateOrder')->willReturn(false);
 
@@ -228,7 +226,7 @@ class EasyCreditOxOrderTest extends UnitTestCase
         $dicSession->set('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
 
 
-        $oxBasket = $this->getMock(EasyCreditBasket::class, array('getDic', 'getPrice'));
+        $oxBasket = $this->getMock(EasyCreditBasket::class, ['getDic', 'getPrice']);
         $oxBasket->expects($this->any())->method('getDic')->willReturn($dic);
 
         $price = oxNew(Price::class);
@@ -252,7 +250,7 @@ class EasyCreditOxOrderTest extends UnitTestCase
         $dicSession->setStorage($storage);
 
 
-        $oxOrder = $this->getMock(EasyCreditOrder::class, array('getDic', 'validateOrder'));
+        $oxOrder = $this->getMock(EasyCreditOrder::class, ['getDic', 'validateOrder']);
         $oxOrder->expects($this->any())->method('getDic')->willReturn($dic);
         $oxOrder->expects($this->any())->method('validateOrder')->willReturn(false);
 
@@ -268,7 +266,7 @@ class EasyCreditOxOrderTest extends UnitTestCase
         $dicSession = $dic->getSession();
         $dicSession->set('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
 
-        $oxBasket = $this->getMock(EasyCreditBasket::class, array('getDic', 'getPrice'));
+        $oxBasket = $this->getMock(EasyCreditBasket::class, ['getDic', 'getPrice']);
         $oxBasket->expects($this->any())->method('getDic')->willReturn($dic);
 
         $price = oxNew(Price::class);
@@ -292,7 +290,7 @@ class EasyCreditOxOrderTest extends UnitTestCase
         $dicSession->setStorage($storage);
 
 
-        $oxOrder = $this->getMock(EasyCreditOrder::class, array('getDic', 'validateOrder'));
+        $oxOrder = $this->getMock(EasyCreditOrder::class, ['getDic', 'validateOrder']);
         $oxOrder->expects($this->any())->method('getDic')->willReturn($dic);
         $oxOrder->expects($this->any())->method('validateOrder')->willReturn(false);
 
@@ -308,7 +306,7 @@ class EasyCreditOxOrderTest extends UnitTestCase
         $dicSession = $dic->getSession();
         $dicSession->set('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
 
-        $oxBasket = $this->getMock(EasyCreditBasket::class, array('getDic', 'getPrice'));
+        $oxBasket = $this->getMock(EasyCreditBasket::class, ['getDic', 'getPrice']);
         $oxBasket->expects($this->any())->method('getDic')->willReturn($dic);
 
         $price = oxNew(Price::class);
@@ -332,7 +330,7 @@ class EasyCreditOxOrderTest extends UnitTestCase
         $dicSession->setStorage($storage);
 
 
-        $oxOrder = $this->getMock(EasyCreditOrder::class, array('getDic', 'validateOrder', 'getConfirmResponse'));
+        $oxOrder = $this->getMock(EasyCreditOrder::class, ['getDic', 'validateOrder', 'getConfirmResponse']);
         $oxOrder->expects($this->any())->method('getDic')->willReturn($dic);
         $oxOrder->expects($this->any())->method('validateOrder')->willReturn(false);
         $oxOrder->expects($this->any())->method('getConfirmResponse')->willReturn(null);
@@ -341,12 +339,12 @@ class EasyCreditOxOrderTest extends UnitTestCase
 
         $errors = Registry::getSession()->getVariable('Errors');
         $this->assertNotNull($errors);
-        $this->assertTrue(is_array($errors));
+        $this->assertIsArray($errors);
         $this->assertCount(1, $errors);
         $this->assertTrue(isset($errors['default']));
 
         $defaultErrors = $errors['default'];
-        $this->assertTrue(is_array($defaultErrors));
+        $this->assertIsArray($defaultErrors);
         $this->assertCount(2, $defaultErrors);
 
         $errorMessages = array_map(function ($error) {
@@ -367,7 +365,7 @@ class EasyCreditOxOrderTest extends UnitTestCase
         $dicSession = $dic->getSession();
         $dicSession->set('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
 
-        $oxBasket = $this->getMock(EasyCreditBasket::class, array('getDic', 'getPrice'));
+        $oxBasket = $this->getMock(EasyCreditBasket::class, ['getDic', 'getPrice']);
         $oxBasket->expects($this->any())->method('getDic')->willReturn($dic);
 
         $price = oxNew(Price::class);
@@ -391,7 +389,7 @@ class EasyCreditOxOrderTest extends UnitTestCase
         $dicSession->setStorage($storage);
 
 
-        $oxOrder = $this->getMock(EasyCreditOrder::class, array('getDic', 'validateOrder', 'getConfirmResponse'));
+        $oxOrder = $this->getMock(EasyCreditOrder::class, ['getDic', 'validateOrder', 'getConfirmResponse']);
         $oxOrder->expects($this->any())->method('getDic')->willReturn($dic);
         $oxOrder->expects($this->any())->method('validateOrder')->willReturn(false);
 
@@ -402,12 +400,12 @@ class EasyCreditOxOrderTest extends UnitTestCase
 
         $errors = Registry::getSession()->getVariable('Errors');
         $this->assertNotNull($errors);
-        $this->assertTrue(is_array($errors));
+        $this->assertIsArray($errors);
         $this->assertCount(1, $errors);
         $this->assertTrue(isset($errors['default']));
 
         $defaultErrors = $errors['default'];
-        $this->assertTrue(is_array($defaultErrors));
+        $this->assertIsArray($defaultErrors);
         $this->assertCount(2, $defaultErrors);
 
         $errorMessages = array_map(function ($error) {
@@ -428,7 +426,7 @@ class EasyCreditOxOrderTest extends UnitTestCase
         $dicSession = $dic->getSession();
         $dicSession->set('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
 
-        $oxBasket = $this->getMock(EasyCreditBasket::class, array('getDic', 'getPrice'));
+        $oxBasket = $this->getMock(EasyCreditBasket::class, ['getDic', 'getPrice']);
         $oxBasket->expects($this->any())->method('getDic')->willReturn($dic);
 
         $price = oxNew(Price::class);
@@ -452,7 +450,7 @@ class EasyCreditOxOrderTest extends UnitTestCase
         $dicSession->setStorage($storage);
 
 
-        $oxOrder = $this->getMock(EasyCreditOrder::class, array('getDic', 'validateOrder', 'getConfirmResponse'));
+        $oxOrder = $this->getMock(EasyCreditOrder::class, ['getDic', 'validateOrder', 'getConfirmResponse']);
         $oxOrder->expects($this->any())->method('getDic')->willReturn($dic);
         $oxOrder->expects($this->any())->method('validateOrder')->willReturn(false);
 
@@ -465,12 +463,12 @@ class EasyCreditOxOrderTest extends UnitTestCase
 
         $errors = Registry::getSession()->getVariable('Errors');
         $this->assertNotNull($errors);
-        $this->assertTrue(is_array($errors));
+        $this->assertIsArray($errors);
         $this->assertCount(1, $errors);
         $this->assertTrue(isset($errors['default']));
 
         $defaultErrors = $errors['default'];
-        $this->assertTrue(is_array($defaultErrors));
+        $this->assertIsArray($defaultErrors);
         $this->assertCount(2, $defaultErrors);
 
         $errorMessages = array_map(function ($error) {
@@ -491,7 +489,7 @@ class EasyCreditOxOrderTest extends UnitTestCase
         $dicSession = $dic->getSession();
         $dicSession->set('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
 
-        $oxBasket = $this->getMock(EasyCreditBasket::class, array('getDic', 'getPrice'));
+        $oxBasket = $this->getMock(EasyCreditBasket::class, ['getDic', 'getPrice']);
         $oxBasket->expects($this->any())->method('getDic')->willReturn($dic);
 
         $price = oxNew(Price::class);
@@ -514,13 +512,13 @@ class EasyCreditOxOrderTest extends UnitTestCase
         $storage->setRatenplanTxt('paymentPlanTxt');
         $dicSession->setStorage($storage);
 
-        $oxOrder = $this->getMock(EasyCreditOrder::class, array('getDic', 'validateOrder', 'getConfirmResponse'));
+        $oxOrder = $this->getMock(EasyCreditOrder::class, ['getDic', 'validateOrder', 'getConfirmResponse']);
         $oxOrder->expects($this->any())->method('getDic')->willReturn($dic);
         $oxOrder->expects($this->any())->method('validateOrder')->willReturn(false);
 
         $response             = new \stdClass();
         $wsMessages           = new \stdClass();
-        $messages             = array('xyz');
+        $messages             = ['xyz'];
         $wsMessages->messages = $messages;
         $response->wsMessages = $wsMessages;
         $oxOrder->expects($this->any())->method('getConfirmResponse')->willReturn($response);
@@ -529,12 +527,12 @@ class EasyCreditOxOrderTest extends UnitTestCase
 
         $errors = Registry::getSession()->getVariable('Errors');
         $this->assertNotNull($errors);
-        $this->assertTrue(is_array($errors));
+        $this->assertIsArray($errors);
         $this->assertCount(1, $errors);
         $this->assertTrue(isset($errors['default']));
 
         $defaultErrors = $errors['default'];
-        $this->assertTrue(is_array($defaultErrors));
+        $this->assertIsArray($defaultErrors);
         $this->assertCount(2, $defaultErrors);
 
         $errorMessages = array_map(function ($error) {
@@ -553,7 +551,7 @@ class EasyCreditOxOrderTest extends UnitTestCase
         $dicSession = $dic->getSession();
         $dicSession->set('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
 
-        $oxBasket = $this->getMock(EasyCreditBasket::class, array('getDic', 'getPrice'));
+        $oxBasket = $this->getMock(EasyCreditBasket::class, ['getDic', 'getPrice']);
         $oxBasket->expects($this->any())->method('getDic')->willReturn($dic);
 
         $price = oxNew(Price::class);
@@ -576,7 +574,7 @@ class EasyCreditOxOrderTest extends UnitTestCase
         $storage->setRatenplanTxt('paymentPlanTxt');
         $dicSession->setStorage($storage);
 
-        $oxOrder = $this->getMock(EasyCreditOrder::class, array('getDic', 'validateOrder', 'getConfirmResponse'));
+        $oxOrder = $this->getMock(EasyCreditOrder::class, ['getDic', 'validateOrder', 'getConfirmResponse']);
         $oxOrder->expects($this->any())->method('getDic')->willReturn($dic);
         $oxOrder->expects($this->any())->method('validateOrder')->willReturn(false);
 
@@ -584,7 +582,7 @@ class EasyCreditOxOrderTest extends UnitTestCase
         $wsMessages           = new \stdClass();
         $firstMessage         = new \stdClass();
         $firstMessage->key    = EasyCreditOrder::EASYCREDIT_BESTELLUNG_BESTAETIGT;
-        $messages             = array($firstMessage);
+        $messages             = [$firstMessage];
         $wsMessages->messages = $messages;
         $response->wsMessages = $wsMessages;
         $oxOrder->expects($this->any())->method('getConfirmResponse')->willReturn($response);
@@ -593,12 +591,12 @@ class EasyCreditOxOrderTest extends UnitTestCase
 
         $errors = Registry::getSession()->getVariable('Errors');
         $this->assertNotNull($errors);
-        $this->assertTrue(is_array($errors));
+        $this->assertIsArray($errors);
         $this->assertCount(1, $errors);
         $this->assertTrue(isset($errors['default']));
 
         $defaultErrors = $errors['default'];
-        $this->assertTrue(is_array($defaultErrors));
+        $this->assertIsArray($defaultErrors);
         $this->assertCount(1, $defaultErrors);
 
         $errorMessages = array_map(function ($error) {
@@ -631,7 +629,7 @@ class EasyCreditOxOrderTest extends UnitTestCase
         $storage->setRatenplanTxt('paymentPlanTxt');
         $dicSession->setStorage($storage);
 
-        $oxBasket = $this->getMock(EasyCreditBasket::class, array('getDic', 'getPrice'));
+        $oxBasket = $this->getMock(EasyCreditBasket::class, ['getDic', 'getPrice']);
         $oxBasket->expects($this->any())->method('getDic')->willReturn($dic);
 
         $price = oxNew(Price::class);
@@ -640,7 +638,7 @@ class EasyCreditOxOrderTest extends UnitTestCase
 
         $oxUser = $this->buildUser();
 
-        $oxOrder = $this->getMock(EasyCreditOrder::class, array('getDic', 'validateOrder', 'getConfirmResponse'));
+        $oxOrder = $this->getMock(EasyCreditOrder::class, ['getDic', 'validateOrder', 'getConfirmResponse']);
         $oxOrder->expects($this->any())->method('getDic')->willReturn($dic);
         $oxOrder->expects($this->any())->method('validateOrder')->willReturn(false);
 
@@ -648,7 +646,7 @@ class EasyCreditOxOrderTest extends UnitTestCase
         $wsMessages           = new \stdClass();
         $firstMessage         = new \stdClass();
         $firstMessage->key    = EasyCreditOrder::EASYCREDIT_BESTELLUNG_BESTAETIGT;
-        $messages             = array($firstMessage);
+        $messages             = [$firstMessage];
         $wsMessages->messages = $messages;
         $response->wsMessages = $wsMessages;
         $oxOrder->expects($this->any())->method('getConfirmResponse')->willReturn($response);
@@ -679,7 +677,7 @@ class EasyCreditOxOrderTest extends UnitTestCase
         $storage->setRatenplanTxt('paymentPlanTxt');
         $dicSession->setStorage($storage);
 
-        $oxBasket = $this->getMock(EasyCreditBasket::class, array('getDic', 'getPrice'));
+        $oxBasket = $this->getMock(EasyCreditBasket::class, ['getDic', 'getPrice']);
         $oxBasket->expects($this->any())->method('getDic')->willReturn($dic);
 
         $price = oxNew(Price::class);
@@ -688,7 +686,7 @@ class EasyCreditOxOrderTest extends UnitTestCase
 
         $oxUser = $this->buildUser();
 
-        $oxOrder = $this->getMock(EasyCreditOrder::class, array('getDic', 'validateOrder', 'getConfirmResponse'));
+        $oxOrder = $this->getMock(EasyCreditOrder::class, ['getDic', 'validateOrder', 'getConfirmResponse']);
         $oxOrder->expects($this->any())->method('getDic')->willReturn($dic);
         $oxOrder->expects($this->any())->method('validateOrder')->willReturn(false);
 
@@ -696,7 +694,7 @@ class EasyCreditOxOrderTest extends UnitTestCase
         $wsMessages           = new \stdClass();
         $firstMessage         = new \stdClass();
         $firstMessage->key    = EasyCreditOrder::EASYCREDIT_BESTELLUNG_BESTAETIGT;
-        $messages             = array($firstMessage);
+        $messages             = [$firstMessage];
         $wsMessages->messages = $messages;
         $response->wsMessages = $wsMessages;
         $oxOrder->expects($this->any())->method('getConfirmResponse')->willReturn($response);
@@ -727,7 +725,7 @@ class EasyCreditOxOrderTest extends UnitTestCase
         $storage->setRatenplanTxt('paymentPlanTxt');
         $dicSession->setStorage($storage);
 
-        $oxBasket = $this->getMock(EasyCreditBasket::class, array('getDic', 'getPrice'));
+        $oxBasket = $this->getMock(EasyCreditBasket::class, ['getDic', 'getPrice']);
         $oxBasket->expects($this->any())->method('getDic')->willReturn($dic);
 
         $price = oxNew(Price::class);
@@ -736,7 +734,7 @@ class EasyCreditOxOrderTest extends UnitTestCase
 
         $oxUser = $this->buildUser();
 
-        $oxOrder = $this->getMock(EasyCreditOrder::class, array('getDic', 'validateOrder', 'getConfirmResponse'));
+        $oxOrder = $this->getMock(EasyCreditOrder::class, ['getDic', 'validateOrder', 'getConfirmResponse']);
         $oxOrder->expects($this->any())->method('getDic')->willReturn($dic);
         $oxOrder->expects($this->any())->method('validateOrder')->willReturn(false);
 
@@ -744,7 +742,7 @@ class EasyCreditOxOrderTest extends UnitTestCase
         $wsMessages           = new \stdClass();
         $firstMessage         = new \stdClass();
         $firstMessage->key    = EasyCreditOrder::EASYCREDIT_BESTELLUNG_BESTAETIGT;
-        $messages             = array($firstMessage);
+        $messages             = [$firstMessage];
         $wsMessages->messages = $messages;
         $response->wsMessages = $wsMessages;
         $oxOrder->expects($this->any())->method('getConfirmResponse')->willReturn($response);
@@ -775,7 +773,7 @@ class EasyCreditOxOrderTest extends UnitTestCase
         $storage->setRatenplanTxt('paymentPlanTxt');
         $dicSession->setStorage($storage);
 
-        $oxBasket = $this->getMock(EasyCreditBasket::class, array('getDic', 'getPrice'));
+        $oxBasket = $this->getMock(EasyCreditBasket::class, ['getDic', 'getPrice']);
         $oxBasket->expects($this->any())->method('getDic')->willReturn($dic);
 
         $price = oxNew(Price::class);
@@ -784,7 +782,7 @@ class EasyCreditOxOrderTest extends UnitTestCase
 
         $oxUser = $this->buildUser();
 
-        $oxOrder = $this->getMock(EasyCreditOrder::class, array('getDic', 'validateOrder', 'getConfirmResponse'));
+        $oxOrder = $this->getMock(EasyCreditOrder::class, ['getDic', 'validateOrder', 'getConfirmResponse']);
         $oxOrder->expects($this->any())->method('getDic')->willReturn($dic);
         $oxOrder->expects($this->any())->method('validateOrder')->willReturn(false);
 
@@ -792,7 +790,7 @@ class EasyCreditOxOrderTest extends UnitTestCase
         $wsMessages           = new \stdClass();
         $firstMessage         = new \stdClass();
         $firstMessage->key    = EasyCreditOrder::EASYCREDIT_BESTELLUNG_BESTAETIGT;
-        $messages             = array($firstMessage);
+        $messages             = [$firstMessage];
         $wsMessages->messages = $messages;
         $response->wsMessages = $wsMessages;
         $oxOrder->expects($this->any())->method('getConfirmResponse')->willReturn($response);
@@ -823,7 +821,7 @@ class EasyCreditOxOrderTest extends UnitTestCase
         $storage->setRatenplanTxt(null);
         $dicSession->setStorage($storage);
 
-        $oxBasket = $this->getMock(EasyCreditBasket::class, array('getDic', 'getPrice'));
+        $oxBasket = $this->getMock(EasyCreditBasket::class, ['getDic', 'getPrice']);
         $oxBasket->expects($this->any())->method('getDic')->willReturn($dic);
 
         $price = oxNew(Price::class);
@@ -832,7 +830,7 @@ class EasyCreditOxOrderTest extends UnitTestCase
 
         $oxUser = $this->buildUser();
 
-        $oxOrder = $this->getMock(EasyCreditOrder::class, array('getDic', 'validateOrder', 'getConfirmResponse'));
+        $oxOrder = $this->getMock(EasyCreditOrder::class, ['getDic', 'validateOrder', 'getConfirmResponse']);
         $oxOrder->expects($this->any())->method('getDic')->willReturn($dic);
         $oxOrder->expects($this->any())->method('validateOrder')->willReturn(false);
 
@@ -840,7 +838,7 @@ class EasyCreditOxOrderTest extends UnitTestCase
         $wsMessages           = new \stdClass();
         $firstMessage         = new \stdClass();
         $firstMessage->key    = EasyCreditOrder::EASYCREDIT_BESTELLUNG_BESTAETIGT;
-        $messages             = array($firstMessage);
+        $messages             = [$firstMessage];
         $wsMessages->messages = $messages;
         $response->wsMessages = $wsMessages;
         $oxOrder->expects($this->any())->method('getConfirmResponse')->willReturn($response);
@@ -852,7 +850,7 @@ class EasyCreditOxOrderTest extends UnitTestCase
     {
         $dic = $this->getMockedDic(true);
 
-        $oxOrder = $this->getMock(EasyCreditOrder::class, array('getDic', 'validateOrder', 'getConfirmResponse'));
+        $oxOrder = $this->getMock(EasyCreditOrder::class, ['getDic', 'validateOrder', 'getConfirmResponse']);
         $oxOrder->expects($this->any())->method('getDic')->willReturn($dic);
 
         $this->assertNull($oxOrder->getTilgungsplanTxt());
@@ -871,9 +869,9 @@ class EasyCreditOxOrderTest extends UnitTestCase
         return oxNew(
             EasyCreditDic::class,
             oxNew(EasyCreditDicSession::class, oxNew(EasyCreditSession::class)),
-            oxNew(EasyCreditApiConfig::class, $apiConfigured ? EasyCreditDicFactory::getApiConfigArray() : array()),
+            oxNew(EasyCreditApiConfig::class, $apiConfigured ? EasyCreditDicFactory::getApiConfigArray() : []),
             oxNew(EasyCreditPayloadFactory::class),
-            oxNew(EasyCreditLogging::class, array()),
+            oxNew(EasyCreditLogging::class, []),
             oxNew(EasyCreditDicConfig::class, Registry::getConfig())
         );
     }

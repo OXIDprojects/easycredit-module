@@ -28,7 +28,6 @@ class EasyCreditOxPaymentTest extends UnitTestCase
     /**
      * Set up test environment
      *
-     * @return null
      */
     public function setUp(): void
     {
@@ -38,7 +37,6 @@ class EasyCreditOxPaymentTest extends UnitTestCase
     /**
      * Tear down test environment
      *
-     * @return null
      */
     public function tearDown(): void
     {
