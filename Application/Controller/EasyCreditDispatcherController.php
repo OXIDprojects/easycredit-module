@@ -13,21 +13,36 @@
 
 namespace OxidProfessionalServices\EasyCredit\Application\Controller;
 
+use OxidEsales\Eshop\Application\Controller\FrontendController;
+use OxidEsales\Eshop\Application\Model\Address;
+use OxidEsales\Eshop\Application\Model\Basket;
+use OxidEsales\Eshop\Application\Model\Order;
+use OxidEsales\Eshop\Core\Exception\SystemComponentException;
+use OxidEsales\Eshop\Core\Registry;
+use OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditWebServiceClientFactory;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditApiConfig;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDic;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicFactory;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicSession;
 use OxidProfessionalServices\EasyCredit\Core\Dto\EasyCreditStorage;
+use OxidProfessionalServices\EasyCredit\Core\Exception\EasyCreditException;
+use OxidProfessionalServices\EasyCredit\Core\Helper\EasyCreditHelper;
+use OxidProfessionalServices\EasyCredit\Core\Helper\EasyCreditInitializeRequestBuilder;
+use OxidProfessionalServices\EasyCredit\Core\Helper\EasyCreditInitializeRequestBuilderInterface;
 
 /**
  * EasyCredit checkout dispatcher class
  *
  * Handles requests to easyCredit and process reponse from easyCredit
  */
-class EasyCreditDispatcherController extends oxUBase
+class EasyCreditDispatcherController extends FrontendController
 {
     const INSTALMENT_DECISION_OK = "GRUEN";
 
-    /** @var oxpsEasyCreditDic */
+    /** @var EasyCreditDic */
     private $dic = false;
 
-    /** @var oxpsEasyCreditApiConfig */
+    /** @var EasyCreditApiConfig */
     private $apiConfig = false;
 
     /**
@@ -42,13 +57,13 @@ class EasyCreditDispatcherController extends oxUBase
 
         try {
             $currentInitData = $this->getCurrentInitializationData();
-            $currentPaymentHash = oxpsEasyCreditInitializeRequestBuilder::generatePaymentHash($currentInitData);
+            $currentPaymentHash = EasyCreditInitializeRequestBuilder::generatePaymentHash($currentInitData);
             if(!$this->isInitialized($currentPaymentHash) ) {
                 $this->initialize($currentPaymentHash, $currentInitData);
             }
             $this->redirectToEasyCredit();
         }
-        catch(Exception $ex) {
+        catch(\Exception $ex) {
             $this->handleException($ex);
         }
         return "payment";
@@ -66,7 +81,7 @@ class EasyCreditDispatcherController extends oxUBase
             $this->processEasyCreditDetails();
             return "order";
         }
-        catch(Exception $ex) {
+        catch(\Exception $ex) {
             $this->getDicSession()->clearStorage();
             $this->getBasket()->setPayment(null);
             $this->handleUserException($ex->getMessage());
@@ -98,13 +113,13 @@ class EasyCreditDispatcherController extends oxUBase
     protected function redirectToEasyCredit()
     {
         $sUrl = $this->getRedirectUrl();
-        oxRegistry::getUtils()->redirect($sUrl, false);
+        Registry::getUtils()->redirect($sUrl, false);
     }
 
     /**
      * Checks, if initialization is already done in the past
      *
-     * @param $newPaymentHash unique hash of payment
+     * @param $newPaymentHash string unique hash of payment
      *
      * @return bool
      */
@@ -128,15 +143,15 @@ class EasyCreditDispatcherController extends oxUBase
 
     /**
      * Initialize new process
-     * @param $authorizationHash new hash
-     * @param $data basket/user data
-     * @throws Exception
+     * @param $authorizationHash string hash
+     * @param $data array basket/user data
+     * @throws \Exception
      */
     protected function initialize($authorizationHash, $data)
     {
         $this->getDicSession()->clearStorage();
 
-        $response = $this->call(oxpsEasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_VORGANG
+        $response = $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_VORGANG
             , array()
             , array()
             , $data);
@@ -164,7 +179,7 @@ class EasyCreditDispatcherController extends oxUBase
         $requestBuilder->setShippingAddress($this->getShippingAddress());
         $requestBuilder->setShopEdition($this->getShopSystem());
         $requestBuilder->setModuleVersion($this->getModuleVersion());
-        $requestBuilder->setBaseLanguage(oxRegistry::getLang()->getBaseLanguage());
+        $requestBuilder->setBaseLanguage(Registry::getLang()->getBaseLanguage());
 
         $data = $requestBuilder->getInitializationData();
         return $data;
@@ -177,15 +192,15 @@ class EasyCreditDispatcherController extends oxUBase
      */
     public function getShopSystem()
     {
-        return oxpsEasyCreditHelper::getShopSystem($this->getConfig()->getActiveShop());
+        return EasyCreditHelper::getShopSystem($this->getConfig()->getActiveShop());
     }
 
     /**
      * Save payment and recalculate basket
      *
      * @param $paymentId string
-     * @param $basket oxBasket
-     * @param $excludeCosts Should calculation exclude instalments?
+     * @param $basket Basket
+     * @param $excludeCosts mixed Should calculation exclude instalments?
      */
     protected function calculateBasket($paymentId, $basket, $excludeCosts = false)
     {
@@ -200,11 +215,11 @@ class EasyCreditDispatcherController extends oxUBase
      * Calls webservice to get decision for process
      *
      * @return string
-     * @throws Exception
+     * @throws \Exception
      */
     protected function getInstalmentDecision()
     {
-        $response = $this->call(oxpsEasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_DECISION
+        $response = $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_DECISION
             , array($this->getTbVorgangskennung())
             , array());
 
@@ -222,25 +237,25 @@ class EasyCreditDispatcherController extends oxUBase
      */
     protected function getModuleVersion()
     {
-        return oxpsEasyCreditHelper::getModuleVersion($this->getDic());
+        return EasyCreditHelper::getModuleVersion($this->getDic());
     }
 
     /**
      * Returns basket
-     * @return oxBasket
+     * @return Basket
      */
     protected function getBasket()
     {
-        return oxRegistry::getSession()->getBasket();
+        return Registry::getSession()->getBasket();
     }
 
     /**
      * Returns shipping address
-     * @return oxAddress
+     * @return Address
      */
     protected function getShippingAddress()
     {
-        /** @var $oOrder oxOrder */
+        /** @var $oOrder Order */
         $oOrder = oxNew('oxorder');
         return $oOrder->getDelAddressInfo();
     }
@@ -259,7 +274,7 @@ class EasyCreditDispatcherController extends oxUBase
     /**
      * Returns easycredit processdata
      *
-     * @return null|oxpsEasyCreditStorage
+     * @return null|EasyCreditStorage
      */
     protected function getInstalmentStorage()
     {
@@ -281,21 +296,21 @@ class EasyCreditDispatcherController extends oxUBase
 
         //check payment hash again
         $data = $this->getCurrentInitializationData();
-        $paymentHash = oxpsEasyCreditInitializeRequestBuilder::generatePaymentHash($data);
+        $paymentHash = EasyCreditInitializeRequestBuilder::generatePaymentHash($data);
         if(!$this->isInitialized($paymentHash)) {
-            throw new oxpsEasyCreditException("OXPS_EASY_CREDIT_ERROR_INITIALIZATION_FAILED");
+            throw new EasyCreditException("OXPS_EASY_CREDIT_ERROR_INITIALIZATION_FAILED");
         }
     }
 
     /**
      * Checks if ratenkauf is approved by easyCredit
      *
-     * @throws oxpsEasyCreditException will be thrown in failed state
+     * @throws EasyCreditException will be thrown in failed state
      */
     protected function checkAuthorization()
     {
         if ($this->getInstalmentDecision() !== self::INSTALMENT_DECISION_OK) {
-            throw new oxpsEasyCreditException("OXPS_EASY_CREDIT_ERROR_NOT_APPROVED");
+            throw new EasyCreditException("OXPS_EASY_CREDIT_ERROR_NOT_APPROVED");
         }
     }
 
@@ -303,7 +318,7 @@ class EasyCreditDispatcherController extends oxUBase
      * Return current vorgangskennung
      *
      * @return string
-     * @throws oxpsEasyCreditException if there is no vorgangskennung
+     * @throws EasyCreditException if there is no vorgangskennung
      */
     protected function getTbVorgangskennung()
     {
@@ -311,7 +326,7 @@ class EasyCreditDispatcherController extends oxUBase
         if( $storage ) {
             return $storage->getTbVorgangskennung();
         }
-        throw new oxpsEasyCreditException("OXPS_EASY_CREDIT_ERROR_MISSING_VORGANGSKENNUNG");
+        throw new EasyCreditException("OXPS_EASY_CREDIT_ERROR_MISSING_VORGANGSKENNUNG");
     }
 
     /**
@@ -327,20 +342,20 @@ class EasyCreditDispatcherController extends oxUBase
     /**
      * Loads financial information about easycredit
      *
-     * @throws Exception
+     * @throws \Exception
      */
     protected function loadEasyCreditFinancialInformation()
     {
         $storage = $this->getInstalmentStorage();
         if( $storage == null ) {
-            throw new oxpsEasyCreditException("OXPS_EASY_CREDIT_ERROR_EXPIRED");
+            throw new EasyCreditException("OXPS_EASY_CREDIT_ERROR_EXPIRED");
         }
 
-        $response = $this->call(oxpsEasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_FINANCIAL_INFORMATION, array($storage->getTbVorgangskennung()));
+        $response = $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_FINANCIAL_INFORMATION, array($storage->getTbVorgangskennung()));
         $allgemeineVorgangsdaten = $response->allgemeineVorgangsdaten;
         $tilgungsplanText = $response->tilgungsplanText;
 
-        $response = $this->call(oxpsEasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_FINANZIERUNG, array($storage->getTbVorgangskennung()));
+        $response = $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_FINANZIERUNG, array($storage->getTbVorgangskennung()));
         $paymentPlan = $response->ratenplan;
         $paymentPlanTxt = $this->getFormattedPaymentPlan($paymentPlan->zahlungsplan);
 
@@ -355,7 +370,7 @@ class EasyCreditDispatcherController extends oxUBase
     /**
      * Returns payment plan for user display
      *
-     * @param $paymentPlan stdClass
+     * @param $paymentPlan \stdClass
      *
      * @return string
      */
@@ -367,7 +382,7 @@ class EasyCreditDispatcherController extends oxUBase
             $ratePerMonth   = (float) $paymentPlan->betragRate;
             $lastRate       = (float) $paymentPlan->betragLetzteRate;
 
-            $paymentPlanPattern = oxRegistry::getLang()->translateString("OXPS_EASY_CREDIT_FORMATTED_PAYMENT_PLAN");
+            $paymentPlanPattern = Registry::getLang()->translateString("OXPS_EASY_CREDIT_FORMATTED_PAYMENT_PLAN");
             return sprintf($paymentPlanPattern, $rateTotalCount, $ratePerMonth, $rateTotalCount - 1, $ratePerMonth, $lastRate);
         }
         return null;
@@ -376,7 +391,7 @@ class EasyCreditDispatcherController extends oxUBase
     /**
      * Returns interest amount
      *
-     * @param $paymentPlan stdClass
+     * @param $paymentPlan \stdClass
      * @return string
      */
     protected function getInterestAmount($paymentPlan) {
@@ -391,7 +406,7 @@ class EasyCreditDispatcherController extends oxUBase
     /**
      * Returns request builder for initialization new order process
      *
-     * @return oxpsEasyCreditInitializeRequestBuilderInterface
+     * @return EasyCreditInitializeRequestBuilderInterface
      */
     protected function getInitializationRequestBuilder()
     {
@@ -406,11 +421,11 @@ class EasyCreditDispatcherController extends oxUBase
      * @var array $queryArguments query args
      * @var array $data postdata
      * @return string response of webservice
-     * @throws Exception if something happened
+     * @throws \Exception if something happened
      */
     protected function call($endpoint, $additionalArguments = array(), $queryArguments = array(), $data = null)
     {
-        $webServiceClient = oxpsEasyCreditWebServiceClientFactory::getWebServiceClient($endpoint
+        $webServiceClient = EasyCreditWebServiceClientFactory::getWebServiceClient($endpoint
             , $this->getDic()
             , $additionalArguments
             , $queryArguments
@@ -421,7 +436,7 @@ class EasyCreditDispatcherController extends oxUBase
 
     /**
      * Handles exception
-     * @param $ex Exception
+     * @param $ex \Exception
      */
     protected function handleException($ex)
     {
@@ -438,19 +453,19 @@ class EasyCreditDispatcherController extends oxUBase
     {
         $oEx = oxNew('oxExceptionToDisplay');
         $oEx->setMessage($i18nMessage);
-        oxRegistry::get("oxUtilsView")->addErrorToDisplay($oEx);
+        Registry::get("oxUtilsView")->addErrorToDisplay($oEx);
     }
 
     /**
      * Returns the dic container.
      *
-     * @return oxpsEasyCreditDic
-     * @throws oxSystemComponentException
+     * @return EasyCreditDic
+     * @throws SystemComponentException
      */
     protected function getDic()
     {
         if(!$this->dic) {
-            $this->dic = oxpsEasyCreditDicFactory::getDic();
+            $this->dic = EasyCreditDicFactory::getDic();
         }
 
         return $this->dic;
@@ -459,7 +474,7 @@ class EasyCreditDispatcherController extends oxUBase
     /**
      * Returns api config
      *
-     * @return oxpsEasyCreditApiConfig
+     * @return EasyCreditApiConfig
      */
     protected function getApiConfig()
     {
@@ -472,7 +487,7 @@ class EasyCreditDispatcherController extends oxUBase
     /**
      * Returns dic session
      *
-     * @return oxpsEasyCreditDicSession
+     * @return EasyCreditDicSession
      */
     protected function getDicSession()
     {

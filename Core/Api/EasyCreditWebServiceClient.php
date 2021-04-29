@@ -16,10 +16,12 @@
 
 namespace OxidProfessionalServices\EasyCredit\Core\Api;
 
+use OxidEsales\Eshop\Core\Exception\SystemComponentException;
+
 /**
  * Class EasyCreditWebServiceClient
  */
-class EasyCreditWebServiceClient extends oxpsEasyCreditHttpClient
+class EasyCreditWebServiceClient extends EasyCreditHttpClient
 {
     /**
      * @var string Url for the method relatively to the base url.
@@ -32,7 +34,7 @@ class EasyCreditWebServiceClient extends oxpsEasyCreditHttpClient
     protected $_httpmethod = '';
 
     /**
-     * @var oxpsEasyCreditResponseValidator
+     * @var EasyCreditResponseValidator
      */
     protected $responseValidator;
 
@@ -65,7 +67,7 @@ class EasyCreditWebServiceClient extends oxpsEasyCreditHttpClient
      * @param array $sprintfArgs non-assoc array of arguments to be unpacked for sprintf, e.g. order-id for capture
      * @param array $queryArgs assoc query params array
      *
-     * @throws oxpsEasyCreditCurlException
+     * @throws EasyCreditCurlException
      */
     public function setFunction($function, array $sprintfArgs = null, array $queryArgs = null)
     {
@@ -89,7 +91,7 @@ class EasyCreditWebServiceClient extends oxpsEasyCreditHttpClient
     {
         foreach ($sprintfArgs as $k => $urlParameter) {
             if (!isset($urlParameter)) {
-                throw new oxpsEasyCreditCurlException("Parameter $k for curl function $function was empty");
+                throw new EasyCreditCurlException("Parameter $k for curl function $function was empty");
             }
         }
     }
@@ -110,10 +112,10 @@ class EasyCreditWebServiceClient extends oxpsEasyCreditHttpClient
      *
      * @param mixed $data
      *
-     * @return stdClass
+     * @return \stdClass
      *
-     * @throws oxpsEasyCreditCurlException
-     * @throws oxSystemComponentException
+     * @throws EasyCreditCurlException
+     * @throws SystemComponentException
      */
     public function execute($data = null)
     {

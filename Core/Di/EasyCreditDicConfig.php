@@ -16,22 +16,24 @@
 
 namespace OxidProfessionalServices\EasyCredit\Core\Di;
 
+use OxidEsales\Eshop\Core\Config;
+
 /**
  * Class DicConfig
  *
- * Pipe to underlying oxConfig.
+ * Pipe to underlying Config.
  */
 class EasyCreditDicConfig implements EasyCreditDicConfigInterface
 {
-    /** @var oxConfig */
+    /** @var Config */
     private $config;
 
     /**
      * DicConfig constructor.
      *
-     * @param oxConfig $config
+     * @param Config $config
      */
-    public function __construct(oxConfig $config)
+    public function __construct(Config $config)
     {
         $this->config = $config;
     }

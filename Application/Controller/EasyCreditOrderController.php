@@ -14,6 +14,15 @@
 
 namespace OxidProfessionalServices\EasyCredit\Application\Controller;
 
+use OxidEsales\Eshop\Application\Model\Payment;
+use OxidEsales\Eshop\Core\Exception\SystemComponentException;
+use OxidEsales\Eshop\Core\Field;
+use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\Eshop\Core\ViewConfig;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDic;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicFactory;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicSession;
+
 /**
  * Order manager. Arranges user ordering data, checks/validates
  * it, on success stores ordering data to DB.
@@ -21,19 +30,19 @@ namespace OxidProfessionalServices\EasyCredit\Application\Controller;
 class EasyCreditOrderController extends EasyCreditOrder_parent
 {
 
-    /** @var oxpsEasyCreditDic */
+    /** @var EasyCreditDic */
     private $dic = false;
 
     /**
      * Returns current order payment object
      *
-     * @return oxPayment
+     * @return Payment
      */
     public function getPayment()
     {
         if ($this->_oPayment === null) {
 
-            /** @var $payment oxPayment */
+            /** @var $payment Payment */
             $payment = $this->parentGetPayment();
             if ($payment && $payment->getId() == $this->getDic()->getApiConfig()->getEasyCreditInstalmentPaymentId()) {
 
@@ -57,14 +66,14 @@ class EasyCreditOrderController extends EasyCreditOrder_parent
     protected function getEasyCreditLogoUrl()
     {
         try {
-            /** @var $viewConfig oxViewConfig */
+            /** @var $viewConfig ViewConfig */
             $viewConfig = $this->getViewConfig();
             $logoFile = $viewConfig->getModulePath('oxpseasycredit', "out" . DIRECTORY_SEPARATOR . "pictures" . DIRECTORY_SEPARATOR . "eclogo.png");
             if( file_exists($logoFile)) {
                 return $viewConfig->getModuleUrl('oxpseasycredit') . 'out/pictures/eclogo.png';
             }
         }
-        catch (Exception $ex) {
+        catch (\Exception $ex) {
             //that's expected, do nothing else
         }
         return null;
@@ -87,7 +96,7 @@ class EasyCreditOrderController extends EasyCreditOrder_parent
     /**
      * Returns allgemeineVorgangsdaten
      *
-     * @return null|stdClass
+     * @return null|\stdClass
      */
     protected function getAllgemeineVorgangsdaten()
     {
@@ -130,7 +139,7 @@ class EasyCreditOrderController extends EasyCreditOrder_parent
      * Modify information about easycredit payment (append payment logo and individual installment rates)
      * Result: more info for customer
      *
-     * @param $payment oxPayment
+     * @param $payment Payment
      */
     protected function appendInstalmentRatesToPaymentDescription($payment)
     {
@@ -140,17 +149,17 @@ class EasyCreditOrderController extends EasyCreditOrder_parent
 
             $logoUrl = $this->getEasyCreditLogoUrl();
             if ($logoUrl) {
-                $logoUrlImgPattern = oxRegistry::getLang()->translateString("OXPS_EASY_CREDIT_LOGO_IMG");
+                $logoUrlImgPattern = Registry::getLang()->translateString("OXPS_EASY_CREDIT_LOGO_IMG");
                 $paymentDescription = sprintf($logoUrlImgPattern, $logoUrl);
             }
             $paymentDescription .= "<p>" . $paymentPlanTxt . "</p>";
-            $payment->oxpayments__oxdesc->value = new oxField($paymentDescription, oxField::T_RAW);
+            $payment->oxpayments__oxdesc->value = new Field($paymentDescription, Field::T_RAW);
         }
     }
 
     /**
-     * @return oxpsEasyCreditDicSession
-     * @throws oxSystemComponentException
+     * @return EasyCreditDicSession
+     * @throws SystemComponentException
      */
     protected function getDicSession()
     {
@@ -160,13 +169,13 @@ class EasyCreditOrderController extends EasyCreditOrder_parent
     /**
      * Returns the dic container.
      *
-     * @return oxpsEasyCreditDic
-     * @throws oxSystemComponentException
+     * @return EasyCreditDic
+     * @throws SystemComponentException^
      */
     protected function getDic()
     {
         if(!$this->dic) {
-            $this->dic = oxpsEasyCreditDicFactory::getDic();
+            $this->dic = EasyCreditDicFactory::getDic();
         }
 
         return $this->dic;
@@ -181,7 +190,7 @@ class EasyCreditOrderController extends EasyCreditOrder_parent
     {
         $oEx = oxNew('oxExceptionToDisplay');
         $oEx->setMessage($i18nMessage);
-        oxRegistry::get("oxUtilsView")->addErrorToDisplay($oEx);
+        Registry::get("oxUtilsView")->addErrorToDisplay($oEx);
     }
 
     /**
@@ -192,7 +201,7 @@ class EasyCreditOrderController extends EasyCreditOrder_parent
         $storage = $this->getDicSession()->getStorage();
         if (empty($storage)) {
             $this->handleUserException("OXPS_EASY_CREDIT_ERROR_EXPIRED");
-            oxRegistry::getUtils()->redirect($this->getConfig()->getShopCurrentURL() . '&cl=payment', true, 302);
+            Registry::getUtils()->redirect(Registry::getConfig()->getShopCurrentURL() . '&cl=payment', true, 302);
         }
     }
 }

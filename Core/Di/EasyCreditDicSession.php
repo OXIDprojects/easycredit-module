@@ -16,22 +16,25 @@
 
 namespace OxidProfessionalServices\EasyCredit\Core\Di;
 
+use OxidEsales\Eshop\Core\Session;
+use OxidProfessionalServices\EasyCredit\Core\Dto\EasyCreditStorage;
+
 /**
  * Class DicSession
  *
- * Pipe get, set and delete to underlying oxSession.
+ * Pipe get, set and delete to underlying Session.
  */
-class EasyCreditDicSession implements oxpsEasyCreditDicSessionInterface
+class EasyCreditDicSession implements EasyCreditDicSessionInterface
 {
-    /** @var oxSession */
+    /** @var Session */
     private $session;
 
     /**
      * DicSession constructor.
      *
-     * @param oxSession $session
+     * @param Session $session
      */
-    public function __construct(oxSession $session)
+    public function __construct(Session $session)
     {
         $this->session = $session;
     }
@@ -69,7 +72,7 @@ class EasyCreditDicSession implements oxpsEasyCreditDicSessionInterface
     }
 
     /**
-     * Appends url with session ID, but only if oxSession::_isSidNeeded() returns true
+     * Appends url with session ID, but only if Session::_isSidNeeded() returns true
      * Direct usage of this method to retrieve end url result is discouraged - instead
      * see oxUtilsUrl::processUrl
      *
@@ -97,7 +100,7 @@ class EasyCreditDicSession implements oxpsEasyCreditDicSessionInterface
     /**
      * Sets storage for easyCredit information
      *
-     * @param $storage oxpsEasyCreditStorage
+     * @param $storage EasyCreditStorage
      */
     public function setStorage($storage)
     {
@@ -107,7 +110,7 @@ class EasyCreditDicSession implements oxpsEasyCreditDicSessionInterface
     /**
      * Returns storage for easyCredit information
      *
-     * @return null|oxpsEasyCreditStorage
+     * @return null|EasyCreditStorage
      */
     public function getStorage() {
 

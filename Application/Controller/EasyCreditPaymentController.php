@@ -17,6 +17,22 @@
 namespace OxidProfessionalServices\EasyCredit\Application\Controller;
 
 
+use OxidEsales\Eshop\Application\Model\Article;
+use OxidEsales\Eshop\Application\Model\Basket;
+use OxidEsales\Eshop\Application\Model\User;
+use OxidEsales\Eshop\Core\Exception\SystemComponentException;
+use OxidEsales\Eshop\Core\Field;
+use OxidEsales\Eshop\Core\Price;
+use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\Eshop\Core\Session;
+use OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditWebServiceClientFactory;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditApiConfig;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDic;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicFactory;
+use OxidProfessionalServices\EasyCredit\Core\Domain\EasyCreditAquisitionBorder;
+use OxidProfessionalServices\EasyCredit\Core\Exception\EasyCreditException;
+use OxidProfessionalServices\EasyCredit\Core\Helper\EasyCreditHelper;
+
 /**
  * Class oxpsEasyCreditPayment.
  * Extends Payment.
@@ -25,10 +41,10 @@ namespace OxidProfessionalServices\EasyCredit\Application\Controller;
  */
 class EasyCreditPaymentController extends EasyCreditPayment_parent
 {
-    /** @var oxpsEasyCreditDic */
+    /** @var EasyCreditDic */
     private $dic;
 
-    /** @var stdClass */
+    /** @var \\stdClass */
     private $exampleCalculation;
 
     /** @var array */
@@ -37,7 +53,7 @@ class EasyCreditPaymentController extends EasyCreditPayment_parent
     /** @var object */
     protected $_oDelAddress;
 
-    /** @var null|bool|stdClass */
+    /** @var null|bool|\\stdClass */
     private $easyCreditPossible;
 
     /** @var string */
@@ -46,13 +62,13 @@ class EasyCreditPaymentController extends EasyCreditPayment_parent
     /**
      * Returns the dic container.
      *
-     * @return oxpsEasyCreditDic
-     * @throws oxSystemComponentException
+     * @return EasyCreditDic
+     * @throws SystemComponentException
      */
     protected function getDic()
     {
         if (!$this->dic) {
-            $this->dic = oxpsEasyCreditDicFactory::getDic();
+            $this->dic = EasyCreditDicFactory::getDic();
         }
 
         return $this->dic;
@@ -61,11 +77,11 @@ class EasyCreditPaymentController extends EasyCreditPayment_parent
     /**
      * Returns active basket
      *
-     * @return oxBasket
+     * @return Basket
      */
     protected function getBasket()
     {
-        return oxRegistry::getSession()->getBasket();
+        return Registry::getSession()->getBasket();
     }
 
     /**
@@ -76,11 +92,11 @@ class EasyCreditPaymentController extends EasyCreditPayment_parent
      */
     public function isEasyCreditPermitted()
     {
-        /** @var $aquisitionBorder oxpsEasyCreditAquisitionBorder */
+        /** @var $aquisitionBorder EasyCreditAquisitionBorder */
         $aquisitionBorder = oxNew("EasyCreditAquisitionBorder");
         $aquisitionBorder->updateAquisitionBorderIfNeeded();
 
-        /** @var $aquisitionBorder oxpsEasyCreditAquisitionBorder */
+        /** @var $aquisitionBorder EasyCreditAquisitionBorder */
         $aquisitionBorder = oxNew("EasyCreditAquisitionBorder");
 
         if(!$aquisitionBorder->considerInFrontend() ) {
@@ -98,8 +114,8 @@ class EasyCreditPaymentController extends EasyCreditPayment_parent
     /**
      * Checks if ratenkauf is a valid payment in this checkout process. If not, false is returned.
      *
-     * @return bool|stdClass
-     * @throws oxSystemComponentException
+     * @return bool|\\stdClass
+     * @throws SystemComponentException
      */
     public function isEasyCreditPossible()
     {
@@ -130,7 +146,7 @@ class EasyCreditPaymentController extends EasyCreditPayment_parent
     protected function checkEasyCreditPermitted()
     {
         if(!$this->isEasyCreditPermitted() ) {
-            $this->errorMessages[]    = oxRegistry::getLang()->translateString('OXPS_EASY_CREDIT_ERROR_NOT_ALLOWED_BY_AQUISITION_VALUE');
+            $this->errorMessages[]    = Registry::getLang()->translateString('OXPS_EASY_CREDIT_ERROR_NOT_ALLOWED_BY_AQUISITION_VALUE');
             $this->easyCreditPossible = false;
         }
     }
@@ -138,7 +154,7 @@ class EasyCreditPaymentController extends EasyCreditPayment_parent
     protected function checkEasyCreditForeignAddress()
     {
         if ($this->isForeignAddress()) {
-            $this->errorMessages[]    = oxRegistry::getLang()->translateString('OXPS_EASY_CREDIT_ERROR_NO_GERMAN_ADDRESS');
+            $this->errorMessages[]    = Registry::getLang()->translateString('OXPS_EASY_CREDIT_ERROR_NO_GERMAN_ADDRESS');
             $this->easyCreditPossible = false;
         }
     }
@@ -146,7 +162,7 @@ class EasyCreditPaymentController extends EasyCreditPayment_parent
     protected function checkEasyCreditAddressMismatch()
     {
         if ($this->isAddressMismatch()) {
-            $this->errorMessages[]    = oxRegistry::getLang()->translateString('OXPS_EASY_CREDIT_ERROR_DEL_ADDRESS');
+            $this->errorMessages[]    = Registry::getLang()->translateString('OXPS_EASY_CREDIT_ERROR_DEL_ADDRESS');
             $this->easyCreditPossible = false;
         }
     }
@@ -154,7 +170,7 @@ class EasyCreditPaymentController extends EasyCreditPayment_parent
     protected function checkEasyCreditPackstation()
     {
         if ($this->isPackstation()) {
-            $this->errorMessages[]    = oxRegistry::getLang()->translateString('OXPS_EASY_CREDIT_ERROR_PACKSTATION');
+            $this->errorMessages[]    = Registry::getLang()->translateString('OXPS_EASY_CREDIT_ERROR_PACKSTATION');
             $this->easyCreditPossible = false;
         }
     }
@@ -163,7 +179,7 @@ class EasyCreditPaymentController extends EasyCreditPayment_parent
     {
         $agreements = $this->getAgreementTxt();
         if( empty($agreements)) {
-            $this->errorMessages[]    = oxRegistry::getLang()->translateString('OXPS_EASY_CREDIT_ERROR_NO_AGREEMENTS');
+            $this->errorMessages[]    = Registry::getLang()->translateString('OXPS_EASY_CREDIT_ERROR_NO_AGREEMENTS');
             $this->easyCreditPossible = false;
         }
     }
@@ -181,8 +197,8 @@ class EasyCreditPaymentController extends EasyCreditPayment_parent
     /**
      * Returns the example calculation response or false if there was an error.
      *
-     * @return bool|stdClass
-     * @throws oxSystemComponentException
+     * @return bool|\stdClass
+     * @throws SystemComponentException
      */
     protected function getExampleCalulation()
     {
@@ -199,8 +215,8 @@ class EasyCreditPaymentController extends EasyCreditPayment_parent
     /**
      * Tries to get a valid example calculation response.
      *
-     * @return bool|stdClass
-     * @throws oxSystemComponentException
+     * @return bool|\stdClass
+     * @throws SystemComponentException
      */
     protected function getExampleCalculationResponse() {
         $price = $this->getPrice();
@@ -209,10 +225,10 @@ class EasyCreditPaymentController extends EasyCreditPayment_parent
         }
 
         try {
-            return $this->call( oxpsEasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_MODELLRECHNUNG_GUENSTIGSTER_RATENPLAN
+            return $this->call( EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_MODELLRECHNUNG_GUENSTIGSTER_RATENPLAN
                 , array()
-                , array(oxpsEasyCreditApiConfig::API_CONFIG_SERVICE_REST_ARGUMENT_FINANZIERUNGSBETRAG => $price->getBruttoPrice()));
-        } catch (Exception $ex) {
+                , array(EasyCreditApiConfig::API_CONFIG_SERVICE_REST_ARGUMENT_FINANZIERUNGSBETRAG => $price->getBruttoPrice()));
+        } catch (\Exception $ex) {
             return $ex->getMessage();
         }
     }
@@ -220,8 +236,8 @@ class EasyCreditPaymentController extends EasyCreditPayment_parent
     /**
      * Returns the price relevant for the example calculation.
      *
-     * @return oxPrice
-     * @throws oxSystemComponentException
+     * @return Price
+     * @throws SystemComponentException
      */
     protected function getPrice()
     {
@@ -233,13 +249,13 @@ class EasyCreditPaymentController extends EasyCreditPayment_parent
      *
      * @param string $articleId
      *
-     * @return oxPrice
-     * @throws oxSystemComponentException
+     * @return Price
+     * @throws SystemComponentException
      */
     public function getExampleCalculationPrice($articleId)
     {
         if ($articleId) {
-            /** @var oxArticle $article */
+            /** @var Article $article */
             $article = oxNew('oxarticle');
             if ($article->load($articleId)) {
                 return $article->getPrice();
@@ -265,7 +281,7 @@ class EasyCreditPaymentController extends EasyCreditPayment_parent
      * Template variable getter. Returns delivery address
      *
      * @return object
-     * @throws oxSystemComponentException
+     * @throws SystemComponentException
      */
     public function getDelAddress()
     {
@@ -281,7 +297,7 @@ class EasyCreditPaymentController extends EasyCreditPayment_parent
     /**
      * Returns true if there is a delivery address differing from invoice address.
      * @return bool|object
-     * @throws oxSystemComponentException
+     * @throws SystemComponentException
      */
     protected function isAddressMismatch()
     {
@@ -303,11 +319,11 @@ class EasyCreditPaymentController extends EasyCreditPayment_parent
      * the country.
      *
      * @return bool
-     * @throws oxSystemComponentException
+     * @throws SystemComponentException
      */
     protected function isForeignAddress()
     {
-        /** @var oxUser $user */
+        /** @var User $user */
         $user = $this->getUser();
 
         $delAddress = $this->getDelAddress();
@@ -331,11 +347,11 @@ class EasyCreditPaymentController extends EasyCreditPayment_parent
      * the address.
      *
      * @return bool
-     * @throws oxSystemComponentException
+     * @throws SystemComponentException
      */
     protected function isPackstation()
     {
-        /** @var oxUser $user */
+        /** @var User $user */
         $user = $this->getUser();
 
         $delAddress = $this->getDelAddress();
@@ -351,7 +367,7 @@ class EasyCreditPaymentController extends EasyCreditPayment_parent
             $streetnr = $user->oxuser__oxstreetnr->value;
         }
 
-        return oxpsEasyCreditHelper::hasPackstationFormat($street, $streetnr);
+        return EasyCreditHelper::hasPackstationFormat($street, $streetnr);
     }
 
     /**
@@ -383,14 +399,14 @@ class EasyCreditPaymentController extends EasyCreditPayment_parent
      * <b>paymentid</b>, <b>dynvalue</b>, <b>payerror</b>
      *
      * @return  mixed
-     * @throws oxSystemComponentException
+     * @throws SystemComponentException
      */
     public function validatePayment()
     {
-        /** @var oxSession $session */
-        $session = oxRegistry::getSession();
+        /** @var Session $session */
+        $session = Registry::getSession();
 
-        if (!($sPaymentId = oxRegistry::getConfig()->getRequestParameter('paymentid'))) {
+        if (!($sPaymentId = Registry::getConfig()->getRequestParameter('paymentid'))) {
             $sPaymentId = $session->getVariable('paymentid');
         }
 
@@ -409,7 +425,7 @@ class EasyCreditPaymentController extends EasyCreditPayment_parent
             try {
                 $this->addProfileData();
             }
-            catch(Exception $ex) {
+            catch(\Exception $ex) {
                 $this->handleUserException($ex->getMessage());
                 return;
             }
@@ -425,7 +441,7 @@ class EasyCreditPaymentController extends EasyCreditPayment_parent
      */
     protected function addProfileData()
     {
-        /** @var $user oxUser */
+        /** @var $user User */
         $user = $this->getUser();
         $profileData = $this->getConfig()->getRequestParameter('ecred', true);
 
@@ -433,13 +449,13 @@ class EasyCreditPaymentController extends EasyCreditPayment_parent
 
         $dateOfBirth = $this->getValidatedDateOfBirth($profileData, $user);
         if( $dateOfBirth ) {
-            $user->oxuser__oxbirthdate = new oxField($dateOfBirth, oxField::T_RAW);
+            $user->oxuser__oxbirthdate = new Field($dateOfBirth, Field::T_RAW);
             $hasChanged = true;
         }
 
         $salutation = $this->getValidatedSalutation($profileData);
         if( $salutation ) {
-            $user->oxuser__oxsal = new oxField($salutation, oxField::T_RAW);
+            $user->oxuser__oxsal = new Field($salutation, Field::T_RAW);
             $hasChanged = true;
         }
 
@@ -470,10 +486,10 @@ class EasyCreditPaymentController extends EasyCreditPayment_parent
     protected function loadAgreementTxt()
     {
         try {
-            $response = $this->call(oxpsEasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_ZUSTIMMUNGSTEXTE, array($this->getWebshopId()));
+            $response = $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_ZUSTIMMUNGSTEXTE, array($this->getWebshopId()));
             return $response->zustimmungDatenuebertragungPaymentPage;
         }
-        catch(Exception $ex) {}
+        catch(\Exception $ex) {}
         return null;
     }
 
@@ -484,17 +500,17 @@ class EasyCreditPaymentController extends EasyCreditPayment_parent
      * @var array $additionalArguments args which can be used in url
      * @var array $queryArguments query args
      * @return string response
-     * @throws Exception if something happened
+     * @throws \Exception if something happened
      */
     protected function call($endpoint, $additionalArguments = array(), $queryArguments = array())
     {
         try {
-            $webServiceClient = oxpsEasyCreditWebServiceClientFactory::getWebServiceClient($endpoint
+            $webServiceClient = EasyCreditWebServiceClientFactory::getWebServiceClient($endpoint
                 , $this->getDic()
                 , $additionalArguments
                 , $queryArguments);
             return $webServiceClient->execute();
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             $this->handleException($ex);
             throw $ex;
         }
@@ -545,9 +561,9 @@ class EasyCreditPaymentController extends EasyCreditPayment_parent
     /**
      * Logs and saves an exception
      *
-     * @param Exception $ex
+     * @param \Exception $ex
      */
-    private function handleException(Exception $ex)
+    private function handleException(\Exception $ex)
     {
         $errorMessage = $ex->getMessage();
         $this->getDic()->getLogging()->log($errorMessage);
@@ -573,7 +589,7 @@ class EasyCreditPaymentController extends EasyCreditPayment_parent
     /**
      * Returns dic apiconfig
      *
-     * @return oxpsEasyCreditApiConfig
+     * @return EasyCreditApiConfig
      */
     protected function getApiConfig()
     {
@@ -584,10 +600,10 @@ class EasyCreditPaymentController extends EasyCreditPayment_parent
      * Returns validated date of birth by requestdata
      *
      * @param $requestData array
-     * @param $user oxUser
+     * @param $user User
      *
      * @return string date of birth
-     * @throws oxpsEasyCreditException
+     * @throws EasyCreditException
      */
     protected function getValidatedDateOfBirth($requestData, $user)
     {
@@ -596,7 +612,7 @@ class EasyCreditPaymentController extends EasyCreditPayment_parent
             $convertedBirthday = $user->convertBirthday($birthday);
             if ($convertedBirthday) {
                 if (strtotime($convertedBirthday) > time()) {
-                    throw new oxpsEasyCreditException("OXPS_EASY_CREDIT_ERROR_DATEOFBIRTH_INVALID");
+                    throw new EasyCreditException("OXPS_EASY_CREDIT_ERROR_DATEOFBIRTH_INVALID");
                 }
                 return $convertedBirthday;
             }
@@ -610,7 +626,7 @@ class EasyCreditPaymentController extends EasyCreditPayment_parent
      * @param $requestData array
      *
      * @return string salutation
-     * @throws oxpsEasyCreditException
+     * @throws EasyCreditException
      */
     protected function getValidatedSalutation($requestData)
     {
@@ -630,6 +646,6 @@ class EasyCreditPaymentController extends EasyCreditPayment_parent
     {
         $oEx = oxNew('oxExceptionToDisplay');
         $oEx->setMessage($i18nMessage);
-        oxRegistry::get("oxUtilsView")->addErrorToDisplay($oEx);
+        Registry::get("oxUtilsView")->addErrorToDisplay($oEx);
     }
 }

@@ -16,6 +16,7 @@
 
 namespace OxidProfessionalServices\EasyCredit\Core\Api;
 
+use OxidEsales\Eshop\Core\Exception\SystemComponentException;
 use OxidProfessionalServices\EasyCredit\Core\CrossCutting\EasyCreditLogging;
 
 /**
@@ -80,17 +81,17 @@ class EasyCreditHttpClient
      * @param string $serviceUrl
      * @param mixed $data
      *
-     * @return stdClass
-     * @throws oxpsEasyCreditCurlException
-     * @throws oxSystemComponentException
+     * @return \stdClass
+     * @throws EasyCreditCurlException
+     * @throws SystemComponentException
      */
     public function executeJsonRequest($httpMethod, $serviceUrl, $data = null)
     {
         if (!$httpMethod) {
-            throw new oxpsEasyCreditCurlException('$httpMethod was empty');
+            throw new EasyCreditCurlException('$httpMethod was empty');
         }
         if (!$serviceUrl) {
-            throw new oxpsEasyCreditCurlException('$serviceUrl was empty');
+            throw new EasyCreditCurlException('$serviceUrl was empty');
         }
 
         $encodedData = null;
@@ -114,15 +115,15 @@ class EasyCreditHttpClient
      * @param string $data
      *
      * @return string
-     * @throws oxpsEasyCreditCurlException
+     * @throws EasyCreditCurlException
      */
     public function executeHttpRequest($httpMethod, $serviceUrl, $data = null)
     {
         if (!$httpMethod) {
-            throw new oxpsEasyCreditCurlException('$httpMethod was empty');
+            throw new EasyCreditCurlException('$httpMethod was empty');
         }
         if (!$serviceUrl) {
-            throw new oxpsEasyCreditCurlException('$serviceUrl was empty');
+            throw new EasyCreditCurlException('$serviceUrl was empty');
         }
 
         $this->init($this->_baseUrl . $serviceUrl);
@@ -146,14 +147,14 @@ class EasyCreditHttpClient
         } elseif ('GET' == $httpMethod) {
             $this->setGet();
         } else {
-            throw new oxpsEasyCreditCurlException('Unknown httpMethod ' . $httpMethod);
+            throw new EasyCreditCurlException('Unknown httpMethod ' . $httpMethod);
         }
     }
 
     /**
      * Adds additional headers for the request.
      *
-     * @throws oxpsEasyCreditCurlException
+     * @throws EasyCreditCurlException
      */
     protected function addHeaders()
     {
@@ -165,7 +166,7 @@ class EasyCreditHttpClient
      * Executes the curl request.
      *
      * @return string
-     * @throws oxpsEasyCreditCurlException
+     * @throws EasyCreditCurlException
      */
     protected function curl_exec()
     {
@@ -188,7 +189,7 @@ class EasyCreditHttpClient
      *
      * @param $url
      *
-     * @throws oxpsEasyCreditCurlException
+     * @throws EasyCreditCurlException
      */
     protected function init($url)
     {
@@ -203,7 +204,7 @@ class EasyCreditHttpClient
      *
      * @param string $data
      *
-     * @throws oxpsEasyCreditCurlException
+     * @throws EasyCreditCurlException
      */
     protected function setPostData($data)
     {
@@ -218,7 +219,7 @@ class EasyCreditHttpClient
     /**
      * Sets the method to POST.
      *
-     * @throws oxpsEasyCreditCurlException
+     * @throws EasyCreditCurlException
      */
     protected function setPost()
     {
@@ -229,7 +230,7 @@ class EasyCreditHttpClient
     /**
      * Sets the method to GET.
      *
-     * @throws oxpsEasyCreditCurlException
+     * @throws EasyCreditCurlException
      */
     protected function setGet()
     {
@@ -240,12 +241,12 @@ class EasyCreditHttpClient
     /**
      * Tests if there was an curl error.
      *
-     * @throws oxpsEasyCreditCurlException
+     * @throws EasyCreditCurlException
      */
     protected function catchRequestError()
     {
         if (curl_errno($this->_handle) != 0) {
-            throw new oxpsEasyCreditCurlException(curl_error($this->_handle), curl_errno($this->_handle));
+            throw new EasyCreditCurlException(curl_error($this->_handle), curl_errno($this->_handle));
         }
     }
 }

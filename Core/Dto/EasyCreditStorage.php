@@ -26,7 +26,7 @@ class EasyCreditStorage
     /** @var float */
     private $interestAmount = 0.0;
 
-    /** @var stdClass */
+    /** @var \stdClass */
     private $allgemeineVorgangsdaten;
 
     /** @var string */
@@ -137,7 +137,7 @@ class EasyCreditStorage
     /**
      * Returns allgemeine Vorgangsdaten of current easyCredit payment process
      *
-     * @return stdClass
+     * @return \stdClass
      */
     public function getAllgemeineVorgangsdaten()
     {
@@ -167,7 +167,7 @@ class EasyCreditStorage
     /**
      * Sets AllgemeineVorgangsdaten
      *
-     * @param stdClass $allgemeineVorgangsdaten
+     * @param \stdClass $allgemeineVorgangsdaten
      */
     public function setAllgemeineVorgangsdaten($allgemeineVorgangsdaten)
     {

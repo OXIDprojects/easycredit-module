@@ -16,6 +16,9 @@
 
 namespace OxidProfessionalServices\EasyCredit\Core\Di;
 
+use OxidProfessionalServices\EasyCredit\Core\CrossCutting\EasyCreditLogging;
+use OxidProfessionalServices\EasyCredit\Core\PayLoad\EasyCreditPayloadFactory;
+
 /**
  * Class Dic
  *
@@ -23,13 +26,13 @@ namespace OxidProfessionalServices\EasyCredit\Core\Di;
  */
 class EasyCreditDic
 {
-    /** @var oxpsEasyCreditDicSession */
+    /** @var EasyCreditDicSession */
     private $dicSession;
 
-    /** @var oxpsEasyCreditApiConfig */
+    /** @var EasyCreditApiConfig */
     private $apiConfig;
 
-    /** @var oxpsEasyCreditPayloadFactory */
+    /** @var EasyCreditPayloadFactory */
     private $payloadFactory;
 
     /** @var EasyCreditLogging */
@@ -41,9 +44,9 @@ class EasyCreditDic
     /**
      * Dic constructor.
      *
-     * @param oxpsEasyCreditDicSession     $dicSession
-     * @param oxpsEasyCreditApiConfig      $apiConfig
-     * @param oxpsEasyCreditPayloadFactory $payloadFactory
+     * @param EasyCreditDicSession     $dicSession
+     * @param EasyCreditApiConfig      $apiConfig
+     * @param EasyCreditPayloadFactory $payloadFactory
      * @param EasyCreditLogging        $logging
      * @param EasyCreditDicConfig          $dicConfig
      */
@@ -57,7 +60,7 @@ class EasyCreditDic
     }
 
     /**
-     * @return oxpsEasyCreditDicSession
+     * @return EasyCreditDicSession
      * @codeCoverageIgnore
      */
     public function getSession()
@@ -66,7 +69,7 @@ class EasyCreditDic
     }
 
     /**
-     * @return oxpsEasyCreditApiConfig
+     * @return EasyCreditApiConfig
      * @codeCoverageIgnore
      */
     public function getApiConfig()
@@ -75,7 +78,7 @@ class EasyCreditDic
     }
 
     /**
-     * @return oxpsEasyCreditPayloadFactory
+     * @return EasyCreditPayloadFactory
      * @codeCoverageIgnore
      */
     public function getPayloadFactory()

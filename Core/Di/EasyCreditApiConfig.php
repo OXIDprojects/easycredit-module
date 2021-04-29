@@ -3,6 +3,8 @@
 namespace OxidProfessionalServices\EasyCredit\Core\Di;
 
 
+use OxidProfessionalServices\EasyCredit\Core\Domain\EasyCreditPayment;
+
 /**
  * This Software is the property of OXID eSales and is protected
  * by copyright law - it is NOT Freeware.
@@ -108,7 +110,7 @@ class EasyCreditApiConfig
      * @param $serviceName
      *
      * @return mixed
-     * @throws oxpsEasyCreditConfigException
+     * @throws EasyCreditConfigException
      */
     protected function getService($serviceName)
     {
@@ -116,7 +118,7 @@ class EasyCreditApiConfig
         if (isset($services[$serviceName])) {
             return $services[$serviceName];
         } else {
-            throw new oxpsEasyCreditConfigException("Service name '$serviceName' is not configured.");
+            throw new EasyCreditConfigException("Service name '$serviceName' is not configured.");
         }
     }
 
@@ -124,7 +126,7 @@ class EasyCreditApiConfig
      * @param $serviceName
      *
      * @return mixed
-     * @throws oxpsEasyCreditConfigException
+     * @throws EasyCreditConfigException
      */
     public function getServiceHttpMethod($serviceName)
     {
@@ -136,7 +138,7 @@ class EasyCreditApiConfig
      * @param $serviceName
      *
      * @return mixed
-     * @throws oxpsEasyCreditConfigException
+     * @throws EasyCreditConfigException
      */
     public function getServiceRestFunction($serviceName)
     {
@@ -194,7 +196,7 @@ class EasyCreditApiConfig
 
     public function getEasyCreditInstalmentPaymentId()
     {
-        return oxpsEasyCreditOxPayment::EASYCREDIT_PAYMENTID;
+        return EasyCreditPayment::EASYCREDIT_PAYMENTID;
     }
 
     public function getEasyCreditModuleId()

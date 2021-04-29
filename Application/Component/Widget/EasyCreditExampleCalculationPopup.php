@@ -3,22 +3,29 @@
 namespace OxidProfessionalServices\EasyCredit\Application\Component\Widget;
 
 use OxidEsales\Eshop\Application\Component\Widget\WidgetController;
+use OxidEsales\Eshop\Application\Model\Basket;
+use OxidEsales\Eshop\Core\Exception\SystemComponentException;
+use OxidEsales\Eshop\Core\Price;
+use OxidEsales\Eshop\Core\Registry;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDic;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicFactory;
+use OxidProfessionalServices\EasyCredit\Core\Helper\EasyCreditHelper;
 
 class EasyCreditExampleCalculationPopup extends WidgetController
 {
     protected $_sThisTemplate = 'oxpseasycredit_examplecalculation_popup.tpl';
 
-    /** @var oxpsEasyCreditDic */
+    /** @var EasyCreditDic */
     private $dic;
 
     /**
-     * @return oxpsEasyCreditDic
-     * @throws oxSystemComponentException
+     * @return EasyCreditDic
+     * @throws SystemComponentException
      */
     protected function getDic()
     {
         if (!$this->dic) {
-            $this->dic = oxpsEasyCreditDicFactory::getDic();
+            $this->dic = EasyCreditDicFactory::getDic();
         }
 
         return $this->dic;
@@ -27,22 +34,22 @@ class EasyCreditExampleCalculationPopup extends WidgetController
     /**
      * Returns active basket
      *
-     * @return oxBasket
+     * @return Basket
      */
     public function getBasket()
     {
-        return oxRegistry::getSession()->getBasket();
+        return Registry::getSession()->getBasket();
     }
 
     /**
      * Returns the price relevant for the example calculation.
      *
-     * @return oxPrice
-     * @throws oxSystemComponentException
+     * @return Price
+     * @throws SystemComponentException
      */
     public function getPrice()
     {
-        return oxpsEasyCreditHelper::getExampleCalculationPrice($this->getViewParameter("articleId"), $this->getBasket());
+        return EasyCreditHelper::getExampleCalculationPrice($this->getViewParameter("articleId"), $this->getBasket());
     }
 
     public function getIFrameUrl()

@@ -2,6 +2,11 @@
 
 namespace OxidProfessionalServices\EasyCredit\Core\Api;
 
+use OxidEsales\Eshop\Core\Exception\SystemComponentException;
+use OxidEsales\Eshop\Core\Registry;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDic;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicFactory;
+
 class EasyCreditResponseValidator
 {
     const VALIDATION_KEY_FIELDNAME = 'fieldname';
@@ -13,7 +18,7 @@ class EasyCreditResponseValidator
     /** @var array */
     private $validationScheme;
 
-    /** @var oxpsEasyCreditDic */
+    /** @var EasyCreditDic */
     private $dic = false;
 
     /**
@@ -29,7 +34,7 @@ class EasyCreditResponseValidator
     /**
      * Validates the response against the validation scheme of this validator.
      *
-     * @param stdClass $response
+     * @param \stdClass $response
      */
     public function validate($response)
     {
@@ -45,7 +50,7 @@ class EasyCreditResponseValidator
     /**
      * Validates the response against a single validation criteria of the scheme of this validator.
      *
-     * @param stdClass $response
+     * @param \stdClass $response
      * @param array $validation
      */
     protected function checkValidation($response, $validation)
@@ -93,7 +98,7 @@ class EasyCreditResponseValidator
         if ($required && $fieldname && !isset($response->$fieldname)) {
             $responseMessage = $this->getExceptionMessage($response, $exceptionMessage);
             $this->log($responseMessage ? $responseMessage : "Required field $fieldname not found in response.");
-            throw new $errorExceptionClassname(oxRegistry::getLang()->translateString('OXPS_EASY_CREDIT_VALIDATION_ERROR'));
+            throw new $errorExceptionClassname(Registry::getLang()->translateString('OXPS_EASY_CREDIT_VALIDATION_ERROR'));
         }
     }
 
@@ -103,7 +108,7 @@ class EasyCreditResponseValidator
             $invalidValue = serialize($response->$fieldname);
             $responseMessage = $this->getExceptionMessage($response, $exceptionMessage);
             $this->log($responseMessage ? $responseMessage : "Required field '$fieldname' has invalid value '$invalidValue'.");
-            throw new $errorExceptionClassname(oxRegistry::getLang()->translateString('OXPS_EASY_CREDIT_VALIDATION_ERROR'));
+            throw new $errorExceptionClassname(Registry::getLang()->translateString('OXPS_EASY_CREDIT_VALIDATION_ERROR'));
         }
     }
 
@@ -147,13 +152,13 @@ class EasyCreditResponseValidator
     /**
      * Returns the dic container.
      *
-     * @return oxpsEasyCreditDic
-     * @throws oxSystemComponentException
+     * @return EasyCreditDic
+     * @throws SystemComponentException
      */
     protected function getDic()
     {
         if(!$this->dic) {
-            $this->dic = oxpsEasyCreditDicFactory::getDic();
+            $this->dic = EasyCreditDicFactory::getDic();
         }
 
         return $this->dic;

@@ -3,24 +3,33 @@
 namespace OxidProfessionalServices\EasyCredit\Application\Component\Widget;
 
 use OxidEsales\Eshop\Application\Component\Widget\WidgetController;
+use OxidEsales\Eshop\Application\Model\Basket;
+use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\Eshop\Core\Exception\SystemComponentException;
+use OxidEsales\Eshop\Core\Price;
+use OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditWebServiceClientFactory;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditApiConfig;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDic;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicFactory;
+use OxidProfessionalServices\EasyCredit\Core\Helper\EasyCreditHelper;
 
 class EasyCreditExampleCalculation extends WidgetController
 {
     protected $_sThisTemplate = 'oxpseasycredit_examplecalculation.tpl';
 
-    /** @var oxpsEasyCreditDic */
+    /** @var EasyCreditDic */
     private $dic;
 
-    /** @var stdClass */
+    /** @var \stdClass */
     protected $exampleCalculation;
 
-    /** @var oxBasket */
+    /** @var Basket */
     protected $basket;
 
     public function getExampleCalculationRate()
     {
         if ($this->hasExampleCalculation()) {
-            return oxRegistry::getLang()->formatCurrency($this->getExampleCalulation()->betragRate);
+            return Registry::getLang()->formatCurrency($this->getExampleCalulation()->betragRate);
         }
     }
 
@@ -42,13 +51,13 @@ class EasyCreditExampleCalculation extends WidgetController
     }
 
     /**
-     * @return oxpsEasyCreditDic
-     * @throws oxSystemComponentException
+     * @return EasyCreditDic
+     * @throws SystemComponentException
      */
     protected function getDic()
     {
         if (!$this->dic) {
-            $this->dic = oxpsEasyCreditDicFactory::getDic();
+            $this->dic = EasyCreditDicFactory::getDic();
         }
 
         return $this->dic;
@@ -57,22 +66,22 @@ class EasyCreditExampleCalculation extends WidgetController
     /**
      * Returns the price relevant for the example calculation.
      *
-     * @return oxPrice
-     * @throws oxSystemComponentException
+     * @return Price
+     * @throws SystemComponentException
      */
     protected function getPrice()
     {
-        return oxpsEasyCreditHelper::getExampleCalculationPrice($this->getViewParameter("articleId"), $this->getBasket());
+        return EasyCreditHelper::getExampleCalculationPrice($this->getViewParameter("articleId"), $this->getBasket());
     }
 
     /**
      * Returns active basket
      *
-     * @return oxBasket
+     * @return Basket
      */
     protected function getBasket()
     {
-        return oxRegistry::getSession()->getBasket();
+        return Registry::getSession()->getBasket();
     }
 
     protected function getExampleCalculationResponse()
@@ -83,35 +92,35 @@ class EasyCreditExampleCalculation extends WidgetController
         }
 
         try {
-            /** @var oxpsEasyCreditDic $dic */
+            /** @var EasyCreditDic $dic */
             $dic = $this->getDic();
 
-            $webServiceClient = oxpsEasyCreditWebServiceClientFactory::getWebServiceClient(
-                oxpsEasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_MODELLRECHNUNG_GUENSTIGSTER_RATENPLAN,
+            $webServiceClient = EasyCreditWebServiceClientFactory::getWebServiceClient(
+                EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_MODELLRECHNUNG_GUENSTIGSTER_RATENPLAN,
                 $dic,
                 array(),
-                array(oxpsEasyCreditApiConfig::API_CONFIG_SERVICE_REST_ARGUMENT_FINANZIERUNGSBETRAG => $price->getBruttoPrice()));
+                array(EasyCreditApiConfig::API_CONFIG_SERVICE_REST_ARGUMENT_FINANZIERUNGSBETRAG => $price->getBruttoPrice()));
             return $webServiceClient->execute();
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             $this->getDic()->getLogging()->log($ex->getMessage());
         }
     }
     public function getAjaxUrl()
     {
-        $sURL = oxRegistry::getConfig()->getConfigParam('sShopURL');
+        $sURL = Registry::getConfig()->getConfigParam('sShopURL');
         $articleId = $this->getViewParameter("articleId");
         return $sURL . 'index.php?cl=oxpseasycreditexamplecalculation' . ($articleId ? '&articleId=' . $articleId : '') . '&placeholderId=' . $this->getViewParameter("placeholderId") . '&ajax=1';
     }
 
     public function getPopupAjaxUrl()
     {
-        $sURL = oxRegistry::getConfig()->getConfigParam('sShopURL');
+        $sURL = Registry::getConfig()->getConfigParam('sShopURL');
         $articleId = $this->getViewParameter("articleId");
         return $sURL . 'index.php?cl=oxpseasycreditexamplecalculationpopup' . ($articleId ? '&articleId=' . $articleId : '') . '&ajax=1';
     }
 
     public function isAjax()
     {
-        return (oxRegistry::getConfig()->getRequestParameter('ajax') == 1);
+        return (Registry::getConfig()->getRequestParameter('ajax') == 1);
     }
 }

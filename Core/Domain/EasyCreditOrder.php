@@ -2,6 +2,22 @@
 
 namespace OxidProfessionalServices\EasyCredit\Core\Domain;
 
+use OxidEsales\Eshop\Application\Model\Address;
+use OxidEsales\Eshop\Application\Model\Basket;
+use OxidEsales\Eshop\Application\Model\Order;
+use OxidEsales\Eshop\Application\Model\User;
+use OxidEsales\Eshop\Core\Exception\SystemComponentException;
+use OxidEsales\Eshop\Core\Field;
+use OxidEsales\Eshop\Core\Registry;
+use OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditWebServiceClientFactory;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditApiConfig;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDic;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicFactory;
+use OxidProfessionalServices\EasyCredit\Core\Dto\EasyCreditStorage;
+use OxidProfessionalServices\EasyCredit\Core\Exception\EasyCreditInitializationFailedException;
+use OxidProfessionalServices\EasyCredit\Core\Helper\EasyCreditHelper;
+use OxidProfessionalServices\EasyCredit\Core\Helper\EasyCreditInitializeRequestBuilder;
+
 /**
  * Class oxpsEasyCreditOxOrder
  */
@@ -10,19 +26,19 @@ class EasyCreditOrder extends EasyCreditOrder_parent {
     /** @var string */
     const EASYCREDIT_BESTELLUNG_BESTAETIGT = "BestellungBestaetigenServiceActivity.Infos.ERFOLGREICH";
 
-    /** @var oxpsEasyCreditDic */
+    /** @var EasyCreditDic */
     private $dic = false;
 
     /**
      * Overrides standard oxid finalizeOrder method to handle easyCredit payment
      *
-     * @param oxBasket $oBasket
-     * @param oxUser $oUser
+     * @param Basket $oBasket
+     * @param User $oUser
      * @param bool $blRecalculatingOrder
      *
      * @return bool
      */
-    public function finalizeOrder(oxBasket $oBasket, $oUser, $blRecalculatingOrder = false)
+    public function finalizeOrder(Basket $oBasket, $oUser, $blRecalculatingOrder = false)
     {
         if(!$this->isEasyCreditInstalmentPayment($oBasket->getPaymentId())) {
             return parent::finalizeOrder($oBasket, $oUser, $blRecalculatingOrder);
@@ -32,11 +48,11 @@ class EasyCreditOrder extends EasyCreditOrder_parent {
         try {
             $result = $this->finalizeEasyCreditOrder($oBasket, $oUser, $blRecalculatingOrder);
         }
-        catch(oxpsEasyCreditInitializationFailedException $iex) {
+        catch(EasyCreditInitializationFailedException $iex) {
             $this->handleUserException($iex->getMessage());
-            oxRegistry::getUtils()->redirect($this->getConfig()->getShopCurrentURL() . '&cl=payment', true, 302);
+            Registry::getUtils()->redirect($this->getConfig()->getShopCurrentURL() . '&cl=payment', true, 302);
         }
-        catch(Exception $ex) {
+        catch(\Exception $ex) {
             $this->handleException($ex);
         }
 
@@ -46,20 +62,20 @@ class EasyCreditOrder extends EasyCreditOrder_parent {
     /**
      * Set additional attributes to order if payment is easycredit instalment
      *
-     * @param oxBasket $oBasket
+     * @param Basket $oBasket
      */
-    protected function _loadFromBasket(oxBasket $oBasket)
+    protected function _loadFromBasket(Basket $oBasket)
     {
         parent::_loadFromBasket($oBasket);
 
         if( $this->isEasyCreditInstalmentPayment($oBasket->getPaymentId()) ) {
             $storage = $this->getInstalmentStorage();
             if ($storage) {
-                $this->oxorder__ecredinterestsvalue = new oxField($oBasket->getInterestsAmount());
-                $this->oxorder__ecredpaymentstatus  = new oxField("not captured");
+                $this->oxorder__ecredinterestsvalue = new Field($oBasket->getInterestsAmount());
+                $this->oxorder__ecredpaymentstatus  = new Field("not captured");
 
-                $this->oxorder__ecredtechnicalid  = new oxField($storage->getTbVorgangskennung());
-                $this->oxorder__ecredfunctionalid = new oxField($storage->getFachlicheVorgangskennung());
+                $this->oxorder__ecredtechnicalid  = new Field($storage->getTbVorgangskennung());
+                $this->oxorder__ecredfunctionalid = new Field($storage->getFachlicheVorgangskennung());
             }
         }
     }
@@ -67,13 +83,13 @@ class EasyCreditOrder extends EasyCreditOrder_parent {
     /**
      * Finalize order in OXID. Confirm payment in easyCredit.
      *
-     * @param oxBasket $oBasket
-     * @param oxUser $oUser
+     * @param Basket $oBasket
+     * @param User $oUser
      * @param bool $blRecalculatingOrder
      *
      * @return mixed
      */
-    protected function finalizeEasyCreditOrder(oxBasket $oBasket, $oUser, $blRecalculatingOrder = false)
+    protected function finalizeEasyCreditOrder(Basket $oBasket, $oUser, $blRecalculatingOrder = false)
     {
 
         $this->checkInitialization($oUser, $oBasket);
@@ -106,16 +122,16 @@ class EasyCreditOrder extends EasyCreditOrder_parent {
 
             $isConfirmed = $this->isConfirmed($response);
 
-            $this->oxorder__ecredconfirmresponse = new oxField(base64_encode(serialize($response)), oxField::T_RAW);
-            $this->oxorder__ecredpaymentstatus = new oxField($this->getPaymentStatus($isConfirmed), oxField::T_RAW);
+            $this->oxorder__ecredconfirmresponse = new Field(base64_encode(serialize($response)), Field::T_RAW);
+            $this->oxorder__ecredpaymentstatus = new Field($this->getPaymentStatus($isConfirmed), Field::T_RAW);
 
             if(!$isConfirmed) {
-                $this->oxorder__oxtransstatus = new oxField('ERROR', oxField::T_RAW);
+                $this->oxorder__oxtransstatus = new Field('ERROR', Field::T_RAW);
                 $this->handleUserException("OXPS_EASY_CREDIT_ERROR_BESTAETIGEN_FAILED");
             }
             $this->save();
         }
-        catch(Exception $ex) {
+        catch(\Exception $ex) {
             $this->handleException($ex);
         }
 
@@ -175,47 +191,47 @@ class EasyCreditOrder extends EasyCreditOrder_parent {
     /**
      * Checks whether instalment store is valid
      *
-     * @throws oxpsEasyCreditInitializationFailedException
-     * @throws oxSystemComponentException
+     * @throws EasyCreditInitializationFailedException
+     * @throws SystemComponentException
      */
     protected function checkStorageDataIsComplete()
     {
-        /** @var $storage oxpsEasyCreditStorage */
+        /** @var $storage EasyCreditStorage */
         $storage = $this->getInstalmentStorage();
 
         $tbVorgangskennung = $storage->getTbVorgangskennung();
         if(!$tbVorgangskennung) {
-            throw new oxpsEasyCreditInitializationFailedException("OXPS_EASY_CREDIT_ERROR_PROCESS_ID_MISSING");
+            throw new EasyCreditInitializationFailedException("OXPS_EASY_CREDIT_ERROR_PROCESS_ID_MISSING");
         }
 
         $fachlicheVorgangskennung = $storage->getFachlicheVorgangskennung();
         if(!$fachlicheVorgangskennung) {
-            throw new oxpsEasyCreditInitializationFailedException("OXPS_EASY_CREDIT_ERROR_FUNC_PROCESS_ID_MISSING");
+            throw new EasyCreditInitializationFailedException("OXPS_EASY_CREDIT_ERROR_FUNC_PROCESS_ID_MISSING");
         }
 
         $allgemeineVorgangsdaten = $storage->getAllgemeineVorgangsdaten();
         if(!$allgemeineVorgangsdaten) {
-            throw new oxpsEasyCreditInitializationFailedException("OXPS_EASY_CREDIT_ERROR_FUNC_PROCESSDATA_MISSING");
+            throw new EasyCreditInitializationFailedException("OXPS_EASY_CREDIT_ERROR_FUNC_PROCESSDATA_MISSING");
         }
 
         $tilgungsplanTxt = $storage->getTilgungsplanTxt();
         if(!$tilgungsplanTxt) {
-            throw new oxpsEasyCreditInitializationFailedException("OXPS_EASY_CREDIT_ERROR_FUNC_REDEMPTIONPLAN_MISSING");
+            throw new EasyCreditInitializationFailedException("OXPS_EASY_CREDIT_ERROR_FUNC_REDEMPTIONPLAN_MISSING");
         }
 
         $ratenplanTxt = $storage->getRatenplanTxt();
         if(!$ratenplanTxt) {
-            throw new oxpsEasyCreditInitializationFailedException("OXPS_EASY_CREDIT_ERROR_FUNC_PAYMENTPLAN_MISSING");
+            throw new EasyCreditInitializationFailedException("OXPS_EASY_CREDIT_ERROR_FUNC_PAYMENTPLAN_MISSING");
         }
     }
 
     /**
      * Checks whether initialization is valid
      *
-     * @param $oUser oxUser
-     * @param $oBasket oxBasket
+     * @param $oUser User
+     * @param $oBasket Basket
      *
-     * @throws oxpsEasyCreditInitializationFailedException
+     * @throws EasyCreditInitializationFailedException
      */
     protected function checkInitialization($oUser, $oBasket)
     {
@@ -224,13 +240,13 @@ class EasyCreditOrder extends EasyCreditOrder_parent {
 
         //check payment hash again
         $data = $this->getCurrentInitializationData($oUser, $oBasket);
-        $paymentHash = oxpsEasyCreditInitializeRequestBuilder::generatePaymentHash($data);
+        $paymentHash = EasyCreditInitializeRequestBuilder::generatePaymentHash($data);
 
         $isInitialized = $this->isInitialized($paymentHash, $oBasket);
 
         $this->calculateBasket($oBasket);
         if(!$isInitialized) {
-            throw new oxpsEasyCreditInitializationFailedException();
+            throw new EasyCreditInitializationFailedException();
         }
     }
 
@@ -247,13 +263,13 @@ class EasyCreditOrder extends EasyCreditOrder_parent {
         $requestBuilder->setBasket($oBasket);
         $requestBuilder->setShippingAddress($this->getShippingAddress());
 
-        $shopEdition = oxpsEasyCreditHelper::getShopSystem($this->getConfig()->getActiveShop());
+        $shopEdition = EasyCreditHelper::getShopSystem($this->getConfig()->getActiveShop());
         $requestBuilder->setShopEdition($shopEdition);
 
-        $moduleVersion = oxpsEasyCreditHelper::getModuleVersion($this->getDic());
+        $moduleVersion = EasyCreditHelper::getModuleVersion($this->getDic());
         $requestBuilder->setModuleVersion($moduleVersion);
 
-        $requestBuilder->setBaseLanguage(oxRegistry::getLang()->getBaseLanguage());
+        $requestBuilder->setBaseLanguage(Registry::getLang()->getBaseLanguage());
 
         $data = $requestBuilder->getInitializationData();
         return $data;
@@ -262,8 +278,8 @@ class EasyCreditOrder extends EasyCreditOrder_parent {
     /**
      * Checks, if initialization is already done in the past
      *
-     * @param $newPaymentHash unique hash of paymen
-     * @param $basket oxBasket
+     * @param $newPaymentHash string unique hash of paymen
+     * @param $basket Basket
      *
      * @return bool
      */
@@ -283,11 +299,11 @@ class EasyCreditOrder extends EasyCreditOrder_parent {
 
     /**
      * Returns shipping address
-     * @return oxAddress
+     * @return Address
      */
     protected function getShippingAddress()
     {
-        /** @var $oOrder oxOrder */
+        /** @var $oOrder Order */
         $oOrder = oxNew('oxorder');
         return $oOrder->getDelAddressInfo();
     }
@@ -295,20 +311,20 @@ class EasyCreditOrder extends EasyCreditOrder_parent {
     /**
      * Returns the dic container.
      *
-     * @return oxpsEasyCreditDic
-     * @throws oxSystemComponentException
+     * @return EasyCreditDic
+     * @throws SystemComponentException
      */
     protected function getDic()
     {
         if(!$this->dic) {
-            $this->dic = oxpsEasyCreditDicFactory::getDic();
+            $this->dic = EasyCreditDicFactory::getDic();
         }
 
         return $this->dic;
     }
 
     /**
-     * @return oxpsEasyCreditApiConfig
+     * @return EasyCreditApiConfig
      */
     protected function getApiConfig()
     {
@@ -317,7 +333,7 @@ class EasyCreditOrder extends EasyCreditOrder_parent {
 
     /**
      * Handles exception
-     * @param $ex Exception
+     * @param $ex \Exception
      */
     protected function handleException($ex)
     {
@@ -334,13 +350,13 @@ class EasyCreditOrder extends EasyCreditOrder_parent {
     {
         $oEx = oxNew('oxExceptionToDisplay');
         $oEx->setMessage($i18nMessage);
-        oxRegistry::get("oxUtilsView")->addErrorToDisplay($oEx);
+        Registry::get("oxUtilsView")->addErrorToDisplay($oEx);
     }
 
     /**
      * Recalculates Basket
      *
-     * @param $oBasket oxBasket
+     * @param $oBasket Basket
      */
     protected function calculateBasket($oBasket, $excludeInstalmentsCosts = false)
     {
@@ -353,8 +369,8 @@ class EasyCreditOrder extends EasyCreditOrder_parent {
     /**
      * Returns easycredit processdata
      *
-     * @return oxpsEasyCreditStorage
-     * @throws oxSystemComponentException
+     * @return EasyCreditStorage
+     * @throws SystemComponentException
      */
     protected function getInstalmentStorage()
     {
@@ -375,8 +391,8 @@ class EasyCreditOrder extends EasyCreditOrder_parent {
      * Returns easycredit Tilgungsplan
      * only available as far as storage exists; method will be used for order email
      *
-     * @return oxpsEasyCreditStorage
-     * @throws oxSystemComponentException
+     * @return EasyCreditStorage
+     * @throws SystemComponentException
      */
     public function getTilgungsplanTxt()
     {
@@ -396,7 +412,7 @@ class EasyCreditOrder extends EasyCreditOrder_parent {
     {
         $interestsValue = $this->oxorder__ecredinterestsvalue->value;
         if( $interestsValue ) {
-            return oxRegistry::getLang()->formatCurrency($interestsValue, $this->getOrderCurrency());
+            return Registry::getLang()->formatCurrency($interestsValue, $this->getOrderCurrency());
         }
         return null;
     }
@@ -425,8 +441,8 @@ class EasyCreditOrder extends EasyCreditOrder_parent {
         $processId = $this->getInstalmentStorage()->getTbVorgangskennung();
         $this->getDic()->getSession()->clearStorage();
 
-        $wsClient = oxpsEasyCreditWebServiceClientFactory::getWebServiceClient(
-            oxpsEasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_BESTAETIGEN
+        $wsClient = EasyCreditWebServiceClientFactory::getWebServiceClient(
+            EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_BESTAETIGEN
             , $this->getDic()
             , array($processId)
             , array()

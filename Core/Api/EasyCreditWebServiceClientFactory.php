@@ -16,6 +16,10 @@
 
 namespace OxidProfessionalServices\EasyCredit\Core\Api;
 
+use OxidEsales\Eshop\Core\Exception\SystemComponentException;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditConfigException;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDic;
+
 /**
  * Class EasyCreditWebServiceClientFactory
  *
@@ -25,24 +29,24 @@ class EasyCreditWebServiceClientFactory
 {
     /**
      * @param string $serviceName
-     * @param oxpsEasyCreditDic $dic
+     * @param EasyCreditDic $dic
      * @param array|null $additionalArguments
      * @param array|null $queryArguments
      * @param bool $addheaders
      *
-     * @return oxpsEasyCreditWebServiceClient
-     * @throws oxSystemComponentException
-     * @throws oxpsEasyCreditConfigException
-     * @throws oxpsEasyCreditCurlException
+     * @return EasyCreditWebServiceClient
+     * @throws SystemComponentException
+     * @throws EasyCreditConfigException
+     * @throws EasyCreditCurlException
      */
     public static function getWebServiceClient(
         $serviceName,
-        oxpsEasyCreditDic $dic,
+        EasyCreditDic $dic,
         array $additionalArguments = array(),
         array $queryArguments = array(),
         $addheaders = false
     ) {
-        /** @var oxpsEasyCreditWebServiceClient $client */
+        /** @var EasyCreditWebServiceClient $client */
         $client = oxNew('EasyCreditWebServiceClient');
 
         $apiConfig = $dic->getApiConfig();

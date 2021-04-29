@@ -16,6 +16,8 @@
 
 namespace OxidProfessionalServices\EasyCredit\Core\Di;
 
+use OxidProfessionalServices\EasyCredit\Core\Dto\EasyCreditStorage;
+
 /**
  * Interface DicSessionInterface
  *
@@ -70,14 +72,14 @@ interface EasyCreditDicSessionInterface
     /**
      * Sets storage for easyCredit information
      *
-     * @param $storage oxpsEasyCreditStorage
+     * @param $storage EasyCreditStorage
      */
     public function setStorage($storage);
 
     /**
      * Returns storage for easyCredit information
      *
-     * @return null|oxpsEasyCreditStorage
+     * @return null|EasyCreditStorage
      */
     public function getStorage();
 

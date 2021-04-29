@@ -2,6 +2,8 @@
 
 namespace OxidProfessionalServices\EasyCredit\Core\Domain;
 
+use OxidEsales\Eshop\Core\Registry;
+
 /**
  * Class oxpsEasyCreditOxPayment
  */
@@ -39,9 +41,7 @@ class EasyCreditPayment extends EasyCreditPayment_parent
      */
     public function getEasyCreditAquisitionBorderValue()
     {
-        /** @var $config oxConfig */
-        $config = $this->getConfig();
-        return $config->getConfigParam("oxpsECAquisitionBorderValue");
+        return Registry::getConfig()->getConfigParam("oxpsECAquisitionBorderValue");
     }
 
     /**
@@ -53,9 +53,9 @@ class EasyCreditPayment extends EasyCreditPayment_parent
     {
         $aquisitionValue =  $this->getEasyCreditAquisitionBorderValue();
         if(!empty($aquisitionValue)) {
-            $oConfig = oxRegistry::getConfig();
+            $oConfig = Registry::getConfig();
             $shopCurrency = $oConfig->getActShopCurrencyObject();
-            return oxRegistry::getLang()->formatCurrency($aquisitionValue, $shopCurrency) . " " . $shopCurrency->name;
+            return Registry::getLang()->formatCurrency($aquisitionValue, $shopCurrency) . " " . $shopCurrency->name;
         }
         return null;
     }
@@ -82,8 +82,6 @@ class EasyCreditPayment extends EasyCreditPayment_parent
      */
     public function getEasyCreditAquisitionBorderLastUpdate()
     {
-        /** @var $config oxConfig */
-        $config = $this->getConfig();
-        return $config->getConfigParam("oxpsECAquisitionBorderLastUpdate");
+        return Registry::getConfig()->getConfigParam("oxpsECAquisitionBorderLastUpdate");
     }
 }

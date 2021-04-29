@@ -16,6 +16,10 @@
 
 namespace OxidProfessionalServices\EasyCredit\Core\Helper;
 
+use OxidEsales\Eshop\Application\Model\Address;
+use OxidEsales\Eshop\Application\Model\Basket;
+use OxidEsales\Eshop\Application\Model\User;
+
 /**
  * Interface EasyCreditInitializeRequestBuilderInterface
  *
@@ -40,19 +44,19 @@ interface EasyCreditInitializeRequestBuilderInterface
     /**
      * Sets user/customer
      *
-     * @param oxUser $user
+     * @param User $user
      */
     public function setUser($user);
 
     /**
      * Sets basket
      *
-     * @param oxBasket $basket
+     * @param Basket $basket
      */
     public function setBasket($basket);
 
     /**
-     * @param oxAddress $shippingAddress
+     * @param Address $shippingAddress
      */
     public function setShippingAddress($shippingAddress);
 

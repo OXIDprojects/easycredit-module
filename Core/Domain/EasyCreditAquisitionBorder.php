@@ -15,13 +15,22 @@
 namespace OxidProfessionalServices\EasyCredit\Core\Domain;
 
 use OxidEsales\Eshop\Core\Base;
+use OxidEsales\Eshop\Core\Exception\SystemComponentException;
+use OxidEsales\Eshop\Core\Registry;
+use OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditCurlException;
+use OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditWebServiceClient;
+use OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditWebServiceClientFactory;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditApiConfig;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditConfigException;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDic;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicFactory;
 
 /**
  * Returns and updates aquisition border values about easyCredit
  */
 class EasyCreditAquisitionBorder extends Base {
 
-    /** @var oxpsEasyCreditDic */
+    /** @var EasyCreditDic */
     private $dic = false;
 
     /**
@@ -45,7 +54,7 @@ class EasyCreditAquisitionBorder extends Base {
             $this->saveAquisition((double)$response->restbetrag );
             return true;
         }
-        catch (Exception $ex) {
+        catch (\Exception $ex) {
             $this->handleException($ex);
         }
 
@@ -64,7 +73,7 @@ class EasyCreditAquisitionBorder extends Base {
         $config->setConfigParam("oxpsECAquisitionBorderValue", $aquisitionValue);
         $config->saveShopConfVar('str', 'oxpsECAquisitionBorderValue', $aquisitionValue, $this->getShopId(), 'module:oxpseasycredit');
 
-        $now = oxRegistry::get("oxUtilsDate")->getTime();
+        $now = Registry::get("oxUtilsDate")->getTime();
         $now = date('Y-m-d H:i', $now);
         $config->setConfigParam("oxpsECAquisitionBorderLastUpdate", $now);
         $config->saveShopConfVar('str', 'oxpsECAquisitionBorderLastUpdate', $now, $this->getShopId(), 'module:oxpseasycredit');
@@ -78,7 +87,7 @@ class EasyCreditAquisitionBorder extends Base {
      * @var array $queryArguments query args
      * @var array $data postdata
      * @return string response of webservice
-     * @throws Exception if something happened
+     * @throws \Exception if something happened
      */
     protected function callWsAquisition()
     {
@@ -88,27 +97,27 @@ class EasyCreditAquisitionBorder extends Base {
     /**
      * Returns the dic container.
      *
-     * @return oxpsEasyCreditDic
-     * @throws oxSystemComponentException
+     * @return EasyCreditDic
+     * @throws SystemComponentException
      */
     protected function getDic()
     {
         if(!$this->dic) {
-            $this->dic = oxpsEasyCreditDicFactory::getDic();
+            $this->dic = EasyCreditDicFactory::getDic();
         }
 
         return $this->dic;
     }
 
     /**
-     * Handles exception
-     * @param $ex Exception
+     * Handles \Exception
+     * @param $ex \Exception
      */
     protected function handleException($ex)
     {
         $oEx = oxNew('oxExceptionToDisplay');
         $oEx->setMessage($ex->getMessage());
-        oxRegistry::get("oxUtilsView")->addErrorToDisplay($oEx);
+        Registry::get("oxUtilsView")->addErrorToDisplay($oEx);
         $this->getDic()->getLogging()->log($ex->getMessage());
     }
 
@@ -173,7 +182,7 @@ class EasyCreditAquisitionBorder extends Base {
      * Returns if aquisition value should be considered by webshop frontend (reduced payment types)
      *
      * @return boolean
-     * @throws oxSystemComponentException
+     * @throws SystemComponentException
      */
     public function considerInFrontend()
     {
@@ -183,16 +192,16 @@ class EasyCreditAquisitionBorder extends Base {
     /**
      * Creates and Returns a web service client object.
      *
-     * @return oxpsEasyCreditWebServiceClient
-     * @throws oxSystemComponentException
-     * @throws oxpsEasyCreditConfigException
-     * @throws oxpsEasyCreditCurlException
+     * @return EasyCreditWebServiceClient
+     * @throws SystemComponentException
+     * @throws EasyCreditConfigException
+     * @throws EasyCreditCurlException
      */
     protected function getWebServiceClient()
     {
         $webShopId = $this->getDic()->getApiConfig()->getWebShopId();
-        return oxpsEasyCreditWebServiceClientFactory::getWebServiceClient(
-            oxpsEasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_AQUISITION
+        return EasyCreditWebServiceClientFactory::getWebServiceClient(
+            EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_AQUISITION
             , $this->getDic()
             , array($webShopId)
             , array()

@@ -2,6 +2,21 @@
 
 namespace OxidProfessionalServices\EasyCredit\Core\Helper;
 
+use OxidEsales\Eshop\Application\Model\Address;
+use OxidEsales\Eshop\Application\Model\Article;
+use OxidEsales\Eshop\Application\Model\Basket;
+use OxidEsales\Eshop\Application\Model\BasketItem;
+use OxidEsales\Eshop\Application\Model\Category;
+use OxidEsales\Eshop\Application\Model\Groups;
+use OxidEsales\Eshop\Application\Model\Manufacturer;
+use OxidEsales\Eshop\Application\Model\User;
+use OxidEsales\Eshop\Core\Config;
+use OxidEsales\Eshop\Core\Exception\SystemComponentException;
+use OxidEsales\Eshop\Core\Session;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditApiConfig;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDic;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicFactory;
+
 /**
  * Class to build the data for request "VorgangInitialisierenRequest" as part of initialization of easyCredit
  * This class is isolated and prepared to use in unit tests. For this case please set all members from outside.
@@ -15,13 +30,13 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
     const RISCS_BESTANDSKUNDE       = "BESTANDSKUNDE";
     const ARTICLE_GTIN              = "GTIN";
 
-    /** @var oxUser */
+    /** @var User */
     private $user;
 
-    /** @var oxBasket */
+    /** @var Basket */
     private $basket;
 
-    /** @var oxAddress */
+    /** @var Address */
     private $shippingAddress;
 
     /** @var string */
@@ -39,7 +54,7 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
     /** @var  string */
     private $baseLanguage;
 
-    /** @var oxpsEasyCreditDic */
+    /** @var EasyCreditDic */
     private $dic;
 
     private $salutationMapping = array(
@@ -153,7 +168,7 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
         self::RISCS_BESTANDSKUNDE;
         $userGroups = $user->getUserGroups();
         if (count($userGroups)) {
-            /** @var $userGroup oxGroups */
+            /** @var $userGroup Groups */
             foreach ($userGroups as $userGroup) {
                 if( $userGroup->getId() == "oxidnotyetordered" ) {
                     return self::RISCS_NEUKUNDE;
@@ -346,7 +361,7 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
     /**
      * Returns session
      *
-     * @return oxSession
+     * @return Session
      */
     protected function getSession() {
 
@@ -357,7 +372,7 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
     /**
      * Returns config
      *
-     * @return oxConfig
+     * @return Config
      */
     protected function getConfig() {
 
@@ -388,7 +403,7 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
     /**
      * Returns basket
      *
-     * @return oxBasket
+     * @return Basket
      */
     protected function getBasket() {
 
@@ -418,7 +433,7 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
     /**
      * Returns user
      *
-     * @return oxUser
+     * @return User
      */
     protected function getUser() {
 
@@ -438,7 +453,7 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
     /**
      * Sets user/customer
      *
-     * @param oxUser $user
+     * @param User $user
      */
     public function setUser($user)
     {
@@ -448,7 +463,7 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
     /**
      * Sets basket
      *
-     * @param oxBasket $basket
+     * @param Basket $basket
      */
     public function setBasket($basket)
     {
@@ -456,7 +471,7 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
     }
 
     /**
-     * @param oxAddress $shippingAddress
+     * @param Address $shippingAddress
      */
     public function setShippingAddress($shippingAddress)
     {
@@ -607,25 +622,25 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
     /**
      * Returns information about an certain basket position
      *
-     * @param $basketitem oxBasketItem
+     * @param $basketitem BasketItem
      * @param $basketproduct
      *
      * @return array
      */
     protected function getBasketPositionInfo($basketitem, $basketproduct)
     {
-        /** @var $article oxArticle */
+        /** @var $article Article */
         $article = $basketitem->getArticle();
 
         $manufacturerTitle = "";
-        /** @var $manufacturer oxManufacturer */
+        /** @var $manufacturer Manufacturer */
         $manufacturer = $article->getManufacturer();
         if ($manufacturer && $manufacturer->getId()) {
             $manufacturerTitle = $manufacturer->getTitle();
         }
 
         $categoryTitle = "";
-        /** @var $category oxCategory */
+        /** @var $category Category */
         $category = $article->getCategory();
         if ($category && $category->getId()) {
             $categoryTitle = $category->getTitle();
@@ -674,20 +689,20 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
     /**
      * Returns the dic container.
      *
-     * @return oxpsEasyCreditDic
-     * @throws oxSystemComponentException
+     * @return EasyCreditDic
+     * @throws SystemComponentException
      */
     protected function getDic()
     {
         if (!$this->dic) {
-            $this->dic = oxpsEasyCreditDicFactory::getDic();
+            $this->dic = EasyCreditDicFactory::getDic();
         }
 
         return $this->dic;
     }
 
     /**
-     * @return oxpsEasyCreditApiConfig
+     * @return EasyCreditApiConfig
      */
     protected function getApiConfig()
     {

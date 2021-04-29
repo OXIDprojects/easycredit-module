@@ -13,6 +13,9 @@
 
 namespace OxidProfessionalServices\EasyCredit\Application\Controller\Admin;
 
+use OxidEsales\Eshop\Application\Model\Order;
+use OxidProfessionalServices\EasyCredit\Core\Domain\EasyCreditPayment;
+
 /**
  * Order admin class for easyCredit
  *
@@ -21,7 +24,7 @@ namespace OxidProfessionalServices\EasyCredit\Application\Controller\Admin;
 class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController
 {
     /**
-     * @var oxOrder order
+     * @var Order order
      */
     private $order = false;
 
@@ -52,15 +55,15 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
      */
     public function hasEasyCreditPayment()
     {
-        /** @var $order oxOrder */
+        /** @var $order Order */
         $order = $this->getOrder();
-        return $order && oxpsEasyCreditOxPayment::isEasyCreditInstallmentById($order->getFieldData('oxpaymenttype'));
+        return $order && EasyCreditPayment::isEasyCreditInstallmentById($order->getFieldData('oxpaymenttype'));
     }
 
     /**
      * Returns current edited order object
      *
-     * @return oxOrder
+     * @return Order
      */
     protected function getOrder()
     {

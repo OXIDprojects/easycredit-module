@@ -2,6 +2,8 @@
 
 namespace OxidProfessionalServices\EasyCredit\Core\Domain;
 
+use OxidProfessionalServices\EasyCredit\Core\Dto\EasyCreditStorage;
+
 /**
  * Class oxpsEasyCreditOxSession
  *
@@ -14,7 +16,7 @@ class EasyCreditSession extends EasyCreditSession_parent
     /**
      * Sets storage for easyCredit information
      *
-     * @param $storage oxpsEasyCreditStorage
+     * @param $storage EasyCreditStorage
      */
     public function setStorage($storage)
     {
@@ -29,11 +31,11 @@ class EasyCreditSession extends EasyCreditSession_parent
     /**
      * Returns storage with easyCredit information
      *
-     * @return stdClass storage
+     * @return \stdClass storage
      */
     public function getStorage()
     {
-        /** @var $storage oxpsEasyCreditStorage */
+        /** @var $storage EasyCreditStorage */
         $storage = unserialize((string)$this->getVariable(self::API_CONFIG_STORAGE));
         if(!empty($storage) && $storage->hasExpired()) {
             $this->clearStorage();

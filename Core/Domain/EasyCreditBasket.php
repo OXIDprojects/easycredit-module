@@ -14,6 +14,9 @@
 
 namespace OxidProfessionalServices\EasyCredit\Core\Domain;
 
+use OxidEsales\Eshop\Core\Exception\SystemComponentException;
+use OxidEsales\Eshop\Core\Price;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDic;
 use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicFactory;
 
 /**
@@ -54,8 +57,8 @@ class EasyCreditBasket extends EasyCreditBasket_parent
     /**
      * Returns the dic container.
      *
-     * @return oxpsEasyCreditDic
-     * @throws oxSystemComponentException
+     * @return EasyCreditDic
+     * @throws SystemComponentException
      * @codeCoverageIgnore
      */
     protected function getDic()
@@ -80,11 +83,11 @@ class EasyCreditBasket extends EasyCreditBasket_parent
     /**
      * Returns current interests value as price object
      *
-     * @return oxPrice
+     * @return Price
      */
     public function calcInterestsCost() {
 
-        /** @var $interestsPrice oxPrice */
+        /** @var $interestsPrice Price */
         $interestsPrice = oxNew('oxPrice');
         if ($this->hasInterestsAmount()) {
             $interestsPrice->add($this->getInterestsAmount());

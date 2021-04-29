@@ -2,6 +2,14 @@
 
 namespace OxidProfessionalServices\EasyCredit\Core\Helper;
 
+use OxidEsales\Eshop\Application\Model\Article;
+use OxidEsales\Eshop\Application\Model\Basket;
+use OxidEsales\Eshop\Application\Model\Shop;
+use OxidEsales\Eshop\Core\Exception\SystemComponentException;
+use OxidEsales\Eshop\Core\Module\Module;
+use OxidEsales\Eshop\Core\Price;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDic;
+
 /**
  * Helper class with common used business methods.
  */
@@ -11,15 +19,15 @@ class EasyCreditHelper
      * Returns the price relevant for the example calculation.
      *
      * @param string $articleId
-     * @param oxBasket $basket
+     * @param Basket $basket
      *
-     * @return oxPrice
-     * @throws oxSystemComponentException
+     * @return Price
+     * @throws SystemComponentException
      */
     public static function getExampleCalculationPrice($articleId, $basket)
     {
         if ($articleId) {
-            /** @var oxArticle $article */
+            /** @var Article $article */
             $article = oxNew('oxarticle');
             if ($article->load($articleId)) {
                 return $article->getPrice();
@@ -56,7 +64,7 @@ class EasyCreditHelper
     /**
      * Returns shop full edition
      *
-     * @param $shop oxShop
+     * @param $shop Shop
      *
      * @return string
      */
@@ -78,12 +86,12 @@ class EasyCreditHelper
     /**
      * Returns easyCredit module version
      *
-     * @param oxpsEasyCreditDic $dic
+     * @param EasyCreditDic $dic
      * @return string
      */
-    public static function getModuleVersion(oxpsEasyCreditDic $dic)
+    public static function getModuleVersion(EasyCreditDic $dic)
     {
-        /** @var $module oxModule */
+        /** @var $module Module */
         $module = oxNew('oxModule');
         if ($module->load($dic->getApiConfig()->getEasyCreditModuleId())) {
             return $module->getInfo('version');
