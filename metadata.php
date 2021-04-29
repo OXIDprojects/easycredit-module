@@ -39,10 +39,14 @@ $aModule = [
     'email'       => 'info@oxid-esales.com',
     'controllers' => [
         //'oxpsEasyCreditDispatcher' => 'oxps/easycredit/controllers/oxpseasycreditdispatcher.php',
-        'oxpsEasyCreditDispatcher'      => \OxidProfessionalServices\EasyCredit\Application\Controller\EasyCreditDispatcherController::class,
+        'oxpsEasyCreditDispatcher'          => \OxidProfessionalServices\EasyCredit\Application\Controller\EasyCreditDispatcherController::class,
         # Admin
         //'oxpsEasyCreditOrderEasyCredit' => 'oxps/easycredit/controllers/admin/oxpseasycreditordereasycredit.php',
-        'oxpsEasyCreditOrderEasyCredit' => \OxidProfessionalServices\EasyCredit\Application\Controller\Admin\EasyCreditOrderEasyCreditController::class
+        'oxpsEasyCreditOrderEasyCredit'     => \OxidProfessionalServices\EasyCredit\Application\Controller\Admin\EasyCreditOrderEasyCreditController::class,
+        # Widgets
+        'easycreditexamplecalculation'      => \OxidProfessionalServices\EasyCredit\Application\Component\Widget\EasyCreditExampleCalculation::class,
+        'easycreditexamplecalculationpopup' => \OxidProfessionalServices\EasyCredit\Application\Component\Widget\EasyCreditExampleCalculationPopup::class,
+
     ],
     'extend'      => [
         # extended controller

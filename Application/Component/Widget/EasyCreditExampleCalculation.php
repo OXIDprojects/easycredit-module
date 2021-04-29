@@ -115,14 +115,14 @@ class EasyCreditExampleCalculation extends WidgetController
     {
         $sURL = Registry::getConfig()->getConfigParam('sShopURL');
         $articleId = $this->getViewParameter("articleId");
-        return $sURL . 'index.php?cl=oxpseasycreditexamplecalculation' . ($articleId ? '&articleId=' . $articleId : '') . '&placeholderId=' . $this->getViewParameter("placeholderId") . '&ajax=1';
+        return $sURL . 'index.php?cl=easycreditexamplecalculation' . ($articleId ? '&articleId=' . $articleId : '') . '&placeholderId=' . $this->getViewParameter("placeholderId") . '&ajax=1';
     }
 
     public function getPopupAjaxUrl()
     {
         $sURL = Registry::getConfig()->getConfigParam('sShopURL');
         $articleId = $this->getViewParameter("articleId");
-        return $sURL . 'index.php?cl=oxpseasycreditexamplecalculationpopup' . ($articleId ? '&articleId=' . $articleId : '') . '&ajax=1';
+        return $sURL . 'index.php?cl=easycreditexamplecalculationpopup' . ($articleId ? '&articleId=' . $articleId : '') . '&ajax=1';
     }
 
     public function isAjax()
