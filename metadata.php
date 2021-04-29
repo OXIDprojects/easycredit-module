@@ -36,7 +36,7 @@ $aModule = [
     'version' => '2.0.5',
     'author' => 'OXID Professional Services',
     'url' => 'https://www.oxid-esales.com',
-    'email'  > 'info@oxid-esales.com',
+    'email' => 'info@oxid-esales.com',
     'controllers' => [
         //'oxpsEasyCreditDispatcher' => 'oxps/easycredit/controllers/oxpseasycreditdispatcher.php',
         'oxpsEasyCreditDispatcher'          => \OxidProfessionalServices\EasyCredit\Application\Controller\EasyCreditDispatcherController::class,
@@ -172,9 +172,9 @@ $aModule = [
             'template' => 'order_main.tpl',
             'block'    => 'admin_order_main_form_details',
             'file'     => 'Application/views/blocks/admin/oxpseasycredit_order_main_form_details.tpl',
-        ],
+        ]
     ],
-    'settings'    => [
+    'settings' => [
         [
             'group' => 'EasyCreditApi',
             'name'  => 'oxpsECBaseUrl',
