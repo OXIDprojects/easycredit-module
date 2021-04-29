@@ -92,6 +92,10 @@ class oxpsEasyCreditExampleCalculation extends oxWidget
             $this->getDic()->getLogging()->log($ex->getMessage());
         }
     }
+    public function getUseOwnjQueryUI()
+    {
+        return oxRegistry::getConfig()->getConfigParam('oxpsECExampleUseOwnjQueryUI');
+    }
     public function getAjaxUrl()
     {
         $sURL = oxRegistry::getConfig()->getConfigParam('sShopURL');
