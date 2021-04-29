@@ -1,5 +1,0 @@
-[{if $sPaymentID == "easycreditinstallment"}]
-    [{include file="page/checkout/inc/payment_easycreditinstallment.tpl"}]
-[{else}]
-    [{$smarty.block.parent}]
-[{/if}]

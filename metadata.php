@@ -67,11 +67,6 @@ $aModule = [
         //'oxorder'       => 'oxps/easycredit/core/domain/oxpseasycreditoxorder'
         \OxidEsales\Eshop\Application\Model\Order::class                   => \OxidProfessionalServices\EasyCredit\Core\Domain\EasyCreditOrder::class
     ],
-    'files'       => [
-        'EasyCreditExampleCalculation'                => 'oxps/easycredit/components/widgets/EasyCreditExampleCalculation.php',
-        'EasyCreditExampleCalculationPopup'           => 'oxps/easycredit/components/widgets/EasyCreditExampleCalculationPopup.php',
-
-    ],
     'templates'   => [
         'page/checkout/inc/payment_easycreditinstallment.tpl' => 'oxps/easycredit/Application/views/page/checkout/inc/oxpseasycredit_payment_easycreditinstallment.tpl',
         'oxpseasycredit_examplecalculation.tpl'               => 'oxps/easycredit/Application/views/widgets/oxpseasycredit_examplecalculation.tpl',
