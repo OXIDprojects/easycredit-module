@@ -33,7 +33,7 @@ $aModule = [
         'en' => 'OXPS Easy Credit Module',
     ],
     'thumbnail'   => 'out/pictures/picture.png',
-    'version'     => '2.0.4',
+    'version'     => '2.0.5',
     'author'      => 'OXID Professional Services',
     'url'         => 'http://www.oxid-esales.com',
     'email'       => 'info@oxid-esales.com',
@@ -172,25 +172,25 @@ $aModule = [
     ],
     'settings'    => [
         [
-            'group' => 'oxpsEasyCreditApi',
+            'group' => 'EasyCreditApi',
             'name'  => 'oxpsECBaseUrl',
             'type'  => 'str',
             'value' => 'https://ratenkauf.easycredit.de/ratenkauf-ws/rest',
         ],
         [
-            'group' => 'oxpsEasyCreditApi',
+            'group' => 'EasyCreditApi',
             'name'  => 'oxpsECWebshopId',
             'type'  => 'str',
             'value' => '',
         ],
         [
-            'group' => 'oxpsEasyCreditApi',
+            'group' => 'EasyCreditApi',
             'name'  => 'oxpsECWebshopToken',
             'type'  => 'str',
             'value' => '',
         ],
         [
-            'group' => 'oxpsEasyCreditCheckout',
+            'group' => 'EasyCreditCheckout',
             'name'  => 'oxpsECCheckoutValidConfirm',
             'type'  => 'bool',
             'value' => true,
@@ -214,7 +214,13 @@ $aModule = [
             'value' => true,
         ],
         [
-            'group' => 'oxpsEasyCreditLogging',
+            'group' => 'EasyCreditExampleCalculation',
+            'name'  => 'oxpsECExampleUseOwnjQueryUI',
+            'type'  => 'bool',
+            'value' => true,
+        ],
+        [
+            'group' => 'EasyCreditLogging',
             'name'  => 'oxpsECLogging',
             'type'  => 'bool',
             'value' => false,

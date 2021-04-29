@@ -105,6 +105,12 @@ class EasyCreditExampleCalculation extends WidgetController
             $this->getDic()->getLogging()->log($ex->getMessage());
         }
     }
+
+    public function getUseOwnjQueryUI()
+    {
+        return oxRegistry::getConfig()->getConfigParam('oxpsECExampleUseOwnjQueryUI');
+    }
+
     public function getAjaxUrl()
     {
         $sURL = Registry::getConfig()->getConfigParam('sShopURL');
