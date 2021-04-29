@@ -16,6 +16,13 @@
 
 namespace OxidProfessionalServices\EasyCredit\Core;
 
+use OxidEsales\Eshop\Core\DatabaseProvider;
+use OxidEsales\Eshop\Core\DbMetaDataHandler;
+use OxidEsales\Eshop\Core\Field;
+use \OxidEsales\Eshop\Core\Model\MultiLanguageModel;
+use OxidEsales\Eshop\Application\Model\Content;
+use OxidEsales\Eshop\Core\Registry;
+
 /**
  * Class oxpsEasyCreditModule
  * Handles module setup, provides additional tools and module related helpers.
@@ -104,7 +111,7 @@ class Events
             $sCode = 'OXPS_EASYCREDIT_' . $sCode;
         }
 
-        return oxRegistry::getLang()->translateString($sCode, oxRegistry::getLang()->getBaseLanguage(), false);
+        return Registry::getLang()->translateString($sCode, Registry::getLang()->getBaseLanguage(), false);
     }
 
     /**
@@ -119,11 +126,11 @@ class Events
     {
         $sValue = '';
 
-        /** @var oxContent|oxI18n $oContent */
+        /** @var Content|MultiLanguageModel $oContent */
         $oContent = oxNew('oxContent');
         $oContent->loadByIdent(trim((string) $sIdentifier));
 
-        if ($oContent->oxcontents__oxcontent instanceof oxField) {
+        if ($oContent->oxcontents__oxcontent instanceof Field) {
             $sValue = (string) $oContent->oxcontents__oxcontent->getRawValue();
             $sValue = (empty($blNoHtml) ? $sValue : nl2br(strip_tags($sValue)));
         }
@@ -145,7 +152,7 @@ class Events
             $sModuleSettingName = 'oxpsEasyCredit' . (string) $sModuleSettingName;
         }
 
-        return oxRegistry::getConfig()->getConfigParam((string) $sModuleSettingName);
+        return Registry::getConfig()->getConfigParam((string) $sModuleSettingName);
     }
 
     /**
@@ -155,7 +162,7 @@ class Events
      */
     public function getPath()
     {
-        return oxRegistry::getConfig()->getModulesDir() . 'oxps/easycredit/';
+        return Registry::getConfig()->getModulesDir() . 'oxps/easycredit/';
     }
 
     /**
@@ -168,7 +175,7 @@ class Events
     protected static function _dbEvent($sSqlFile, $sFailureError = 'Operation failed: ')
     {
         try {
-            $oDb  = oxDb::getDb();
+            $oDb  = DatabaseProvider::getDb();
             $sSql = file_get_contents(dirname(__FILE__) . '/../installments/' . (string) $sSqlFile);
             $aSql = (array) explode(';', $sSql);
 
@@ -177,11 +184,11 @@ class Events
                     $oDb->execute($sQuery);
                 }
             }
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             error_log($sFailureError . $ex->getMessage());
         }
 
-        /** @var oxDbMetaDataHandler $oDbHandler */
+        /** @var DbMetaDataHandler $oDbHandler */
         //$oDbHandler = oxNew('oxDbMetaDataHandler');
         //$oDbHandler->updateViews();
 
@@ -199,7 +206,7 @@ class Events
      */
     protected static function _getFolderToClear($sClearFolderPath = '')
     {
-        $sTempFolderPath = (string) oxRegistry::getConfig()->getConfigParam('sCompileDir');
+        $sTempFolderPath = (string) Registry::getConfig()->getConfigParam('sCompileDir');
 
         if (!empty($sClearFolderPath) and (strpos($sClearFolderPath, $sTempFolderPath) !== false)) {
             $sFolderPath = $sClearFolderPath;
@@ -234,7 +241,7 @@ class Events
      */
     protected static function _dbEventAddColums() {
 
-        $oDb = oxDb::getDb();
+        $oDb = DatabaseProvider::getDb();
 
         $dbStructure = file_get_contents(dirname(__FILE__) . '/../installments/install_adddbcolumns.json');
         if(!$dbStructure ) {
@@ -248,7 +255,7 @@ class Events
 
         $tables = $addColumns["tables"];
 
-        /** @var $oDbMetaDataHandler oxDbMetaDataHandler */
+        /** @var $oDbMetaDataHandler DbMetaDataHandler */
         $oDbMetaDataHandler = oxNew('oxDbMetaDataHandler');
 
         foreach ($tables as $tableName => $columns) {
@@ -269,7 +276,7 @@ class Events
                     , $columnData["colnullable"]
                     , $oDb->quote($columnData["comment"])
                 );
-                oxDb::getDb()->execute($addColumnSql);
+                DatabaseProvider::getDb()->execute($addColumnSql);
             }
         }
     }
@@ -284,7 +291,7 @@ class Events
     protected static function _dbEventShopSpecific($sSqlFile, $sFailureError = 'Operation failed: ')
     {
         $sqls = file_get_contents(dirname(__FILE__) . '/../installments/' . (string) $sSqlFile);
-        $aShops = oxDb::getDb()->getAll('SELECT oxid FROM oxshops');
+        $aShops = DatabaseProvider::getDb()->getAll('SELECT oxid FROM oxshops');
 
         // Iterate all SubShops
         foreach (explode(';', $sqls) as $sql) {
@@ -307,8 +314,8 @@ class Events
             }
             $sql = str_replace('#shop#', $sShopId, $sql);
             try {
-                oxDb::getDb()->execute($sql);
-            } catch (Exception $ex) {
+                DatabaseProvider::getDb()->execute($sql);
+            } catch (\Exception $ex) {
                 error_log($sFailureError . $ex->getMessage());
             }
         }
