@@ -51,7 +51,7 @@ class Events
 
         $this->load($sModuleId);
 
-        oxRegistry::set('oxpsEasyCreditModule', $this);
+        Registry::set('oxpsEasyCreditModule', $this);
     }*/
 
 

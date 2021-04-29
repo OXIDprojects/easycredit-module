@@ -28,7 +28,7 @@ use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicSession;
  * Order manager. Arranges user ordering data, checks/validates
  * it, on success stores ordering data to DB.
  */
-class EasyCreditOrderController extends EasyCreditOrder_parent
+class EasyCreditOrderController extends EasyCreditOrderController_parent
 {
 
     /** @var EasyCreditDic */

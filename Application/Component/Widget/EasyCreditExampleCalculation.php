@@ -108,7 +108,7 @@ class EasyCreditExampleCalculation extends WidgetController
 
     public function getUseOwnjQueryUI()
     {
-        return oxRegistry::getConfig()->getConfigParam('oxpsECExampleUseOwnjQueryUI');
+        return Registry::getConfig()->getConfigParam('oxpsECExampleUseOwnjQueryUI');
     }
 
     public function getAjaxUrl()

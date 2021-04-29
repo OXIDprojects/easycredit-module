@@ -70,7 +70,7 @@ class EasyCreditResponseValidator
 
     private function getExceptionClassname($validation)
     {
-        return isset($validation[self::VALIDATION_KEY_ERROR_EXCEPTION]) ? $validation[self::VALIDATION_KEY_ERROR_EXCEPTION] : 'EasyCreditValidationException';
+        return isset($validation[self::VALIDATION_KEY_ERROR_EXCEPTION]) ? $validation[self::VALIDATION_KEY_ERROR_EXCEPTION] : EasyCreditValidationException::class;
     }
 
     private function getValidationExceptionMessage(array $validation)

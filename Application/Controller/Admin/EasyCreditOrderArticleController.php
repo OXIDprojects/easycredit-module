@@ -18,7 +18,7 @@ namespace OxidProfessionalServices\EasyCredit\Application\Controller\Admin;
  *
  * Disables editing of addresses of easyCredit orders.
  */
-class EasyCreditOrderArticleController extends EasyCreditOrderArticle_parent
+class EasyCreditOrderArticleController extends EasyCreditOrderArticleController_parent
 {
     /**
      * If possible returns searched/found oxarticle object

@@ -41,7 +41,7 @@ use OxidProfessionalServices\EasyCredit\Core\Helper\EasyCreditHelper;
  *
  * @see Payment
  */
-class EasyCreditPaymentController extends EasyCreditPayment_parent
+class EasyCreditPaymentController extends EasyCreditPaymentController_parent
 {
     /** @var EasyCreditDic */
     private $dic;

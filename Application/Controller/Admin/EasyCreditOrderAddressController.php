@@ -20,7 +20,7 @@ use OxidEsales\Eshop\Application\Model\Order;
  *
  * Disables editing of addresses of easyCredit orders.
  */
-class EasyCreditOrderAddressController extends EasyCreditOrderAddress_parent
+class EasyCreditOrderAddressController extends EasyCreditOrderAddressController_parent
 {
     public function render()
     {
