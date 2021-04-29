@@ -13,7 +13,6 @@ class EasyCreditExampleCalculationPopupTest extends UnitTestCase
     /**
      * Set up test environment
      *
-     * @return null
      */
     public function setUp(): void
     {
@@ -23,7 +22,6 @@ class EasyCreditExampleCalculationPopupTest extends UnitTestCase
     /**
      * Tear down test environment
      *
-     * @return null
      */
     public function tearDown(): void
     {

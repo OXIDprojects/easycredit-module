@@ -1,6 +1,6 @@
 <?php
 
-namespace OxidProfessionalServices\EasyCredit\Tests\Unit\Application\Controller\Admin;
+namespace OxidProfessionalServices\EasyCredit\Tests\Unit\Application\Controller;
 
 use OxidEsales\Eshop\Application\Model\Order;
 use OxidEsales\Eshop\Application\Model\User;
