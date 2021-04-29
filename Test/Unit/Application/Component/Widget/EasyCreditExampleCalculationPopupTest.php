@@ -1,23 +1,13 @@
 <?php
-/**
- * This Software is the property of OXID eSales and is protected
- * by copyright law - it is NOT Freeware.
- *
- * Any unauthorized use of this software without a valid license key
- * is a violation of the license agreement and will be prosecuted by
- * civil and criminal law.
- *
- * @category      module
- * @package       easycredit
- * @author        OXID Professional Services
- * @link          http://www.oxid-esales.com
- * @copyright (C) OXID eSales AG 2003-2018
- */
+
+namespace OxidProfessionalServices\EasyCredit\Tests\UnitApplication\Component\Widget;
+
+use OxidProfessionalServices\EasyCredit\Application\Component\Widget\EasyCreditExampleCalculationPopup;
 
 /**
- * Class oxpsEasyCreditExampleCalculationPopupTest
+ * Class EasyCreditExampleCalculationPopupTest
  */
-class oxpsEasyCreditExampleCalculationPopupTest extends OxidTestCase
+class EasyCreditExampleCalculationPopupTest extends OxidTestCase
 {
     /**
      * Set up test environment
@@ -41,13 +31,13 @@ class oxpsEasyCreditExampleCalculationPopupTest extends OxidTestCase
 
     public function testGetExampleCalculationRate()
     {
-        $popup = oxNew('EasyCreditExampleCalculationPopup');
+        $popup = oxNew(EasyCreditExampleCalculationPopup::class);
         $this->assertNotNull($popup->getDic());
     }
 
     public function testGetBasket()
     {
-        $popup = oxNew('EasyCreditExampleCalculationPopup');
+        $popup = oxNew(EasyCreditExampleCalculationPopup::class);
         $basket = $popup->getBasket();
         $this->assertNotNull($basket);
         $price = $basket->getPrice();
@@ -57,7 +47,7 @@ class oxpsEasyCreditExampleCalculationPopupTest extends OxidTestCase
 
     public function testGetPrice()
     {
-        $popup = oxNew('EasyCreditExampleCalculationPopup');
+        $popup = oxNew(EasyCreditExampleCalculationPopup::class);
         $price = $popup->getPrice();
         $this->assertNotNull($price);
         $this->assertEquals(0.0, $price->getPrice());
@@ -65,7 +55,7 @@ class oxpsEasyCreditExampleCalculationPopupTest extends OxidTestCase
 
     public function testGetIFrameUrl()
     {
-        $popup = oxNew('EasyCreditExampleCalculationPopup');
+        $popup = oxNew(EasyCreditExampleCalculationPopup::class);
         $this->assertEquals('https://ratenkauf.easycredit.de/ratenkauf/content/intern/paymentPageBeispielrechnung.jsf?shopKennung=&bestellwert=0', $popup->getIFrameUrl());
     }
 }

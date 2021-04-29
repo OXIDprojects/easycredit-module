@@ -41,6 +41,6 @@ class oxpseasycredit_admin_de_lang extends OxidTestCase
 
     public function testAdminTranslation()
     {
-        $this->assertEquals('API', oxRegistry::getLang()->translateString("SHOP_MODULE_GROUP_oxpsEasyCreditApi", 0, true));
+        $this->assertEquals('API', Registry::getLang()->translateString("SHOP_MODULE_GROUP_EasyCreditApi", 0, true));
     }
 }
