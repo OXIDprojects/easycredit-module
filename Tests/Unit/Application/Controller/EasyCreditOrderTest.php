@@ -1,30 +1,32 @@
 <?php
-/**
- * This Software is the property of OXID eSales and is protected
- * by copyright law - it is NOT Freeware.
- *
- * Any unauthorized use of this software without a valid license key
- * is a violation of the license agreement and will be prosecuted by
- * civil and criminal law.
- *
- * @category      module
- * @package       easycredit
- * @author        OXID Professional Services
- * @link          http://www.oxid-esales.com
- * @copyright (C) OXID eSales AG 2003-2018
- */
+
+namespace OxidProfessionalServices\EasyCredit\Tests\Unit\Application\Controller;
+
+use OxidEsales\Eshop\Application\Model\Order;
+use OxidEsales\Eshop\Application\Model\Payment;
+use OxidEsales\Eshop\Core\Field;
+use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\Eshop\Core\ViewConfig;
+use OxidEsales\TestingLibrary\UnitTestCase;
+use OxidProfessionalServices\EasyCredit\Core\CrossCutting\EasyCreditLogging;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDic;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicConfig;
+use OxidProfessionalServices\EasyCredit\Core\Domain\EasyCreditOrder;
+use OxidProfessionalServices\EasyCredit\Core\Domain\EasyCreditSession;
+use OxidProfessionalServices\EasyCredit\Core\Dto\EasyCreditStorage;
+use OxidProfessionalServices\EasyCredit\Core\PayLoad\EasyCreditPayloadFactory;
 
 /**
- * Class oxpsEasyCreditOrderTest
+ * Class EasyCreditOrderTest
  */
-class oxpsEasyCreditOrderTest extends OxidTestCase
+class EasyCreditOrderTest extends UnitTestCase
 {
     /**
      * Set up test environment
      *
      * @return null
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
     }
@@ -34,23 +36,23 @@ class oxpsEasyCreditOrderTest extends OxidTestCase
      *
      * @return null
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
     }
 
     protected function buildDic($oxSession)
     {
-        $mockOxConfig = $this->getMock('oxConfig', array(), array());
+        $mockOxConfig = $this->getMock(Registry::getConfig(), [], []);
 
         $session = oxNew(EasyCreditDicSession::class, $oxSession);
         $mockApiConfig = oxNew(EasyCreditApiConfig::class, oxpsEasyCreditDicFactory::getApiConfigArray());
-        $mockLogging = $this->getMock('EasyCreditLogging', array(), array(array()));
-        $mockPayloadFactory = $this->getMock('EasyCreditPayloadFactory', array(), array());
-        $mockDicConfig = $this->getMock('EasyCreditDicConfig', array(), array($mockOxConfig));
+        $mockLogging = $this->getMock(EasyCreditLogging::class, [], [[]]);
+        $mockPayloadFactory = $this->getMock(EasyCreditPayloadFactory::class, [], []);
+        $mockDicConfig = $this->getMock(EasyCreditDicConfig::class, [], [$mockOxConfig]);
 
         $mockDic = oxNew(
-            'oxpseasycreditdic',
+            EasyCreditDic::class,
             $session,
             $mockApiConfig,
             $mockPayloadFactory,
@@ -63,28 +65,28 @@ class oxpsEasyCreditOrderTest extends OxidTestCase
 
     public function testGetPaymentNoEasyCredit()
     {
-        $order = oxNew('order');
+        $order = oxNew(Order::class);
         $this->assertNotNull($order->getPayment());
     }
 
     public function testGetPaymentEasyCreditWithoutPaymentPlan()
     {
-        $session = oxNew('oxpsEasyCreditOxSession');
+        $session = oxNew(EasyCreditSession::class);
         $dic = $this->buildDic($session);
 
         $storage = oxNew(
-            'EasyCreditStorage',
+            EasyCreditStorage::class,
             'tbVorgangskennung',
             'fachlicheVorgangskennung',
             'b8d01510bbbf5fe767f068122ba0b0c4',
             0.0
         );
-        $session->setVariable(oxpsEasyCreditOxSession::API_CONFIG_STORAGE, serialize($storage));
+        $session->setVariable(EasyCreditSession::API_CONFIG_STORAGE, serialize($storage));
 
-        $payment = oxNew('oxpayment');
+        $payment = oxNew(Payment::class);
         $payment->setId(oxpsEasyCreditOxPayment::EASYCREDIT_PAYMENTID);
 
-        $order = $this->getMock('oxpseasycreditorder', array('getDic', 'parentGetPayment'));
+        $order = $this->getMock(EasyCreditOrder::class, ['getDic', 'parentGetPayment']);
         $order->expects($this->any())->method('getDic')->willReturn($dic);
         $order->expects($this->any())->method('parentGetPayment')->willReturn($payment);
 
@@ -93,11 +95,11 @@ class oxpsEasyCreditOrderTest extends OxidTestCase
 
     public function testGetPaymentEasyCredit()
     {
-        $session = oxNew('oxpsEasyCreditOxSession');
+        $session = oxNew(EasyCreditSession::class);
         $dic = $this->buildDic($session);
 
         $storage = oxNew(
-            'EasyCreditStorage',
+            EasyCreditStorage::class,
             'tbVorgangskennung',
             'fachlicheVorgangskennung',
             'b8d01510bbbf5fe767f068122ba0b0c4',
@@ -105,13 +107,13 @@ class oxpsEasyCreditOrderTest extends OxidTestCase
         );
         $text = 'payment plan';
         $storage->setRatenplanTxt($text);
-        $session->setVariable(oxpsEasyCreditOxSession::API_CONFIG_STORAGE, serialize($storage));
+        $session->setVariable(EasyCreditSession::API_CONFIG_STORAGE, serialize($storage));
 
-        $payment = oxNew('oxpayment');
-        $payment->oxpayments__oxdesc = new oxField('test payment');
+        $payment = oxNew(Payment::class);
+        $payment->oxpayments__oxdesc = new Field('test payment');
         $payment->setId(oxpsEasyCreditOxPayment::EASYCREDIT_PAYMENTID);
 
-        $order = $this->getMock('oxpseasycreditorder', array('getDic', 'parentGetPayment'));
+        $order = $this->getMock(EasyCreditOrder::class, ['getDic', 'parentGetPayment']);
         $order->expects($this->any())->method('getDic')->willReturn($dic);
         $order->expects($this->any())->method('parentGetPayment')->willReturn($payment);
 
@@ -120,11 +122,11 @@ class oxpsEasyCreditOrderTest extends OxidTestCase
 
     public function testGetPaymentEasyCreditNoLogo()
     {
-        $session = oxNew('oxpsEasyCreditOxSession');
+        $session = oxNew(EasyCreditSession::class);
         $dic = $this->buildDic($session);
 
         $storage = oxNew(
-            'EasyCreditStorage',
+            EasyCreditStorage::class,
             'tbVorgangskennung',
             'fachlicheVorgangskennung',
             'b8d01510bbbf5fe767f068122ba0b0c4',
@@ -132,16 +134,16 @@ class oxpsEasyCreditOrderTest extends OxidTestCase
         );
         $text = 'payment plan';
         $storage->setRatenplanTxt($text);
-        $session->setVariable(oxpsEasyCreditOxSession::API_CONFIG_STORAGE, serialize($storage));
+        $session->setVariable(EasyCreditSession::API_CONFIG_STORAGE, serialize($storage));
 
-        $payment = oxNew('oxpayment');
-        $payment->oxpayments__oxdesc = new oxField('test payment');
-        $payment->setId(oxpsEasyCreditOxPayment::EASYCREDIT_PAYMENTID);
+        $payment = oxNew(Payment::class);
+        $payment->oxpayments__oxdesc = new Field('test payment');
+        $payment->setId(EasyCreditOxPayment::EASYCREDIT_PAYMENTID);
 
-        $viewConfig = $this->getMock('oxViewConfig', array('getModulePath'));
-        $viewConfig->expects($this->any())->method('getModulePath')->willThrowException(new Exception('TEST'));
+        $viewConfig = $this->getMock(ViewConfig::class, ['getModulePath']);
+        $viewConfig->expects($this->any())->method('getModulePath')->willThrowException(new \Exception('TEST'));
 
-        $order = $this->getMock('oxpseasycreditorder', array('getDic', 'parentGetPayment', 'getViewConfig'));
+        $order = $this->getMock(EasyCreditOrder::class, ['getDic', 'parentGetPayment', 'getViewConfig']);
         $order->expects($this->any())->method('getDic')->willReturn($dic);
         $order->expects($this->any())->method('parentGetPayment')->willReturn($payment);
         $order->expects($this->any())->method('getViewConfig')->willReturn($viewConfig);
@@ -149,19 +151,17 @@ class oxpsEasyCreditOrderTest extends OxidTestCase
         $this->assertNull($order->getPayment());
     }
 
-    /**
-     * @expectedException PHPUnit_Framework_Error_Warning
-     */
     public function testGetPaymentNoStorage()
     {
-        $session = oxNew('oxpsEasyCreditOxSession');
+        $this->expectException(PHPUnit_Framework_Error_Warning::class);
+        $session = oxNew(EasyCreditSession::class);
         $dic = $this->buildDic($session);
 
-        $payment = oxNew('oxpayment');
-        $payment->oxpayments__oxdesc = new oxField('test payment');
+        $payment = oxNew(Payment::class);
+        $payment->oxpayments__oxdesc = new Field('test payment');
         $payment->setId(oxpsEasyCreditOxPayment::EASYCREDIT_PAYMENTID);
 
-        $order = $this->getMock('oxpseasycreditorder', array('getDic', 'parentGetPayment'));
+        $order = $this->getMock(EasyCreditOrder::class, ['getDic', 'parentGetPayment']);
         $order->expects($this->any())->method('getDic')->willReturn($dic);
         $order->expects($this->any())->method('parentGetPayment')->willReturn($payment);
 
@@ -170,11 +170,11 @@ class oxpsEasyCreditOrderTest extends OxidTestCase
 
     public function testGetTilgungsplanText()
     {
-        $session = oxNew('oxpsEasyCreditOxSession');
+        $session = oxNew(EasyCreditSession::class);
         $dic = $this->buildDic($session);
 
         $storage = oxNew(
-            'EasyCreditStorage',
+            EasyCreditStorage::class,
             'tbVorgangskennung',
             'fachlicheVorgangskennung',
             'b8d01510bbbf5fe767f068122ba0b0c4',
@@ -182,9 +182,9 @@ class oxpsEasyCreditOrderTest extends OxidTestCase
         );
         $tilgungsplanTxt = 'TilgungsplanText';
         $storage->setTilgungsplanTxt($tilgungsplanTxt);
-        $session->setVariable(oxpsEasyCreditOxSession::API_CONFIG_STORAGE, serialize($storage));
+        $session->setVariable(EasyCreditSession::API_CONFIG_STORAGE, serialize($storage));
 
-        $order = $this->getMock('oxpsEasyCreditOrder', array('getDic'));
+        $order = $this->getMock(EasyCreditOrder::class, ['getDic']);
         $order->expects($this->any())->method('getDic')->willReturn($dic);
 
         $this->assertEquals($tilgungsplanTxt, $order->getTilgungsplanText());
@@ -192,10 +192,10 @@ class oxpsEasyCreditOrderTest extends OxidTestCase
 
     public function testGetTilgungsplanTextEmpty()
     {
-        $session = oxNew('oxpsEasyCreditOxSession');
+        $session = oxNew(EasyCreditSession::class);
         $dic = $this->buildDic($session);
 
-        $order = $this->getMock('oxpsEasyCreditOrder', array('getDic'));
+        $order = $this->getMock(EasyCreditOrder::class, ['getDic']);
         $order->expects($this->any())->method('getDic')->willReturn($dic);
 
         $this->assertNull($order->getTilgungsplanText());
@@ -203,23 +203,23 @@ class oxpsEasyCreditOrderTest extends OxidTestCase
 
     public function testGetUrlVorvertraglicheInformationen()
     {
-        $session = oxNew('oxpsEasyCreditOxSession');
+        $session = oxNew(EasyCreditSession::class);
         $dic = $this->buildDic($session);
 
         $storage = oxNew(
-            'EasyCreditStorage',
+            EasyCreditStorage::class,
             'tbVorgangskennung',
             'fachlicheVorgangskennung',
             'b8d01510bbbf5fe767f068122ba0b0c4',
             0.0
         );
         $url = 'https://test.url';
-        $allgemeineVorgangsdaten = new stdClass();
+        $allgemeineVorgangsdaten = new \stdClass();
         $allgemeineVorgangsdaten->urlVorvertraglicheInformationen = $url;
         $storage->setAllgemeineVorgangsdaten($allgemeineVorgangsdaten);
-        $session->setVariable(oxpsEasyCreditOxSession::API_CONFIG_STORAGE, serialize($storage));
+        $session->setVariable(EasyCreditSession::API_CONFIG_STORAGE, serialize($storage));
 
-        $order = $this->getMock('oxpsEasyCreditOrder', array('getDic'));
+        $order = $this->getMock(EasyCreditOrder::class, ['getDic']);
         $order->expects($this->any())->method('getDic')->willReturn($dic);
 
         $this->assertEquals($url, $order->getUrlVorvertraglicheInformationen());
@@ -227,10 +227,10 @@ class oxpsEasyCreditOrderTest extends OxidTestCase
 
     public function testGetUrlVorvertraglicheInformationenEmpty()
     {
-        $session = oxNew('oxpsEasyCreditOxSession');
+        $session = oxNew(EasyCreditSession::class);
         $dic = $this->buildDic($session);
 
-        $order = $this->getMock('oxpsEasyCreditOrder', array('getDic'));
+        $order = $this->getMock(EasyCreditOrder::class, ['getDic']);
         $order->expects($this->any())->method('getDic')->willReturn($dic);
 
         $this->assertNull($order->getUrlVorvertraglicheInformationen());
@@ -238,11 +238,11 @@ class oxpsEasyCreditOrderTest extends OxidTestCase
 
     public function testGetPaymentPlanTxt()
     {
-        $session = oxNew('oxpsEasyCreditOxSession');
+        $session = oxNew(EasyCreditSession::class);
         $dic = $this->buildDic($session);
 
         $storage = oxNew(
-            'EasyCreditStorage',
+            EasyCreditStorage::class,
             'tbVorgangskennung',
             'fachlicheVorgangskennung',
             'b8d01510bbbf5fe767f068122ba0b0c4',
@@ -250,9 +250,9 @@ class oxpsEasyCreditOrderTest extends OxidTestCase
         );
         $text = 'payment plan';
         $storage->setRatenplanTxt($text);
-        $session->setVariable(oxpsEasyCreditOxSession::API_CONFIG_STORAGE, serialize($storage));
+        $session->setVariable(EasyCreditSession::API_CONFIG_STORAGE, serialize($storage));
 
-        $order = $this->getMock('oxpsEasyCreditOrder', array('getDic'));
+        $order = $this->getMock(EasyCreditOrder::class, ['getDic']);
         $order->expects($this->any())->method('getDic')->willReturn($dic);
 
         $this->assertEquals($text, $order->getPaymentPlanTxt());
@@ -260,10 +260,10 @@ class oxpsEasyCreditOrderTest extends OxidTestCase
 
     public function testGetPaymentPlanTxtEmpty()
     {
-        $session = oxNew('oxpsEasyCreditOxSession');
+        $session = oxNew(EasyCreditSession::class);
         $dic = $this->buildDic($session);
 
-        $order = $this->getMock('oxpsEasyCreditOrder', array('getDic'));
+        $order = $this->getMock(EasyCreditOrder::class, ['getDic']);
         $order->expects($this->any())->method('getDic')->willReturn($dic);
 
         $this->assertNull($order->getPaymentPlanTxt());
@@ -271,7 +271,7 @@ class oxpsEasyCreditOrderTest extends OxidTestCase
 
     public function testGetPaymentPlanTxtEmptyStandardDic()
     {
-        $order = oxNew('order');
+        $order = oxNew(Order::class);
         $this->assertNull($order->getPaymentPlanTxt());
     }
 }

@@ -1,30 +1,20 @@
 <?php
-/**
- * This Software is the property of OXID eSales and is protected
- * by copyright law - it is NOT Freeware.
- *
- * Any unauthorized use of this software without a valid license key
- * is a violation of the license agreement and will be prosecuted by
- * civil and criminal law.
- *
- * @category      module
- * @package       easycredit
- * @author        OXID Professional Services
- * @link          http://www.oxid-esales.com
- * @copyright (C) OXID eSales AG 2003-2018
- */
+
+namespace OxidProfessionalServices\EasyCredit\Tests\Unit\Application\Core\CrossCutting;
+
+use OxidEsales\TestingLibrary\UnitTestCase;
+use OxidProfessionalServices\EasyCredit\Core\CrossCutting\EasyCreditLogging;
 
 /**
  * Class EasyCreditLoggingTest
  */
-class EasyCreditLoggingTest extends OxidTestCase
+class EasyCreditLoggingTest extends UnitTestCase
 {
     /**
      * Set up test environment
      *
-     * @return null
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
     }
@@ -32,9 +22,8 @@ class EasyCreditLoggingTest extends OxidTestCase
     /**
      * Tear down test environment
      *
-     * @return null
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
     }
@@ -42,7 +31,7 @@ class EasyCreditLoggingTest extends OxidTestCase
     public function testLog()
     {
         /** @var EasyCreditLogging $logging */
-        $logging = oxNew(\OxidProfessionalServices\EasyCredit\Core\CrossCutting\EasyCreditLogging::class, array());
+        $logging = oxNew(EasyCreditLogging::class, []);
 
         // 26 characters output expected
         $this->assertEquals(26, $logging->log('TEST'));
@@ -50,13 +39,13 @@ class EasyCreditLoggingTest extends OxidTestCase
 
     public function testLogRequestEnabled()
     {
-        $logConfig = array(
+        $logConfig = [
             EasyCreditLogging::LOG_CONFIG_LOG_ENABLED => true,
             EasyCreditLogging::LOG_CONFIG_LOG_DIR => 'test'
-        );
+        ];
 
         /** @var EasyCreditLogging $logging */
-        $logging = oxNew('EasyCreditLogging', $logConfig);
+        $logging = oxNew(EasyCreditLogging::class, $logConfig);
 
         // 377 characters output expected
         $this->assertEquals(377, $logging->logRestRequest('TestRequest', 'TestResponse', 'https://test.url', 350));
@@ -64,13 +53,13 @@ class EasyCreditLoggingTest extends OxidTestCase
 
     public function testLogRequestDisabled()
     {
-        $logConfig = array(
+        $logConfig = [
             EasyCreditLogging::LOG_CONFIG_LOG_ENABLED => false,
             EasyCreditLogging::LOG_CONFIG_LOG_DIR => 'test'
-        );
+        ];
 
         /** @var EasyCreditLogging $logging */
-        $logging = oxNew('EasyCreditLogging', $logConfig);
+        $logging = oxNew(EasyCreditLogging::class, $logConfig);
 
         // 377 characters output expected
         $this->assertNull($logging->logRestRequest('TestRequest', 'TestResponse', 'https://test.url', 350));

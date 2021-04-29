@@ -1,13 +1,24 @@
 <?php
 
-namespace OxidProfessionalServices\EasyCredit\Tests\Unit\Application\Controller\Admin;
+namespace OxidProfessionalServices\EasyCredit\Tests\Unit\Application\Controller;
 
+use OxidEsales\Eshop\Application\Model\Order;
+use OxidEsales\Eshop\Application\Model\User;
 use OxidEsales\TestingLibrary\UnitTestCase;
+use OxidProfessionalServices\EasyCredit\Application\Controller\EasyCreditDispatcherController;
+use OxidProfessionalServices\EasyCredit\Core\CrossCutting\EasyCreditLogging;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDic;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicConfig;
 use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicSession;
 use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditApiConfig;
+use OxidProfessionalServices\EasyCredit\Core\Domain\EasyCreditBasket;
+use OxidProfessionalServices\EasyCredit\Core\Domain\EasyCreditSession;
+use OxidProfessionalServices\EasyCredit\Core\Dto\EasyCreditStorage;
+use OxidProfessionalServices\EasyCredit\Core\Helper\EasyCreditInitializeRequestBuilder;
+use OxidProfessionalServices\EasyCredit\Core\PayLoad\EasyCreditPayloadFactory;
 
 /**
- * Class oxpsEasyCreditDispatcherTest
+ * Class EasyCreditDispatcherControllerTest
  */
 class EasyCreditDispatcherTest extends UnitTestCase
 {
@@ -37,12 +48,12 @@ class EasyCreditDispatcherTest extends UnitTestCase
 
         $session = oxNew(EasyCreditDicSession::class, $oxSession);
         $mockApiConfig = oxNew(EasyCreditApiConfig::class, oxpsEasyCreditDicFactory::getApiConfig[]);
-        $mockLogging = $this->getMock('EasyCreditLogging', [], [[]]);
-        $mockPayloadFactory = $this->getMock('EasyCreditPayloadFactory', [], []);
-        $mockDicConfig = $this->getMock('EasyCreditDicConfig', [], [$mockOxConfig]);
+        $mockLogging = $this->getMock(EasyCreditLogging::class, [], [[]]);
+        $mockPayloadFactory = $this->getMock(EasyCreditPayloadFactory::class, [], []);
+        $mockDicConfig = $this->getMock(EasyCreditDicConfig::class, [], [$mockOxConfig]);
 
         $mockDic = oxNew(
-            'oxpseasycreditdic',
+            EasyCreditDic::class,
             $session,
             $mockApiConfig,
             $mockPayloadFactory,
@@ -55,21 +66,21 @@ class EasyCreditDispatcherTest extends UnitTestCase
 
     public function testInitializeandredirect(): void
     {
-        $session = oxNew('oxpsEasyCreditOxSession');
+        $session = oxNew(EasyCreditSession::class);
         $dic = $this->buildDic($session);
 
         $storage = oxNew(
-            'EasyCreditStorage',
+            EasyCreditStorage::class,
             'tbVorgangskennung',
             'fachlicheVorgangskennung',
             'b8d01510bbbf5fe767f068122ba0b0c4',
             0.0
         );
-        $session->setVariable(oxpsEasyCreditOxSession::API_CONFIG_STORAGE, serialize($storage));
+        $session->setVariable(EasyCreditSession::API_CONFIG_STORAGE, serialize($storage));
 
-        $user = oxNew('oxuser');
+        $user = oxNew(User::class);
 
-        $dispatcher = $this->getMock('oxpsEasyCreditDispatcher', ['isInitialized', 'initialize', 'getDic']);
+        $dispatcher = $this->getMock(EasyCreditDispatcherController::class, ['isInitialized', 'initialize', 'getDic']);
         $dispatcher->expects($this->any())->method('isInitialized')->willReturn(false);
         $dispatcher->expects($this->any())->method('initialize')->willReturn(null);
         $dispatcher->expects($this->any())->method('getDic')->willReturn($dic);
@@ -80,7 +91,7 @@ class EasyCreditDispatcherTest extends UnitTestCase
 
     public function testGetEasyCreditDetails(): void
     {
-        $dispatcher = $this->getMock('oxpsEasyCreditDispatcher', ['processEasyCreditDetails']);
+        $dispatcher = $this->getMock(EasyCreditDispatcherController::class, ['processEasyCreditDetails']);
         $dispatcher->expects($this->any())->method('processEasyCreditDetails')->willReturn(null);
 
         $this->assertEquals('order', $dispatcher->getEasyCreditDetails());
@@ -88,10 +99,10 @@ class EasyCreditDispatcherTest extends UnitTestCase
 
     public function testGetEasyCreditDetailsException(): void
     {
-        $dic = $this->buildDic(oxNew('oxpsEasyCreditOxSession'));
+        $dic = $this->buildDic(oxNew(EasyCreditSession::class));
 
-        $dispatcher = $this->getMock('oxpsEasyCreditDispatcher', ['getDic', 'processEasyCreditDetails']);
-        $dispatcher->expects($this->any())->method('processEasyCreditDetails')->willThrowException(new Exception('test'));
+        $dispatcher = $this->getMock(EasyCreditDispatcherController::class, ['getDic', 'processEasyCreditDetails']);
+        $dispatcher->expects($this->any())->method('processEasyCreditDetails')->willThrowException(new \Exception('test'));
         $dispatcher->expects($this->any())->method('getDic')->willReturn($dic);
 
         $this->assertEquals('payment', $dispatcher->getEasyCreditDetails());
@@ -99,35 +110,35 @@ class EasyCreditDispatcherTest extends UnitTestCase
 
     public function testGetEasyCreditDetailsDeps(): void
     {
-        $session = oxNew('oxpsEasyCreditOxSession');
+        $session = oxNew(EasyCreditSession::class);
         $dic = $this->buildDic($session);
 
-        $oxBasket = $this->getMock('oxpsEasyCreditOxBasket', ['getDic', 'getPrice']);
+        $oxBasket = $this->getMock(EasyCreditBasket::class, ['getDic', 'getPrice']);
         $oxBasket->expects($this->any())->method('getDic')->willReturn($dic);
 
         $price = oxNew('oxprice');
         $price->setPrice(0.0);
         $oxBasket->expects($this->any())->method('getPrice')->willReturn($price);
 
-        $user = oxNew('oxuser');
+        $user = oxNew(User::class);
 
         $paymentHash = $this->getPaymentHash($user, $oxBasket, $dic);
 
         $storage = oxNew(
-            'EasyCreditStorage',
+            EasyCreditStorage::class,
             'tbVorgangskennung',
             'fachlicheVorgangskennung',
             $paymentHash,
             0.0
         );
-        $session->setVariable(oxpsEasyCreditOxSession::API_CONFIG_STORAGE, serialize($storage));
+        $session->setVariable(EasyCreditSession::API_CONFIG_STORAGE, serialize($storage));
 
-        $dispatcher = $this->getMock('oxpsEasyCreditDispatcher', ['getDic', 'call']);
+        $dispatcher = $this->getMock(EasyCreditDispatcherController::class, ['getDic', 'call']);
         $dispatcher->expects($this->any())->method('getDic')->willReturn($dic);
 
-        $response = new stdClass();
-        $entscheidung = new stdClass();
-        $entscheidung->entscheidungsergebnis = oxpsEasyCreditDispatcher::INSTALMENT_DECISION_OK;
+        $response = new \stdClass();
+        $entscheidung = new \stdClass();
+        $entscheidung->entscheidungsergebnis = EasyCreditDispatcherController::INSTALMENT_DECISION_OK;
         $response->entscheidung = $entscheidung;
         $dispatcher->expects($this->any())->method('call')->willReturn($response);
 
@@ -139,12 +150,12 @@ class EasyCreditDispatcherTest extends UnitTestCase
 
     public function testIsInitializedEmptyStorage(): void
     {
-        $session = oxNew('oxpsEasyCreditOxSession');
+        $session = oxNew(EasyCreditSession::class);
         $dic = $this->buildDic($session);
 
-        $user = oxNew('oxuser');
+        $user = oxNew(User::class);
 
-        $dispatcher = $this->getMock('oxpsEasyCreditDispatcher', ['getDic']);
+        $dispatcher = $this->getMock(EasyCreditDispatcherController::class, ['getDic']);
         $dispatcher->expects($this->any())->method('getDic')->willReturn($dic);
 
         $dispatcher->setUser($user);
@@ -155,21 +166,21 @@ class EasyCreditDispatcherTest extends UnitTestCase
 
     public function testIsInitializedEmptyVorgangskennung(): void
     {
-        $session = oxNew('oxpsEasyCreditOxSession');
+        $session = oxNew(EasyCreditSession::class);
         $dic = $this->buildDic($session);
 
         $storage = oxNew(
-            'EasyCreditStorage',
+            EasyCreditStorage::class,
             null,
             null,
             null,
             0.0
         );
-        $session->setVariable(oxpsEasyCreditOxSession::API_CONFIG_STORAGE, serialize($storage));
+        $session->setVariable(EasyCreditSession::API_CONFIG_STORAGE, serialize($storage));
 
-        $user = oxNew('oxuser');
+        $user = oxNew(User::class);
 
-        $dispatcher = $this->getMock('oxpsEasyCreditDispatcher', ['getDic']);
+        $dispatcher = $this->getMock(EasyCreditDispatcherController::class, ['getDic']);
         $dispatcher->expects($this->any())->method('getDic')->willReturn($dic);
 
         $dispatcher->setUser($user);
@@ -180,21 +191,21 @@ class EasyCreditDispatcherTest extends UnitTestCase
 
     public function testIsInitializedInvalidHash(): void
     {
-        $session = oxNew('oxpsEasyCreditOxSession');
+        $session = oxNew(EasyCreditSession::class);
         $dic = $this->buildDic($session);
 
         $storage = oxNew(
-            'EasyCreditStorage',
+            EasyCreditStorage::class,
             'tbVorgangskennung',
             'fachlicheVorgangskennung',
             'dummy',
             0.0
         );
-        $session->setVariable(oxpsEasyCreditOxSession::API_CONFIG_STORAGE, serialize($storage));
+        $session->setVariable(EasyCreditSession::API_CONFIG_STORAGE, serialize($storage));
 
-        $user = oxNew('oxuser');
+        $user = oxNew(User::class);
 
-        $dispatcher = $this->getMock('oxpsEasyCreditDispatcher', ['getDic']);
+        $dispatcher = $this->getMock(EasyCreditDispatcherController::class, ['getDic']);
         $dispatcher->expects($this->any())->method('getDic')->willReturn($dic);
 
         $dispatcher->setUser($user);
@@ -205,16 +216,16 @@ class EasyCreditDispatcherTest extends UnitTestCase
 
     public function testInitialize(): void
     {
-        $session = oxNew('oxpsEasyCreditOxSession');
+        $session = oxNew(EasyCreditSession::class);
         $dic = $this->buildDic($session);
 
-        $user = oxNew('oxuser');
+        $user = oxNew(User::class);
 
-        $dispatcher = $this->getMock('oxpsEasyCreditDispatcher', ['isInitialized', 'getDic', 'call']);
+        $dispatcher = $this->getMock(EasyCreditDispatcherController::class, ['isInitialized', 'getDic', 'call']);
         $dispatcher->expects($this->any())->method('isInitialized')->willReturn(false);
         $dispatcher->expects($this->any())->method('getDic')->willReturn($dic);
 
-        $response = new stdClass();
+        $response = new \stdClass();
         $response->tbVorgangskennung = 'tbVorgangskennung';
         $response->fachlicheVorgangskennung = 'fachlicheVorgangskennung';
         $dispatcher->expects($this->any())->method('call')->willReturn($response);
@@ -226,24 +237,24 @@ class EasyCreditDispatcherTest extends UnitTestCase
 
     public function testGetInstalmentDecision(): void
     {
-        $session = oxNew('oxpsEasyCreditOxSession');
+        $session = oxNew(EasyCreditSession::class);
         $dic = $this->buildDic($session);
 
         $storage = oxNew(
-            'EasyCreditStorage',
+            EasyCreditStorage::class,
             'tbVorgangskennung',
             'fachlicheVorgangskennung',
             'b8d01510bbbf5fe767f068122ba0b0c4',
             0.0
         );
-        $session->setVariable(oxpsEasyCreditOxSession::API_CONFIG_STORAGE, serialize($storage));
+        $session->setVariable(EasyCreditSession::API_CONFIG_STORAGE, serialize($storage));
 
-        $user = oxNew('oxuser');
+        $user = oxNew(User::class);
 
-        $dispatcher = $this->getMock('oxpsEasyCreditDispatcher', ['getDic', 'call']);
+        $dispatcher = $this->getMock(EasyCreditDispatcherController::class, ['getDic', 'call']);
         $dispatcher->expects($this->any())->method('getDic')->willReturn($dic);
 
-        $response = new stdClass();
+        $response = new \stdClass();
         $dispatcher->expects($this->any())->method('call')->willReturn($response);
 
         $dispatcher->setUser($user);
@@ -254,16 +265,16 @@ class EasyCreditDispatcherTest extends UnitTestCase
 
     public function testGetTbVorgangskennungNull(): void
     {
-        $session = oxNew('oxpsEasyCreditOxSession');
+        $session = oxNew(EasyCreditSession::class);
         $dic = $this->buildDic($session);
 
-        $user = oxNew('oxuser');
+        $user = oxNew(User::class);
 
-        $dispatcher = $this->getMock('oxpsEasyCreditDispatcher', ['isInitialized', 'getDic', 'call']);
+        $dispatcher = $this->getMock(EasyCreditDispatcherController::class, ['isInitialized', 'getDic', 'call']);
         $dispatcher->expects($this->any())->method('isInitialized')->willReturn(true);
         $dispatcher->expects($this->any())->method('getDic')->willReturn($dic);
 
-        $response = new stdClass();
+        $response = new \stdClass();
         $dispatcher->expects($this->any())->method('call')->willReturn($response);
 
         $dispatcher->setUser($user);
@@ -274,19 +285,19 @@ class EasyCreditDispatcherTest extends UnitTestCase
 
     public function testLoadEasyCreditFinancialInformationWithoutStorage(): void
     {
-        $session = oxNew('oxpsEasyCreditOxSession');
+        $session = oxNew(EasyCreditSession::class);
         $dic = $this->buildDic($session);
 
-        $user = oxNew('oxuser');
+        $user = oxNew(User::class);
 
-        $dispatcher = $this->getMock('oxpsEasyCreditDispatcher', ['getDic', 'call', 'isInitialized', 'getTbVorgangskennung']);
+        $dispatcher = $this->getMock(EasyCreditDispatcherController::class, ['getDic', 'call', 'isInitialized', 'getTbVorgangskennung']);
         $dispatcher->expects($this->any())->method('getDic')->willReturn($dic);
         $dispatcher->expects($this->any())->method('isInitialized')->willReturn(true);
         $dispatcher->expects($this->any())->method('getTbVorgangskennung')->willReturn('dummy');
 
-        $response = new stdClass();
-        $entscheidung = new stdClass();
-        $entscheidung->entscheidungsergebnis = oxpsEasyCreditDispatcher::INSTALMENT_DECISION_OK;
+        $response = new \stdClass();
+        $entscheidung = new \stdClass();
+        $entscheidung->entscheidungsergebnis = EasyCreditDispatcherController::INSTALMENT_DECISION_OK;
         $response->entscheidung = $entscheidung;
         $dispatcher->expects($this->any())->method('call')->willReturn($response);
 
@@ -298,50 +309,50 @@ class EasyCreditDispatcherTest extends UnitTestCase
 
     public function testGetFormattedPaymentPlan(): void
     {
-        $session = oxNew('oxpsEasyCreditOxSession');
+        $session = oxNew(EasyCreditSession::class);
         $dic = $this->buildDic($session);
 
         $storage = oxNew(
-            'EasyCreditStorage',
+            EasyCreditStorage::class,
             'tbVorgangskennung',
             'fachlicheVorgangskennung',
             'b8d01510bbbf5fe767f068122ba0b0c4',
             0.0
         );
-        $session->setVariable(oxpsEasyCreditOxSession::API_CONFIG_STORAGE, serialize($storage));
+        $session->setVariable(EasyCreditSession::API_CONFIG_STORAGE, serialize($storage));
 
-        $user = oxNew('oxuser');
+        $user = oxNew(User::class);
 
-        $dispatcher = $this->getMock('oxpsEasyCreditDispatcher', ['getDic', 'call', 'isInitialized']);
+        $dispatcher = $this->getMock(EasyCreditDispatcherController::class, ['getDic', 'call', 'isInitialized']);
         $dispatcher->expects($this->any())->method('getDic')->willReturn($dic);
         $dispatcher->expects($this->any())->method('isInitialized')->willReturn(true);
 
         $dispatcher->expects($this->any())->method('call')->willReturnCallback(
             function($endpoint) {
                 switch ($endpoint) {
-                    case oxpsEasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_DECISION:
-                        $decisionResponse = new stdClass();
-                        $entscheidung = new stdClass();
-                        $entscheidung->entscheidungsergebnis = oxpsEasyCreditDispatcher::INSTALMENT_DECISION_OK;
+                    case EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_DECISION:
+                        $decisionResponse = new \stdClass();
+                        $entscheidung = new \stdClass();
+                        $entscheidung->entscheidungsergebnis = EasyCreditDispatcherController::INSTALMENT_DECISION_OK;
                         $decisionResponse->entscheidung = $entscheidung;
                         return $decisionResponse;
 
-                    case oxpsEasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_VORGANG:
-                        $vorgangResponse = new stdClass();
+                    case EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_VORGANG:
+                        $vorgangResponse = new \stdClass();
                         $vorgangResponse->allgemeineVorgangsdaten = 'allgemeineVorgangsdaten';
                         $vorgangResponse->tilgungsplanText = 'tilgungsplanText';
                         return $vorgangResponse;
 
-                    case oxpsEasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_FINANCIAL_INFORMATION:
-                        $vorgangResponse = new stdClass();
+                    case EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_FINANCIAL_INFORMATION:
+                        $vorgangResponse = new \stdClass();
                         $vorgangResponse->allgemeineVorgangsdaten = 'allgemeineVorgangsdaten';
                         $vorgangResponse->tilgungsplanText = 'tilgungsplanText';
                         return $vorgangResponse;
 
-                    case oxpsEasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_FINANZIERUNG:
-                        $ratenPlanResponse = new stdClass();
-                        $paymentPlan = new stdClass();
-                        $paymentPlan->zahlungsplan = new stdClass();
+                    case EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_FINANZIERUNG:
+                        $ratenPlanResponse = new \stdClass();
+                        $paymentPlan = new \stdClass();
+                        $paymentPlan->zahlungsplan = new \stdClass();
                         $ratenPlanResponse->ratenplan = $paymentPlan;
                         return $ratenPlanResponse;
                 }
@@ -356,24 +367,24 @@ class EasyCreditDispatcherTest extends UnitTestCase
 
     public function testCall(): void
     {
-        $session = oxNew('oxpsEasyCreditOxSession');
+        $session = oxNew(EasyCreditSession::class);
         $dic = $this->buildDic($session);
 
         $storage = oxNew(
-            'EasyCreditStorage',
+            EasyCreditStorage::class,
             'tbVorgangskennung',
             'fachlicheVorgangskennung',
             'b8d01510bbbf5fe767f068122ba0b0c4',
             0.0
         );
-        $session->setVariable(oxpsEasyCreditOxSession::API_CONFIG_STORAGE, serialize($storage));
+        $session->setVariable(EasyCreditSession::API_CONFIG_STORAGE, serialize($storage));
 
-        $user = oxNew('oxuser');
+        $user = oxNew(User::class);
 
-        $dispatcher = $this->getMock('oxpsEasyCreditDispatcher', ['getDic', 'isInitialized', 'getInstalmentDecision']);
+        $dispatcher = $this->getMock(EasyCreditDispatcherController::class, ['getDic', 'isInitialized', 'getInstalmentDecision']);
         $dispatcher->expects($this->any())->method('getDic')->willReturn($dic);
         $dispatcher->expects($this->any())->method('isInitialized')->willReturn(true);
-        $dispatcher->expects($this->any())->method('getInstalmentDecision')->willReturn(oxpsEasyCreditDispatcher::INSTALMENT_DECISION_OK);
+        $dispatcher->expects($this->any())->method('getInstalmentDecision')->willReturn(EasyCreditDispatcherController::INSTALMENT_DECISION_OK);
 
         $dispatcher->setUser($user);
 
@@ -383,8 +394,8 @@ class EasyCreditDispatcherTest extends UnitTestCase
 
     public function testGetDic(): void
     {
-        $dispatcher = $this->getMock('oxpsEasyCreditDispatcher', ['processEasyCreditDetails']);
-        $dispatcher->expects($this->any())->method('processEasyCreditDetails')->willThrowException(new Exception('test'));
+        $dispatcher = $this->getMock(EasyCreditDispatcherController::class, ['processEasyCreditDetails']);
+        $dispatcher->expects($this->any())->method('processEasyCreditDetails')->willThrowException(new \Exception('test'));
 
         $this->assertEquals('payment', $dispatcher->getEasyCreditDetails());
     }
@@ -396,7 +407,7 @@ class EasyCreditDispatcherTest extends UnitTestCase
 
     protected function getCurrentInitializationData($oUser, $oBasket, $dic)
     {
-        $requestBuilder = oxNew('EasyCreditInitializeRequestBuilder');
+        $requestBuilder = oxNew(EasyCreditInitializeRequestBuilder::class);
 
         $requestBuilder->setUser($oUser);
         $requestBuilder->setBasket($oBasket);
@@ -410,14 +421,13 @@ class EasyCreditDispatcherTest extends UnitTestCase
 
         $requestBuilder->setBaseLanguage(oxRegistry::getLang()->getBaseLanguage());
 
-        $data = $requestBuilder->getInitializationData();
-        return $data;
+        return $requestBuilder->getInitializationData();
     }
 
     protected function getShippingAddress()
     {
-        /** @var $oOrder oxOrder */
-        $oOrder = oxNew('oxorder');
+        /** @var $oOrder Order */
+        $oOrder = oxNew(Order::class);
         return $oOrder->getDelAddressInfo();
     }
 }

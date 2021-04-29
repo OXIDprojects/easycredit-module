@@ -1,30 +1,20 @@
 <?php
-/**
- * This Software is the property of OXID eSales and is protected
- * by copyright law - it is NOT Freeware.
- *
- * Any unauthorized use of this software without a valid license key
- * is a violation of the license agreement and will be prosecuted by
- * civil and criminal law.
- *
- * @category      module
- * @package       easycredit
- * @author        OXID Professional Services
- * @link          http://www.oxid-esales.com
- * @copyright (C) OXID eSales AG 2003-2018
- */
+
+namespace OxidProfessionalServices\EasyCredit\Tests\Unit\Application\Core\Api;
+
+use OxidEsales\TestingLibrary\UnitTestCase;
+use OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditWebServiceClient;
 
 /**
  * Class oxpsEasyCreditWebServiceClientTest
  */
-class oxpsEasyCreditWebServiceClientTest extends OxidTestCase
+class EasyCreditWebServiceClientTest extends UnitTestCase
 {
     /**
      * Set up test environment
      *
-     * @return null
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
     }
@@ -32,42 +22,39 @@ class oxpsEasyCreditWebServiceClientTest extends OxidTestCase
     /**
      * Tear down test environment
      *
-     * @return null
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
     }
 
     public function testSetFunctionOnlyFunction()
     {
-        $client = oxNew('EasyCreditWebServiceClient');
+        $client = oxNew(EasyCreditWebServiceClient::class);
         $this->assertNull($client->setFunction('test'));
     }
 
     public function testSetFunctionWithSprintfArgs()
     {
-        $sprintfArgs = array(
+        $sprintfArgs = [
             'p1' => 'v1',
             'p2' => 'v2'
-        );
+        ];
 
-        $client = oxNew('EasyCreditWebServiceClient');
+        $client = oxNew(EasyCreditWebServiceClient::class);
         $this->assertNull($client->setFunction('test', $sprintfArgs));
     }
 
-    /**
-     * @expectedException oxpsEasyCreditCurlException
-     * @expectedExceptionMessage Parameter p2 for curl function test was empty
-     */
     public function testSetFunctionWithEmptySprintfArgs()
     {
-        $sprintfArgs = array(
+        $this->expectExceptionMessage("Parameter p2 for curl function test was empty");
+        $this->expectException(oxpsEasyCreditCurlException::class);
+        $sprintfArgs = [
             'p1' => 'v1',
             'p2' => null
-        );
+        ];
 
-        $client = oxNew('EasyCreditWebServiceClient');
+        $client = oxNew(EasyCreditWebServiceClient::class);
         $client->setFunction('test', $sprintfArgs);
     }
 }

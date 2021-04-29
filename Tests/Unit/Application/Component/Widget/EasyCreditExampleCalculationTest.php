@@ -14,7 +14,6 @@ class EasyCreditExampleCalculationTest extends UnitTestCase
     /**
      * Set up test environment
      *
-     * @return null
      */
     public function setUp(): void
     {
@@ -24,7 +23,6 @@ class EasyCreditExampleCalculationTest extends UnitTestCase
     /**
      * Tear down test environment
      *
-     * @return null
      */
     public function tearDown(): void
     {

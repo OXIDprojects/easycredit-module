@@ -1,30 +1,28 @@
 <?php
-/**
- * This Software is the property of OXID eSales and is protected
- * by copyright law - it is NOT Freeware.
- *
- * Any unauthorized use of this software without a valid license key
- * is a violation of the license agreement and will be prosecuted by
- * civil and criminal law.
- *
- * @category      module
- * @package       easycredit
- * @author        OXID Professional Services
- * @link          http://www.oxid-esales.com
- * @copyright (C) OXID eSales AG 2003-2018
- */
+
+namespace OxidProfessionalServices\EasyCredit\Tests\Unit\Application\Controller;
+
+use OxidEsales\Eshop\Application\Model\Address;
+use OxidEsales\Eshop\Application\Model\Payment;
+use OxidEsales\TestingLibrary\UnitTestCase;
+use OxidProfessionalServices\EasyCredit\Core\CrossCutting\EasyCreditLogging;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDic;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicConfig;
+use OxidProfessionalServices\EasyCredit\Core\Domain\EasyCreditPayment;
+use OxidProfessionalServices\EasyCredit\Core\Exception\EasyCreditException;
+use OxidProfessionalServices\EasyCredit\Core\PayLoad\EasyCreditPayloadFactory;
 
 /**
- * Class oxpsEasyCreditPaymentTest
+ * Class EasyCreditPaymentTest
  */
-class oxpsEasyCreditPaymentTest extends OxidTestCase
+class EasyCreditPaymentTest extends UnitTestCase
 {
     /**
      * Set up test environment
      *
      * @return null
      */
-    public function setUp()
+    public function setUp():void
     {
         parent::setUp();
     }
@@ -34,23 +32,23 @@ class oxpsEasyCreditPaymentTest extends OxidTestCase
      *
      * @return null
      */
-    public function tearDown()
+    public function tearDown():void
     {
         parent::tearDown();
     }
 
     protected function buildDic($oxSession)
     {
-        $mockOxConfig = $this->getMock('oxConfig', array(), array());
+        $mockOxConfig = $this->getMock('oxConfig', [], []);
 
         $session = oxNew(EasyCreditDicSession::class, $oxSession);
         $mockApiConfig = oxNew(EasyCreditApiConfig::class, oxpsEasyCreditDicFactory::getApiConfigArray());
-        $mockLogging = $this->getMock('EasyCreditLogging', array(), array(array()));
-        $mockPayloadFactory = $this->getMock('EasyCreditPayloadFactory', array(), array());
-        $mockDicConfig = $this->getMock('EasyCreditDicConfig', array(), array($mockOxConfig));
+        $mockLogging = $this->getMock(EasyCreditLogging::class, [], [[]]);
+        $mockPayloadFactory = $this->getMock(EasyCreditPayloadFactory::class, [], []);
+        $mockDicConfig = $this->getMock(EasyCreditDicConfig::class, [], [$mockOxConfig]);
 
         $mockDic = oxNew(
-            'oxpseasycreditdic',
+            EasyCreditDic::class,
             $session,
             $mockApiConfig,
             $mockPayloadFactory,
@@ -63,30 +61,30 @@ class oxpsEasyCreditPaymentTest extends OxidTestCase
 
     public function testGetDic()
     {
-        $payment = oxNew('payment');
+        $payment = oxNew(Payment::class);
         $this->assertNotNull($payment->getDic());
     }
 
     public function testGetBasket()
     {
-        $payment = oxNew('payment');
+        $payment = oxNew(Payment::class);
         $this->assertNotNull($payment->getBasket());
     }
 
     public function testIsEasyCreditPermittedNoFrontend()
     {
-        $payment = oxNew('payment');
+        $payment = oxNew(Payment::class);
         $this->assertTrue($payment->isEasyCreditPermitted());
     }
 
 //    public function testIsEasyCreditPermittedFrontend()
 //    {
-//        $session = oxNew('oxpsEasyCreditOxSession');
+//        $session = oxNew(EasyCreditSession::class);
 //        $dic = $this->buildDic($session);
 //
 //        $dic->getConfig()->setConfigParam('oxpsECAquBorderConsiderFrontend', true);
 //
-//        $payment = $this->getMock('payment', array('getDic'));
+//        $payment = $this->getMock(Payment::class, array('getDic'));
 //        $payment->expects($this->any())->method('getDic')->willReturn($dic);
 //
 //        $this->assertTrue($payment->isEasyCreditPermitted());
@@ -94,13 +92,13 @@ class oxpsEasyCreditPaymentTest extends OxidTestCase
 
     public function testIsEasyCreditPossible()
     {
-        $payment = oxNew('payment');
+        $payment = oxNew(Payment::class);
         $this->assertFalse($payment->isEasyCreditPossible());
     }
 
     public function testIsEasyCreditPossibleNotPermitted()
     {
-        $payment = $this->getMock('oxpsEasyCreditPayment', array('isEasyCreditPermitted'));
+        $payment = $this->getMock(EasyCreditPayment::class, ['isEasyCreditPermitted']);
         $payment->expects($this->any())->method('isEasyCreditPermitted')->willReturn(false);
 
         $this->assertFalse($payment->isEasyCreditPossible());
@@ -108,7 +106,7 @@ class oxpsEasyCreditPaymentTest extends OxidTestCase
 
     public function testIsEasyCreditPossibleAddressMismatch()
     {
-        $payment = $this->getMock('oxpsEasyCreditPayment', array('isAddressMismatch'));
+        $payment = $this->getMock(EasyCreditPayment::class, ['isAddressMismatch']);
         $payment->expects($this->any())->method('isAddressMismatch')->willReturn(true);
 
         $this->assertFalse($payment->isEasyCreditPossible());
@@ -116,7 +114,7 @@ class oxpsEasyCreditPaymentTest extends OxidTestCase
 
     public function testIsEasyCreditPossibleExampleCalculation()
     {
-        $payment = $this->getMock('oxpsEasyCreditPayment', array('getExampleCalulation'));
+        $payment = $this->getMock(EasyCreditPayment::class, ['getExampleCalulation']);
         $payment->expects($this->any())->method('getExampleCalulation')->willReturn(false);
 
         $this->assertFalse($payment->isEasyCreditPossible());
@@ -124,7 +122,7 @@ class oxpsEasyCreditPaymentTest extends OxidTestCase
 
     public function testGetExampleCalculationResponse()
     {
-        $payment = $this->getMock('oxpsEasyCreditPayment', array('getPrice'));
+        $payment = $this->getMock(EasyCreditPayment::class, ['getPrice']);
         $payment->expects($this->any())->method('getPrice')->willReturn(false);
 
         $this->assertFalse($payment->getExampleCalculationResponse());
@@ -132,15 +130,15 @@ class oxpsEasyCreditPaymentTest extends OxidTestCase
 
     public function testGetExampleCalculationPrice()
     {
-        $payment = oxNew('payment');
+        $payment = oxNew(Payment::class);
         $this->assertNull($payment->getExampleCalculationPrice('dummy'));
     }
 
     public function testIsAddressMismatchWithDelAddress()
     {
-        $delAddress = oxNew('oxaddress');
+        $delAddress = oxNew(Address::class);
 
-        $payment = $this->getMock('oxpsEasyCreditPayment', array('getDelAddress'));
+        $payment = $this->getMock(EasyCreditPayment::class, ['getDelAddress']);
         $payment->expects($this->any())->method('getDelAddress')->willReturn($delAddress);
 
         $this->assertTrue($payment->isAddressMismatch());
@@ -148,10 +146,10 @@ class oxpsEasyCreditPaymentTest extends OxidTestCase
 
     public function testIsAddressMismatchWithDelAddressAndUser()
     {
-        $delAddress = oxNew('oxaddress');
-        $user = oxNew('oxuser');
+        $delAddress = oxNew(Address::class);
+        $user = oxNew(User::class);
 
-        $payment = $this->getMock('oxpsEasyCreditPayment', array('getDelAddress', 'getUser'));
+        $payment = $this->getMock(EasyCreditPayment::class, array('getDelAddress', 'getUser'));
         $payment->expects($this->any())->method('getDelAddress')->willReturn($delAddress);
         $payment->expects($this->any())->method('getUser')->willReturn($user);
 
@@ -160,10 +158,10 @@ class oxpsEasyCreditPaymentTest extends OxidTestCase
 
     public function testIsForeignAddressWithDelAddress()
     {
-        $delAddress = oxNew('oxaddress');
-        $user = oxNew('oxuser');
+        $delAddress = oxNew(Address::class);
+        $user = oxNew(User::class);
 
-        $payment = $this->getMock('oxpsEasyCreditPayment', array('getDelAddress', 'getUser'));
+        $payment = $this->getMock(EasyCreditPayment::class, ['getDelAddress', 'getUser']);
         $payment->expects($this->any())->method('getDelAddress')->willReturn($delAddress);
         $payment->expects($this->any())->method('getUser')->willReturn($user);
 
@@ -172,9 +170,9 @@ class oxpsEasyCreditPaymentTest extends OxidTestCase
 
     public function testIsForeignAddressWithoutDelAddress()
     {
-        $user = oxNew('oxuser');
+        $user = oxNew(User::class);
 
-        $payment = $this->getMock('oxpsEasyCreditPayment', array('getUser'));
+        $payment = $this->getMock(EasyCreditPayment::class, ['getUser']);
         $payment->expects($this->any())->method('getUser')->willReturn($user);
 
         $this->assertTrue($payment->isForeignAddress());
@@ -182,9 +180,9 @@ class oxpsEasyCreditPaymentTest extends OxidTestCase
 
     public function testIsPackstationWithDelAddress()
     {
-        $delAddress = oxNew('oxaddress');
+        $delAddress = oxNew(Address::class);
 
-        $payment = $this->getMock('oxpsEasyCreditPayment', array('getDelAddress'));
+        $payment = $this->getMock(EasyCreditPayment::class, ['getDelAddress']);
         $payment->expects($this->any())->method('getDelAddress')->willReturn($delAddress);
 
         $this->assertFalse($payment->isPackstation());
@@ -192,9 +190,9 @@ class oxpsEasyCreditPaymentTest extends OxidTestCase
 
     public function testIsPackstationWithDelUser()
     {
-        $user = oxNew('oxuser');
+        $user = oxNew(User::class);
 
-        $payment = $this->getMock('oxpsEasyCreditPayment', array('getUser'));
+        $payment = $this->getMock(EasyCreditPayment::class, ['getUser']);
         $payment->expects($this->any())->method('getUser')->willReturn($user);
 
         $this->assertFalse($payment->isPackstation());
@@ -202,44 +200,44 @@ class oxpsEasyCreditPaymentTest extends OxidTestCase
 
     public function testValidatePayment()
     {
-        $payment = oxNew('payment');
+        $payment = oxNew(Payment::class);
         $this->assertNull($payment->validatePayment());
     }
 
     public function testValidatePaymentEasyCreditNotPossible()
     {
-        oxRegistry::getSession()->setVariable('paymentid', oxpsEasyCreditOxPayment::EASYCREDIT_PAYMENTID);
+        oxRegistry::getSession()->setVariable('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
 
-        $payment = oxNew('payment');
+        $payment = oxNew(Payment::class);
         $this->assertNull($payment->validatePayment());
     }
 
     public function testValidatePaymentEasyCreditPossible()
     {
-        oxRegistry::getSession()->setVariable('paymentid', oxpsEasyCreditOxPayment::EASYCREDIT_PAYMENTID);
+        oxRegistry::getSession()->setVariable('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
 
-        $payment = $this->getMock('oxpsEasyCreditPayment', array('isEasyCreditPossible'));
+        $payment = $this->getMock(EasyCreditPayment::class, ['isEasyCreditPossible']);
         $payment->expects($this->any())->method('isEasyCreditPossible')->willReturn(true);
 
-        $this->assertEquals('oxpsEasyCreditDispatcher?fnc=initializeandredirect', $payment->validatePayment());
+        $this->assertEquals('EasyCreditDispatcher?fnc=initializeandredirect', $payment->validatePayment());
     }
 
     public function testValidatePaymentEasyCreditPossibleAddProfileDataException()
     {
-        oxRegistry::getSession()->setVariable('paymentid', oxpsEasyCreditOxPayment::EASYCREDIT_PAYMENTID);
+        oxRegistry::getSession()->setVariable('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
 
-        $payment = $this->getMock('oxpsEasyCreditPayment', array('isEasyCreditPossible', 'addProfileData'));
+        $payment = $this->getMock(EasyCreditPayment::class, ['isEasyCreditPossible', 'addProfileData']);
         $payment->expects($this->any())->method('isEasyCreditPossible')->willReturn(true);
-        $payment->expects($this->any())->method('addProfileData')->willThrowException(new Exception('TEST'));
+        $payment->expects($this->any())->method('addProfileData')->willThrowException(new \Exception('TEST'));
 
         $this->assertNull($payment->validatePayment());
     }
 
     public function testAddProfileDataWithBirthDate()
     {
-        $user = oxNew('oxuser');
+        $user = oxNew(User::class);
 
-        $payment = $this->getMock('oxpsEasyCreditPayment', array('getValidatedDateOfBirth', 'getUser'));
+        $payment = $this->getMock(EasyCreditPayment::class, ['getValidatedDateOfBirth', 'getUser']);
         $payment->expects($this->any())->method('getValidatedDateOfBirth')->willReturn('1980-05-25');
         $payment->expects($this->any())->method('getUser')->willReturn($user);
 
@@ -248,9 +246,9 @@ class oxpsEasyCreditPaymentTest extends OxidTestCase
 
     public function testAddProfileDataWithSalutation()
     {
-        $user = oxNew('oxuser');
+        $user = oxNew(User::class);
 
-        $payment = $this->getMock('oxpsEasyCreditPayment', array('getValidatedSalutation', 'getUser'));
+        $payment = $this->getMock(EasyCreditPayment::class, ['getValidatedSalutation', 'getUser']);
         $payment->expects($this->any())->method('getValidatedSalutation')->willReturn('MR');
         $payment->expects($this->any())->method('getUser')->willReturn($user);
 
@@ -259,10 +257,10 @@ class oxpsEasyCreditPaymentTest extends OxidTestCase
 
     public function testLoadAgreementTxt()
     {
-        $response = new stdClass();
+        $response = new \stdClass();
         $response->zustimmungDatenuebertragungPaymentPage = 'dummy';
 
-        $payment = $this->getMock('oxpsEasyCreditPayment', array('call'));
+        $payment = $this->getMock(EasyCreditPayment::class, ['call']);
         $payment->expects($this->any())->method('call')->willReturn($response);
 
         $this->assertEquals('dummy', $payment->loadAgreementTxt());
@@ -270,38 +268,36 @@ class oxpsEasyCreditPaymentTest extends OxidTestCase
 
     public function testIsProfileDataMissing()
     {
-        $payment = oxNew('payment');
+        $payment = oxNew(Payment::class);
         $this->assertTrue($payment->isProfileDataMissing());
     }
 
     public function testHasSalutation()
     {
-        $payment = oxNew('payment');
+        $payment = oxNew(Payment::class);
         $this->assertFalse($payment->hasSalutation());
     }
 
     public function testGetValidatedDateOfBirth()
     {
-        $requestData = array(
-            'oxuser__oxbirthdate' => array(
+        $requestData = [
+            'oxuser__oxbirthdate' => [
                 'year' => 2018,
                 'month' => 6,
                 'day' => 15,
-            )
-        );
+            ]
+        ];
 
-        $user = oxNew('oxuser');
+        $user = oxNew(User::class);
 
-        $payment = oxNew('payment');
+        $payment = oxNew(Payment::class);
         $this->assertEquals('2018-06-15', $payment->getValidatedDateOfBirth($requestData, $user));
     }
 
-    /**
-     * @expectedException oxpsEasyCreditException
-     * @expectedExceptionMessage OXPS_EASY_CREDIT_ERROR_DATEOFBIRTH_INVALID
-     */
     public function testGetValidatedDateOfBirthInFuture()
     {
+        $this->expectExceptionMessage(OXPS_EASY_CREDIT_ERROR_DATEOFBIRTH_INVALID);
+        $this->expectException(EasyCreditException::class);
         $requestData = array(
             'oxuser__oxbirthdate' => array(
                 'year' => 2100,
@@ -310,21 +306,21 @@ class oxpsEasyCreditPaymentTest extends OxidTestCase
             )
         );
 
-        $user = oxNew('oxuser');
+        $user = oxNew(User::class);
 
-        $payment = oxNew('payment');
+        $payment = oxNew(Payment::class);
         $payment->getValidatedDateOfBirth($requestData, $user);
     }
 
     public function testGetValidatedSalutation()
     {
-        $requestData = array(
+        $requestData = [
             'oxuser__oxsal' => "MR"
-        );
+        ];
 
-        $user = oxNew('oxuser');
+        $user = oxNew(User::class);
 
-        $payment = oxNew('payment');
+        $payment = oxNew(Payment::class);
         $this->assertEquals('MR', $payment->getValidatedSalutation($requestData));
     }
 }
