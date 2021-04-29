@@ -1,98 +1,88 @@
 <?php
-/**
- * This Software is the property of OXID eSales and is protected
- * by copyright law - it is NOT Freeware.
- *
- * Any unauthorized use of this software without a valid license key
- * is a violation of the license agreement and will be prosecuted by
- * civil and criminal law.
- *
- * @category      module
- * @package       easycredit
- * @author        OXID Professional Services
- * @link          http://www.oxid-esales.com
- * @copyright (C) OXID eSales AG 2003-2018
- */
+
+namespace OxidProfessionalServices\EasyCredit\Tests\Unit\Application\Core\Di;
+
+use OxidEsales\Eshop\Core\Exception\SystemComponentException;
+use OxidEsales\TestingLibrary\UnitTestCase;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditApiConfig;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditConfigException;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicFactory;
 
 /**
- * Class oxpsEasyCreditApiConfigTest
+ * Class EasyCreditApiConfigTest
  */
-class oxpsEasyCreditApiConfigTest extends OxidTestCase
+class EasyCreditApiConfigTest extends UnitTestCase
 {
     const WEBSHOP_ID = '7';
     const WEBSHOP_TOKEN = 'A1378XY';
 
-    /** @var oxpsEasyCreditApiConfig */
+    /** @var EasyCreditApiConfig */
     private $apiConfig;
 
     /**
      * Set up test environment
      *
-     * @return null
-     * @throws oxSystemComponentException
+     * @throws SystemComponentException
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
-        $apiConfigArray = oxpsEasyCreditDicFactory::getApiConfigArray();
+        $apiConfigArray = EasyCreditDicFactory::getApiConfigArray();
 
-        $credentials = $apiConfigArray[oxpsEasyCreditApiConfig::API_CONFIG_CREDENTIALS];
-        $credentials[oxpsEasyCreditApiConfig::API_CONFIG_CREDENTIAL_WEBSHOP_ID] = self::WEBSHOP_ID;
-        $credentials[oxpsEasyCreditApiConfig::API_CONFIG_CREDENTIAL_WEBSHOP_TOKEN] = self::WEBSHOP_TOKEN;
+        $credentials = $apiConfigArray[EasyCreditDicFactory::API_CONFIG_CREDENTIALS];
+        $credentials[EasyCreditDicFactory::API_CONFIG_CREDENTIAL_WEBSHOP_ID] = self::WEBSHOP_ID;
+        $credentials[EasyCreditDicFactory::API_CONFIG_CREDENTIAL_WEBSHOP_TOKEN] = self::WEBSHOP_TOKEN;
 
-        $apiConfigArray[oxpsEasyCreditApiConfig::API_CONFIG_CREDENTIALS] = $credentials;
+        $apiConfigArray[EasyCreditDicFactory::API_CONFIG_CREDENTIALS] = $credentials;
 
-        /** @var oxpsEasyCreditApiConfig $apiConfig */
+        /** @var EasyCreditDicFactory $apiConfig */
         $this->apiConfig = oxNew(EasyCreditApiConfig::class, $apiConfigArray);
     }
 
     /**
      * Tear down test environment
      *
-     * @return null
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
     }
 
     public function testGetApiConfigValue()
     {
-        $services = $this->apiConfig->getApiConfigValue(oxpsEasyCreditApiConfig::API_CONFIG_SERVICES);
+        $services = $this->apiConfig->getApiConfigValue(EasyCreditDicFactory::API_CONFIG_SERVICES);
         $this->assertNotNull($services);
-        $this->assertTrue(is_array($services));
+        $this->assertIsArray($services);
 
-        $sampleService = $services[oxpsEasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_MODELLRECHNUNG_GUENSTIGSTER_RATENPLAN];
+        $sampleService = $services[EasyCreditDicFactory::API_CONFIG_SERVICE_NAME_V1_MODELLRECHNUNG_GUENSTIGSTER_RATENPLAN];
         $this->assertNotNull($sampleService);
-        $this->assertTrue(is_array($sampleService));
+        $this->assertIsArray($sampleService);
         $this->assertEquals('get', $sampleService['httpMethod']);
         $this->assertEquals('/v1/modellrechnung/guenstigsterRatenplan', $sampleService['restFunction']);
     }
 
     public function testGetServiceHttpMethodExisting()
     {
-        $this->assertEquals('get', $this->apiConfig->getServiceHttpMethod(oxpsEasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_ZUSTIMMUNGSTEXTE));
+        $this->assertEquals('get', $this->apiConfig->getServiceHttpMethod(EasyCreditDicFactory::API_CONFIG_SERVICE_NAME_V1_ZUSTIMMUNGSTEXTE));
     }
 
-    /**
-     * @expectedException oxpsEasyCreditConfigException
-     * @expectedExceptionMessage Service name 'non existing service' is not configured.
-     */
     public function testGetServiceHttpMethodNonExisting()
     {
+        $this->expectExceptionMessage("Service name 'non existing service' is not configured.");
+        $this->expectException(EasyCreditConfigException::class);
         $this->assertEquals('get', $this->apiConfig->getServiceHttpMethod('non existing service'));
     }
 
     public function testGetServiceRestFunction()
     {
-        $this->assertEquals('/v1/texte/zustimmung/%s', $this->apiConfig->getServiceRestFunction(oxpsEasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_ZUSTIMMUNGSTEXTE));
+        $this->assertEquals('/v1/texte/zustimmung/%s', $this->apiConfig->getServiceRestFunction(EasyCreditDicFactory::API_CONFIG_SERVICE_NAME_V1_ZUSTIMMUNGSTEXTE));
     }
 
     public function testGetServiceRestFunctionArguments()
     {
-        $expected = array(oxpsEasyCreditApiConfig::API_CONFIG_SERVICE_REST_ARGUMENT_WEBSHOP_ID => self::WEBSHOP_ID);
-        $this->assertEquals($expected, $this->apiConfig->getServiceRestFunctionArguments(oxpsEasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_ZUSTIMMUNGSTEXTE));
+        $expected = array(EasyCreditDicFactory::API_CONFIG_SERVICE_REST_ARGUMENT_WEBSHOP_ID => self::WEBSHOP_ID);
+        $this->assertEquals($expected, $this->apiConfig->getServiceRestFunctionArguments(EasyCreditDicFactory::API_CONFIG_SERVICE_NAME_V1_ZUSTIMMUNGSTEXTE));
     }
 
     public function testGetBaseUrl()
@@ -112,14 +102,14 @@ class oxpsEasyCreditApiConfigTest extends OxidTestCase
 
     public function testGetValidationScheme()
     {
-        $validationScheme = $this->apiConfig->getValidationScheme(oxpsEasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_VORGANG);
+        $validationScheme = $this->apiConfig->getValidationScheme(EasyCreditDicFactory::API_CONFIG_SERVICE_NAME_V1_VORGANG);
 
         $this->assertNotNull($validationScheme);
-        $this->assertTrue(is_array($validationScheme));
+        $this->assertIsArray($validationScheme);
 
         $validationSchemeValues = $validationScheme[0];
         $this->assertNotNull($validationSchemeValues);
-        $this->assertTrue(is_array($validationSchemeValues));
+        $this->assertIsArray($validationSchemeValues);
         $this->assertEquals('tbVorgangskennung', $validationSchemeValues[oxpsEasyCreditResponseValidator::VALIDATION_KEY_FIELDNAME]);
         $this->assertEquals(1, $validationSchemeValues[oxpsEasyCreditResponseValidator::VALIDATION_KEY_REQUIRED]);
     }

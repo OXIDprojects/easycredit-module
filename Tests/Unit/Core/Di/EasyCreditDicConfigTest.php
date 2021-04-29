@@ -1,23 +1,16 @@
 <?php
-/**
- * This Software is the property of OXID eSales and is protected
- * by copyright law - it is NOT Freeware.
- *
- * Any unauthorized use of this software without a valid license key
- * is a violation of the license agreement and will be prosecuted by
- * civil and criminal law.
- *
- * @category      module
- * @package       easycredit
- * @author        OXID Professional Services
- * @link          http://www.oxid-esales.com
- * @copyright (C) OXID eSales AG 2003-2018
- */
+
+namespace OxidProfessionalServices\EasyCredit\Tests\Unit\Application\Core\Di;
+
+use OxidEsales\Eshop\Core\Exception\SystemComponentException;
+use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\TestingLibrary\UnitTestCase;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicConfig;
 
 /**
  * Class oxpsEasyCreditDicConfigTest
  */
-class oxpsEasyCreditDicConfigTest extends OxidTestCase
+class EasyCreditDicConfigTest extends UnitTestCase
 {
     const SHOP_ID = '3';
 
@@ -29,7 +22,7 @@ class oxpsEasyCreditDicConfigTest extends OxidTestCase
     const CONFIG_SET_PARAM_NAME = 'TESTPARAMSET';
     const CONFIG_SET_PARAM_VALUE = 'TESTVALUESET';
 
-    /** @var oxpsEasyCreditDicConfig */
+    /** @var EasyCreditDicConfig */
     private $dicConfig;
 
     /** @var array */
@@ -44,19 +37,18 @@ class oxpsEasyCreditDicConfigTest extends OxidTestCase
     /**
      * Set up test environment
      *
-     * @return null
-     * @throws oxSystemComponentException
+     * @throws SystemComponentException
      */
-    public function setUp()
+    public function setUp():void
     {
         parent::setUp();
 
-        $this->configStore = array();
+        $this->configStore = [];
         $this->configStore[self::CONFIG_GET_PARAM_NAME] = self::CONFIG_GET_PARAM_VALUE;
 
         $oxConfig = $this->getMock(
-            'oxConfig',
-            array('getShopId', 'getSslShopUrl', 'getConfigParam', 'setConfigParam', 'saveShopConfVar')
+            Registry::getConfig(),
+            ['getShopId', 'getSslShopUrl', 'getConfigParam', 'setConfigParam', 'saveShopConfVar']
         );
 
         $oxConfig->expects($this->any())->method('getShopId')->willReturn(self::SHOP_ID);
@@ -84,15 +76,14 @@ class oxpsEasyCreditDicConfigTest extends OxidTestCase
             }
         );
 
-        $this->dicConfig = oxNew('EasyCreditDicConfig', $oxConfig);
+        $this->dicConfig = oxNew(EasyCreditDicConfig::class, $oxConfig);
     }
 
     /**
      * Tear down test environment
      *
-     * @return null
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
     }
