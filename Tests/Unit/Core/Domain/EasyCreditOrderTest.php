@@ -841,8 +841,8 @@ class oxpsEasyCreditOxOrderTest extends OxidTestCase
     {
         return oxNew(
 'EasyCreditDic',
-           oxNew('EasyCreditDicSession', oxNew('oxpsEasyCreditOxSession')),
-           oxNew('oxpsEasyCreditApiConfig', $apiConfigured ? oxpsEasyCreditDicFactory::getApiConfigArray() : array()),
+           oxNew(EasyCreditDicSession::class, oxNew('oxpsEasyCreditOxSession')),
+           oxNew(EasyCreditApiConfig::class, $apiConfigured ? oxpsEasyCreditDicFactory::getApiConfigArray() : array()),
             oxNew('EasyCreditPayloadFactory'),
             oxNew('EasyCreditLogging', array()),
             oxNew('EasyCreditDicConfig', oxRegistry::getConfig())

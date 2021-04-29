@@ -101,7 +101,7 @@ class oxpsEasyCreditDicSessionTest extends OxidTestCase
             }
         );
 
-        $this->dicSession = oxNew('EasyCreditDicSession', $oxSession);
+        $this->dicSession = oxNew(EasyCreditDicSession::class, $oxSession);
     }
 
     /**

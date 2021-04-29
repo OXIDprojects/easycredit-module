@@ -44,7 +44,7 @@ class oxpsEasyCreditApiConfigTest extends OxidTestCase
         $apiConfigArray[oxpsEasyCreditApiConfig::API_CONFIG_CREDENTIALS] = $credentials;
 
         /** @var oxpsEasyCreditApiConfig $apiConfig */
-        $this->apiConfig = oxNew('oxpsEasyCreditApiConfig', $apiConfigArray);
+        $this->apiConfig = oxNew(EasyCreditApiConfig::class, $apiConfigArray);
     }
 
     /**

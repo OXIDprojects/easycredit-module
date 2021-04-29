@@ -43,8 +43,8 @@ class oxpsEasyCreditOrderTest extends OxidTestCase
     {
         $mockOxConfig = $this->getMock('oxConfig', array(), array());
 
-        $session = oxNew('EasyCreditDicSession', $oxSession);
-        $mockApiConfig = oxNew('oxpsEasyCreditApiConfig', oxpsEasyCreditDicFactory::getApiConfigArray());
+        $session = oxNew(EasyCreditDicSession::class, $oxSession);
+        $mockApiConfig = oxNew(EasyCreditApiConfig::class, oxpsEasyCreditDicFactory::getApiConfigArray());
         $mockLogging = $this->getMock('EasyCreditLogging', array(), array(array()));
         $mockPayloadFactory = $this->getMock('EasyCreditPayloadFactory', array(), array());
         $mockDicConfig = $this->getMock('EasyCreditDicConfig', array(), array($mockOxConfig));
