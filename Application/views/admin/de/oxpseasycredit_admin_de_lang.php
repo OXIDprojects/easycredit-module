@@ -22,11 +22,11 @@ $aLang = [
 
     'oxpseasycredit' => 'OXPS Easy Credit',
 
-    'SHOP_MODULE_GROUP_oxpsEasyCreditApi'                     => 'API',
-    'SHOP_MODULE_GROUP_oxpsEasyCreditExampleCalculation'      => 'Modellrechnung',
-    'SHOP_MODULE_GROUP_oxpsEasyCreditLogging'                 => 'Log',
-    'SHOP_MODULE_GROUP_oxpsEasyCreditCheckout'                => 'Checkout',
-    'SHOP_MODULE_GROUP_oxpsEasyCreditAquisitionBorder'        => 'Ankaufobergrenze',
+    'SHOP_MODULE_GROUP_EasyCreditApi'                         => 'API',
+    'SHOP_MODULE_GROUP_EasyCreditExampleCalculation'          => 'Modellrechnung',
+    'SHOP_MODULE_GROUP_EasyCreditLogging'                     => 'Log',
+    'SHOP_MODULE_GROUP_EasyCreditCheckout'                    => 'Checkout',
+    'SHOP_MODULE_GROUP_EasyCreditAquisitionBorder'            => 'Ankaufobergrenze',
     'SHOP_MODULE_oxpsECBaseUrl'                               => 'Basis-URL',
     'SHOP_MODULE_oxpsECWebshopId'                             => 'Webshop-ID',
     'SHOP_MODULE_oxpsECWebshopToken'                          => 'Webshop-Token',
