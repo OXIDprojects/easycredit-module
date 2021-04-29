@@ -127,7 +127,7 @@ class Events
         $sValue = '';
 
         /** @var Content|MultiLanguageModel $oContent */
-        $oContent = oxNew('oxContent');
+        $oContent = oxNew(Content::class);
         $oContent->loadByIdent(trim((string) $sIdentifier));
 
         if ($oContent->oxcontents__oxcontent instanceof Field) {
@@ -256,7 +256,7 @@ class Events
         $tables = $addColumns["tables"];
 
         /** @var $oDbMetaDataHandler DbMetaDataHandler */
-        $oDbMetaDataHandler = oxNew('oxDbMetaDataHandler');
+        $oDbMetaDataHandler = oxNew(DbMetaDataHandler::class);
 
         foreach ($tables as $tableName => $columns) {
             self::_dbEventAddTableColums($oDb, $columns, $oDbMetaDataHandler, $tableName);

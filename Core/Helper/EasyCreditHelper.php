@@ -28,7 +28,7 @@ class EasyCreditHelper
     {
         if ($articleId) {
             /** @var Article $article */
-            $article = oxNew('oxarticle');
+            $article = oxNew(Article::class);
             if ($article->load($articleId)) {
                 return $article->getPrice();
             }
@@ -92,7 +92,7 @@ class EasyCreditHelper
     public static function getModuleVersion(EasyCreditDic $dic)
     {
         /** @var $module Module */
-        $module = oxNew('oxModule');
+        $module = oxNew(Module::class);
         if ($module->load($dic->getApiConfig()->getEasyCreditModuleId())) {
             return $module->getInfo('version');
         }

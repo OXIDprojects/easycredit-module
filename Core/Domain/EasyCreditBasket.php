@@ -88,7 +88,7 @@ class EasyCreditBasket extends EasyCreditBasket_parent
     public function calcInterestsCost() {
 
         /** @var $interestsPrice Price */
-        $interestsPrice = oxNew('oxPrice');
+        $interestsPrice = oxNew(Price::class);
         if ($this->hasInterestsAmount()) {
             $interestsPrice->add($this->getInterestsAmount());
         }

@@ -19,7 +19,9 @@ namespace OxidProfessionalServices\EasyCredit\Application\Controller;
 
 use OxidEsales\Eshop\Application\Model\Article;
 use OxidEsales\Eshop\Application\Model\Basket;
+use OxidEsales\Eshop\Application\Model\Order;
 use OxidEsales\Eshop\Application\Model\User;
+use OxidEsales\Eshop\Core\Exception\ExceptionToDisplay;
 use OxidEsales\Eshop\Core\Exception\SystemComponentException;
 use OxidEsales\Eshop\Core\Field;
 use OxidEsales\Eshop\Core\Price;
@@ -93,11 +95,11 @@ class EasyCreditPaymentController extends EasyCreditPayment_parent
     public function isEasyCreditPermitted()
     {
         /** @var $aquisitionBorder EasyCreditAquisitionBorder */
-        $aquisitionBorder = oxNew("EasyCreditAquisitionBorder");
+        $aquisitionBorder = oxNew(EasyCreditAquisitionBorder::class);
         $aquisitionBorder->updateAquisitionBorderIfNeeded();
 
         /** @var $aquisitionBorder EasyCreditAquisitionBorder */
-        $aquisitionBorder = oxNew("EasyCreditAquisitionBorder");
+        $aquisitionBorder = oxNew(EasyCreditAquisitionBorder::class);
 
         if(!$aquisitionBorder->considerInFrontend() ) {
             return true;
@@ -256,7 +258,7 @@ class EasyCreditPaymentController extends EasyCreditPayment_parent
     {
         if ($articleId) {
             /** @var Article $article */
-            $article = oxNew('oxarticle');
+            $article = oxNew(Article::class);
             if ($article->load($articleId)) {
                 return $article->getPrice();
             }
@@ -287,7 +289,7 @@ class EasyCreditPaymentController extends EasyCreditPayment_parent
     {
         if ($this->_oDelAddress === null) {
             $this->_oDelAddress = false;
-            $oOrder = oxNew('oxorder');
+            $oOrder = oxNew(Order::class);
             $this->_oDelAddress = $oOrder->getDelAddressInfo();
         }
 
@@ -644,7 +646,7 @@ class EasyCreditPaymentController extends EasyCreditPayment_parent
      */
     protected function handleUserException($i18nMessage)
     {
-        $oEx = oxNew('oxExceptionToDisplay');
+        $oEx = oxNew(ExceptionToDisplay::class);
         $oEx->setMessage($i18nMessage);
         Registry::get("oxUtilsView")->addErrorToDisplay($oEx);
     }

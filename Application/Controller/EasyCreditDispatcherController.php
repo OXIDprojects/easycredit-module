@@ -17,6 +17,7 @@ use OxidEsales\Eshop\Application\Controller\FrontendController;
 use OxidEsales\Eshop\Application\Model\Address;
 use OxidEsales\Eshop\Application\Model\Basket;
 use OxidEsales\Eshop\Application\Model\Order;
+use OxidEsales\Eshop\Core\Exception\ExceptionToDisplay;
 use OxidEsales\Eshop\Core\Exception\SystemComponentException;
 use OxidEsales\Eshop\Core\Registry;
 use OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditWebServiceClientFactory;
@@ -256,7 +257,7 @@ class EasyCreditDispatcherController extends FrontendController
     protected function getShippingAddress()
     {
         /** @var $oOrder Order */
-        $oOrder = oxNew('oxorder');
+        $oOrder = oxNew(Order::class);
         return $oOrder->getDelAddressInfo();
     }
 
@@ -410,7 +411,7 @@ class EasyCreditDispatcherController extends FrontendController
      */
     protected function getInitializationRequestBuilder()
     {
-        return oxNew('EasyCreditInitializeRequestBuilder');
+        return oxNew(EasyCreditInitializeRequestBuilder::class);
     }
 
     /**
@@ -451,7 +452,7 @@ class EasyCreditDispatcherController extends FrontendController
      */
     protected function handleUserException($i18nMessage)
     {
-        $oEx = oxNew('oxExceptionToDisplay');
+        $oEx = oxNew(ExceptionToDisplay::class);
         $oEx->setMessage($i18nMessage);
         Registry::get("oxUtilsView")->addErrorToDisplay($oEx);
     }

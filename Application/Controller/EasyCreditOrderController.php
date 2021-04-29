@@ -15,6 +15,7 @@
 namespace OxidProfessionalServices\EasyCredit\Application\Controller;
 
 use OxidEsales\Eshop\Application\Model\Payment;
+use OxidEsales\Eshop\Core\Exception\ExceptionToDisplay;
 use OxidEsales\Eshop\Core\Exception\SystemComponentException;
 use OxidEsales\Eshop\Core\Field;
 use OxidEsales\Eshop\Core\Registry;
@@ -188,7 +189,7 @@ class EasyCreditOrderController extends EasyCreditOrder_parent
      */
     protected function handleUserException($i18nMessage)
     {
-        $oEx = oxNew('oxExceptionToDisplay');
+        $oEx = oxNew(ExceptionToDisplay::class);
         $oEx->setMessage($i18nMessage);
         Registry::get("oxUtilsView")->addErrorToDisplay($oEx);
     }

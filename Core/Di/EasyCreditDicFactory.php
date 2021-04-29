@@ -38,7 +38,7 @@ class EasyCreditDicFactory
     public static function getDic()
     {
         return oxNew(
-            'EasyCreditDic',
+            EasyCreditDic::class,
             oxNew(EasyCreditDicSession::class, Registry::getSession()),
             oxNew(EasyCreditApiConfig::class, self::getApiConfigArray()),
             oxNew(EasyCreditPayloadFactory::class),

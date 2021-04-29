@@ -69,7 +69,7 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
     {
         $soxId = $this->getEditObjectId();
         if ($this->order === false && isset($soxId) && $soxId != '-1') {
-            $this->order = oxNew('oxOrder');
+            $this->order = oxNew(Order::class);
             $this->order->load($soxId);
         }
 

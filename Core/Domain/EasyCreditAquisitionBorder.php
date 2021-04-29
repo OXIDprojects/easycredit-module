@@ -15,6 +15,7 @@
 namespace OxidProfessionalServices\EasyCredit\Core\Domain;
 
 use OxidEsales\Eshop\Core\Base;
+use OxidEsales\Eshop\Core\Exception\ExceptionToDisplay;
 use OxidEsales\Eshop\Core\Exception\SystemComponentException;
 use OxidEsales\Eshop\Core\Registry;
 use OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditCurlException;
@@ -115,7 +116,7 @@ class EasyCreditAquisitionBorder extends Base {
      */
     protected function handleException($ex)
     {
-        $oEx = oxNew('oxExceptionToDisplay');
+        $oEx = oxNew(ExceptionToDisplay::class);
         $oEx->setMessage($ex->getMessage());
         Registry::get("oxUtilsView")->addErrorToDisplay($oEx);
         $this->getDic()->getLogging()->log($ex->getMessage());

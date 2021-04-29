@@ -7,6 +7,7 @@ use OxidEsales\Eshop\Application\Model\Article;
 use OxidEsales\Eshop\Application\Model\Basket;
 use OxidEsales\Eshop\Application\Model\BasketItem;
 use OxidEsales\Eshop\Application\Model\Category;
+use OxidEsales\Eshop\Application\Model\Country;
 use OxidEsales\Eshop\Application\Model\Groups;
 use OxidEsales\Eshop\Application\Model\Manufacturer;
 use OxidEsales\Eshop\Application\Model\User;
@@ -511,7 +512,7 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
 
     private function getCountryIso2ByCountryId($countryId)
     {
-        $country = oxNew("oxCountry");
+        $country = oxNew(Country::class);
         if($country->load($countryId)) {
             return $country->oxcountry__oxisoalpha2->value;
         }

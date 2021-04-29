@@ -13,6 +13,8 @@
 
 namespace OxidProfessionalServices\EasyCredit\Application\Controller\Admin;
 
+use OxidEsales\Eshop\Application\Model\Order;
+
 /**
  * Class oxpseasycreditorder_main
  *
@@ -28,7 +30,7 @@ class EasyCreditOrderAddressController extends EasyCreditOrderAddress_parent
 
         if ($soxId != "-1" && isset($soxId)) {
             // load object
-            $oOrder = oxNew("oxorder");
+            $oOrder = oxNew(Order::class);
             $oOrder->load($soxId);
 
             $this->_aViewData["readonly"] =  ($oOrder->oxorder__oxpaymenttype->value === 'easycreditinstallment');

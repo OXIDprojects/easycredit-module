@@ -6,6 +6,7 @@ use OxidEsales\Eshop\Application\Model\Address;
 use OxidEsales\Eshop\Application\Model\Basket;
 use OxidEsales\Eshop\Application\Model\Order;
 use OxidEsales\Eshop\Application\Model\User;
+use OxidEsales\Eshop\Core\Exception\ExceptionToDisplay;
 use OxidEsales\Eshop\Core\Exception\SystemComponentException;
 use OxidEsales\Eshop\Core\Field;
 use OxidEsales\Eshop\Core\Registry;
@@ -146,7 +147,7 @@ class EasyCreditOrder extends EasyCreditOrder_parent {
     protected function updateAquisitionBorder()
     {
         /** @var $aquisitionBorder EasyCreditAquisitionBorder */
-        $aquisitionBorder = oxNew("EasyCreditAquisitionBorder");
+        $aquisitionBorder = oxNew(EasyCreditAquisitionBorder::class);
         $aquisitionBorder->updateAquisitionBorder();
     }
 
@@ -257,7 +258,7 @@ class EasyCreditOrder extends EasyCreditOrder_parent {
      */
     protected function getCurrentInitializationData($oUser, $oBasket)
     {
-        $requestBuilder = oxNew('EasyCreditInitializeRequestBuilder');
+        $requestBuilder = oxNew(EasyCreditInitializeRequestBuilder::class);
 
         $requestBuilder->setUser($oUser);
         $requestBuilder->setBasket($oBasket);
@@ -304,7 +305,7 @@ class EasyCreditOrder extends EasyCreditOrder_parent {
     protected function getShippingAddress()
     {
         /** @var $oOrder Order */
-        $oOrder = oxNew('oxorder');
+        $oOrder = oxNew(Order::class);
         return $oOrder->getDelAddressInfo();
     }
 
@@ -348,7 +349,7 @@ class EasyCreditOrder extends EasyCreditOrder_parent {
      */
     protected function handleUserException($i18nMessage)
     {
-        $oEx = oxNew('oxExceptionToDisplay');
+        $oEx = oxNew(ExceptionToDisplay::class);
         $oEx->setMessage($i18nMessage);
         Registry::get("oxUtilsView")->addErrorToDisplay($oEx);
     }

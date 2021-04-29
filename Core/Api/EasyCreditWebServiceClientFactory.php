@@ -47,7 +47,7 @@ class EasyCreditWebServiceClientFactory
         $addheaders = false
     ) {
         /** @var EasyCreditWebServiceClient $client */
-        $client = oxNew('EasyCreditWebServiceClient');
+        $client = oxNew(EasyCreditWebServiceClient::class);
 
         $apiConfig = $dic->getApiConfig();
 
@@ -64,7 +64,7 @@ class EasyCreditWebServiceClientFactory
         if ($scheme) {
             $client->setResponseValidator(
                 oxNew(
-                    'EasyCreditResponseValidator',
+                    EasyCreditResponseValidator::class,
                     $scheme
                 )
             );
