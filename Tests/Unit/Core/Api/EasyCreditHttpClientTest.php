@@ -5,9 +5,10 @@ namespace OxidProfessionalServices\EasyCredit\Tests\Unit\Application\Core\Api;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditCurlException;
 use OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditHttpClient;
+use OxidProfessionalServices\EasyCredit\Core\CrossCutting\EasyCreditLogging;
 
 /**
- * Class oxpsEasyCreditHttpClientTest
+ * Class EasyCreditHttpClientTest
  */
 class EasyCreditHttpClientTest extends UnitTestCase
 {
@@ -48,7 +49,7 @@ class EasyCreditHttpClientTest extends UnitTestCase
         $client = $this->getMock(EasyCreditHttpClient::class, ['executeHttpRequest']);
         $client->expects($this->any())->method('executeHttpRequest')->willReturn('{"success": true}');
 
-        $logging = oxNew('EasyCreditLogging', []);
+        $logging = oxNew(EasyCreditLogging::class, []);
         $client->setLogging($logging);
 
         $expected = new \stdClass();
@@ -58,21 +59,21 @@ class EasyCreditHttpClientTest extends UnitTestCase
 
     public function testExecuteHttpRequestWithoutHttpMethod()
     {
-        $this->expectException(oxpsEasyCreditCurlException::class);
+        $this->expectException(EasyCreditCurlException::class);
         $client = oxNew(EasyCreditHttpClient::class);
         $client->executeHttpRequest(null, null);
     }
 
     public function testExecuteHttpRequestWithWrongHttpMethod()
     {
-        $this->expectException(oxpsEasyCreditCurlException::class);
+        $this->expectException(EasyCreditCurlException::class);
         $client = oxNew(EasyCreditHttpClient::class);
         $client->executeHttpRequest('PUT', 'https://test.url'); // PUT is not supported by EasyCreditHttpClient
     }
 
     public function testExecuteHttpRequestWithoutServiceUrl()
     {
-        $this->expectException(oxpsEasyCreditCurlException::class);
+        $this->expectException(EasyCreditCurlException::class);
         $client = oxNew(EasyCreditHttpClient::class);
         $client->executeHttpRequest('GET', null);
     }

@@ -14,13 +14,13 @@ use OxidProfessionalServices\EasyCredit\Core\Dto\EasyCreditStorage;
  */
 class EasyCreditDicSessionTest extends UnitTestCase
 {
-    const GET_KEY = 'GET_KEY_TEST';
+    const GET_KEY   = 'GET_KEY_TEST';
     const GET_VALUE = 'GET_VALUE_TEST';
 
-    const SET_KEY = 'SET_KEY_TEST';
+    const SET_KEY   = 'SET_KEY_TEST';
     const SET_VALUE = 'SET_VALUE_TEST';
 
-    const DELETE_KEY = 'DELETE_KEY_TEST';
+    const DELETE_KEY   = 'DELETE_KEY_TEST';
     const DELETE_VALUE = 'DELETE_VALUE_TEST';
 
     const SESSION_ID = '1234';
@@ -39,38 +39,47 @@ class EasyCreditDicSessionTest extends UnitTestCase
      *
      * @throws SystemComponentException
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
-        $this->sessionStore = [];
+        $this->sessionStore                = [];
         $this->sessionStore[self::GET_KEY] = self::GET_VALUE;
 
         $oxSession = $this->getMock(
             Session::class,
-            ['getVariable', 'setVariable', 'deleteVariable', 'processUrl', 'getId', 'setStorage', 'getStorage', 'clearStorage']
+            [
+                'getVariable',
+                'setVariable',
+                'deleteVariable',
+                'processUrl',
+                'getId',
+                'setStorage',
+                'getStorage',
+                'clearStorage'
+            ]
         );
 
         $oxSession->expects($this->any())->method('getVariable')->willReturnCallback(
-            function($key) {
+            function ($key) {
                 return $this->sessionStore[$key];
             }
         );
 
         $oxSession->expects($this->any())->method('setVariable')->willReturnCallback(
-            function($key, $value) {
+            function ($key, $value) {
                 $this->sessionStore[$key] = $value;
             }
         );
 
         $oxSession->expects($this->any())->method('deleteVariable')->willReturnCallback(
-            function($key) {
+            function ($key) {
                 unset($this->sessionStore[$key]);
             }
         );
 
         $oxSession->expects($this->any())->method('processUrl')->willReturnCallback(
-            function($url) {
+            function ($url) {
                 return $url . '-test';
             }
         );
@@ -78,19 +87,19 @@ class EasyCreditDicSessionTest extends UnitTestCase
         $oxSession->expects($this->any())->method('getId')->willReturn(self::SESSION_ID);
 
         $oxSession->expects($this->any())->method('setStorage')->willReturnCallback(
-            function($storage) {
+            function ($storage) {
                 $this->storage = $storage;
             }
         );
 
         $oxSession->expects($this->any())->method('getStorage')->willReturnCallback(
-            function() {
+            function () {
                 return $this->storage;
             }
         );
 
         $oxSession->expects($this->any())->method('deleteStorage')->willReturnCallback(
-            function() {
+            function () {
                 unset($this->storage);
             }
         );
@@ -151,9 +160,9 @@ class EasyCreditDicSessionTest extends UnitTestCase
         $this->assertNull($this->dicSession->getStorage());
 
         $storage = new EasyCreditStorage('Vorgangskennung',
-            'fachlicheVorgangskennung',
-            'authorizationHash',
-            '$authorizedAmount');
+                                         'fachlicheVorgangskennung',
+                                         'authorizationHash',
+                                         '$authorizedAmount');
         $this->dicSession->setStorage($storage);
         $this->assertEquals($storage, $this->dicSession->getStorage());
     }

@@ -28,7 +28,7 @@ use OxidProfessionalServices\EasyCredit\Core\Dto\EasyCreditStorage;
 /**
  * Class EasyCreditOxBasketTest
  */
-class EasyCreditOxBasketTest extends UnitTestCase
+class EasyCreditBasketTest extends UnitTestCase
 {
     /**
      * Set up test environment
@@ -70,7 +70,7 @@ class EasyCreditOxBasketTest extends UnitTestCase
         $storage->setInterestAmount(20.7);
         $dic->getSession()->setStorage($storage);
 
-        $oxBasket = $this->getMock('oxpsEasyCreditOxBasket', ['getDic']);
+        $oxBasket = $this->getMock(EasyCreditBasket::class, ['getDic']);
         $oxBasket->expects($this->any())->method('getDic')->willReturn($dic);
 
         $this->assertEquals(20.7, $oxBasket->getInterestsAmount());

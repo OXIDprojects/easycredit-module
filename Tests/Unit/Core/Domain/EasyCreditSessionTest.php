@@ -21,9 +21,9 @@ use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidProfessionalServices\EasyCredit\Core\Dto\EasyCreditStorage;
 
 /**
- * Class oxpsEasyCreditOxSessionTest
+ * Class EasyCreditOxSessionTest
  */
-class oxpsEasyCreditOxSessionTest extends UnitTestCase
+class EasyCreditOxSessionTest extends UnitTestCase
 {
     /**
      * Set up test environment

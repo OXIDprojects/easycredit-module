@@ -3,10 +3,11 @@
 namespace OxidProfessionalServices\EasyCredit\Tests\Unit\Application\Core\Api;
 
 use OxidEsales\TestingLibrary\UnitTestCase;
+use OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditCurlException;
 use OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditWebServiceClient;
 
 /**
- * Class oxpsEasyCreditWebServiceClientTest
+ * Class EasyCreditWebServiceClientTest
  */
 class EasyCreditWebServiceClientTest extends UnitTestCase
 {
@@ -48,7 +49,7 @@ class EasyCreditWebServiceClientTest extends UnitTestCase
     public function testSetFunctionWithEmptySprintfArgs()
     {
         $this->expectExceptionMessage("Parameter p2 for curl function test was empty");
-        $this->expectException(oxpsEasyCreditCurlException::class);
+        $this->expectException(EasyCreditCurlException::class);
         $sprintfArgs = [
             'p1' => 'v1',
             'p2' => null

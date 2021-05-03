@@ -2,13 +2,14 @@
 
 namespace OxidProfessionalServices\EasyCredit\Tests\Unit\Application\Core\Di;
 
+use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Exception\SystemComponentException;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicConfig;
 
 /**
- * Class oxpsEasyCreditDicConfigTest
+ * Class EasyCreditDicConfigTest
  */
 class EasyCreditDicConfigTest extends UnitTestCase
 {
@@ -47,7 +48,7 @@ class EasyCreditDicConfigTest extends UnitTestCase
         $this->configStore[self::CONFIG_GET_PARAM_NAME] = self::CONFIG_GET_PARAM_VALUE;
 
         $oxConfig = $this->getMock(
-            Registry::getConfig(),
+            Config::class,
             ['getShopId', 'getSslShopUrl', 'getConfigParam', 'setConfigParam', 'saveShopConfVar']
         );
 

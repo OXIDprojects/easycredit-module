@@ -4,6 +4,7 @@ namespace OxidProfessionalServices\EasyCredit\Tests\Unit\Application\Core\Api;
 
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditResponseValidator;
+use OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditValidationException;
 
 /**
  * Class EasyCreditResponseValidatorTest
@@ -53,7 +54,7 @@ class EasyCreditResponseValidatorTest extends UnitTestCase
 
     public function testValidateWithValidationSchemeInvalid()
     {
-        $this->expectException(oxpsEasyCreditValidationException::class);
+        $this->expectException(EasyCreditValidationException::class);
         $scheme = [
             [
                 "fieldname"     => "ergebnis",

@@ -4,6 +4,7 @@ namespace OxidProfessionalServices\EasyCredit\Tests\Unit\Application\Core\Di;
 
 use OxidEsales\Eshop\Core\Exception\SystemComponentException;
 use OxidEsales\TestingLibrary\UnitTestCase;
+use OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditResponseValidator;
 use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditApiConfig;
 use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditConfigException;
 use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicFactory;
@@ -30,11 +31,11 @@ class EasyCreditApiConfigTest extends UnitTestCase
 
         $apiConfigArray = EasyCreditDicFactory::getApiConfigArray();
 
-        $credentials = $apiConfigArray[EasyCreditDicFactory::API_CONFIG_CREDENTIALS];
-        $credentials[EasyCreditDicFactory::API_CONFIG_CREDENTIAL_WEBSHOP_ID] = self::WEBSHOP_ID;
-        $credentials[EasyCreditDicFactory::API_CONFIG_CREDENTIAL_WEBSHOP_TOKEN] = self::WEBSHOP_TOKEN;
+        $credentials = $apiConfigArray[EasyCreditApiConfig::API_CONFIG_CREDENTIALS];
+        $credentials[EasyCreditApiConfig::API_CONFIG_CREDENTIAL_WEBSHOP_ID] = self::WEBSHOP_ID;
+        $credentials[EasyCreditApiConfig::API_CONFIG_CREDENTIAL_WEBSHOP_TOKEN] = self::WEBSHOP_TOKEN;
 
-        $apiConfigArray[EasyCreditDicFactory::API_CONFIG_CREDENTIALS] = $credentials;
+        $apiConfigArray[EasyCreditApiConfig::API_CONFIG_CREDENTIALS] = $credentials;
 
         /** @var EasyCreditDicFactory $apiConfig */
         $this->apiConfig = oxNew(EasyCreditApiConfig::class, $apiConfigArray);
@@ -51,11 +52,11 @@ class EasyCreditApiConfigTest extends UnitTestCase
 
     public function testGetApiConfigValue()
     {
-        $services = $this->apiConfig->getApiConfigValue(EasyCreditDicFactory::API_CONFIG_SERVICES);
+        $services = $this->apiConfig->getApiConfigValue(EasyCreditApiConfig::API_CONFIG_SERVICES);
         $this->assertNotNull($services);
         $this->assertIsArray($services);
 
-        $sampleService = $services[EasyCreditDicFactory::API_CONFIG_SERVICE_NAME_V1_MODELLRECHNUNG_GUENSTIGSTER_RATENPLAN];
+        $sampleService = $services[EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_MODELLRECHNUNG_GUENSTIGSTER_RATENPLAN];
         $this->assertNotNull($sampleService);
         $this->assertIsArray($sampleService);
         $this->assertEquals('get', $sampleService['httpMethod']);
@@ -64,7 +65,7 @@ class EasyCreditApiConfigTest extends UnitTestCase
 
     public function testGetServiceHttpMethodExisting()
     {
-        $this->assertEquals('get', $this->apiConfig->getServiceHttpMethod(EasyCreditDicFactory::API_CONFIG_SERVICE_NAME_V1_ZUSTIMMUNGSTEXTE));
+        $this->assertEquals('get', $this->apiConfig->getServiceHttpMethod(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_ZUSTIMMUNGSTEXTE));
     }
 
     public function testGetServiceHttpMethodNonExisting()
@@ -76,13 +77,13 @@ class EasyCreditApiConfigTest extends UnitTestCase
 
     public function testGetServiceRestFunction()
     {
-        $this->assertEquals('/v1/texte/zustimmung/%s', $this->apiConfig->getServiceRestFunction(EasyCreditDicFactory::API_CONFIG_SERVICE_NAME_V1_ZUSTIMMUNGSTEXTE));
+        $this->assertEquals('/v1/texte/zustimmung/%s', $this->apiConfig->getServiceRestFunction(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_ZUSTIMMUNGSTEXTE));
     }
 
     public function testGetServiceRestFunctionArguments()
     {
-        $expected = [EasyCreditDicFactory::API_CONFIG_SERVICE_REST_ARGUMENT_WEBSHOP_ID => self::WEBSHOP_ID];
-        $this->assertEquals($expected, $this->apiConfig->getServiceRestFunctionArguments(EasyCreditDicFactory::API_CONFIG_SERVICE_NAME_V1_ZUSTIMMUNGSTEXTE));
+        $expected = [EasyCreditApiConfig::API_CONFIG_SERVICE_REST_ARGUMENT_WEBSHOP_ID => self::WEBSHOP_ID];
+        $this->assertEquals($expected, $this->apiConfig->getServiceRestFunctionArguments(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_ZUSTIMMUNGSTEXTE));
     }
 
     public function testGetBaseUrl()
@@ -102,7 +103,7 @@ class EasyCreditApiConfigTest extends UnitTestCase
 
     public function testGetValidationScheme()
     {
-        $validationScheme = $this->apiConfig->getValidationScheme(EasyCreditDicFactory::API_CONFIG_SERVICE_NAME_V1_VORGANG);
+        $validationScheme = $this->apiConfig->getValidationScheme(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_VORGANG);
 
         $this->assertNotNull($validationScheme);
         $this->assertIsArray($validationScheme);
@@ -110,8 +111,8 @@ class EasyCreditApiConfigTest extends UnitTestCase
         $validationSchemeValues = $validationScheme[0];
         $this->assertNotNull($validationSchemeValues);
         $this->assertIsArray($validationSchemeValues);
-        $this->assertEquals('tbVorgangskennung', $validationSchemeValues[oxpsEasyCreditResponseValidator::VALIDATION_KEY_FIELDNAME]);
-        $this->assertEquals(1, $validationSchemeValues[oxpsEasyCreditResponseValidator::VALIDATION_KEY_REQUIRED]);
+        $this->assertEquals('tbVorgangskennung', $validationSchemeValues[EasyCreditResponseValidator::VALIDATION_KEY_FIELDNAME]);
+        $this->assertEquals(1, $validationSchemeValues[EasyCreditResponseValidator::VALIDATION_KEY_REQUIRED]);
     }
 
     public function testGetRedirectUrl()

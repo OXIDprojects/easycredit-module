@@ -422,7 +422,7 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
         $user                = $this->getMock(User::class, ['getUserGroups']);
         $user->oxuser__oxfon = new Field('+49 123-1234');
 
-        $rb = oxNew('EasyCreditInitializeRequestBuilder');
+        $rb = oxNew(EasyCreditInitializeRequestBuilder::class);
         $rb->setBasket($basket);
         $rb->setUser($user);
 
