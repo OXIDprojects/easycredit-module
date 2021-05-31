@@ -1,20 +1,20 @@
 <?php
 
-namespace OxidProfessionalServices\EasyCredit\Tests\UnitApplication\Component\Widget;
+namespace OxidProfessionalServices\EasyCredit\Tests\Unit\Application\Component\Widget;
 
+use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidProfessionalServices\EasyCredit\Application\Component\Widget\EasyCreditExampleCalculationPopup;
 
 /**
  * Class EasyCreditExampleCalculationPopupTest
  */
-class EasyCreditExampleCalculationPopupTest extends OxidTestCase
+class EasyCreditExampleCalculationPopupTest extends UnitTestCase
 {
     /**
      * Set up test environment
      *
-     * @return null
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
     }
@@ -22,20 +22,19 @@ class EasyCreditExampleCalculationPopupTest extends OxidTestCase
     /**
      * Tear down test environment
      *
-     * @return null
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
     }
 
-    public function testGetExampleCalculationRate()
+    public function testGetExampleCalculationRate(): void
     {
         $popup = oxNew(EasyCreditExampleCalculationPopup::class);
         $this->assertNotNull($popup->getDic());
     }
 
-    public function testGetBasket()
+    public function testGetBasket(): void
     {
         $popup = oxNew(EasyCreditExampleCalculationPopup::class);
         $basket = $popup->getBasket();
@@ -45,7 +44,7 @@ class EasyCreditExampleCalculationPopupTest extends OxidTestCase
         $this->assertEquals(0.0, $price->getPrice());
     }
 
-    public function testGetPrice()
+    public function testGetPrice(): void
     {
         $popup = oxNew(EasyCreditExampleCalculationPopup::class);
         $price = $popup->getPrice();
@@ -53,7 +52,7 @@ class EasyCreditExampleCalculationPopupTest extends OxidTestCase
         $this->assertEquals(0.0, $price->getPrice());
     }
 
-    public function testGetIFrameUrl()
+    public function testGetIFrameUrl(): void
     {
         $popup = oxNew(EasyCreditExampleCalculationPopup::class);
         $this->assertEquals('https://ratenkauf.easycredit.de/ratenkauf/content/intern/paymentPageBeispielrechnung.jsf?shopKennung=&bestellwert=0', $popup->getIFrameUrl());

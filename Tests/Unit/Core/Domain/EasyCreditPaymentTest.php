@@ -14,17 +14,22 @@
  * @copyright (C) OXID eSales AG 2003-2018
  */
 
+namespace OxidProfessionalServices\EasyCredit\Tests\Unit\Core\Domain;
+
+use OxidEsales\Eshop\Application\Model\Payment;
+use OxidEsales\TestingLibrary\UnitTestCase;
+use OxidProfessionalServices\EasyCredit\Core\Domain\EasyCreditPayment;
+
 /**
- * Class oxpsEasyCreditOxPaymentTest
+ * Class EasyCreditOxPaymentTest
  */
-class oxpsEasyCreditOxPaymentTest extends OxidTestCase
+class EasyCreditOxPaymentTest extends UnitTestCase
 {
     /**
      * Set up test environment
      *
-     * @return null
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
     }
@@ -32,86 +37,85 @@ class oxpsEasyCreditOxPaymentTest extends OxidTestCase
     /**
      * Tear down test environment
      *
-     * @return null
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
     }
 
-    public function testIsEasyCreditInstallmentTrue()
+    public function testIsEasyCreditInstallmentTrue(): void
     {
-        $payment = oxNew('oxpayment');
-        $payment->setId(oxpsEasyCreditOxPayment::EASYCREDIT_PAYMENTID);
+        $payment = oxNew(Payment::class);
+        $payment->setId(EasyCreditPayment::EASYCREDIT_PAYMENTID);
         $this->assertTrue($payment->isEasyCreditInstallment());
     }
 
-    public function testIsEasyCreditInstallmentFalse()
+    public function testIsEasyCreditInstallmentFalse(): void
     {
-        $payment = oxNew('oxpayment');
+        $payment = oxNew(Payment::class);
         $payment->setId('something');
         $this->assertFalse($payment->isEasyCreditInstallment());
     }
 
-    public function testIsEasyCreditInstallmentByIdTrue()
+    public function testIsEasyCreditInstallmentByIdTrue(): void
     {
-        $this->assertTrue(oxpsEasyCreditOxPayment::isEasyCreditInstallmentById(oxpsEasyCreditOxPayment::EASYCREDIT_PAYMENTID));
+        $this->assertTrue(EasyCreditPayment::isEasyCreditInstallmentById(EasyCreditPayment::EASYCREDIT_PAYMENTID));
     }
 
-    public function testIsEasyCreditInstallmentByIdFalse()
+    public function testIsEasyCreditInstallmentByIdFalse(): void
     {
-        $this->assertFalse(oxpsEasyCreditOxPayment::isEasyCreditInstallmentById('something'));
+        $this->assertFalse(EasyCreditPayment::isEasyCreditInstallmentById('something'));
     }
 
-    public function testGetEasyCreditAquisitionBorderValue()
+    public function testGetEasyCreditAquisitionBorderValue(): void
     {
         $borderValue = 1000.0;
 
-        $payment = oxNew('oxpayment');
+        $payment = oxNew(Payment::class);
         $payment->getConfig()->setConfigParam('oxpsECAquisitionBorderValue', $borderValue);
 
         $this->assertEquals($borderValue, $payment->getEasyCreditAquisitionBorderValue());
     }
 
-    public function testGetFEasyCreditAquisitionBorderValue()
+    public function testGetFEasyCreditAquisitionBorderValue(): void
     {
-        $payment = oxNew('oxpayment');
+        $payment = oxNew(Payment::class);
         $payment->getConfig()->setConfigParam('oxpsECAquisitionBorderValue', 750.14);
 
         $this->assertEquals('750,14 EUR', $payment->getFEasyCreditAquisitionBorderValue());
     }
 
-    public function testGetFEasyCreditAquisitionBorderValueNoValue()
+    public function testGetFEasyCreditAquisitionBorderValueNoValue(): void
     {
-        $payment = oxNew('oxpayment');
+        $payment = oxNew(Payment::class);
 
         $this->assertNull($payment->getFEasyCreditAquisitionBorderValue());
     }
 
-    public function testGetFEasyCreditAquisitionBorderLastUpdate()
+    public function testGetFEasyCreditAquisitionBorderLastUpdate(): void
     {
         $t = time();
 
-        $payment = oxNew('oxpayment');
+        $payment = oxNew(Payment::class);
         $payment->getConfig()->setConfigParam('oxpsECAquisitionBorderLastUpdate', $t);
 
         $this->assertEquals($t, $payment->getEasyCreditAquisitionBorderLastUpdate());
     }
 
-    public function testGetEasyCreditAquisitionBorderLastUpdate()
+    public function testGetEasyCreditAquisitionBorderLastUpdate(): void
     {
         $t = "31 July 2018";
 
-        $payment = oxNew('oxpayment');
+        $payment = oxNew(Payment::class);
         $payment->getConfig()->setConfigParam('oxpsECAquisitionBorderLastUpdate', $t);
 
         $this->assertEquals('31.07.2018 00:00', $payment->getFEasyCreditAquisitionBorderLastUpdate());
     }
 
-    public function testGetEasyCreditAquisitionBorderLastUpdateNoTime()
+    public function testGetEasyCreditAquisitionBorderLastUpdateNoTime(): void
     {
 
-        $payment = oxNew('oxpayment');
+        $payment = oxNew(Payment::class);
         $payment->getConfig()->setConfigParam('oxpsECAquisitionBorderLastUpdate', null);
         $this->assertNull($payment->getFEasyCreditAquisitionBorderLastUpdate());
     }

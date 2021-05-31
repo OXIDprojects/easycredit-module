@@ -14,17 +14,22 @@
  * @copyright (C) OXID eSales AG 2003-2018
  */
 
+namespace OxidProfessionalServices\EasyCredit\Tests\Unit\Core\Domain;
+
+use OxidEsales\Eshop\Core\Session;
+use OxidEsales\TestingLibrary\UnitTestCase;
+use OxidProfessionalServices\EasyCredit\Core\Dto\EasyCreditStorage;
+
 /**
- * Class oxpsEasyCreditOxSessionTest
+ * Class EasyCreditOxSessionTest
  */
-class oxpsEasyCreditOxSessionTest extends OxidTestCase
+class EasyCreditOxSessionTest extends UnitTestCase
 {
     /**
      * Set up test environment
      *
-     * @return null
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
     }
@@ -32,33 +37,32 @@ class oxpsEasyCreditOxSessionTest extends OxidTestCase
     /**
      * Tear down test environment
      *
-     * @return null
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
     }
 
-    public function testGetStorageNoStorage()
+    public function testGetStorageNoStorage(): void
     {
-        $session = oxNew('oxsession');
+        $session = oxNew(Session::class);
         $this->assertNotTrue($session->getStorage());
     }
 
-    public function testGetStorageExpiredStorage()
+    public function testGetStorageExpiredStorage(): void
     {
-        $session = oxNew('oxsession');
+        $session = oxNew(Session::class);
 
         $storage = $this->getMock(
-            'EasyCreditStorage',
-            array('hasExpired'),
-            array(
+            EasyCreditStorage::class,
+            ['hasExpired'],
+            [
                 'EasyCreditStorage',
                 'tbVorgangskennung',
                 'fachlicheVorgangskennung',
                 'authorizationHash',
                 500.50
-            )
+            ]
         );
         $storage->expects($this->any())->method('hasExpired')->willReturn(true);
         $session->setStorage($storage);

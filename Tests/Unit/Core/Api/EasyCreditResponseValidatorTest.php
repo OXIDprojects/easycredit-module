@@ -1,30 +1,21 @@
 <?php
-/**
- * This Software is the property of OXID eSales and is protected
- * by copyright law - it is NOT Freeware.
- *
- * Any unauthorized use of this software without a valid license key
- * is a violation of the license agreement and will be prosecuted by
- * civil and criminal law.
- *
- * @category      module
- * @package       easycredit
- * @author        OXID Professional Services
- * @link          http://www.oxid-esales.com
- * @copyright (C) OXID eSales AG 2003-2018
- */
+
+namespace OxidProfessionalServices\EasyCredit\Tests\Unit\Application\Core\Api;
+
+use OxidEsales\TestingLibrary\UnitTestCase;
+use OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditResponseValidator;
+use OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditValidationException;
 
 /**
- * Class oxpsEasyCreditResponseValidatorTest
+ * Class EasyCreditResponseValidatorTest
  */
-class oxpsEasyCreditResponseValidatorTest extends OxidTestCase
+class EasyCreditResponseValidatorTest extends UnitTestCase
 {
     /**
      * Set up test environment
      *
-     * @return null
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
     }
@@ -32,53 +23,50 @@ class oxpsEasyCreditResponseValidatorTest extends OxidTestCase
     /**
      * Tear down test environment
      *
-     * @return null
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
     }
 
     public function testValidateMissingScheme()
     {
-        $validator = oxNew('EasyCreditResponseValidator', array());
-        $this->assertNull($validator->validate(new stdClass()));
+        $validator = oxNew(EasyCreditResponseValidator::class, []);
+        $this->assertNull($validator->validate(new \stdClass()));
     }
 
     public function testValidateWithValidationSchemeValid()
     {
-        $scheme = array(
-            array(
+        $scheme = [
+            [
                 "fieldname"     => "ergebnis",
                 "required"      => true,
                 "requiredValue" => "success"
-            )
-        );
+            ]
+        ];
 
-        $response           = new stdClass();
+        $response           = new \stdClass();
         $response->ergebnis = 'success';
 
-        $validator = oxNew('EasyCreditResponseValidator', $scheme);
+        $validator = oxNew(EasyCreditResponseValidator::class, $scheme);
         $this->assertNull($validator->validate($response));
     }
 
-    /**
-     * @expectedException oxpsEasyCreditValidationException
-     */
     public function testValidateWithValidationSchemeInvalid()
     {
-        $scheme = array(
-            array(
+        $this->expectException(EasyCreditValidationException::class);
+        $scheme = [
+            [
                 "fieldname"     => "ergebnis",
                 "required"      => true,
                 "requiredValue" => success
-            )
-        );
+            ]
+        ];
 
-        $response           = new stdClass();
+        $response           = new \stdClass();
         $response->ergebnis = 'failure';
 
-        $validator = oxNew('EasyCreditResponseValidator', $scheme);
+        $validator = oxNew(EasyCreditResponseValidator::class, $scheme);
         $validator->validate($response);
     }
 }

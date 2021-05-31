@@ -1,31 +1,26 @@
 <?php
-/**
- * This Software is the property of OXID eSales and is protected
- * by copyright law - it is NOT Freeware.
- *
- * Any unauthorized use of this software without a valid license key
- * is a violation of the license agreement and will be prosecuted by
- * civil and criminal law.
- *
- * @category      module
- * @package       easycredit
- * @author        OXID Professional Services
- * @link          http://www.oxid-esales.com
- * @copyright (C) OXID eSales AG 2003-2018
- */
+
+namespace OxidProfessionalServices\EasyCredit\Tests\Unit\Application\Core\Di;
+
+use OxidEsales\Eshop\Core\Exception\SystemComponentException;
+use OxidEsales\Eshop\Core\Session;
+use OxidEsales\TestingLibrary\UnitTestCase;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicSession;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicSessionInterface;
+use OxidProfessionalServices\EasyCredit\Core\Dto\EasyCreditStorage;
 
 /**
- * Class oxpsEasyCreditDicSessionTest
+ * Class EasyCreditDicSessionTest
  */
-class oxpsEasyCreditDicSessionTest extends OxidTestCase
+class EasyCreditDicSessionTest extends UnitTestCase
 {
-    const GET_KEY = 'GET_KEY_TEST';
+    const GET_KEY   = 'GET_KEY_TEST';
     const GET_VALUE = 'GET_VALUE_TEST';
 
-    const SET_KEY = 'SET_KEY_TEST';
+    const SET_KEY   = 'SET_KEY_TEST';
     const SET_VALUE = 'SET_VALUE_TEST';
 
-    const DELETE_KEY = 'DELETE_KEY_TEST';
+    const DELETE_KEY   = 'DELETE_KEY_TEST';
     const DELETE_VALUE = 'DELETE_VALUE_TEST';
 
     const SESSION_ID = '1234';
@@ -33,50 +28,58 @@ class oxpsEasyCreditDicSessionTest extends OxidTestCase
     /** @var array */
     private $sessionStore;
 
-    /** @var oxpsEasyCreditDicSessionInterface */
+    /** @var EasyCreditDicSessionInterface */
     private $dicSession;
 
-    /** @var oxpsEasyCreditStorage */
+    /** @var EasyCreditStorage */
     private $storage;
 
     /**
      * Set up test environment
      *
-     * @return null
-     * @throws oxSystemComponentException
+     * @throws SystemComponentException
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
-        $this->sessionStore = array();
+        $this->sessionStore                = [];
         $this->sessionStore[self::GET_KEY] = self::GET_VALUE;
 
         $oxSession = $this->getMock(
-            'oxSession',
-            array('getVariable', 'setVariable', 'deleteVariable', 'processUrl', 'getId', 'setStorage', 'getStorage', 'clearStorage')
+            Session::class,
+            [
+                'getVariable',
+                'setVariable',
+                'deleteVariable',
+                'processUrl',
+                'getId',
+                'setStorage',
+                'getStorage',
+                'clearStorage'
+            ]
         );
 
         $oxSession->expects($this->any())->method('getVariable')->willReturnCallback(
-            function($key) {
+            function ($key) {
                 return $this->sessionStore[$key];
             }
         );
 
         $oxSession->expects($this->any())->method('setVariable')->willReturnCallback(
-            function($key, $value) {
+            function ($key, $value) {
                 $this->sessionStore[$key] = $value;
             }
         );
 
         $oxSession->expects($this->any())->method('deleteVariable')->willReturnCallback(
-            function($key) {
+            function ($key) {
                 unset($this->sessionStore[$key]);
             }
         );
 
         $oxSession->expects($this->any())->method('processUrl')->willReturnCallback(
-            function($url) {
+            function ($url) {
                 return $url . '-test';
             }
         );
@@ -84,32 +87,31 @@ class oxpsEasyCreditDicSessionTest extends OxidTestCase
         $oxSession->expects($this->any())->method('getId')->willReturn(self::SESSION_ID);
 
         $oxSession->expects($this->any())->method('setStorage')->willReturnCallback(
-            function($storage) {
+            function ($storage) {
                 $this->storage = $storage;
             }
         );
 
         $oxSession->expects($this->any())->method('getStorage')->willReturnCallback(
-            function() {
+            function () {
                 return $this->storage;
             }
         );
 
         $oxSession->expects($this->any())->method('deleteStorage')->willReturnCallback(
-            function() {
+            function () {
                 unset($this->storage);
             }
         );
 
-        $this->dicSession = oxNew('EasyCreditDicSession', $oxSession);
+        $this->dicSession = oxNew(EasyCreditDicSession::class, $oxSession);
     }
 
     /**
      * Tear down test environment
      *
-     * @return null
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
     }
@@ -157,10 +159,10 @@ class oxpsEasyCreditDicSessionTest extends OxidTestCase
         $this->dicSession->clearStorage();
         $this->assertNull($this->dicSession->getStorage());
 
-        $storage = new oxpsEasyCreditStorage('Vorgangskennung',
-            'fachlicheVorgangskennung',
-            'authorizationHash',
-            '$authorizedAmount');
+        $storage = new EasyCreditStorage('Vorgangskennung',
+                                         'fachlicheVorgangskennung',
+                                         'authorizationHash',
+                                         '$authorizedAmount');
         $this->dicSession->setStorage($storage);
         $this->assertEquals($storage, $this->dicSession->getStorage());
     }

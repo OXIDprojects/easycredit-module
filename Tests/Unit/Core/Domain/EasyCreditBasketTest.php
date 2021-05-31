@@ -14,17 +14,27 @@
  * @copyright (C) OXID eSales AG 2003-2018
  */
 
+namespace OxidProfessionalServices\EasyCredit\Tests\Unit\Core\Domain;
+
+use OxidEsales\Eshop\Application\Model\Basket;
+use OxidEsales\Eshop\Core\Price;
+use OxidEsales\TestingLibrary\UnitTestCase;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDic;
+use OxidProfessionalServices\EasyCredit\Core\Domain\EasyCreditBasket;
+use OxidProfessionalServices\EasyCredit\Core\Domain\EasyCreditPayment;
+use OxidProfessionalServices\EasyCredit\Core\Domain\EasyCreditSession;
+use OxidProfessionalServices\EasyCredit\Core\Dto\EasyCreditStorage;
+
 /**
- * Class oxpsEasyCreditOxBasketTest
+ * Class EasyCreditOxBasketTest
  */
-class oxpsEasyCreditOxBasketTest extends OxidTestCase
+class EasyCreditBasketTest extends UnitTestCase
 {
     /**
      * Set up test environment
      *
-     * @return null
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
     }
@@ -32,119 +42,114 @@ class oxpsEasyCreditOxBasketTest extends OxidTestCase
     /**
      * Tear down test environment
      *
-     * @return null
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
     }
 
-    public function testHasInterestsAmount()
+    public function testHasInterestsAmount(): void
     {
-        $oxBasket = oxNew('oxbasket');
+        $oxBasket = oxNew(Basket::class);
         $this->assertNotTrue($oxBasket->hasInterestsAmount());
     }
 
-    public function testGetInterestsAmount()
+    public function testGetInterestsAmount(): void
     {
-        $session = oxNew('oxpsEasyCreditOxSession');
-        $session->setVariable('paymentid', oxpsEasyCreditOxPayment::EASYCREDIT_PAYMENTID);
+        $session = oxNew(EasyCreditSession::class);
+        $session->setVariable('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
 
         $dic = $this->getMock(
-            'EasyCreditDic',
-            array('getSession'),
-            array(null, null, null, null, null)
+            EasyCreditDic::class,
+            ['getSession'],
+            [null, null, null, null, null]
         );
         $dic->expects($this->any())->method('getSession')->willReturn($session);
 
-        /** @var oxpsEasyCreditStorage $storage */
-        $storage = oxNew('EasyCreditStorage', "TEST", "TEST", "TEST", 500.0);
+        $storage = oxNew(EasyCreditStorage::class, "TEST", "TEST", "TEST", 500.0);
         $storage->setInterestAmount(20.7);
         $dic->getSession()->setStorage($storage);
 
-        $oxBasket = $this->getMock('oxpsEasyCreditOxBasket', array('getDic'));
+        $oxBasket = $this->getMock(EasyCreditBasket::class, ['getDic']);
         $oxBasket->expects($this->any())->method('getDic')->willReturn($dic);
 
         $this->assertEquals(20.7, $oxBasket->getInterestsAmount());
     }
 
-    public function testGetInterestsAmountNoStorage()
+    public function testGetInterestsAmountNoStorage(): void
     {
-        $session = oxNew('oxpsEasyCreditOxSession');
-        $session->setVariable('paymentid', oxpsEasyCreditOxPayment::EASYCREDIT_PAYMENTID);
+        $session = oxNew(EasyCreditSession::class);
+        $session->setVariable('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
 
         $dic = $this->getMock(
-            'EasyCreditDic',
-            array('getSession'),
-            array(null, null, null, null, null)
+            EasyCreditDic::class,
+            ['getSession'],
+            [null, null, null, null, null]
         );
         $dic->expects($this->any())->method('getSession')->willReturn($session);
 
-        $oxBasket = $this->getMock('oxpsEasyCreditOxBasket', array('getDic'));
+        $oxBasket = $this->getMock(EasyCreditBasket::class, ['getDic']);
         $oxBasket->expects($this->any())->method('getDic')->willReturn($dic);
 
         $this->assertNull($oxBasket->getInterestsAmount());
     }
 
-    public function testSetCostExclude()
+    public function testSetCostExclude(): void
     {
         $costName = 'oxpayment';
 
-        /** @var oxPrice $price */
-        $price = oxNew('oxPrice');
+        $price = oxNew(Price::class);
         $price->setPrice(10.4);
 
-        $oxBasket = oxNew('oxbasket');
+        $oxBasket = oxNew(Basket::class);
         $oxBasket->setExcludeInstalmentsCosts(true);
         $oxBasket->setCost($costName, $price);
 
         $costs = $oxBasket->getCosts();
         $this->assertNotNull($costs);
-        $this->assertTrue(is_array($costs));
+        $this->assertIsArray($costs);
         $this->assertTrue(isset($costs[$costName]));
 
         $p = $costs[$costName];
         $this->assertEquals(10.4, $p->getPrice());
     }
 
-    public function testSetCostInclude()
+    public function testSetCostInclude(): void
     {
         $costName = 'oxpayment';
 
-        /** @var oxPrice $price */
-        $price = oxNew('oxPrice');
+        $price = oxNew(Price::class);
         $price->setPrice(10.4);
 
-        $oxBasket = oxNew('oxbasket');
+        $oxBasket = oxNew(Basket::class);
         $oxBasket->setCost($costName, $price);
 
         $costs = $oxBasket->getCosts();
         $this->assertNotNull($costs);
-        $this->assertTrue(is_array($costs));
+        $this->assertIsArray($costs);
         $this->assertTrue(isset($costs[$costName]));
 
         $p = $costs[$costName];
         $this->assertEquals(10.4, $p->getPrice());
     }
 
-    public function testCalcInterestsCost()
+    public function testCalcInterestsCost(): void
     {
-        $session = oxNew('oxpsEasyCreditOxSession');
-        $session->setVariable('paymentid', oxpsEasyCreditOxPayment::EASYCREDIT_PAYMENTID);
+        $session = oxNew(EasyCreditSession::class);
+        $session->setVariable('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
 
         $dic = $this->getMock(
-            'EasyCreditDic',
-            array('getSession'),
-            array(null, null, null, null, null)
+            EasyCreditDic::class,
+            ['getSession'],
+            [null, null, null, null, null]
         );
         $dic->expects($this->any())->method('getSession')->willReturn($session);
 
-        /** @var oxpsEasyCreditStorage $storage */
-        $storage = oxNew('EasyCreditStorage', "TEST", "TEST", "TEST", 500.0);
+        $storage = oxNew(EasyCreditStorage::class, "TEST", "TEST", "TEST", 500.0);
         $storage->setInterestAmount(20.7);
         $dic->getSession()->setStorage($storage);
 
-        $oxBasket = $this->getMock('oxpsEasyCreditOxBasket', array('getDic'));
+        $oxBasket = $this->getMock(EasyCreditBasket::class, ['getDic']);
         $oxBasket->expects($this->any())->method('getDic')->willReturn($dic);
 
         $interestCost = $oxBasket->calcInterestsCost();
@@ -152,10 +157,10 @@ class oxpsEasyCreditOxBasketTest extends OxidTestCase
         $this->assertEquals(20.7, $interestCost->getPrice());
     }
 
-    public function testCalculateBasket()
+    public function testCalculateBasket(): void
     {
         // calling calculateBasket to test _calcTotalPrice
-        $oxBasket = oxNew('oxbasket');
+        $oxBasket = oxNew(Basket::class);
         $oxBasket->calculateBasket();
     }
 }

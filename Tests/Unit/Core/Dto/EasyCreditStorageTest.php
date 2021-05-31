@@ -14,17 +14,20 @@
  * @copyright (C) OXID eSales AG 2003-2018
  */
 
+namespace OxidProfessionalServices\EasyCredit\Tests\Unit\Core\Dto;
+
+use OxidProfessionalServices\EasyCredit\Core\Dto\EasyCreditStorage;
+
 /**
- * Class oxpsEasyCreditStorageTest
+ * Class EasyCreditStorageTest
  */
-class oxpsEasyCreditStorageTest extends OxidTestCase
+class EasyCreditStorageTest extends \OxidEsales\TestingLibrary\UnitTestCase
 {
     /**
      * Set up test environment
      *
-     * @return null
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
     }
@@ -32,16 +35,15 @@ class oxpsEasyCreditStorageTest extends OxidTestCase
     /**
      * Tear down test environment
      *
-     * @return null
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
     }
 
-    public function testHasExpiredAfterCreation()
+    public function testHasExpiredAfterCreation(): void
     {
-        $oTest = new oxpsEasyCreditStorage(
+        $oTest = new EasyCreditStorage(
             'TEST',
             'TEST',
             'TEST',
@@ -51,12 +53,12 @@ class oxpsEasyCreditStorageTest extends OxidTestCase
         $this->assertFalse($oTest->hasExpired());
     }
 
-    public function testHasExpiredExpiredLastUpdate()
+    public function testHasExpiredExpiredLastUpdate(): void
     {
         $oTest = $this->getMock(
-            'EasyCreditStorage',
-            array('getStorageExpiredTimeRange'),
-            array('TEST', 'TEST', 'TEST', 450.0)
+            EasyCreditStorage::class,
+            ['getStorageExpiredTimeRange'],
+            ['TEST', 'TEST', 'TEST', 450.0]
         );
 
         sleep(2);
