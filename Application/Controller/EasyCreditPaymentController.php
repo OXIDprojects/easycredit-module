@@ -432,7 +432,7 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
                 return;
             }
 
-            return 'oxpsEasyCreditDispatcher?fnc=initializeandredirect';
+            return 'EasyCreditDispatcher?fnc=initializeandredirect';
         }
 
         return parent::validatePayment();
