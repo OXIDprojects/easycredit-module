@@ -50,25 +50,17 @@ $aModule = [
     ],
     'extend' => [
         # extended controller
-        //'payment'       => 'oxps/easycredit/controllers/oxpseasycreditpayment',
         \OxidEsales\Eshop\Application\Controller\PaymentController::class  => \OxidProfessionalServices\EasyCredit\Application\Controller\EasyCreditPaymentController::class,
-        //'order'         => 'oxps/easycredit/controllers/oxpseasycreditorder',
         \OxidEsales\Eshop\Application\Controller\OrderController::class    => \OxidProfessionalServices\EasyCredit\Application\Controller\EasyCreditOrderController::class,
 
         # Extended admin controller
-        //'order_address' => 'oxps/easycredit/controllers/admin/oxpseasycreditorder_address',
         \OxidEsales\Eshop\Application\Controller\Admin\OrderAddress::class => \OxidProfessionalServices\EasyCredit\Application\Controller\Admin\EasyCreditOrderAddressController::class,
-        //'order_article' => 'oxps/easycredit/controllers/admin/oxpseasycreditorder_article',
         \OxidEsales\Eshop\Application\Controller\Admin\OrderArticle::class => \OxidProfessionalServices\EasyCredit\Application\Controller\Admin\EasyCreditOrderArticleController::class,
 
         # Extending core classes
-        //'oxsession'     => 'oxps/easycredit/core/domain/oxpseasycreditoxsession',
         \OxidEsales\Eshop\Core\Session::class                              => \OxidProfessionalServices\EasyCredit\Core\Domain\EasyCreditSession::class,
-        //'oxpayment'     => 'oxps/easycredit/core/domain/oxpseasycreditoxpayment',
         \OxidEsales\Eshop\Application\Model\Payment::class                 => \OxidProfessionalServices\EasyCredit\Core\Domain\EasyCreditPayment::class,
-        //'oxbasket'      => 'oxps/easycredit/core/domain/oxpseasycreditoxbasket',
         \OxidEsales\Eshop\Application\Model\Basket::class                  => \OxidProfessionalServices\EasyCredit\Core\Domain\EasyCreditBasket::class,
-        //'oxorder'       => 'oxps/easycredit/core/domain/oxpseasycreditoxorder'
         \OxidEsales\Eshop\Application\Model\Order::class                   => \OxidProfessionalServices\EasyCredit\Core\Domain\EasyCreditOrder::class
     ],
     'templates' => [

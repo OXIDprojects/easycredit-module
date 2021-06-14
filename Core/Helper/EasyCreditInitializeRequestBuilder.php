@@ -318,7 +318,7 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
      */
     protected function getSuccessUrl()
     {
-        $successUrl = $this->getBaseUrl() . "&cl=oxpsEasyCreditDispatcher&fnc=getEasyCreditDetails";
+        $successUrl = $this->getBaseUrl() . "&cl=EasyCreditDispatcher&fnc=getEasyCreditDetails";
         return $this->getSession()->processUrl($successUrl);
     }
 
@@ -580,7 +580,7 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
         if( empty($phoneNumber) ) {
             return false;
         }
-        return preg_match('/^[\+]?[\d- ]+$/', $phoneNumber); //leading +, then numbers, minus and spaces
+        return preg_match('/^[\+]?[\d \- ]+$/', $phoneNumber); //leading +, then numbers, minus and spaces
     }
 
     /**

@@ -86,6 +86,7 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
         $sslShopUrl = EasyCreditDicFactory::getDic()->getConfig()->getSslShopUrl();
         $expected   = [
             'integrationsart'         => 'PAYMENT_PAGE',
+            'shopKennung'             => '2.de.9999.10003',
             'laufzeit'                => 36,
             'ruecksprungadressen'     => [
                 'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
@@ -165,6 +166,7 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
         $sslShopUrl = EasyCreditDicFactory::getDic()->getConfig()->getSslShopUrl();
         $expected   = [
             'integrationsart'         => 'PAYMENT_PAGE',
+            'shopKennung'             => '2.de.9999.10003',
             'laufzeit'                => 36,
             'ruecksprungadressen'     => [
                 'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
@@ -207,6 +209,7 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
         $sslShopUrl = EasyCreditDicFactory::getDic()->getConfig()->getSslShopUrl();
         $expected   = [
             'integrationsart'         => 'PAYMENT_PAGE',
+            'shopKennung'             => '2.de.9999.10003',
             'laufzeit'                => 36,
             'ruecksprungadressen'     => [
                 'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
@@ -252,6 +255,7 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
         $sslShopUrl = EasyCreditDicFactory::getDic()->getConfig()->getSslShopUrl();
         $expected   = [
             'integrationsart'         => 'PAYMENT_PAGE',
+            'shopKennung'             => '2.de.9999.10003',
             'laufzeit'                => 36,
             'ruecksprungadressen'     => [
                 'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
@@ -297,10 +301,11 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
         $sslShopUrl = EasyCreditDicFactory::getDic()->getConfig()->getSslShopUrl();
         $expected   = [
             'integrationsart'         => 'PAYMENT_PAGE',
+            'shopKennung'             => '2.de.9999.10003',
             'laufzeit'                => 36,
             'ruecksprungadressen'     => [
                 'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
-                'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=oxpsEasyCreditDispatcher&fnc=getEasyCreditDetails',
+                'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditDetails',
                 'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
             ],
             'kontakt'                 => [
@@ -341,6 +346,7 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
         $sslShopUrl = EasyCreditDicFactory::getDic()->getConfig()->getSslShopUrl();
         $expected   = [
             'integrationsart'         => 'PAYMENT_PAGE',
+            'shopKennung'             => '2.de.9999.10003',
             'laufzeit'                => 36,
             'ruecksprungadressen'     => [
                 'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
@@ -383,6 +389,7 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
         $sslShopUrl = EasyCreditDicFactory::getDic()->getConfig()->getSslShopUrl();
         $expected   = [
             'integrationsart'         => 'PAYMENT_PAGE',
+            'shopKennung'             => '2.de.9999.10003',
             'laufzeit'                => 36,
             'ruecksprungadressen'     => [
                 'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
@@ -431,6 +438,7 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
         $sslShopUrl = EasyCreditDicFactory::getDic()->getConfig()->getSslShopUrl();
         $expected   = [
             'integrationsart'         => 'PAYMENT_PAGE',
+            'shopKennung'             => '2.de.9999.10003',
             'laufzeit'                => 36,
             'ruecksprungadressen'     => [
                 'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
@@ -505,6 +513,7 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
         $sslShopUrl = EasyCreditDicFactory::getDic()->getConfig()->getSslShopUrl();
         $expected   = [
             'integrationsart'         => 'PAYMENT_PAGE',
+            'shopKennung'             => '2.de.9999.10003',
             'laufzeit'                => 36,
             'ruecksprungadressen'     => [
                 'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',

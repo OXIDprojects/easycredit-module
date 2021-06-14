@@ -98,7 +98,7 @@ class EasyCreditDicSessionTest extends UnitTestCase
             }
         );
 
-        $oxSession->expects($this->any())->method('deleteStorage')->willReturnCallback(
+        $oxSession->expects($this->any())->method('clearStorage')->willReturnCallback(
             function () {
                 unset($this->storage);
             }

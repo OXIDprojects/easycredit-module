@@ -55,6 +55,6 @@ class EasyCreditExampleCalculationPopupTest extends UnitTestCase
     public function testGetIFrameUrl(): void
     {
         $popup = oxNew(EasyCreditExampleCalculationPopup::class);
-        $this->assertEquals('https://ratenkauf.easycredit.de/ratenkauf/content/intern/paymentPageBeispielrechnung.jsf?shopKennung=&bestellwert=0', $popup->getIFrameUrl());
+        $this->assertEquals('https://ratenkauf.easycredit.de/ratenkauf/content/intern/paymentPageBeispielrechnung.jsf?shopKennung=2.de.9999.10003&bestellwert=0', $popup->getIFrameUrl());
     }
 }
