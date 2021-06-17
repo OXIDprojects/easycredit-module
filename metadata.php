@@ -33,16 +33,14 @@ $aModule = [
         'en' => 'OXPS Easy Credit Module',
     ],
     'thumbnail' => 'out/pictures/picture.png',
-    'version' => '2.1.0',
+    'version' => '3.0.0-dev',
     'author' => 'OXID Professional Services',
     'url' => 'https://www.oxid-esales.com',
     'email' => 'info@oxid-esales.com',
     'controllers' => [
-        //'oxpsEasyCreditDispatcher' => 'oxps/easycredit/controllers/oxpseasycreditdispatcher.php',
-        'oxpsEasyCreditDispatcher'          => \OxidProfessionalServices\EasyCredit\Application\Controller\EasyCreditDispatcherController::class,
+        'EasyCreditDispatcher'          => \OxidProfessionalServices\EasyCredit\Application\Controller\EasyCreditDispatcherController::class,
         # Admin
-        //'oxpsEasyCreditOrderEasyCredit' => 'oxps/easycredit/controllers/admin/oxpseasycreditordereasycredit.php',
-        'oxpsEasyCreditOrderEasyCredit'     => \OxidProfessionalServices\EasyCredit\Application\Controller\Admin\EasyCreditOrderEasyCreditController::class,
+        'EasyCreditOrderEasyCredit'     => \OxidProfessionalServices\EasyCredit\Application\Controller\Admin\EasyCreditOrderEasyCreditController::class,
         # Widgets
         'easycreditexamplecalculation'      => \OxidProfessionalServices\EasyCredit\Application\Component\Widget\EasyCreditExampleCalculation::class,
         'easycreditexamplecalculationpopup' => \OxidProfessionalServices\EasyCredit\Application\Component\Widget\EasyCreditExampleCalculationPopup::class,
@@ -56,6 +54,7 @@ $aModule = [
         # Extended admin controller
         \OxidEsales\Eshop\Application\Controller\Admin\OrderAddress::class => \OxidProfessionalServices\EasyCredit\Application\Controller\Admin\EasyCreditOrderAddressController::class,
         \OxidEsales\Eshop\Application\Controller\Admin\OrderArticle::class => \OxidProfessionalServices\EasyCredit\Application\Controller\Admin\EasyCreditOrderArticleController::class,
+        \OxidEsales\Eshop\Application\Controller\Admin\OrderOverview::class => \OxidProfessionalServices\EasyCredit\Application\Controller\Admin\EasyCreditOrderOverviewController::class,
 
         # Extending core classes
         \OxidEsales\Eshop\Core\Session::class                              => \OxidProfessionalServices\EasyCredit\Core\Domain\EasyCreditSession::class,
@@ -172,6 +171,12 @@ $aModule = [
             'name'  => 'oxpsECBaseUrl',
             'type'  => 'str',
             'value' => 'https://ratenkauf.easycredit.de/ratenkauf-ws/rest',
+        ],
+        [
+            'group' => 'EasyCreditApi',
+            'name'  => 'oxpsECDealerInterfaceUrl',
+            'type'  => 'str',
+            'value' => 'https://app.easycredit.de/ratenkauf/transaktionsverwaltung-ws/rest',
         ],
         [
             'group' => 'EasyCreditApi',

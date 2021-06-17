@@ -359,6 +359,8 @@ class EasyCreditDispatcherController extends FrontendController
         $response = $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_FINANZIERUNG, array($storage->getTbVorgangskennung()));
         $paymentPlan = $response->ratenplan;
         $paymentPlanTxt = $this->getFormattedPaymentPlan($paymentPlan->zahlungsplan);
+        // In API v2 tilgungsplanText is not longer part of first API Call (financial information) but of seconf (finanzierung)
+        $tilgungsplanText = $tilgungsplanText ? $tilgungsplanText : $response->tilgungsplanText;
 
         $storage->setAllgemeineVorgangsdaten($allgemeineVorgangsdaten);
         $storage->setTilgungsplanTxt($tilgungsplanText);

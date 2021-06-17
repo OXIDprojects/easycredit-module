@@ -14,6 +14,10 @@
 namespace OxidProfessionalServices\EasyCredit\Application\Controller\Admin;
 
 use OxidEsales\Eshop\Application\Model\Order;
+use OxidEsales\Eshop\Core\Registry;
+use OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditWebServiceClientFactory;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditApiConfig;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicFactory;
 use OxidProfessionalServices\EasyCredit\Core\Domain\EasyCreditPayment;
 
 /**
@@ -43,6 +47,7 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
             $this->_aViewData['order'] = $this->getOrder();
             $this->_aViewData['currency'] = $this->getOrder()->getOrderCurrency()->name;
             $this->_aViewData['confirmationresponse'] = $this->getEasyCreditConfirmationResponse();
+            $this->_aViewData['deliverystate'] = $this->getEasyCreditDeliveryState();
         }
 
         return "oxpseasycredit_order_easycredit.tpl";
@@ -92,5 +97,27 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
             }
         }
         return $response;
+    }
+
+    protected function getEasyCreditDeliveryState()
+    {
+        $dic = EasyCreditDicFactory::getDic();
+        $service = EasyCreditWebServiceClientFactory::getWebServiceClient(
+            EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V2_DELIVERY_STATE,
+            $dic,
+            [$this->order->oxorder__ecredfunctionalid->value],
+            [],
+            true,
+
+        );
+        $response = $service->execute();
+        $state = $response->ergebnisse;
+        if( count($state)) {
+            $state = Registry::getLang()->translateString('OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_' . $state[0]->haendlerstatusV2);
+        } else {
+            $state = Registry::getLang()->translateString('OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_ERROR');
+        }
+
+        return $state;
     }
 }

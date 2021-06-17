@@ -31,6 +31,7 @@ class EasyCreditApiConfig
 
     const API_CONFIG_CREDENTIALS = 'credentials';
     const API_CONFIG_CREDENTIAL_BASE_URL = 'oxpsEasyCreditWebshopBaseUrl';
+    const API_CONFIG_CREDENTIAL_APP_URL = 'oxpsEasyCreditDealerInterfaceUrl';
     const API_CONFIG_CREDENTIAL_WEBSHOP_ID = 'oxpsECWebshopId';
     const API_CONFIG_CREDENTIAL_WEBSHOP_TOKEN = 'oxpsECWebshopToken';
     const API_CONFIG_LOG_ENABLED = 'oxpsEasyCreditLogEnabled';
@@ -38,6 +39,9 @@ class EasyCreditApiConfig
     const API_CONFIG_SERVICES = 'services';
     const API_CONFIG_SERVICE_HTTP_METHOD = 'httpMethod';
     const API_CONFIG_SERVICE_REST_FUNCTION = 'restFunction';
+    const API_CONFIG_SERVICE_ENDPOINT_TYPE = 'endpointtype';
+    const API_CONFIG_SERVICE_ENDPOINT_TYPE_RATENKAUF = 'ratenkauf';
+    const API_CONFIG_SERVICE_ENDPOINT_TYPE_DEALER_INTERFACE = 'haendlerinterface';
 
     const API_CONFIG_VALIDATION_SCHEMES = 'validationSchemes';
 
@@ -50,6 +54,8 @@ class EasyCreditApiConfig
     const API_CONFIG_SERVICE_NAME_V1_FINANZIERUNG = 'v1_finanzierung';
     const API_CONFIG_SERVICE_NAME_V1_BESTAETIGEN = 'v1_bestaetigen';
     const API_CONFIG_SERVICE_NAME_V1_AQUISITION = 'v1_aquisition';
+    const API_CONFIG_SERVICE_NAME_V2_DELIVERY_REPORT = 'v2_delivery_report';
+    const API_CONFIG_SERVICE_NAME_V2_DELIVERY_STATE = 'v2_delivery_state';
 
     const API_CONFIG_SERVICE_REST_ARGUMENT_WEBSHOP_ID = 'webshopId';
 
@@ -155,10 +161,17 @@ class EasyCreditApiConfig
         }
     }
 
-    public function getBaseUrl()
+    public function getBaseUrl($serviceName = null)
     {
         $credentials = $this->getCredentials();
-        return $credentials[self::API_CONFIG_CREDENTIAL_BASE_URL];
+        $urlIdent = self::API_CONFIG_CREDENTIAL_BASE_URL;
+        if ($serviceName) {
+            $service = $this->getService($serviceName);
+            if($service[self::API_CONFIG_SERVICE_ENDPOINT_TYPE] == self::API_CONFIG_SERVICE_ENDPOINT_TYPE_DEALER_INTERFACE) {
+                $urlIdent = self::API_CONFIG_CREDENTIAL_APP_URL;
+            }
+        }
+        return $credentials[$urlIdent];
     }
 
     public function getWebShopId()

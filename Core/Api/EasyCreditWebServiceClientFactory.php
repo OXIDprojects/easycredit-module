@@ -53,7 +53,7 @@ class EasyCreditWebServiceClientFactory
 
         $client->setLogging($dic->getLogging());
         $client->setHttpmethod($apiConfig->getServiceHttpMethod($serviceName));
-        $client->setBaseUrl($apiConfig->getBaseUrl());
+        $client->setBaseUrl($apiConfig->getBaseUrl($serviceName));
         $client->setFunction(
             $apiConfig->getServiceRestFunction($serviceName),
             $additionalArguments,

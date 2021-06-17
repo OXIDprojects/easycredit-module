@@ -48,6 +48,12 @@
                             <td class="edittext">[{$order->oxorder__ecredpaymentstatus->value}]</td>
                         </tr>
                         <tr>
+                            <td class="edittext">[{oxmultilang ident="OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE"}]:</td>
+                            <td class="edittext">
+                                <b>[{$deliverystate}]</b>
+                            </td>
+                        </tr>
+                        <tr>
                             <td class="edittext">[{oxmultilang ident="OXPS_EASY_CREDIT_ADMIN_ECREDCONFIRMRESPONSE"}]:</td>
                             <td class="edittext">
                                 <textarea rows="10" cols="60">[{$confirmationresponse}]</textarea>
