@@ -150,6 +150,11 @@ $aModule = [
             'file'     => 'Application/views/blocks/admin/oxpseasycredit_order_overview_total.tpl',
         ],
         [
+            'template' => 'order_overview.tpl',
+            'block'    => 'admin_order_overview_send_form',
+            'file'     => 'Application/views/blocks/admin/oxpseasycredit_order_overview_ec_delivery_state.tpl',
+        ],
+        [
             'template' => 'order_article.tpl',
             'block'    => 'admin_order_article_total',
             'file'     => 'Application/views/blocks/admin/oxpseasycredit_order_article_total.tpl',

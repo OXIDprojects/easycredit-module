@@ -58,7 +58,7 @@ $aLang = [
     'OXPS_EASY_CREDIT_ADMIN_ECREDCONFIRMRESPONSE'    => "Antwort auf Bestätigungsanfrage",
     'OXPS_EASY_CREDIT_ADMIN_AQUISITIONBORDER_VALUE'  => 'Ankaufobergrenze',
 
-    'OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE'          => 'Händlerstatus',
+    'OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE'          => 'EasyCredit Händlerstatus',
     'OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_LIEFERUNG_MELDEN'            => 'Lieferung melden',
     'OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_LIEFERUNG_MELDEN_AUSLAUFEND' => 'Lieferung melden (auslaufend)',
     'OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_IN_ABRECHNUNG'               => 'In Abrechnung',

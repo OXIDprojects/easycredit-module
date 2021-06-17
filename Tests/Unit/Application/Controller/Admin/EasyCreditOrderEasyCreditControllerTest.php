@@ -79,8 +79,6 @@ class EasyCreditOrderEasyCreditControllerTest extends UnitTestCase
         $expected4 = 'Lieferung melden (auslaufend)';
         $response5 = '{"wsMessages": {"messages": []},"uuid": "d86a5797-a209-4648-ae77-8a594c337aed","ergebnisse": [{"haendlerstatusV2": "AUSLAUFEND"}]}';
         $expected5 = 'Auslaufend';
-        $response6 = '{"wsMessages": {"messages": []},"uuid": "d86a5797-a209-4648-ae77-8a594c337aed","ergebnisse": [{"haendlerstatusV2": "IN_ABRECHNUNG"}]}';
-        $expected6 = 'In Abrechnung';
 
         return [
             [$response1, $expected1],
@@ -88,7 +86,6 @@ class EasyCreditOrderEasyCreditControllerTest extends UnitTestCase
             [$response3, $expected3],
             [$response4, $expected4],
             [$response5, $expected5],
-            [$response6, $expected6],
         ];
     }
 
