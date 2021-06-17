@@ -17,6 +17,7 @@ use OxidEsales\Eshop\Application\Model\Order;
 use OxidEsales\Eshop\Core\Registry;
 use OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditWebServiceClientFactory;
 use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditApiConfig;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDic;
 use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicFactory;
 use OxidProfessionalServices\EasyCredit\Core\Domain\EasyCreditPayment;
 
@@ -101,15 +102,14 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
 
     protected function getEasyCreditDeliveryState()
     {
-        $dic = EasyCreditDicFactory::getDic();
-        $service = EasyCreditWebServiceClientFactory::getWebServiceClient(
+        $service = $this->getService(
             EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V2_DELIVERY_STATE,
-            $dic,
+            EasyCreditDicFactory::getDic(),
             [$this->order->oxorder__ecredfunctionalid->value],
             [],
             true,
-
         );
+
         $response = $service->execute();
         $state = $response->ergebnisse;
         if( count($state)) {
@@ -119,5 +119,15 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
         }
 
         return $state;
+    }
+
+    protected function getService(
+        $serviceName,
+        EasyCreditDic $dic,
+        array $additionalArguments = array(),
+        array $queryArguments = array(),
+        $addheaders = false)
+    {
+        return EasyCreditWebServiceClientFactory::getWebServiceClient($serviceName, $dic, $additionalArguments, $queryArguments, $addheaders);
     }
 }
