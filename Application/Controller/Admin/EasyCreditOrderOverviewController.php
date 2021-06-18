@@ -22,16 +22,12 @@ class EasyCreditOrderOverviewController extends EasyCreditOrderOverviewControlle
     public function sendOrder()
     {
         parent::sendOrder();
-        $order = oxNew(Order::class);
-        if ($order->load(Registry::getRequest()->getRequestParameter('oxid'))) {
-            $functionalId = $order->oxorder__ecredfunctionalid->value;
-
-            if ($functionalId) {
-                $this->callService(
-                    EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V2_DELIVERY_REPORT,
-                    $functionalId,
-                );
-            }
+        $functionalId = $this->loadFunctionalIdFromOrder();
+        if (!is_null($functionalId)) {
+            $this->callService(
+                EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V2_DELIVERY_REPORT,
+                $functionalId,
+            );
         }
     }
 
@@ -47,6 +43,21 @@ class EasyCreditOrderOverviewController extends EasyCreditOrderOverviewControlle
     public function getDeliveryState($functionalId)
     {
         return $this->callService(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V2_DELIVERY_STATE, $functionalId);
+    }
+
+    /**
+     * @return string|null
+     */
+    protected function loadFunctionalIdFromOrder()
+    {
+        $functionalId = null;
+
+        $order = oxNew(Order::class);
+        if ($order->load($this->getEditObjectId())) {
+            $functionalId = $order->oxorder__ecredfunctionalid->value;
+        }
+
+        return $functionalId;
     }
 
     /**
