@@ -6,6 +6,7 @@ use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidProfessionalServices\EasyCredit\Application\Controller\Admin\EasyCreditOrderEasyCreditController;
 use OxidEsales\Eshop\Application\Model\Order;
 use OxidEsales\Eshop\Core\Field;
+use OxidProfessionalServices\EasyCredit\Application\Model\EasyCreditTradingApiAccess;
 use OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditWebServiceClient;
 use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditApiConfig;
 use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicFactory;
@@ -95,20 +96,19 @@ class EasyCreditOrderEasyCreditControllerTest extends UnitTestCase
      */
     public function testGetEasyCreditDeliveryState($response, $expected)
     {
+        $order = oxNew(Order::class);
         $response = json_decode($response);
-        $service  = $this->getMockBuilder(EasyCreditWebServiceClient::class)->onlyMethods(['execute'])->getMock();
-        $service->expects($this->once())->method('execute')->willReturn($response);
+
+        $tradingApiService = $this->getMockBuilder(EasyCreditTradingApiAccess::class)->onlyMethods(['getOrderData'])->getMock();
+        $tradingApiService->expects($this->once())->method('getOrderData')->with($order)->willReturn($response);
 
         $controller = $this->getMockBuilder(EasyCreditOrderEasyCreditController::class)
-            ->onlyMethods(['getService'])
+            ->onlyMethods(['getService','getOrder'])
             ->getMock();
-        $controller->expects($this->once())->method('getService')->with(
-            EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V2_DELIVERY_STATE,
-            EasyCreditDicFactory::getDic(),
-            [0=>null],
-            [],
-            true)
-            ->willReturn($service);
+        $controller->expects($this->once())->method('getService')
+            ->willReturn($tradingApiService);
+        $controller->expects($this->once())->method('getOrder')
+            ->willReturn($tradingApiService);
 
         $this->assertEquals($expected,
                             $controller->getEasyCreditDeliveryState());

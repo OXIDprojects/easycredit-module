@@ -15,11 +15,13 @@ namespace OxidProfessionalServices\EasyCredit\Application\Controller\Admin;
 
 use OxidEsales\Eshop\Application\Model\Order;
 use OxidEsales\Eshop\Core\Registry;
+use OxidProfessionalServices\EasyCredit\Application\Model\EasyCreditTradingApiAccess;
 use OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditWebServiceClientFactory;
 use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditApiConfig;
 use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDic;
 use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicFactory;
 use OxidProfessionalServices\EasyCredit\Core\Domain\EasyCreditPayment;
+use function Sodium\add;
 
 /**
  * Order admin class for easyCredit
@@ -102,32 +104,19 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
 
     protected function getEasyCreditDeliveryState()
     {
-        $service = $this->getService(
-            EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V2_DELIVERY_STATE,
-            EasyCreditDicFactory::getDic(),
-            [$this->order->oxorder__ecredfunctionalid->value],
-            [],
-            true,
-        );
+        $service = $this->getService();
 
-        $response = $service->execute();
-        $state = $response->ergebnisse;
-        if( count($state)) {
-            $state = Registry::getLang()->translateString('OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_' . $state[0]->haendlerstatusV2);
-        } else {
-            $state = Registry::getLang()->translateString('OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_ERROR');
-        }
-
-        return $state;
+        return $service->getOrderState($this->getOrder());
     }
 
-    protected function getService(
-        $serviceName,
-        EasyCreditDic $dic,
-        array $additionalArguments = array(),
-        array $queryArguments = array(),
-        $addheaders = false)
+    /**
+     * @return mixed|EasyCreditTradingApiAccess
+     */
+    protected function getService()
     {
-        return EasyCreditWebServiceClientFactory::getWebServiceClient($serviceName, $dic, $additionalArguments, $queryArguments, $addheaders);
+        $service = oxNew(EasyCreditTradingApiAccess::class);
+
+        return $service;
     }
+
 }
