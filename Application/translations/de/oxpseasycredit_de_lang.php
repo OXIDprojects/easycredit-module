@@ -49,4 +49,12 @@ $aLang = array(
     'OXPS_EASY_CREDIT_VALIDATION_ERROR'                      => 'Es ist ein Fehler aufgetreten.',
 
     'OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_LIEFERUNG_MELDEN'            => 'Lieferung melden',
+
+    'OXPS_EASY_CREDIT_ORDER_INFO'=>'Bestellinformation',
+    'OXPS_EASY_CREDIT_ORDER_'=>'',
+    'OXPS_EASY_CREDIT_ORDER_'=>'',
+    'OXPS_EASY_CREDIT_ORDER_'=>'',
+    'OXPS_EASY_CREDIT_ORDER_'=>'',
+    'OXPS_EASY_CREDIT_ORDER_'=>'',
+    'OXPS_EASY_CREDIT_ORDER_'=>'',
 );

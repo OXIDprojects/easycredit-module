@@ -106,7 +106,7 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
     {
         $service = $this->getService();
 
-        return $service->getOrderState($this->getOrder());
+        return $service->getOrderState();
     }
 
     /**
@@ -114,7 +114,7 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
      */
     protected function getService()
     {
-        $service = oxNew(EasyCreditTradingApiAccess::class);
+        $service = oxNew(EasyCreditTradingApiAccess::class, $this->getOrder());
 
         return $service;
     }

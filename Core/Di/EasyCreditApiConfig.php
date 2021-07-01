@@ -56,6 +56,7 @@ class EasyCreditApiConfig
     const API_CONFIG_SERVICE_NAME_V1_AQUISITION = 'v1_aquisition';
     const API_CONFIG_SERVICE_NAME_V2_DELIVERY_REPORT = 'v2_delivery_report';
     const API_CONFIG_SERVICE_NAME_V2_DELIVERY_STATE = 'v2_delivery_state';
+    const API_CONFIG_SERVICE_NAME_V2_ORDER_OVERVIEW = 'v2_transaktionen_suchen';
 
     const API_CONFIG_SERVICE_REST_ARGUMENT_WEBSHOP_ID = 'webshopId';
 

@@ -170,6 +170,28 @@ $aModule = [
             'block'    => 'admin_order_article_listitem',
             'file'     => 'Application/views/blocks/admin/oxpseasycredit_order_article_listitem.tpl',
         ],
+
+        [
+            'template' => 'order_list.tpl',
+            'block'    => 'admin_order_list_colgroup',
+            'file'     => 'Application/views/blocks/admin/oxpseasycredit_order_list_colgroups.tpl',
+        ],
+        [
+            'template' => 'order_list.tpl',
+            'block'    => 'admin_order_list_filter',
+            'file'     => 'Application/views/blocks/admin/oxpseasycredit_order_list_filter.tpl',
+        ],
+        [
+            'template' => 'order_list.tpl',
+            'block'    => 'admin_order_list_sorting',
+            'file'     => 'Application/views/blocks/admin/oxpseasycredit_order_list_sorting.tpl',
+        ],
+        [
+            'template' => 'order_list.tpl',
+            'block'    => 'admin_order_list_item',
+            'file'     => 'Application/views/blocks/admin/oxpseasycredit_order_list_item.tpl',
+        ],
+
         [
             'template' => 'order_main.tpl',
             'block'    => 'admin_order_main_form_details',
@@ -193,13 +215,13 @@ $aModule = [
             'group' => 'EasyCreditApi',
             'name'  => 'oxpsECWebshopId',
             'type'  => 'str',
-            'value' => '',
+            'value' => '2.de.7387.1',
         ],
         [
             'group' => 'EasyCreditApi',
             'name'  => 'oxpsECWebshopToken',
             'type'  => 'str',
-            'value' => '',
+            'value' => 'UJT84!1UcQfGRL0Rth95oKCgozazAkbL',
         ],
         [
             'group' => 'EasyCreditCheckout',

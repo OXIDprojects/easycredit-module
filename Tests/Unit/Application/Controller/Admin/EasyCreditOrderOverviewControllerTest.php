@@ -13,6 +13,16 @@ use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditApiConfig;
 
 class EasyCreditOrderOverviewControllerTest extends UnitTestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();;
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+    }
+
     public function testGetDeliveryState()
     {
         $result        = 'testresult';

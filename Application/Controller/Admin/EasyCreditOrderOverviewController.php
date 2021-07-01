@@ -5,12 +5,7 @@ namespace OxidProfessionalServices\EasyCredit\Application\Controller\Admin;
 
 
 use OxidEsales\Eshop\Application\Model\Order;
-use OxidEsales\Eshop\Core\Registry;
 use OxidProfessionalServices\EasyCredit\Application\Model\EasyCreditTradingApiAccess;
-use OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditWebServiceClientFactory;
-use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditApiConfig;
-use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDic;
-use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicFactory;
 
 class EasyCreditOrderOverviewController extends EasyCreditOrderOverviewController_parent
 {

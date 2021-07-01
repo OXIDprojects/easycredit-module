@@ -10,11 +10,13 @@ use OxidEsales\Eshop\Core\Exception\ExceptionToDisplay;
 use OxidEsales\Eshop\Core\Exception\SystemComponentException;
 use OxidEsales\Eshop\Core\Field;
 use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\EshopProfessional\Core\DatabaseProvider;
 use OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditWebServiceClientFactory;
 use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditApiConfig;
 use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDic;
 use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicFactory;
 use OxidProfessionalServices\EasyCredit\Core\Dto\EasyCreditStorage;
+use OxidProfessionalServices\EasyCredit\Core\Exception\EasyCreditException;
 use OxidProfessionalServices\EasyCredit\Core\Exception\EasyCreditInitializationFailedException;
 use OxidProfessionalServices\EasyCredit\Core\Helper\EasyCreditHelper;
 use OxidProfessionalServices\EasyCredit\Core\Helper\EasyCreditInitializeRequestBuilder;
@@ -449,5 +451,21 @@ class EasyCreditOrder extends EasyCreditOrder_parent {
             , array()
             , true);
         return $wsClient->execute();
+    }
+
+    /**
+     * @param $functionalId
+     *
+     * @throws EasyCreditException
+     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
+     */
+    public function loadByECFunctionalId($functionalId)
+    {
+        $viewName = $this->getViewName('oxorder');
+        $sql = 'SELECT oxid FROM ' . $viewName . ' WHERE `ecredfunctionalid` = ?';
+        $oxid = DatabaseProvider::getDb()->getOne($sql, [$functionalId]);
+        if (!$this->load($oxid)) {
+            throw new EasyCreditException("No order with functional ID: $functionalId ");
+        }
     }
 }

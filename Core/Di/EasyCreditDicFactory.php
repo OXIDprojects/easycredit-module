@@ -19,6 +19,7 @@ namespace OxidProfessionalServices\EasyCredit\Core\Di;
 
 use OxidEsales\Eshop\Core\Exception\SystemComponentException;
 use OxidEsales\Eshop\Core\Registry;
+use OxidProfessionalServices\EasyCredit\Application\Model\EasyCreditTradingApiAccess;
 use OxidProfessionalServices\EasyCredit\Core\CrossCutting\EasyCreditLogging;
 use OxidProfessionalServices\EasyCredit\Core\PayLoad\EasyCreditPayloadFactory;
 
@@ -43,7 +44,7 @@ class EasyCreditDicFactory
             oxNew(EasyCreditApiConfig::class, self::getApiConfigArray()),
             oxNew(EasyCreditPayloadFactory::class),
             oxNew(EasyCreditLogging::class, self::getLoggingConfigArray()),
-            oxNew(EasyCreditDicConfig::class, Registry::getConfig())
+            oxNew(EasyCreditDicConfig::class, Registry::getConfig()),
         );
     }
 
