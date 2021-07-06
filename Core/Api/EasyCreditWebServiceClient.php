@@ -123,6 +123,7 @@ class EasyCreditWebServiceClient extends EasyCreditHttpClient
         if ($this->responseValidator) {
             $this->responseValidator->validate($response);
         }
+
         return $response;
     }
 

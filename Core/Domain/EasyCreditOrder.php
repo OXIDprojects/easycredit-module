@@ -11,6 +11,7 @@ use OxidEsales\Eshop\Core\Exception\SystemComponentException;
 use OxidEsales\Eshop\Core\Field;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopProfessional\Core\DatabaseProvider;
+use OxidProfessionalServices\EasyCredit\Application\Model\EasyCreditTradingApiAccess;
 use OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditWebServiceClientFactory;
 use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditApiConfig;
 use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDic;
@@ -79,6 +80,7 @@ class EasyCreditOrder extends EasyCreditOrder_parent {
 
                 $this->oxorder__ecredtechnicalid  = new Field($storage->getTbVorgangskennung());
                 $this->oxorder__ecredfunctionalid = new Field($storage->getFachlicheVorgangskennung());
+                $this->oxorder__ecreddeliverystate = new Field(EasyCreditTradingApiAccess::OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_LIEFERUNG_MELDEN);
             }
         }
     }
