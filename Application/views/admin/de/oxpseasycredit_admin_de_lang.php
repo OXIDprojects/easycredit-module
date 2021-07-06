@@ -65,6 +65,7 @@ $aLang = [
     'OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_ABGERECHNET'                 => 'Abgerechnet',
     'OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_AUSLAUFEND'                  => 'Auslaufend',
     'OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_ERROR'                       => 'Der Händlerstatus konnte nicht abgefragt werden',
+    'EASY_CREDIT_ORDER_TYPE'                                            => 'Easy Credit Bestellung',
 
     'HELP_OXPS_EASY_CREDIT_ADMIN_AQUISITIONBORDER_VALUE'      => 'Die vertraglich vereinbarte Ankaufobergrenze ist Summe, bis zu deren Höhe die TeamBank Ihnen einen Ratenkauf anbieten und Forderungen gegenüber Kunden übernehmen kann.',
     'OXPS_EASY_CREDIT_ADMIN_AQUISITIONBORDER_LASTUPDATE'      => 'Letzte Aktualisierung',

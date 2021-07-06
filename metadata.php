@@ -58,6 +58,7 @@ $aModule = [
         \OxidEsales\Eshop\Application\Controller\Admin\OrderAddress::class  => \OxidProfessionalServices\EasyCredit\Application\Controller\Admin\EasyCreditOrderAddressController::class,
         \OxidEsales\Eshop\Application\Controller\Admin\OrderArticle::class  => \OxidProfessionalServices\EasyCredit\Application\Controller\Admin\EasyCreditOrderArticleController::class,
         \OxidEsales\Eshop\Application\Controller\Admin\OrderOverview::class => \OxidProfessionalServices\EasyCredit\Application\Controller\Admin\EasyCreditOrderOverviewController::class,
+        \OxidEsales\Eshop\Application\Controller\Admin\OrderList::class     => \OxidProfessionalServices\EasyCredit\Application\Controller\Admin\EasyCreditOrderListController::class,
 
         # Extending core classes
         \OxidEsales\Eshop\Core\Session::class                               => \OxidProfessionalServices\EasyCredit\Core\Domain\EasyCreditSession::class,
@@ -215,13 +216,13 @@ $aModule = [
             'group' => 'EasyCreditApi',
             'name'  => 'oxpsECWebshopId',
             'type'  => 'str',
-            'value' => '',
+            'value' => '2.de.7387.1',
         ],
         [
             'group' => 'EasyCreditApi',
             'name'  => 'oxpsECWebshopToken',
             'type'  => 'str',
-            'value' => '',
+            'value' => 'UJT84!1UcQfGRL0Rth95oKCgozazAkbL',
         ],
         [
             'group' => 'EasyCreditCheckout',
