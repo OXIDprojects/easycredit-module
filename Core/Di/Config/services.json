@@ -58,5 +58,10 @@
     "httpMethod": "get",
     "restFunction": "/v2/transaktionen/suchen",
     "endpointtype": "haendlerinterface"
+  },
+  "v2_transaktionen_storno": {
+    "httpMethod": "post",
+    "restFunction": "/v2/transaktionen/%s/rueckabwicklung",
+    "endpointtype": "haendlerinterface"
   }
 }
