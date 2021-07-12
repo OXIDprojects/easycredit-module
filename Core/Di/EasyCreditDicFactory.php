@@ -7,11 +7,8 @@
  * is a violation of the license agreement and will be prosecuted by
  * civil and criminal law.
  *
- * @category      module
- * @package       easycredit
- * @author        OXID Professional Services
- * @link          http://www.oxid-esales.com
- * @copyright (C) OXID eSales AG 2003-2018
+ * @link      http://www.oxid-esales.com
+ * @copyright (C) OXID eSales AG 2003-2021
  */
 
 namespace OxidProfessionalServices\EasyCredit\Core\Di;
@@ -19,6 +16,7 @@ namespace OxidProfessionalServices\EasyCredit\Core\Di;
 
 use OxidEsales\Eshop\Core\Exception\SystemComponentException;
 use OxidEsales\Eshop\Core\Registry;
+use OxidProfessionalServices\EasyCredit\Application\Model\EasyCreditTradingApiAccess;
 use OxidProfessionalServices\EasyCredit\Core\CrossCutting\EasyCreditLogging;
 use OxidProfessionalServices\EasyCredit\Core\PayLoad\EasyCreditPayloadFactory;
 
@@ -43,7 +41,7 @@ class EasyCreditDicFactory
             oxNew(EasyCreditApiConfig::class, self::getApiConfigArray()),
             oxNew(EasyCreditPayloadFactory::class),
             oxNew(EasyCreditLogging::class, self::getLoggingConfigArray()),
-            oxNew(EasyCreditDicConfig::class, Registry::getConfig())
+            oxNew(EasyCreditDicConfig::class, Registry::getConfig()),
         );
     }
 
@@ -57,6 +55,7 @@ class EasyCreditDicFactory
         return array(
             EasyCreditApiConfig::API_CONFIG_CREDENTIALS => array(
                 EasyCreditApiConfig::API_CONFIG_CREDENTIAL_BASE_URL      => $config->getConfigParam('oxpsECBaseUrl'),
+                EasyCreditApiConfig::API_CONFIG_CREDENTIAL_APP_URL       => $config->getConfigParam('oxpsECDealerInterfaceUrl'),
                 EasyCreditApiConfig::API_CONFIG_CREDENTIAL_WEBSHOP_ID    => $config->getConfigParam('oxpsECWebshopId'),
                 EasyCreditApiConfig::API_CONFIG_CREDENTIAL_WEBSHOP_TOKEN => $config->getConfigParam('oxpsECWebshopToken'),
             ),

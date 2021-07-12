@@ -1,4 +1,15 @@
 <?php
+/**
+ * This Software is the property of OXID eSales and is protected
+ * by copyright law - it is NOT Freeware.
+ *
+ * Any unauthorized use of this software without a valid license key
+ * is a violation of the license agreement and will be prosecuted by
+ * civil and criminal law.
+ *
+ * @link      http://www.oxid-esales.com
+ * @copyright (C) OXID eSales AG 2003-2021
+ */
 
 namespace OxidProfessionalServices\EasyCredit\Application\Component\Widget;
 
@@ -13,6 +24,11 @@ use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDic;
 use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicFactory;
 use OxidProfessionalServices\EasyCredit\Core\Helper\EasyCreditHelper;
 
+/**
+ * Class EasyCreditExampleCalculation
+ *
+ * @package OxidProfessionalServices\EasyCredit\Application\Component\Widget
+ */
 class EasyCreditExampleCalculation extends WidgetController
 {
     protected $_sThisTemplate = 'oxpseasycredit_examplecalculation.tpl';
@@ -26,6 +42,11 @@ class EasyCreditExampleCalculation extends WidgetController
     /** @var Basket */
     protected $basket;
 
+    /**
+     * Return the monthly fee to pay for credit.
+     *
+     * @return string
+     */
     public function getExampleCalculationRate()
     {
         if ($this->hasExampleCalculation()) {
@@ -33,11 +54,21 @@ class EasyCreditExampleCalculation extends WidgetController
         }
     }
 
+    /**
+     * Is there an example calculation?
+     *
+     * @return bool
+     */
     public function hasExampleCalculation()
     {
         return (bool)$this->getExampleCalulation();
     }
 
+    /**
+     * Return example calculation.
+     *
+     * @return \stdClass
+     */
     protected function getExampleCalulation()
     {
         if (!$this->exampleCalculation) {
@@ -51,6 +82,8 @@ class EasyCreditExampleCalculation extends WidgetController
     }
 
     /**
+     * Return the DIC
+     *
      * @return EasyCreditDic
      * @throws SystemComponentException
      */
@@ -84,6 +117,12 @@ class EasyCreditExampleCalculation extends WidgetController
         return Registry::getSession()->getBasket();
     }
 
+    /**
+     * Load example calculation from ec service.
+     *
+     * @return false|\stdClass
+     * @throws SystemComponentException
+     */
     protected function getExampleCalculationResponse()
     {
         $price = $this->getPrice();
@@ -106,11 +145,21 @@ class EasyCreditExampleCalculation extends WidgetController
         }
     }
 
+    /**
+     * Getter for config parameter.
+     *
+     * @return mixed
+     */
     public function getUseOwnjQueryUI()
     {
         return Registry::getConfig()->getConfigParam('oxpsECExampleUseOwnjQueryUI');
     }
 
+    /**
+     * Getter for ajax request url.
+     *
+     * @return string
+     */
     public function getAjaxUrl()
     {
         $sURL = Registry::getConfig()->getConfigParam('sShopURL');
@@ -118,6 +167,11 @@ class EasyCreditExampleCalculation extends WidgetController
         return $sURL . 'index.php?cl=easycreditexamplecalculation' . ($articleId ? '&articleId=' . $articleId : '') . '&placeholderId=' . $this->getViewParameter("placeholderId") . '&ajax=1';
     }
 
+    /**
+     * Getter for ajax popup url.
+     *
+     * @return string
+     */
     public function getPopupAjaxUrl()
     {
         $sURL = Registry::getConfig()->getConfigParam('sShopURL');
@@ -125,6 +179,11 @@ class EasyCreditExampleCalculation extends WidgetController
         return $sURL . 'index.php?cl=easycreditexamplecalculationpopup' . ($articleId ? '&articleId=' . $articleId : '') . '&ajax=1';
     }
 
+    /**
+     * Getter for request parameter to decide if it is an ajax request.
+     *
+     * @return bool
+     */
     public function isAjax()
     {
         return (Registry::getConfig()->getRequestParameter('ajax') == 1);

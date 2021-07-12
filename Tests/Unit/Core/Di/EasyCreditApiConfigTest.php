@@ -60,7 +60,7 @@ class EasyCreditApiConfigTest extends UnitTestCase
         $this->assertNotNull($sampleService);
         $this->assertIsArray($sampleService);
         $this->assertEquals('get', $sampleService['httpMethod']);
-        $this->assertEquals('/v1/modellrechnung/guenstigsterRatenplan', $sampleService['restFunction']);
+        $this->assertEquals('/v2/modellrechnung/guenstigsterRatenplan', $sampleService['restFunction']);
     }
 
     public function testGetServiceHttpMethodExisting()
@@ -77,7 +77,7 @@ class EasyCreditApiConfigTest extends UnitTestCase
 
     public function testGetServiceRestFunction()
     {
-        $this->assertEquals('/v1/texte/zustimmung/%s', $this->apiConfig->getServiceRestFunction(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_ZUSTIMMUNGSTEXTE));
+        $this->assertEquals('/v2/texte/zustimmung/%s', $this->apiConfig->getServiceRestFunction(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_ZUSTIMMUNGSTEXTE));
     }
 
     public function testGetServiceRestFunctionArguments()

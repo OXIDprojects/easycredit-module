@@ -8,8 +8,7 @@
  * civil and criminal law.
  *
  * @link      http://www.oxid-esales.com
- * @copyright (C) OXID eSales AG 2003-2018
- * @version   OXID eShop EE
+ * @copyright (C) OXID eSales AG 2003-2021
  */
 
 namespace OxidProfessionalServices\EasyCredit\Core\Domain;

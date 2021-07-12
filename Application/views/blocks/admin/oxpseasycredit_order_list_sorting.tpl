@@ -1,0 +1,2 @@
+<td class="listheader first" height="15"><a href="Javascript:top.oxid.admin.setSorting( document.search, 'oxorder', 'ecredfunctionalid', 'asc');document.search.submit();" class="listheader">[{oxmultilang ident="EASY_CREDIT_ORDER_TYPE"}]</a></td>
+[{$smarty.block.parent}]

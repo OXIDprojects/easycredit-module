@@ -33,15 +33,15 @@
     {
       "fieldname": "allgemeineVorgangsdaten",
       "required": true
-    },
-    {
-      "fieldname": "tilgungsplanText",
-      "required": true
     }
   ],
   "v1_finanzierung": [
     {
       "fieldname": "ratenplan",
+      "required": true
+    },
+    {
+      "fieldname": "tilgungsplanText",
       "required": true
     }
   ],

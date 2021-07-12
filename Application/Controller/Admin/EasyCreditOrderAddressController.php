@@ -8,7 +8,7 @@
  * civil and criminal law.
  *
  * @link      http://www.oxid-esales.com
- * @copyright (C) OXID eSales AG 2003-2018
+ * @copyright (C) OXID eSales AG 2003-2021
  */
 
 namespace OxidProfessionalServices\EasyCredit\Application\Controller\Admin;
@@ -22,6 +22,11 @@ use OxidEsales\Eshop\Application\Model\Order;
  */
 class EasyCreditOrderAddressController extends EasyCreditOrderAddressController_parent
 {
+    /**
+     * Overwrite parent render method to hook into.
+     *
+     * @return string
+     */
     public function render()
     {
         $r = parent::render();

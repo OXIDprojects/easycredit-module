@@ -8,7 +8,7 @@
  * civil and criminal law.
  *
  * @link      http://www.oxid-esales.com
- * @copyright (C) OXID eSales AG 2003-2018
+ * @copyright (C) OXID eSales AG 2003-2021
  */
 
 namespace OxidProfessionalServices\EasyCredit\Application\Controller;
@@ -290,6 +290,9 @@ class EasyCreditDispatcherController extends FrontendController
         return $this->getBasket()->getPrice()->getPrice();
     }
 
+    /**
+     * @throws EasyCreditException
+     */
     protected function checkInitialization()
     {
 
@@ -359,6 +362,8 @@ class EasyCreditDispatcherController extends FrontendController
         $response = $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_FINANZIERUNG, array($storage->getTbVorgangskennung()));
         $paymentPlan = $response->ratenplan;
         $paymentPlanTxt = $this->getFormattedPaymentPlan($paymentPlan->zahlungsplan);
+
+        $tilgungsplanText = $tilgungsplanText ? $tilgungsplanText : $response->tilgungsplanText;
 
         $storage->setAllgemeineVorgangsdaten($allgemeineVorgangsdaten);
         $storage->setTilgungsplanTxt($tilgungsplanText);
