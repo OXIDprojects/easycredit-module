@@ -6,11 +6,5 @@
                 <TAB id="tbclorder_oxpseasycredit" cl="easycreditordereasycredit"/>
             </SUBMENU>
         </MAINMENU>
-        <MAINMENU id="mxeasycredit">
-            <SUBMENU id="oxpseasycreditoverview" cl="easycreditoverview" list="easycreditoverview_list">
-                <TAB id="easycreditoverview_main" cl="easycreditoverview_main"/>
-                <BTN id="easycreditoverview_new"/>
-            </SUBMENU>
-        </MAINMENU>
     </OXMENU>
 </OX>
