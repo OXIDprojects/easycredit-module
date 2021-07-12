@@ -8,7 +8,7 @@
  * civil and criminal law.
  *
  * @link      http://www.oxid-esales.com
- * @copyright (C) OXID eSales AG 2003-2018
+ * @copyright (C) OXID eSales AG 2003-2021
  */
 
 namespace OxidProfessionalServices\EasyCredit\Application\Controller\Admin;
@@ -26,10 +26,13 @@ use OxidProfessionalServices\EasyCredit\Application\Model\EasyCreditTradingApiAc
  */
 class EasyCreditOrderOverviewController extends EasyCreditOrderOverviewController_parent
 {
+    /**
+     * @var Order
+     */
     protected $order;
 
     /**
-     * Set the state to delivered at easy credit dealer gateway.
+     * Set the state to delivered at easy credit trading gateway.
      *
      * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
      * @throws \OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditCurlException
@@ -44,7 +47,7 @@ class EasyCreditOrderOverviewController extends EasyCreditOrderOverviewControlle
     }
 
     /**
-     * Load the EasyCredit order state from easy credit dealer gateway.
+     * Load the EasyCredit order state from easy credit trading gateway.
      *
      * @param string $functionalId The easy credit functional id for this order
      *
@@ -59,6 +62,8 @@ class EasyCreditOrderOverviewController extends EasyCreditOrderOverviewControlle
     }
 
     /**
+     * Load functional id from current order.
+     *
      * @return string|null
      */
     protected function loadFunctionalIdFromOrder()
@@ -69,6 +74,8 @@ class EasyCreditOrderOverviewController extends EasyCreditOrderOverviewControlle
     }
 
     /**
+     * Get the ec trading api access service.
+     *
      * @return EasyCreditTradingApiAccess
      */
     protected function getService($order)

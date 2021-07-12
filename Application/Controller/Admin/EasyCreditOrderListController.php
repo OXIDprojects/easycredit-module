@@ -22,6 +22,11 @@ use OxidEsales\Eshop\Core\Registry;
  */
 class EasyCreditOrderListController extends EasyCreditOrderListController_parent
 {
+    /**
+     * Render method
+     *
+     * @return string
+     */
     public function render()
     {
         $template = parent::render();

@@ -7,11 +7,8 @@
  * is a violation of the license agreement and will be prosecuted by
  * civil and criminal law.
  *
- * @category      module
- * @package       easycredit
- * @author        OXID Professional Services
- * @link          http://www.oxid-esales.com
- * @copyright (C) OXID eSales AG 2003-2018
+ * @link      http://www.oxid-esales.com
+ * @copyright (C) OXID eSales AG 2003-2021
  */
 
 namespace OxidProfessionalServices\EasyCredit\Application\Controller;
@@ -128,6 +125,9 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
         return $this->easyCreditPossible;
     }
 
+    /**
+     * Part of valid payment check
+     */
     protected function checkEasyCreditPossible()
     {
         $this->easyCreditPossible = true;
@@ -145,6 +145,9 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
         $this->checkEasyCreditExampleCalulation();
     }
 
+    /**
+     * Part of valid payment check
+     */
     protected function checkEasyCreditPermitted()
     {
         if(!$this->isEasyCreditPermitted() ) {
@@ -153,6 +156,9 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
         }
     }
 
+    /**
+     * Part of valid payment check
+     */
     protected function checkEasyCreditForeignAddress()
     {
         if ($this->isForeignAddress()) {
@@ -161,6 +167,9 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
         }
     }
 
+    /**
+     * Part of valid payment check
+     */
     protected function checkEasyCreditAddressMismatch()
     {
         if ($this->isAddressMismatch()) {
@@ -169,6 +178,9 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
         }
     }
 
+    /**
+     * Part of valid payment check
+     */
     protected function checkEasyCreditPackstation()
     {
         if ($this->isPackstation()) {
@@ -177,6 +189,9 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
         }
     }
 
+    /**
+     * Part of valid payment check
+     */
     protected function checkEasyCreditAgreementTxt()
     {
         $agreements = $this->getAgreementTxt();
@@ -186,6 +201,9 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
         }
     }
 
+    /**
+     * Part of valid payment check
+     */
     protected function checkEasyCreditExampleCalulation()
     {
         $response = $this->getExampleCalulation();

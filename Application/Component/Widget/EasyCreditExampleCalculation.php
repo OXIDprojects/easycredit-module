@@ -42,6 +42,11 @@ class EasyCreditExampleCalculation extends WidgetController
     /** @var Basket */
     protected $basket;
 
+    /**
+     * Return the monthly fee to pay for credit.
+     *
+     * @return string
+     */
     public function getExampleCalculationRate()
     {
         if ($this->hasExampleCalculation()) {
@@ -49,11 +54,21 @@ class EasyCreditExampleCalculation extends WidgetController
         }
     }
 
+    /**
+     * Is there an example calculation?
+     *
+     * @return bool
+     */
     public function hasExampleCalculation()
     {
         return (bool)$this->getExampleCalulation();
     }
 
+    /**
+     * Return example calculation.
+     *
+     * @return \stdClass
+     */
     protected function getExampleCalulation()
     {
         if (!$this->exampleCalculation) {
@@ -67,6 +82,8 @@ class EasyCreditExampleCalculation extends WidgetController
     }
 
     /**
+     * Return the DIC
+     *
      * @return EasyCreditDic
      * @throws SystemComponentException
      */
@@ -100,6 +117,12 @@ class EasyCreditExampleCalculation extends WidgetController
         return Registry::getSession()->getBasket();
     }
 
+    /**
+     * Load example calculation from ec service.
+     *
+     * @return false|\stdClass
+     * @throws SystemComponentException
+     */
     protected function getExampleCalculationResponse()
     {
         $price = $this->getPrice();
@@ -122,11 +145,21 @@ class EasyCreditExampleCalculation extends WidgetController
         }
     }
 
+    /**
+     * Getter for config parameter.
+     *
+     * @return mixed
+     */
     public function getUseOwnjQueryUI()
     {
         return Registry::getConfig()->getConfigParam('oxpsECExampleUseOwnjQueryUI');
     }
 
+    /**
+     * Getter for ajax request url.
+     *
+     * @return string
+     */
     public function getAjaxUrl()
     {
         $sURL = Registry::getConfig()->getConfigParam('sShopURL');
@@ -134,6 +167,11 @@ class EasyCreditExampleCalculation extends WidgetController
         return $sURL . 'index.php?cl=easycreditexamplecalculation' . ($articleId ? '&articleId=' . $articleId : '') . '&placeholderId=' . $this->getViewParameter("placeholderId") . '&ajax=1';
     }
 
+    /**
+     * Getter for ajax popup url.
+     *
+     * @return string
+     */
     public function getPopupAjaxUrl()
     {
         $sURL = Registry::getConfig()->getConfigParam('sShopURL');
@@ -141,6 +179,11 @@ class EasyCreditExampleCalculation extends WidgetController
         return $sURL . 'index.php?cl=easycreditexamplecalculationpopup' . ($articleId ? '&articleId=' . $articleId : '') . '&ajax=1';
     }
 
+    /**
+     * Getter for request parameter to decide if it is an ajax request.
+     *
+     * @return bool
+     */
     public function isAjax()
     {
         return (Registry::getConfig()->getRequestParameter('ajax') == 1);

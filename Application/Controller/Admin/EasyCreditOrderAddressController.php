@@ -22,6 +22,11 @@ use OxidEsales\Eshop\Application\Model\Order;
  */
 class EasyCreditOrderAddressController extends EasyCreditOrderAddressController_parent
 {
+    /**
+     * Overwrite parent render method to hook into.
+     *
+     * @return string
+     */
     public function render()
     {
         $r = parent::render();

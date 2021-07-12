@@ -7,8 +7,8 @@
  * is a violation of the license agreement and will be prosecuted by
  * civil and criminal law.
  *
- * @link          http://www.oxid-esales.com
- * @copyright (C) OXID eSales AG 2003-2018
+ * @link      http://www.oxid-esales.com
+ * @copyright (C) OXID eSales AG 2003-2021
  */
 
 namespace OxidProfessionalServices\EasyCredit\Application\Controller\Admin;
@@ -33,6 +33,11 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
      */
     private $order = false;
 
+    /**
+     * Valid reasons for reversal.
+     *
+     * @var string[]
+     */
     protected $allowedReversalReasons = [
         "WIDERRUF_VOLLSTAENDIG",
         "WIDERRUF_TEILWEISE",
@@ -80,9 +85,12 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
         return $order && EasyCreditPayment::isEasyCreditInstallmentById($order->getFieldData('oxpaymenttype'));
     }
 
+    /**
+     * Initiate reversal process. Validate data and send if valid
+     */
     public function sendReversal()
     {
-        // Validierung Input
+        // Validierung Input and send reversalt to ec api
         try {
             $request = Registry::getRequest()->getRequestParameter('reversal');
             $this->validateInput($request);
@@ -134,6 +142,11 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
         return $response;
     }
 
+    /**
+     * Load order state from ec trading api.
+     *
+     * @return array|string
+     */
     protected function getEasyCreditDeliveryState()
     {
         $service = $this->getService();
@@ -141,6 +154,12 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
         return $service->getOrderState();
     }
 
+    /**
+     * Load all order related data from ec trading api and prepare for frontend output.
+     *
+     * @return mixed
+     * @throws EasyCreditException
+     */
     protected function getEasyCreditOrderData()
     {
         $orderData = $this->getService()->getOrderData();
@@ -172,6 +191,8 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
     }
 
     /**
+     * Get the service layer for trading api access.
+     *
      * @return mixed|EasyCreditTradingApiAccess
      */
     protected function getService()
@@ -181,6 +202,16 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
         return $service;
     }
 
+    /**
+     * Input validation for reversal process.
+     * Is valid order,
+     * is valid amount
+     * is valid reason
+     *
+     * @param array $request
+     *
+     * @throws EasyCreditException
+     */
     protected function validateInput(array $request)
     {
         if (false !== $this->getOrder()) {
@@ -207,6 +238,9 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
         };
     }
 
+    /**
+     * Send reversal call to ex trading api.
+     */
     private function sendReversalToEc(array $request)
     {
         $amount = (float) $request['amount'];

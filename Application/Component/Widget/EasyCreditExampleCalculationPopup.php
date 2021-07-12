@@ -68,6 +68,12 @@ class EasyCreditExampleCalculationPopup extends WidgetController
         return EasyCreditHelper::getExampleCalculationPrice($this->getViewParameter("articleId"), $this->getBasket());
     }
 
+    /**
+     * Getter for EC Ratenkauf frame url
+     *
+     * @return string
+     * @throws SystemComponentException
+     */
     public function getIFrameUrl()
     {
         $webshopId = $this->getWebshopId();
@@ -75,6 +81,12 @@ class EasyCreditExampleCalculationPopup extends WidgetController
         return "https://ratenkauf.easycredit.de/ratenkauf/content/intern/paymentPageBeispielrechnung.jsf?shopKennung=$webshopId&bestellwert=$price";
     }
 
+    /**
+     * Getter for webshop id.
+     *
+     * @return mixed
+     * @throws SystemComponentException
+     */
     protected function getWebshopId()
     {
         return $this->getDic()->getApiConfig()->getWebShopId();

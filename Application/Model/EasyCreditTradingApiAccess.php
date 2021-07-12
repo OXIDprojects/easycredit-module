@@ -1,4 +1,15 @@
 <?php
+/**
+ * This Software is the property of OXID eSales and is protected
+ * by copyright law - it is NOT Freeware.
+ *
+ * Any unauthorized use of this software without a valid license key
+ * is a violation of the license agreement and will be prosecuted by
+ * civil and criminal law.
+ *
+ * @link          http://www.oxid-esales.com
+ * @copyright (C) OXID eSales AG 2003-2021
+ */
 
 namespace OxidProfessionalServices\EasyCredit\Application\Model;
 
@@ -11,6 +22,11 @@ use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDic;
 use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicFactory;
 use OxidProfessionalServices\EasyCredit\Core\Exception\EasyCreditException;
 
+/**
+ * Class EasyCreditTradingApiAccess: Interfsace class to access easy credit trading api functionality.
+ *
+ * @package OxidProfessionalServices\EasyCredit\Application\Model
+ */
 class EasyCreditTradingApiAccess
 {
     const OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_LIEFERUNG_MELDEN            = 'LIEFERUNG_MELDEN';
@@ -19,13 +35,31 @@ class EasyCreditTradingApiAccess
     const OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_ABGERECHNET                 = 'ABGERECHNET';
     const OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_AUSLAUFEND                  = 'AUSLAUFEND';
 
+    /**
+     * @var Order|null
+     */
     protected $order = null;
 
+    /**
+     * EasyCreditTradingApiAccess constructor. Set order object, if given
+     *
+     * @param null $order
+     */
     public function __construct($order = null)
     {
         $this->order = is_null($order) ? oxNew(Order::class) : $order;
     }
 
+    /**
+     * Load order data from trading api. If flag is true state is updated in local storage.
+     *
+     * @param false $blUpdateLocalOrderState Shall it update local storage
+     *
+     * @return mixed
+     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
+     * @throws \OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditCurlException
+     * @throws \OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditConfigException
+     */
     public function getOrderData($blUpdateLocalOrderState = false)
     {
         $service  = $this->getService(
@@ -36,8 +70,8 @@ class EasyCreditTradingApiAccess
             true,
         );
         $response = $service->execute();
-        if( $blUpdateLocalOrderState) {
-            $state = $response->ergebnisse[0]->haendlerstatusV2;
+        if ($blUpdateLocalOrderState) {
+            $state                                    = $response->ergebnisse[0]->haendlerstatusV2;
             $this->order->oxorder__ecreddeliverystate = new Field($state, Field::T_RAW);
             $this->order->save();
         }
@@ -45,6 +79,16 @@ class EasyCreditTradingApiAccess
         return $response->ergebnisse;
     }
 
+    /**
+     * Load order state from trading api and translate haendlerstatusv2 value.
+     *
+     * @param false $blUpdateLocalOrderState
+     *
+     * @return array|string
+     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
+     * @throws \OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditCurlException
+     * @throws \OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditConfigException
+     */
     public function getOrderState($blUpdateLocalOrderState = false)
     {
         $state = $this->getOrderData($blUpdateLocalOrderState);
@@ -57,6 +101,14 @@ class EasyCreditTradingApiAccess
         return $state;
     }
 
+    /**
+     * Set haendlerstatusv2 value to delivered at ec trading api interface.
+     *
+     * @return \stdClass
+     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
+     * @throws \OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditCurlException
+     * @throws \OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditConfigException
+     */
     public function setOrderDeliveredState()
     {
         $service = $this->getService(
@@ -71,6 +123,8 @@ class EasyCreditTradingApiAccess
 
 
     /**
+     * Create service to access ec trading api.
+     *
      * @param               $serviceName
      * @param EasyCreditDic $dic
      * @param array         $additionalArguments
@@ -93,9 +147,19 @@ class EasyCreditTradingApiAccess
                                                                       $queryArguments, $addheaders);
     }
 
+    /**
+     * Send reversal data for an order to ec trading api.
+     *
+     * @param $amount
+     * @param $reason
+     *
+     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
+     * @throws \OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditCurlException
+     * @throws \OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditConfigException
+     */
     public function sendReversal($amount, $reason)
     {
-        $service = $this->getService(
+        $service  = $this->getService(
             EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V2_ORDER_REVERSAL,
             EasyCreditDicFactory::getDic(),
             [$this->order->getFieldData('ecredfunctionalid')],
@@ -103,12 +167,25 @@ class EasyCreditTradingApiAccess
             true
         );
         $response = $service->execute([
-                                          'datum' => date('Y-m-d'),
-                                          'grund' => $reason,
+                                          'datum'  => date('Y-m-d'),
+                                          'grund'  => $reason,
                                           'betrag' => $amount,
                                       ]);
     }
 
+    /**
+     * Load orders by date from, to and state.
+     * (ATM unused, but implemented for testing stuff)
+     *
+     * @param string $from  Start date to search
+     * @param string $to    End date to search
+     * @param string $state haendlerstatus to filter for
+     *
+     * @return array
+     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
+     * @throws \OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditCurlException
+     * @throws \OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditConfigException
+     */
     public function loadOrders($from, $to, $state)
     {
         $service  = $this->getService(
@@ -125,6 +202,13 @@ class EasyCreditTradingApiAccess
         return $result;
     }
 
+    /**
+     * Ensure for each delivered data set fom ec api there is an order in shop storage with same functional id.
+     * @param array $ecorderdata
+     *
+     * @return array
+     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
+     */
     protected function assignShopOrderData(array $ecorderdata)
     {
         $results = [];

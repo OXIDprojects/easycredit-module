@@ -290,6 +290,9 @@ class EasyCreditDispatcherController extends FrontendController
         return $this->getBasket()->getPrice()->getPrice();
     }
 
+    /**
+     * @throws EasyCreditException
+     */
     protected function checkInitialization()
     {
 
