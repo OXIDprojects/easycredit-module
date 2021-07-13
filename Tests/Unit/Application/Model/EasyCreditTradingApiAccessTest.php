@@ -66,7 +66,7 @@ class EasyCreditTradingApiAccessTest extends UnitTestCase
             ->onlyMethods(['getOrderData'])->getMock();
         $model->expects($this->once())->method('getOrderData')->willReturn([]);
 
-        $this->assertEquals('Der Händlerstatus konnte nicht abgefragt werden', $model->getOrderState());
+        $this->assertEquals('OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_ERROR', $model->getOrderState());
     }
 
     public function testGetOrderStateValidState()
@@ -80,6 +80,6 @@ class EasyCreditTradingApiAccessTest extends UnitTestCase
             ->onlyMethods(['getOrderData'])->getMock();
         $model->expects($this->once())->method('getOrderData')->willReturn([$return]);
 
-        $this->assertEquals('In Abrechnung', $model->getOrderState());
+        $this->assertEquals('OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_IN_ABRECHNUNG', $model->getOrderState());
     }
 }

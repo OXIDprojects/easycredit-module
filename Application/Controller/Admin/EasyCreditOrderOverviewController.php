@@ -87,7 +87,7 @@ class EasyCreditOrderOverviewController extends EasyCreditOrderOverviewControlle
     /**
      * Load current order identified by edited object id
      */
-    protected function loadOrder(): void
+    protected function loadOrder()
     {
         if (!$this->order) {
             $order = oxNew(Order::class);
@@ -95,6 +95,8 @@ class EasyCreditOrderOverviewController extends EasyCreditOrderOverviewControlle
                 $this->order = $order;
             }
         }
+
+        return $this->order;
     }
 
     /**
@@ -108,8 +110,9 @@ class EasyCreditOrderOverviewController extends EasyCreditOrderOverviewControlle
         $orderdata = $tradingApiService->getOrderData();
         $state = $orderdata[0]->haendlerstatusV2;
 
-        $this->order->oxorder__ecreddeliverystate = new Field($state, Field::T_RAW);
-        $this->order->save();
+        $order = $this->loadOrder();
+        $order->oxorder__ecreddeliverystate = new Field($state, Field::T_RAW);
+        $order->save();
     }
 
 }

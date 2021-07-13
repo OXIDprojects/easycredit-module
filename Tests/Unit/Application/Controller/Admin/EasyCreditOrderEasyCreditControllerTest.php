@@ -70,16 +70,28 @@ class EasyCreditOrderEasyCreditControllerTest extends UnitTestCase
 
     public function deliveryStateDataProvider()
     {
-        $response1 = '{"wsMessages": {"messages": []},"uuid": "a6e08a9a-9a81-40ae-9a2d-33df493b3ddb","ergebnisse": []}';
+        $response1 = [];
         $expected1 = 'Der Händlerstatus konnte nicht abgefragt werden';
-        $response2 = '{"wsMessages": {"messages": []},"uuid": "d86a5797-a209-4648-ae77-8a594c337aed","ergebnisse": [{"haendlerstatusV2": "IN_ABRECHNUNG"}]}';
+
+        $stdClass2 = new \stdClass();
+        $stdClass2->haendlerstatusV2 = 'IN_ABRECHNUNG';
+        $response2 = [0 => $stdClass2];
         $expected2 = 'In Abrechnung';
-        $response3 = '{"wsMessages": {"messages": []},"uuid": "d86a5797-a209-4648-ae77-8a594c337aed","ergebnisse": [{"haendlerstatusV2": "LIEFERUNG_MELDEN"}]}';
+
+        $stdClass3 = new \stdClass();
+        $stdClass3->haendlerstatusV2 = 'LIEFERUNG_MELDEN';
+        $response3 = [0 => $stdClass3];
         $expected3 = 'Lieferung melden';
-        $response4 = '{"wsMessages": {"messages": []},"uuid": "d86a5797-a209-4648-ae77-8a594c337aed","ergebnisse": [{"haendlerstatusV2": "LIEFERUNG_MELDEN_AUSLAUFEND"}]}';
+
+        $stdClass4 = new \stdClass();
+        $stdClass4->haendlerstatusV2 = 'LIEFERUNG_MELDEN_AUSLAUFEND';
+        $response4 = [0 => $stdClass4];
         $expected4 = 'Lieferung melden (auslaufend)';
-        $response5 = '{"wsMessages": {"messages": []},"uuid": "d86a5797-a209-4648-ae77-8a594c337aed","ergebnisse": [{"haendlerstatusV2": "AUSLAUFEND"}]}';
+
         $expected5 = 'Auslaufend';
+        $stdClass5 = new \stdClass();
+        $stdClass5->haendlerstatusV2 = 'AUSLAUFEND';
+        $response5 = [0 => $stdClass5];
 
         return [
             [$response1, $expected1],
@@ -96,18 +108,13 @@ class EasyCreditOrderEasyCreditControllerTest extends UnitTestCase
      */
     public function testGetEasyCreditDeliveryState($response, $expected)
     {
-        $order = oxNew(Order::class);
-        $response = json_decode($response);
-
         $tradingApiService = $this->getMockBuilder(EasyCreditTradingApiAccess::class)->onlyMethods(['getOrderData'])->getMock();
-        $tradingApiService->expects($this->once())->method('getOrderData')->with($order)->willReturn($response);
+        $tradingApiService->expects($this->once())->method('getOrderData')->with(false)->willReturn($response);
 
         $controller = $this->getMockBuilder(EasyCreditOrderEasyCreditController::class)
-            ->onlyMethods(['getService','getOrder'])
+            ->onlyMethods(['getService'])
             ->getMock();
         $controller->expects($this->once())->method('getService')
-            ->willReturn($tradingApiService);
-        $controller->expects($this->once())->method('getOrder')
             ->willReturn($tradingApiService);
 
         $this->assertEquals($expected,
