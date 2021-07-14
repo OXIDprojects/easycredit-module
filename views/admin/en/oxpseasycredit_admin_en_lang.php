@@ -17,7 +17,7 @@
 
 $sLangName = 'English';
 
-$aLang = array(
+$aLang = [
     'charset' => 'UTF-8',
 
     'oxpseasycredit' => 'OXPS Easy Credit',
@@ -33,7 +33,6 @@ $aLang = array(
     'SHOP_MODULE_oxpsECExampleCalcArticle'                    => 'Activate example calculation on product details page',
     'SHOP_MODULE_oxpsECExampleCalcBasket'                     => 'Activate example calculation on basket page',
     'SHOP_MODULE_oxpsECExampleCalcMinibasket'                 => 'Activate example calculation on mini basket widget',
-    'SHOP_MODULE_oxpsECExampleUseOwnjQueryUI'                 => 'Activate example calculation on mini basket widget',
     'SHOP_MODULE_oxpsECExampleUseOwnjQueryUI'                 => 'TR: Benutze Modul-eigene jQuery UI Bibliothek',
     'HELP_SHOP_MODULE_oxpsECExampleUseOwnjQueryUI'            => 'TR: Performance: Die Javscript-Bibliothek jQuery UI ist normalerweise bereits Bestandteil Ihres OXID-Themes und muss nicht noch einmal vom easyCredit-Modul geladen werden.',
     'SHOP_MODULE_oxpsECLogging'                               => 'Activate log',
@@ -61,4 +60,4 @@ $aLang = array(
     'HELP_OXPS_EASY_CREDIT_ADMIN_AQUISITIONBORDER_VALUE'      => 'TR: Die vertraglich vereinbarte Ankaufobergrenze ist Summe, bis zu deren Höhe die TeamBank Ihnen einen Ratenkauf anbieten und Forderungen gegenüber Kunden übernehmen kann.',
     'OXPS_EASY_CREDIT_ADMIN_AQUISITIONBORDER_LASTUPDATE'      => 'TR: Letzte Aktualisierung',
     'HELP_OXPS_EASY_CREDIT_ADMIN_AQUISITIONBORDER_LASTUPDATE' => 'TR: Die Ankaufobergrenze wird periodisch nach festgelegtem Intervall (siehe Module-Settings) sowie zusätzlich nach jedem erfolgreichen Ratenkauf abgefragt.',
-);
+];

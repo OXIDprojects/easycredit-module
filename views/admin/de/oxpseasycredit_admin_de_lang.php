@@ -17,7 +17,7 @@
 
 $sLangName = 'Deutsch';
 
-$aLang = array(
+$aLang = [
     'charset' => 'UTF-8',
 
     'oxpseasycredit' => 'OXPS Easy Credit',
@@ -60,4 +60,4 @@ $aLang = array(
     'HELP_OXPS_EASY_CREDIT_ADMIN_AQUISITIONBORDER_VALUE'      => 'Die vertraglich vereinbarte Ankaufobergrenze ist Summe, bis zu deren Höhe die TeamBank Ihnen einen Ratenkauf anbieten und Forderungen gegenüber Kunden übernehmen kann.',
     'OXPS_EASY_CREDIT_ADMIN_AQUISITIONBORDER_LASTUPDATE'      => 'Letzte Aktualisierung',
     'HELP_OXPS_EASY_CREDIT_ADMIN_AQUISITIONBORDER_LASTUPDATE' => 'Die Ankaufobergrenze wird periodisch nach festgelegtem Intervall (siehe Module-Settings) sowie zusätzlich nach jedem erfolgreichen Ratenkauf abgefragt.',
-);
+];
