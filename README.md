@@ -1,6 +1,6 @@
 # OXID PS EasyCredit Module
 
-# Version 2.0.4
+# Version 2.0.5
 
 ## Description
 
@@ -43,3 +43,7 @@ composer update
 
 * Function-Check for OXID 6.2.3
 * easyCredit Orders are not changable (Discounts, add Articles...) in OXID-Backend
+
+### Version 2.0.5
+
+* remove Birthday-Check
