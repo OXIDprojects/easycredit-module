@@ -14,6 +14,7 @@
 namespace OxidProfessionalServices\EasyCredit\Application\Controller\Admin;
 
 use OxidEsales\Eshop\Application\Model\Order;
+use OxidEsales\Eshop\Core\Registry;
 use OxidProfessionalServices\EasyCredit\Application\Model\EasyCreditTradingApiAccess;
 use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicFactory;
 use OxidProfessionalServices\EasyCredit\Core\Domain\EasyCreditPayment;
