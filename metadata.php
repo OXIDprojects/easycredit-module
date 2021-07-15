@@ -218,13 +218,13 @@ $aModule = [
             'group' => 'EasyCreditApi',
             'name'  => 'oxpsECWebshopId',
             'type'  => 'str',
-            'value' => '2.de.7387.1',
+            'value' => '',
         ],
         [
             'group' => 'EasyCreditApi',
             'name'  => 'oxpsECWebshopToken',
             'type'  => 'str',
-            'value' => 'UJT84!1UcQfGRL0Rth95oKCgozazAkbL',
+            'value' => '',
         ],
         [
             'group' => 'EasyCreditCheckout',
