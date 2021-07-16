@@ -1,6 +1,6 @@
 # OXID PS EasyCredit Module
 
-# Version 2.0.5
+# Version 2.0.6
 
 ## Description
 
@@ -47,3 +47,7 @@ composer update
 ### Version 2.0.5
 
 * remove Birthday-Check
+
+### Version 2.0.6
+
+* Fix: Elimination of malfunctions in other payment modules
