@@ -38,6 +38,9 @@ class oxpsEasyCreditOrder extends oxpsEasyCreditOrder_parent
                 $this->checkStorage();
                 $this->appendInstalmentRatesToPaymentDescription($payment);
             }
+            else {
+                $this->_oPayment = $payment;
+            }
         }
         return $this->_oPayment;
     }

@@ -33,7 +33,7 @@ $aModule = array(
         'en' => 'OXPS Easy Credit Module',
     ),
     'thumbnail'   => 'out/pictures/picture.png',
-    'version'     => '2.0.5',
+    'version'     => '2.0.6',
     'author'      => 'OXID Professional Services',
     'url'         => 'http://www.oxid-esales.com',
     'email'       => 'info@oxid-esales.com',
