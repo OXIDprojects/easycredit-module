@@ -7,11 +7,8 @@
  * is a violation of the license agreement and will be prosecuted by
  * civil and criminal law.
  *
- * @category      module
- * @package       easycredit
- * @author        OXID Professional Services
- * @link          http://www.oxid-esales.com
- * @copyright (C) OXID eSales AG 2003-2018
+ * @link      http://www.oxid-esales.com
+ * @copyright (C) OXID eSales AG 2003-2021
  */
 
 namespace OxidProfessionalServices\EasyCredit\Core\Api;
@@ -53,7 +50,7 @@ class EasyCreditWebServiceClientFactory
 
         $client->setLogging($dic->getLogging());
         $client->setHttpmethod($apiConfig->getServiceHttpMethod($serviceName));
-        $client->setBaseUrl($apiConfig->getBaseUrl());
+        $client->setBaseUrl($apiConfig->getBaseUrl($serviceName));
         $client->setFunction(
             $apiConfig->getServiceRestFunction($serviceName),
             $additionalArguments,

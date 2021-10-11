@@ -1,4 +1,15 @@
 <?php
+/**
+ * This Software is the property of OXID eSales and is protected
+ * by copyright law - it is NOT Freeware.
+ *
+ * Any unauthorized use of this software without a valid license key
+ * is a violation of the license agreement and will be prosecuted by
+ * civil and criminal law.
+ *
+ * @link      http://www.oxid-esales.com
+ * @copyright (C) OXID eSales AG 2003-2021
+ */
 
 namespace OxidProfessionalServices\EasyCredit\Core\Domain;
 
@@ -10,11 +21,14 @@ use OxidEsales\Eshop\Core\Exception\ExceptionToDisplay;
 use OxidEsales\Eshop\Core\Exception\SystemComponentException;
 use OxidEsales\Eshop\Core\Field;
 use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\EshopProfessional\Core\DatabaseProvider;
+use OxidProfessionalServices\EasyCredit\Application\Model\EasyCreditTradingApiAccess;
 use OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditWebServiceClientFactory;
 use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditApiConfig;
 use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDic;
 use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicFactory;
 use OxidProfessionalServices\EasyCredit\Core\Dto\EasyCreditStorage;
+use OxidProfessionalServices\EasyCredit\Core\Exception\EasyCreditException;
 use OxidProfessionalServices\EasyCredit\Core\Exception\EasyCreditInitializationFailedException;
 use OxidProfessionalServices\EasyCredit\Core\Helper\EasyCreditHelper;
 use OxidProfessionalServices\EasyCredit\Core\Helper\EasyCreditInitializeRequestBuilder;
@@ -77,6 +91,7 @@ class EasyCreditOrder extends EasyCreditOrder_parent {
 
                 $this->oxorder__ecredtechnicalid  = new Field($storage->getTbVorgangskennung());
                 $this->oxorder__ecredfunctionalid = new Field($storage->getFachlicheVorgangskennung());
+                $this->oxorder__ecreddeliverystate = new Field(EasyCreditTradingApiAccess::OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_LIEFERUNG_MELDEN);
             }
         }
     }
@@ -449,5 +464,21 @@ class EasyCreditOrder extends EasyCreditOrder_parent {
             , array()
             , true);
         return $wsClient->execute();
+    }
+
+    /**
+     * @param $functionalId
+     *
+     * @throws EasyCreditException
+     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
+     */
+    public function loadByECFunctionalId($functionalId)
+    {
+        $viewName = $this->getViewName('oxorder');
+        $sql = 'SELECT oxid FROM ' . $viewName . ' WHERE `ecredfunctionalid` = ?';
+        $oxid = DatabaseProvider::getDb()->getOne($sql, [$functionalId]);
+        if (!$this->load($oxid)) {
+            throw new EasyCreditException("No order with functional ID: $functionalId ");
+        }
     }
 }

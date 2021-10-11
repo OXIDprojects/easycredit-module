@@ -30,6 +30,12 @@
           "coltype": "TEXT",
           "colnullable": "NULL",
           "comment": "easycredit instalment confirmation response"
+        },
+        {
+          "colname": "ECREDDELIVERYSTATE",
+          "coltype": "TEXT",
+          "colnullable": "NULL",
+          "comment": "status of order - delivery reported, in account ..."
         }
       ]
     }

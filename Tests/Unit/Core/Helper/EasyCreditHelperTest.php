@@ -118,7 +118,7 @@ class EasyCreditHelperTest extends UnitTestCase
         $apiConfig = oxNew(EasyCreditApiConfig::class, []);
         $dic       = oxNew(EasyCreditDic::class, null, $apiConfig, null, null, null);
 
-        $this->assertEquals('2.1.0', EasyCreditHelper::getModuleVersion($dic));
+        $this->assertEquals('3.0.0-dev', EasyCreditHelper::getModuleVersion($dic));
     }
 
     public function testGetModuleVersionWrongModuleId(): void

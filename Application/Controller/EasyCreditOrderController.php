@@ -8,8 +8,7 @@
  * civil and criminal law.
  *
  * @link      http://www.oxid-esales.com
- * @copyright (C) OXID eSales AG 2003-2018
- * @version   OXID eShop EE
+ * @copyright (C) OXID eSales AG 2003-2021
  */
 
 namespace OxidProfessionalServices\EasyCredit\Application\Controller;
@@ -50,10 +49,18 @@ class EasyCreditOrderController extends EasyCreditOrderController_parent
                 $this->checkStorage();
                 $this->appendInstalmentRatesToPaymentDescription($payment);
             }
+            else {
+                $this->_oPayment = $payment;
+            }
         }
         return $this->_oPayment;
     }
 
+    /**
+     * Call get payment at parent
+     *
+     * @return false|object|null
+     */
     protected function parentGetPayment()
     {
         return parent::getPayment();
