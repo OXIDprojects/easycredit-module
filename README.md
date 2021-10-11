@@ -1,6 +1,6 @@
 # OXID PS EasyCredit Module
 
-# Version 2.0.6
+# Version 3.0.0
 
 ## Description
 
@@ -46,8 +46,18 @@ composer update
 
 ### Version 2.0.5
 
-* remove Birthday-Check
+* Birthday is not required
+* Possiblility to use own jqueryUI-Lib in Frontend
 
 ### Version 2.0.6
 
 * Fix: Elimination of malfunctions in other payment modules
+
+### Version 3.0.0
+
+* Introduce Namespaces
+* No more support for OXID <= v6.0
+* Integrate new API für dealer gateway
+* Transaction-Overview in Backend
+* Storno in Backend
+

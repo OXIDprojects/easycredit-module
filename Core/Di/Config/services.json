@@ -1,0 +1,67 @@
+{
+  "v1_modellrechnung_durchfuehren": {
+    "httpMethod": "get",
+    "restFunction": "/v2/modellrechnung/durchfuehren",
+    "endpointtype": "ratenkauf"
+  },
+  "v1_modellrechnung_guenstigsterRatenplan": {
+    "httpMethod": "get",
+    "restFunction": "/v2/modellrechnung/guenstigsterRatenplan",
+    "endpointtype": "ratenkauf"
+  },
+  "v1_texte_zustimmung": {
+    "httpMethod": "get",
+    "restFunction": "/v2/texte/zustimmung/%s",
+    "endpointtype": "ratenkauf"
+  },
+  "v1_vorgang": {
+    "httpMethod": "post",
+    "restFunction": "/v2/vorgang",
+    "endpointtype": "ratenkauf"
+  },
+  "v1_decision": {
+    "httpMethod": "get",
+    "restFunction": "/v2/vorgang/%s/entscheidung",
+    "endpointtype": "ratenkauf"
+  },
+  "v1_financialinformation": {
+    "httpMethod": "get",
+    "restFunction": "/v2/vorgang/%s",
+    "endpointtype": "ratenkauf"
+  },
+  "v1_finanzierung": {
+    "httpMethod": "get",
+    "restFunction": "/v2/vorgang/%s/finanzierung",
+    "endpointtype": "ratenkauf"
+  },
+  "v1_bestaetigen": {
+    "httpMethod": "post",
+    "restFunction": "/v2/vorgang/%s/bestaetigen",
+    "endpointtype": "ratenkauf"
+  },
+  "v1_aquisition": {
+    "httpMethod": "get",
+    "restFunction": "/v2/webshop/%s/restbetragankaufobergrenze",
+    "endpointtype": "ratenkauf"
+  },
+  "v2_delivery_report": {
+    "httpMethod": "post",
+    "restFunction": "/v2/transaktionen/%s/lieferung",
+    "endpointtype": "haendlerinterface"
+  },
+  "v2_delivery_state": {
+    "httpMethod": "get",
+    "restFunction": "/v2/transaktionen/%s",
+    "endpointtype": "haendlerinterface"
+  },
+  "v2_transaktionen_suchen": {
+    "httpMethod": "get",
+    "restFunction": "/v2/transaktionen/suchen",
+    "endpointtype": "haendlerinterface"
+  },
+  "v2_transaktionen_storno": {
+    "httpMethod": "post",
+    "restFunction": "/v2/transaktionen/%s/rueckabwicklung",
+    "endpointtype": "haendlerinterface"
+  }
+}
