@@ -21,7 +21,7 @@
     },
     "autoload": {
         "psr-4": {
-            "OxidProfessionalServices\\EasyCredit\\": "../../source/modules/oxps/easycredit"
+            "OxidProfessionalServices\\EasyCredit\\": "../../../source/modules/oxps/easycredit"
         }
     }
 }
