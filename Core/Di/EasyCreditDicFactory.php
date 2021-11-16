@@ -41,7 +41,7 @@ class EasyCreditDicFactory
             oxNew(EasyCreditApiConfig::class, self::getApiConfigArray()),
             oxNew(EasyCreditPayloadFactory::class),
             oxNew(EasyCreditLogging::class, self::getLoggingConfigArray()),
-            oxNew(EasyCreditDicConfig::class, Registry::getConfig()),
+            oxNew(EasyCreditDicConfig::class, Registry::getConfig())
         );
     }
 
