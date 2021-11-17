@@ -81,11 +81,11 @@ class EasyCreditDicFactory
 
     private static function getServices()
     {
-        return self::getJsonFromFile(__DIR__ . '/config/services.json');
+        return self::getJsonFromFile(__DIR__ . '/Config/services.json');
     }
 
     private static function getValidationSchemes()
     {
-        return self::getJsonFromFile(__DIR__ . '/config/validation.json');
+        return self::getJsonFromFile(__DIR__ . '/Config/validation.json');
     }
 }
