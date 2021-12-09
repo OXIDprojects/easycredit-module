@@ -149,11 +149,6 @@ $aModule = [
             'file'     => 'Application/views/blocks/email/plain/oxpseasycredit_order_cust_paymentinfo.tpl',
         ],
         [
-            'template' => 'payment_main.tpl',
-            'block'    => 'admin_payment_main_form',
-            'file'     => 'Application/views/blocks/admin/oxpseasycredit_payment_main_form.tpl',
-        ],
-        [
             'template' => 'order_overview.tpl',
             'block'    => 'admin_order_overview_total',
             'file'     => 'Application/views/blocks/admin/oxpseasycredit_order_overview_total.tpl',
@@ -261,31 +256,7 @@ $aModule = [
             'name'  => 'oxpsECLogging',
             'type'  => 'bool',
             'value' => false,
-        ],
-        [
-            'group' => 'EasyCreditAquisitionBorder',
-            'name'  => 'oxpsECAquisitionBorderValue',
-            'type'  => 'str',
-            'value' => "",
-        ],
-        [
-            'group' => 'EasyCreditAquisitionBorder',
-            'name'  => 'oxpsECAquisitionBorderLastUpdate',
-            'type'  => 'str',
-            'value' => "",
-        ],
-        [
-            'group' => 'EasyCreditAquisitionBorder',
-            'name'  => 'oxpsECAquBorderUpdateIntervalMin',
-            'type'  => 'str',
-            'value' => "",
-        ],
-        [
-            'group' => 'EasyCreditAquisitionBorder',
-            'name'  => 'oxpsECAquBorderConsiderFrontend',
-            'type'  => 'bool',
-            'value' => false,
-        ],
+        ]
     ],
     'events'      => [
         'onActivate'   => '\OxidProfessionalServices\EasyCredit\Core\Events::onActivate',

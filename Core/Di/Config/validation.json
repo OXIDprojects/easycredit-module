@@ -44,11 +44,5 @@
       "fieldname": "tilgungsplanText",
       "required": true
     }
-  ],
-  "v1_aquisition": [
-    {
-      "fieldname": "restbetrag",
-      "required": true
-    }
   ]
 }

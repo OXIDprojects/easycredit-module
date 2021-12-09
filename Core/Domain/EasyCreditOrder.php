@@ -151,19 +151,7 @@ class EasyCreditOrder extends EasyCreditOrder_parent {
             $this->handleException($ex);
         }
 
-        $this->updateAquisitionBorder();
-
         return $result;
-    }
-
-    /**
-     * Update aquisition border
-     */
-    protected function updateAquisitionBorder()
-    {
-        /** @var $aquisitionBorder EasyCreditAquisitionBorder */
-        $aquisitionBorder = oxNew(EasyCreditAquisitionBorder::class);
-        $aquisitionBorder->updateAquisitionBorder();
     }
 
     /**

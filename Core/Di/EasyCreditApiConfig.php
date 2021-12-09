@@ -64,7 +64,6 @@ class EasyCreditApiConfig
     const API_CONFIG_SERVICE_NAME_V1_FINANCIAL_INFORMATION = 'v1_financialinformation';
     const API_CONFIG_SERVICE_NAME_V1_FINANZIERUNG = 'v1_finanzierung';
     const API_CONFIG_SERVICE_NAME_V1_BESTAETIGEN = 'v1_bestaetigen';
-    const API_CONFIG_SERVICE_NAME_V1_AQUISITION = 'v1_aquisition';
     const API_CONFIG_SERVICE_NAME_V2_DELIVERY_REPORT = 'v2_delivery_report';
     const API_CONFIG_SERVICE_NAME_V2_DELIVERY_STATE = 'v2_delivery_state';
     const API_CONFIG_SERVICE_NAME_V2_ORDER_OVERVIEW = 'v2_transaktionen_suchen';

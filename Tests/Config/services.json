@@ -22,9 +22,5 @@
   "v1_decision": {
     "httpMethod": "get",
     "restFunction": "/v1/vorgang/%s/entscheidung"
-  },
-  "v1_aquisition": {
-    "httpMethod": "get",
-    "restFunction": "/v1/webshop/%s/restbetragankaufobergrenze"
   }
 }

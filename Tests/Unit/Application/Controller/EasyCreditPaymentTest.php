@@ -75,36 +75,9 @@ class EasyCreditPaymentTest extends UnitTestCase
         $this->assertNotNull($payment->getBasket());
     }
 
-    public function testIsEasyCreditPermittedNoFrontend()
-    {
-        $payment = oxNew(PaymentController::class);
-        $this->assertTrue($payment->isEasyCreditPermitted());
-    }
-
-//    public function testIsEasyCreditPermittedFrontend()
-//    {
-//        $session = oxNew(EasyCreditSession::class);
-//        $dic = $this->buildDic($session);
-//
-//        $dic->getConfig()->setConfigParam('ECAquBorderConsiderFrontend', true);
-//
-//        $payment = $this->getMock(Payment::class, ['getDic']);
-//        $payment->expects($this->any())->method('getDic')->willReturn($dic);
-//
-//        $this->assertTrue($payment->isEasyCreditPermitted());
-//    }
-
     public function testIsEasyCreditPossible()
     {
         $payment = oxNew(PaymentController::class);
-        $this->assertFalse($payment->isEasyCreditPossible());
-    }
-
-    public function testIsEasyCreditPossibleNotPermitted()
-    {
-        $payment = $this->getMock(EasyCreditPaymentController::class, ['isEasyCreditPermitted']);
-        $payment->expects($this->any())->method('isEasyCreditPermitted')->willReturn(false);
-
         $this->assertFalse($payment->isEasyCreditPossible());
     }
 

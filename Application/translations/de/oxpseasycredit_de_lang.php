@@ -22,7 +22,6 @@ $aLang = array(
     'OXPS_EASY_CREDIT_FINANCE_FROM'                          => 'Finanzieren ab',
     'OXPS_EASY_CREDIT_MORE_INFO'                             => 'mehr Infos zum Ratenkauf',
     'OXPS_EASY_CREDIT_EXAMPLE_DIALOG_TITLE'                  => 'ratenkauf by easyCredit',
-    'OXPS_EASY_CREDIT_ERROR_NOT_ALLOWED_BY_AQUISITION_VALUE' => 'ratenkauf by easyCredit ist infolge unzureichender Ankaufobergrenze nicht möglich.',
     'OXPS_EASY_CREDIT_ERROR_NO_GERMAN_ADDRESS'               => 'Die Lieferadresse muss eine Adresse in Deutschland sein.',
     'OXPS_EASY_CREDIT_ERROR_DEL_ADDRESS'                     => 'Die Lieferadresse darf nicht von der Rechnungsadresse abweichen.',
     'OXPS_EASY_CREDIT_ERROR_PACKSTATION'                     => 'Die Lieferadresse darf keine Packstation sein.',
