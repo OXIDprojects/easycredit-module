@@ -28,6 +28,7 @@ $aLang = [
     'SHOP_MODULE_GROUP_EasyCreditCheckout'                    => 'Checkout',
     'SHOP_MODULE_GROUP_EasyCreditAquisitionBorder'            => 'TR: Ankaufobergrenze',
     'SHOP_MODULE_oxpsECBaseUrl'                               => 'Base URL',
+    'SHOP_MODULE_oxpsECDealerInterfaceUrl'                    => 'Dealer-Interface-URL',
     'SHOP_MODULE_oxpsECWebshopId'                             => 'Web shop ID',
     'SHOP_MODULE_oxpsECWebshopToken'                          => 'Web shop token',
     'SHOP_MODULE_oxpsECExampleCalcArticle'                    => 'Activate example calculation on product details page',

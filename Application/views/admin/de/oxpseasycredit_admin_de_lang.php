@@ -28,6 +28,7 @@ $aLang = [
     'SHOP_MODULE_GROUP_EasyCreditCheckout'              => 'Checkout',
     'SHOP_MODULE_GROUP_EasyCreditAquisitionBorder'      => 'Ankaufobergrenze',
     'SHOP_MODULE_oxpsECBaseUrl'                         => 'Basis-URL',
+    'SHOP_MODULE_oxpsECDealerInterfaceUrl'              => 'Händler-Interface-URL',
     'SHOP_MODULE_oxpsECWebshopId'                       => 'Webshop-ID',
     'SHOP_MODULE_oxpsECWebshopToken'                    => 'Webshop-Token',
     'SHOP_MODULE_oxpsECExampleCalcArticle'              => 'Modellrechnung auf Artikeldetailseite aktivieren',

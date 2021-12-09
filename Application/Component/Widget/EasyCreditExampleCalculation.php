@@ -126,7 +126,7 @@ class EasyCreditExampleCalculation extends WidgetController
     protected function getExampleCalculationResponse()
     {
         $price = $this->getPrice();
-        if (!$price) {
+        if (!$price || (int)$price->getBruttoPrice() == 0) {
             return false;
         }
 
