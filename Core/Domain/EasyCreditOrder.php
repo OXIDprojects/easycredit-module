@@ -445,15 +445,14 @@ class EasyCreditOrder extends EasyCreditOrder_parent {
         $processId = $this->getInstalmentStorage()->getTbVorgangskennung();
         $this->getDic()->getSession()->clearStorage();
 
-        $requestData = array(
-            'VorgangskennungShop' => $this->oxorder__oxordernr->value
-        );
+        $additionalArguments = array($processId);
+        $additionalArguments['VorgangskennungShop'] = $this->oxorder__oxordernr->value;
 
         $wsClient = EasyCreditWebServiceClientFactory::getWebServiceClient(
             EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_BESTAETIGEN
             , $this->getDic()
             , array($processId)
-            , $requestData
+            , array()
             , true);
         return $wsClient->execute();
     }
