@@ -28,7 +28,6 @@ use OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditWebServiceClientFacto
 use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditApiConfig;
 use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDic;
 use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicFactory;
-use OxidProfessionalServices\EasyCredit\Core\Domain\EasyCreditAquisitionBorder;
 use OxidProfessionalServices\EasyCredit\Core\Exception\EasyCreditException;
 use OxidProfessionalServices\EasyCredit\Core\Helper\EasyCreditHelper;
 
@@ -84,33 +83,6 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
     }
 
     /**
-     * Returns true if easyCredit is allowed by aquisition value.
-     * Checks before whether aqusisition value has to be updated
-     *
-     * @return bool true, if easyCredit is allowed
-     */
-    public function isEasyCreditPermitted()
-    {
-        /** @var $aquisitionBorder EasyCreditAquisitionBorder */
-        $aquisitionBorder = oxNew(EasyCreditAquisitionBorder::class);
-        $aquisitionBorder->updateAquisitionBorderIfNeeded();
-
-        /** @var $aquisitionBorder EasyCreditAquisitionBorder */
-        $aquisitionBorder = oxNew(EasyCreditAquisitionBorder::class);
-
-        if(!$aquisitionBorder->considerInFrontend() ) {
-            return true;
-        }
-
-        $squisitionBorderValue = $aquisitionBorder->getCurrentAquisitionBorderValue();
-        if( empty($squisitionBorderValue) ) {
-            return true;
-        }
-        $basketPrice = $this->getBasket()->getPrice()->getPrice();
-        return $basketPrice && $squisitionBorderValue > $basketPrice;
-    }
-
-    /**
      * Checks if ratenkauf is a valid payment in this checkout process. If not, false is returned.
      *
      * @return bool|\\stdClass
@@ -132,8 +104,6 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
     {
         $this->easyCreditPossible = true;
 
-        $this->checkEasyCreditPermitted();
-
         $this->checkEasyCreditForeignAddress();
 
         $this->checkEasyCreditAddressMismatch();
@@ -143,17 +113,6 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
         $this->checkEasyCreditAgreementTxt();
 
         $this->checkEasyCreditExampleCalulation();
-    }
-
-    /**
-     * Part of valid payment check
-     */
-    protected function checkEasyCreditPermitted()
-    {
-        if(!$this->isEasyCreditPermitted() ) {
-            $this->errorMessages[]    = Registry::getLang()->translateString('OXPS_EASY_CREDIT_ERROR_NOT_ALLOWED_BY_AQUISITION_VALUE');
-            $this->easyCreditPossible = false;
-        }
     }
 
     /**

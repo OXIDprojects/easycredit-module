@@ -151,19 +151,7 @@ class EasyCreditOrder extends EasyCreditOrder_parent {
             $this->handleException($ex);
         }
 
-        $this->updateAquisitionBorder();
-
         return $result;
-    }
-
-    /**
-     * Update aquisition border
-     */
-    protected function updateAquisitionBorder()
-    {
-        /** @var $aquisitionBorder EasyCreditAquisitionBorder */
-        $aquisitionBorder = oxNew(EasyCreditAquisitionBorder::class);
-        $aquisitionBorder->updateAquisitionBorder();
     }
 
     /**
@@ -457,11 +445,15 @@ class EasyCreditOrder extends EasyCreditOrder_parent {
         $processId = $this->getInstalmentStorage()->getTbVorgangskennung();
         $this->getDic()->getSession()->clearStorage();
 
+        $requestData = array(
+            'VorgangskennungShop' => $this->oxorder__oxordernr->value
+        );
+
         $wsClient = EasyCreditWebServiceClientFactory::getWebServiceClient(
             EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_BESTAETIGEN
             , $this->getDic()
             , array($processId)
-            , array()
+            , $requestData
             , true);
         return $wsClient->execute();
     }

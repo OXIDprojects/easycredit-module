@@ -1,6 +1,6 @@
 # OXID PS EasyCredit Module
 
-# Version 3.0.0
+# Version 3.0.4
 
 ## Description
 
@@ -61,3 +61,19 @@ composer update
 * Transaction-Overview in Backend
 * Storno in Backend
 
+### Version 3.0.1
+
+* Bugfixes
+
+### Version 3.0.2
+
+* Bugfixes
+
+### Version 3.0.3
+
+* Bugfixes
+
+### Version 3.0.4
+
+* transfer OrderNr to EasyCredit
+* remove Ankaufsobergrenze
