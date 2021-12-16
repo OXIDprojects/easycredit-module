@@ -451,7 +451,7 @@ class EasyCreditOrder extends EasyCreditOrder_parent {
         $wsClient = EasyCreditWebServiceClientFactory::getWebServiceClient(
             EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_BESTAETIGEN
             , $this->getDic()
-            , array($processId)
+            , $additionalArguments
             , array()
             , true);
         return $wsClient->execute();
