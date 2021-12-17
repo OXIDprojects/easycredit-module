@@ -446,7 +446,7 @@ class EasyCreditOrder extends EasyCreditOrder_parent {
         $this->getDic()->getSession()->clearStorage();
 
         $requestData = array(
-            'VorgangskennungShop' => $this->oxorder__oxordernr->value
+            'shopVorgangskennung' => $this->oxorder__oxordernr->value
         );
 
         $wsClient = EasyCreditWebServiceClientFactory::getWebServiceClient(
