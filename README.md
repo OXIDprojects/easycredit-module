@@ -77,3 +77,8 @@ composer update
 
 * transfer OrderNr to EasyCredit
 * remove Ankaufsobergrenze
+
+### Version 3.0.5
+
+* remove Payment-Costs in Checkout
+* add better default-values for payment
