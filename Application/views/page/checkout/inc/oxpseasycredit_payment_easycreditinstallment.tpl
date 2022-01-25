@@ -15,20 +15,6 @@
     </dt>
     <dd class="payment-option[{if $oView->getCheckedPaymentId() == $paymentmethod->oxpayments__oxid->value}]activePayment[{/if}]">
         [{if $easyCreditIsPossible}]
-            [{if $paymentmethod->getPrice()}]
-                [{assign var="oPaymentPrice" value=$paymentmethod->getPrice() }]
-                [{if $oViewConf->isFunctionalityEnabled('blShowVATForPayCharge') }]
-                    [{strip}]
-                        ([{oxprice price=$oPaymentPrice->getNettoPrice() currency=$currency}]
-                        [{if $oPaymentPrice->getVatValue() > 0}]
-                            [{oxmultilang ident="PLUS_VAT"}] [{oxprice price=$oPaymentPrice->getVatValue() currency=$currency}]
-                        [{/if}])
-                    [{/strip}]
-                [{else}]
-                    ([{oxprice price=$oPaymentPrice->getBruttoPrice() currency=$currency}])
-                [{/if}]
-            [{/if}]
-
             <div class="col-lg-offset-3">
                 <img class="payment-logo-easycredit" src="[{$oViewConf->getModuleUrl('oxpseasycredit')}]out/pictures/eclogo.png" alt="Easy Credit">
             </div>
