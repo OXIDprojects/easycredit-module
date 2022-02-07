@@ -67,7 +67,7 @@ class EasyCreditTradingApiAccess
             EasyCreditDicFactory::getDic(),
             [$this->order->oxorder__ecredfunctionalid->value],
             [],
-            true,
+            true
         );
         $response = $service->execute();
         if ($blUpdateLocalOrderState) {
@@ -116,7 +116,7 @@ class EasyCreditTradingApiAccess
             EasyCreditDicFactory::getDic(),
             [$this->order->oxorder__ecredfunctionalid->value],
             [],
-            true,
+            true
         );
         return $service->execute();
     }

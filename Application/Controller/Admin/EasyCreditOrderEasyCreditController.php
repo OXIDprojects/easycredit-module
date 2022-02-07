@@ -233,7 +233,7 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
             }
 
         } else {
-            throw new EasyCreditException("No order given",);
+            throw new EasyCreditException("No order given");
         };
     }
 

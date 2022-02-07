@@ -1,6 +1,6 @@
 # OXID PS EasyCredit Module
 
-# Version 3.0.4
+# Version 3.0.6
 
 ## Description
 
@@ -82,3 +82,7 @@ composer update
 
 * remove Payment-Costs in Checkout
 * add better default-values for payment
+
+### Version 3.0.6
+
+* improve Backwards-compatiblity to PHP7.2
