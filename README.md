@@ -86,3 +86,4 @@ composer update
 ### Version 3.0.6
 
 * improve Backwards-compatiblity to PHP7.2
+* calculate Rateplan only in Payment-Pricerange (by default 200 < x < 10000)
