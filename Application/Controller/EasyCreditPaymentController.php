@@ -199,7 +199,15 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
      */
     protected function getExampleCalculationResponse() {
         $price = $this->getPrice();
-        if (!$price) {
+
+        $payment = oxNew(Payment::class);
+        $payment->load('easycreditinstallment');
+
+        if (
+            !$price ||
+            (int)$price->getBruttoPrice() < (int)$payment->getFieldData('oxfromamount') ||
+            (int)$price->getBruttoPrice() > (int)$payment->getFieldData('oxtoamount')
+        ) {
             return false;
         }
 
