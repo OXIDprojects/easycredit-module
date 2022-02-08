@@ -15,6 +15,7 @@ namespace OxidProfessionalServices\EasyCredit\Application\Component\Widget;
 
 use OxidEsales\Eshop\Application\Component\Widget\WidgetController;
 use OxidEsales\Eshop\Application\Model\Basket;
+use OxidEsales\Eshop\Application\Model\Payment;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\Exception\SystemComponentException;
 use OxidEsales\Eshop\Core\Price;
@@ -126,7 +127,14 @@ class EasyCreditExampleCalculation extends WidgetController
     protected function getExampleCalculationResponse()
     {
         $price = $this->getPrice();
-        if (!$price || (int)$price->getBruttoPrice() == 0) {
+        $payment = oxNew(Payment::class);
+        $payment->load('easycreditinstallment');
+
+        if (
+            !$price ||
+            (int)$price->getBruttoPrice() < (int)$payment->getFieldData('oxfromamount') ||
+            (int)$price->getBruttoPrice() > (int)$payment->getFieldData('oxtoamount')
+        ) {
             return false;
         }
 
