@@ -25,16 +25,16 @@ $sMetadataVersion = '2.1';
 $aModule = [
     'id'          => 'oxpseasycredit',
     'title'       => [
-        'de' => 'OXPS Easy Credit',
-        'en' => 'OXPS Easy Credit',
+        'de' => 'easyCredit-Ratenkauf für OXID',
+        'en' => 'easyCredit-Ratenkauf for OXID',
     ],
     'description' => [
-        'de' => 'OXPS Easy Credit Modul',
-        'en' => 'OXPS Easy Credit Module',
+        'de' => 'easyCredit-Ratenkauf für Einkäufe in OXID nutzen',
+        'en' => 'Use easyCredit-Ratenkauf for purchases in OXID',
     ],
     'thumbnail'   => 'out/pictures/picture.png',
-    'version'     => '3.0.7',
-    'author'      => 'OXID Professional Services',
+    'version'     => '3.0.8',
+    'author'      => 'OXID Solution Catalysts',
     'url'         => 'https://www.oxid-esales.com',
     'email'       => 'info@oxid-esales.com',
     'controllers' => [

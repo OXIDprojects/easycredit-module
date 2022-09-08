@@ -23,7 +23,7 @@ use OxidProfessionalServices\EasyCredit\Core\Exception\EasyCreditException;
 /**
  * Order admin class for easyCredit
  *
- * Implements register "ratenkauf by easyCredit" in admin | order management | orders
+ * Implements register "easyCredit-Ratenkauf" in admin | order management | orders
  */
 class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController
 {
