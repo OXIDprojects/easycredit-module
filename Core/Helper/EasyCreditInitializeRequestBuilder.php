@@ -21,6 +21,7 @@ use OxidEsales\Eshop\Application\Model\Category;
 use OxidEsales\Eshop\Application\Model\Country;
 use OxidEsales\Eshop\Application\Model\Groups;
 use OxidEsales\Eshop\Application\Model\Manufacturer;
+use OxidEsales\Eshop\Application\Model\Order;
 use OxidEsales\Eshop\Application\Model\User;
 use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Exception\SystemComponentException;
@@ -95,6 +96,7 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
             'risikorelevanteAngaben'    => $this->getRiscs(),
             'warenkorbinfos'            => array_filter($this->getBasketInfo()),
             'technischeShopparameter'   => array_filter($this->getTechnicals()),
+            'VorgangskennungShop'       => $this->getOrderNr()
         );
 
         return array_filter($initRequest);
@@ -140,6 +142,22 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
             $basketInfo[] = $this->getBasketPositionInfo($basketitem, $basketproduct);
         }
         return $basketInfo;
+    }
+
+    /**
+     * Returns "OrderNr"
+     *
+     * @return string
+     */
+    protected function getOrderNr()
+    {
+        $orderNr = '';
+        if ($orderId = $this->getBasket()->getOrderId()) {
+            $order = oxNew(Order::class);
+            $order->load($orderId);
+            $orderNr = $order->oxorder__oxordernr->value;
+        }
+        return $orderNr;
     }
 
     /**
