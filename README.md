@@ -1,10 +1,10 @@
-# OXID PS EasyCredit Module
+# OXID Solution Catalyst easyCredit-Ratenkauf Module
 
-# Version 3.0.6
+# Version 3.0.8
 
 ## Description
 
- * First standalone release of the EasyCredit Module
+ * First standalone release of the easyCredit-Ratenkauf Module
  * Supports payment type installment plan
  * Supports handling over the oxid admin backend only
 
@@ -91,3 +91,7 @@ composer update
 ### Version 3.0.7
 
 * bugfix-release
+
+### Version 3.0.8
+
+* Rebranding easyCredit-Ratenkauf
