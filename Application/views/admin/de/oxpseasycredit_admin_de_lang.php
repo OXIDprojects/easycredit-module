@@ -40,7 +40,7 @@ $aLang = [
 
     'OXPS_EASY_CREDIT_SUMTOTAL_INCLUDES_INTERESTS'            => 'Summe enthält Zinsen',
     'OXPS_EASY_CREDIT_ADMIN_TAB_ONLY_FOR_EASYCREDIT_PAYMENTS' => 'Die Registerkarte ist nur bei Bestellungen mit der Zahlungsart easyCredit verfügbar.',
-    'tbclorder_oxpseasycredit'                                => 'ratenkauf by easyCredit',
+    'tbclorder_oxpseasycredit'                                => 'easyCredit-Ratenkauf',
 
     'OXPS_EASY_CREDIT_ADMIN_INSTALMENTS_CAPTION'     => 'Informationen zum Ratenkauf:',
     'OXPS_EASY_CREDIT_ADMIN_INTERESTS_VALUE'         => 'Zinsen auf Ratenkauf',
