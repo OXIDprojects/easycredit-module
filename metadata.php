@@ -8,7 +8,7 @@
  * civil and criminal law.
  *
  * @category      module
- * @package       easycredit
+ * @package       easycredit-module
  * @author        OXID Professional Services
  * @link          http://www.oxid-esales.com
  * @copyright (C) OXID eSales AG 2003-2018
@@ -17,13 +17,32 @@
 /**
  * Metadata version
  */
+
+use OxidEsales\Eshop\Application\Controller\Admin\OrderAddress;
+use OxidEsales\Eshop\Application\Controller\Admin\OrderArticle;
+use OxidEsales\Eshop\Application\Controller\Admin\OrderList;
+use OxidEsales\Eshop\Application\Controller\Admin\OrderOverview;
+use OxidEsales\Eshop\Application\Controller\OrderController;
+use OxidEsales\Eshop\Application\Controller\PaymentController;
+use OxidEsales\Eshop\Core\Session;
+use OxidSolutionCatalysts\EasyCredit\Application\Controller\Admin\EasyCreditOrderAddressController;
+use OxidSolutionCatalysts\EasyCredit\Application\Controller\Admin\EasyCreditOrderArticleController;
+use OxidSolutionCatalysts\EasyCredit\Application\Controller\Admin\EasyCreditOrderListController;
+use OxidSolutionCatalysts\EasyCredit\Application\Controller\Admin\EasyCreditOrderOverviewController;
+use OxidSolutionCatalysts\EasyCredit\Application\Controller\EasyCreditOrderController;
+use OxidSolutionCatalysts\EasyCredit\Application\Controller\EasyCreditPaymentController;
+use OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditBasket;
+use OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditOrder;
+use OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditPayment;
+use OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditSession;
+
 $sMetadataVersion = '2.1';
 
 /**
  * Module information
  */
 $aModule = [
-    'id'          => 'oxpseasycredit',
+    'id'          => 'osceasycredit',
     'title'       => [
         'de' => 'easyCredit-Ratenkauf für OXID',
         'en' => 'easyCredit-Ratenkauf for OXID',
@@ -33,49 +52,43 @@ $aModule = [
         'en' => 'Use easyCredit-Ratenkauf for purchases in OXID',
     ],
     'thumbnail'   => 'out/pictures/picture.png',
-    'version'     => '3.0.8',
+    'version'     => '4.0.0',
     'author'      => 'OXID Solution Catalysts',
     'url'         => 'https://www.oxid-esales.com',
     'email'       => 'info@oxid-esales.com',
     'controllers' => [
-        'EasyCreditDispatcher'              => \OxidProfessionalServices\EasyCredit\Application\Controller\EasyCreditDispatcherController::class,
+        'EasyCreditDispatcher'              => \OxidSolutionCatalysts\EasyCredit\Application\Controller\EasyCreditDispatcherController::class,
         # Admin
-        'EasyCreditOrderEasyCredit'         => \OxidProfessionalServices\EasyCredit\Application\Controller\Admin\EasyCreditOrderEasyCreditController::class,
+        'EasyCreditOrderEasyCredit'         => \OxidSolutionCatalysts\EasyCredit\Application\Controller\Admin\EasyCreditOrderEasyCreditController::class,
         # Widgets
-        'easycreditexamplecalculation'      => \OxidProfessionalServices\EasyCredit\Application\Component\Widget\EasyCreditExampleCalculation::class,
-        'easycreditexamplecalculationpopup' => \OxidProfessionalServices\EasyCredit\Application\Component\Widget\EasyCreditExampleCalculationPopup::class,
-
-        // To delete
-        'easycreditoverview'                => \OxidProfessionalServices\EasyCredit\Application\Controller\Admin\EasyCreditOverviewController::class,
-        'easycreditoverview_list'           => \OxidProfessionalServices\EasyCredit\Application\Controller\Admin\EasyCreditOverviewListController::class,
-        'easycreditoverview_main'           => \OxidProfessionalServices\EasyCredit\Application\Controller\Admin\EasyCreditOverviewMainController::class,
-
+        'easycreditexamplecalculation'      => \OxidSolutionCatalysts\EasyCredit\Application\Component\Widget\EasyCreditExampleCalculation::class,
+        'easycreditexamplecalculationpopup' => \OxidSolutionCatalysts\EasyCredit\Application\Component\Widget\EasyCreditExampleCalculationPopup::class,
     ],
-    'extend'      => [
+    'extend'      => array(
         # extended controller
-        \OxidEsales\Eshop\Application\Controller\PaymentController::class   => \OxidProfessionalServices\EasyCredit\Application\Controller\EasyCreditPaymentController::class,
-        \OxidEsales\Eshop\Application\Controller\OrderController::class     => \OxidProfessionalServices\EasyCredit\Application\Controller\EasyCreditOrderController::class,
+        PaymentController::class   => EasyCreditPaymentController::class,
+        OrderController::class     => EasyCreditOrderController::class,
 
         # Extended admin controller
-        \OxidEsales\Eshop\Application\Controller\Admin\OrderAddress::class  => \OxidProfessionalServices\EasyCredit\Application\Controller\Admin\EasyCreditOrderAddressController::class,
-        \OxidEsales\Eshop\Application\Controller\Admin\OrderArticle::class  => \OxidProfessionalServices\EasyCredit\Application\Controller\Admin\EasyCreditOrderArticleController::class,
-        \OxidEsales\Eshop\Application\Controller\Admin\OrderOverview::class => \OxidProfessionalServices\EasyCredit\Application\Controller\Admin\EasyCreditOrderOverviewController::class,
-        \OxidEsales\Eshop\Application\Controller\Admin\OrderList::class     => \OxidProfessionalServices\EasyCredit\Application\Controller\Admin\EasyCreditOrderListController::class,
+        OrderAddress::class  => EasyCreditOrderAddressController::class,
+        OrderArticle::class  => EasyCreditOrderArticleController::class,
+        OrderOverview::class => EasyCreditOrderOverviewController::class,
+        OrderList::class     => EasyCreditOrderListController::class,
 
         # Extending core classes
-        \OxidEsales\Eshop\Core\Session::class                               => \OxidProfessionalServices\EasyCredit\Core\Domain\EasyCreditSession::class,
-        \OxidEsales\Eshop\Application\Model\Payment::class                  => \OxidProfessionalServices\EasyCredit\Core\Domain\EasyCreditPayment::class,
-        \OxidEsales\Eshop\Application\Model\Basket::class                   => \OxidProfessionalServices\EasyCredit\Core\Domain\EasyCreditBasket::class,
-        \OxidEsales\Eshop\Application\Model\Order::class                    => \OxidProfessionalServices\EasyCredit\Core\Domain\EasyCreditOrder::class
-    ],
+        Session::class                                                      => EasyCreditSession::class,
+        \OxidEsales\Eshop\Application\Model\Payment::class                  => EasyCreditPayment::class,
+        \OxidEsales\Eshop\Application\Model\Basket::class                   => EasyCreditBasket::class,
+        \OxidEsales\Eshop\Application\Model\Order::class                    => EasyCreditOrder::class
+    ),
     'templates'   => [
-        'page/checkout/inc/payment_easycreditinstallment.tpl' => 'oxps/easycredit/Application/views/page/checkout/inc/oxpseasycredit_payment_easycreditinstallment.tpl',
-        'oxpseasycredit_examplecalculation.tpl'               => 'oxps/easycredit/Application/views/widgets/oxpseasycredit_examplecalculation.tpl',
-        'oxpseasycredit_examplecalculation_popup.tpl'         => 'oxps/easycredit/Application/views/widgets/oxpseasycredit_examplecalculation_popup.tpl',
-        'oxpseasycredit_order_easycredit.tpl'                 => 'oxps/easycredit/Application/views/admin/tpl/oxpseasycredit_order_easycredit.tpl',
-        'easycredit_overview.tpl'                        => 'oxps/easycredit/Application/views/admin/tpl/easycredit_overview.tpl',
-        'easycredit_overview_list.tpl'                        => 'oxps/easycredit/Application/views/admin/tpl/easycredit_overview_list.tpl',
-        'easycredit_overview_main.tpl'                        => 'oxps/easycredit/Application/views/admin/tpl/easycredit_overview_main.tpl',
+        'page/checkout/inc/payment_easycreditinstallment.tpl' => 'oxps/easycredit-module/Application/views/page/checkout/inc/oxpseasycredit_payment_easycreditinstallment.tpl',
+        'oxpseasycredit_examplecalculation.tpl'               => 'oxps/easycredit-module/Application/views/widgets/oxpseasycredit_examplecalculation.tpl',
+        'oxpseasycredit_examplecalculation_popup.tpl'         => 'oxps/easycredit-module/Application/views/widgets/oxpseasycredit_examplecalculation_popup.tpl',
+        'oxpseasycredit_order_easycredit.tpl'                 => 'oxps/easycredit-module/Application/views/admin/tpl/oxpseasycredit_order_easycredit.tpl',
+        'easycredit_overview.tpl'                             => 'oxps/easycredit-module/Application/views/admin/tpl/easycredit_overview.tpl',
+        'easycredit_overview_list.tpl'                        => 'oxps/easycredit-module/Application/views/admin/tpl/easycredit_overview_list.tpl',
+        'easycredit_overview_main.tpl'                        => 'oxps/easycredit-module/Application/views/admin/tpl/easycredit_overview_main.tpl',
     ],
     'blocks'      => [
         [
@@ -201,13 +214,13 @@ $aModule = [
             'group' => 'EasyCreditApi',
             'name'  => 'oxpsECBaseUrl',
             'type'  => 'str',
-            'value' => 'https://ratenkauf.easycredit.de/ratenkauf-ws/rest',
+            'value' => 'https://ratenkauf.easycredit-module.de/ratenkauf-ws/rest',
         ],
         [
             'group' => 'EasyCreditApi',
             'name'  => 'oxpsECDealerInterfaceUrl',
             'type'  => 'str',
-            'value' => 'https://app.easycredit.de/ratenkauf/transaktionsverwaltung-ws/rest',
+            'value' => 'https://app.easycredit-module.de/ratenkauf/transaktionsverwaltung-ws/rest',
         ],
         [
             'group' => 'EasyCreditApi',
@@ -259,7 +272,7 @@ $aModule = [
         ]
     ],
     'events'      => [
-        'onActivate'   => '\OxidProfessionalServices\EasyCredit\Core\Events::onActivate',
-        'onDeactivate' => '\OxidProfessionalServices\EasyCredit\Core\Events::onDeactivate',
+        'onActivate'   => '\OxidSolutionCatalysts\EasyCredit\Core\Events::onActivate',
+        'onDeactivate' => '\OxidSolutionCatalysts\EasyCredit\Core\Events::onDeactivate',
     ],
 ];

@@ -12,7 +12,7 @@
 
 Use Composer to add the module to your project
 ```bash
-composer require oxid-professional-services/easycredit-module
+composer require oxid-professional-services/easycredit-module-module
 ```
 
  * Activate the module in administration area

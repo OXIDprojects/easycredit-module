@@ -1,0 +1,53 @@
+<?php
+
+declare(strict_types=1);
+
+class_alias(
+    \OxidEsales\Eshop\Application\Controller\PaymentController::class,
+    \OxidSolutionCatalysts\EasyCredit\Application\Controller\EasyCreditPaymentController_parent::class
+);
+
+class_alias(
+    \OxidEsales\Eshop\Application\Controller\OrderController::class,
+    \OxidSolutionCatalysts\EasyCredit\Application\Controller\EasyCreditOrderController_parent::class
+);
+
+class_alias(
+    \OxidEsales\Eshop\Application\Controller\Admin\OrderAddress::class,
+    \OxidSolutionCatalysts\EasyCredit\Application\Controller\Admin\EasyCreditOrderAddressController_parent::class
+);
+
+class_alias(
+    \OxidEsales\Eshop\Application\Controller\Admin\OrderArticle::class,
+    \OxidSolutionCatalysts\EasyCredit\Application\Controller\Admin\EasyCreditOrderArticleController_parent::class
+);
+
+class_alias(
+    \OxidEsales\Eshop\Application\Controller\Admin\OrderOverview::class,
+    \OxidSolutionCatalysts\EasyCredit\Application\Controller\Admin\EasyCreditOrderOverviewController_parent::class
+);
+
+class_alias(
+    \OxidEsales\Eshop\Application\Controller\Admin\OrderList::class,
+    \OxidSolutionCatalysts\EasyCredit\Application\Controller\Admin\EasyCreditOrderListController_parent::class
+);
+
+class_alias(
+    \OxidEsales\Eshop\Core\Session::class,
+    \OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditSession_parent::class
+);
+
+class_alias(
+    \OxidEsales\Eshop\Application\Model\Payment::class,
+    \OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditPayment_parent::class
+);
+
+class_alias(
+    \OxidEsales\Eshop\Application\Model\Basket::class,
+    \OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditBasket_parent::class
+);
+
+class_alias(
+    \OxidEsales\Eshop\Application\Model\Order::class,
+    \OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditOrder_parent::class
+);

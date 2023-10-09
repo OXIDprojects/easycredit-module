@@ -1,0 +1,4 @@
+table_storage:
+  table_name: oxmigrations_easycredit
+migrations_paths:
+  'OxidSolutionCatalysts\EasyCredit\Migrations': data
