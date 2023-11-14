@@ -1,0 +1,12 @@
+{% extends "page/details/inc/productmain.html.twig" %}
+
+{% block details_productmain_price_value %}
+    {% if not isset(oConfig) %}
+        {% set oConfig = oViewConf.getConfig() %}
+    {% endif %}
+
+    {{ parent() }}
+    {% if oConfig.getConfigParam('oxpsECExampleCalcArticle') %}
+        {{ include_widget({ cl: "EasyCreditExampleCalculation", _parent: oView.getClassName(), articleId: oDetailsProduct.getId(), placeholderId: "oxpseasycredit-example-product" }) }}
+    {% endif %}
+{% endblock %}

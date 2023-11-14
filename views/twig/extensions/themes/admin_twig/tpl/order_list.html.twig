@@ -1,0 +1,53 @@
+{%  extends "order_list.html.twig" %}
+
+{% block admin_order_list_colgroup %}
+    <col width="10%">
+    {{ parent() }}
+{% endblock %}
+
+{% block admin_order_list_filter %}
+    <td style="vertical-align: top" class="listfilter first" height="20">
+        <div class="r1">
+            <div class="b1">
+                <select name="ecorders" class="folderselect" onChange="document.search.submit();">
+                    <option value="all" {% if ecorders == 'all' %} selected {% endif %}>Alle</option>
+                    <option value="only"{% if ecorders == 'only' %} selected {% endif %}>Nur Easy Credit Bestellungen</option>
+                    <option value="not"{% if ecorders == 'not' %} selected {% endif %}>Keine EasyCredit Bestellungen</option>
+                </select>
+            </div>
+        </div>
+    </td>
+
+    {{ parent() }}
+{% endblock %}
+
+{% block admin_order_list_sorting %}
+    <td class="listheader first" height="15"><a href="Javascript:top.oxid.admin.setSorting( document.search, 'oxorder', 'ecredfunctionalid', 'asc');document.search.submit();" class="listheader">{{ translate({ ident: "EASY_CREDIT_ORDER_TYPE" }) }}</a></td>
+    {{ parent() }}
+{% endblock %}
+
+{% block admin_order_list_item %}
+    {% if listitem.oxorder__oxstorno.value == 1 %}
+        {% set listclass = "listitem3" %}
+    {% else %}
+        {% if listitem.blacklist == 1 %}
+            {% set listclass = "listitem3" %}
+        {% else %}
+            {% set listclass = "listitem"|blWhite %}
+        {% endif %}
+    {% endif %}
+    {% if listitem.getId() == oxid %}
+        {% set listclass = "listitem4" %}
+    {% endif %}
+
+    <td style="vertical-align: top;" class="{{ listclass }} ecorder" height="15"><div class="listitemfloating">
+            &nbsp;<a href="Javascript:top.oxid.admin.editThis('{{ listitem.oxorder__oxid.value }}');" class="{{ listclass }}">
+                {% if listitem.oxorder__ecredfunctionalid.value %}
+                    {{ translate({ ident: "EASY_CREDIT_ORDER_TYPE" }) }}
+                {% endif %}
+            </a>
+        </div>
+    </td>
+
+    {{ parent() }}
+{% endblock %}

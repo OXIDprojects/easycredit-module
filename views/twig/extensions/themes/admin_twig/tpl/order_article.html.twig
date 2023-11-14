@@ -1,0 +1,80 @@
+{% extends "order_article.html.twig" %}
+
+{% block admin_order_article_total %}
+    {{ parent() }}
+    {% if edit.oxorder__ecredinterestsvalue.value  %}
+        <table style="border-width: 0; border-spacing: initial; border-collapse: initial;" id="order.info">
+            <tr>
+                <td class="edittext" height="15">{{ translate({ ident: "OXPS_EASY_CREDIT_SUMTOTAL_INCLUDES_INTERESTS" }) }}&nbsp;&nbsp;</td>
+                <td class="edittext" style="text-align: right;"><b>{{  edit.getFInterestsValue()  }}</b></td>
+                <td class="edittext">&nbsp;<b>{% if edit.oxorder__oxcurrency.value %} {{ edit.oxorder__oxcurrency.value }} {% else %} &euro; {% endif %}</b></td>
+            </tr>
+        </table>
+    {% endif %}
+{% endblock %}
+
+{% block admin_order_article_listitem %}
+    {% if edit.oxorder__oxpaymenttype.value == "easycreditinstallment" %}
+        {% if listitem.oxorderarticles__oxstorno.value == 1 %}
+            {% set listclass = "listitem3" %}
+        {% else %}
+            {% set listclass = "listitem"|blWhite %}
+        {% endif %}
+        <td style="vertical-align: top" class="{{ listclass }}">
+            {{ listitem.oxorderarticles__oxamount.value }}
+        </td>
+        <td style="vertical-align: top" class="{{ listclass }}" height="15">
+            {% if listitem.oxarticles__oxid.value %}
+                <a href="Javascript:editThis('{{ listitem.oxarticles__oxid.value }}');" class="{{ listclass }}">
+            {% endif %}
+            {{ listitem.oxorderarticles__oxartnum.value }}
+            {% if listitem.oxarticles__oxid.value %}
+                </a>
+            {% endif %}
+        </td>
+        <td style="vertical-align: top" class="{{ listclass }}">
+            {% if listitem.oxarticles__oxid.value %}
+                <a href="Javascript:editThis('{{ listitem.oxarticles__oxid.value }}');" class="{{ listclass }}">
+            {% endif %}
+            {{ listitem.oxorderarticles__oxtitle.value|truncate(20, "")|striptags }}
+            {% if listitem.oxarticles__oxid.value %}
+                </a>
+            {% endif %}
+        </td>
+        <td style="vertical-align: top" class="{{ listclass }}">
+            {{ listitem.oxorderarticles__oxselvariant.value }}
+        </td>
+        <td style="vertical-align: top" class="{{ listclass }}">
+            {% if listitem.getPersParams() %}
+                {% block admin_order_article_persparams %}
+                    {% include "include/persparams.html.twig" with {persParams: listitem.getPersParams()} %}
+                {% endblock %}
+            {% endif %}
+        </td>
+        <td style="vertical-align: top" class="{{ listclass }}">
+            {{ listitem.oxorderarticles__oxshortdesc.value|truncate(20, "")|striptags }}
+        </td>
+        {% if edit.isNettoMode() %}
+            <td style="vertical-align: top" class="{{ listclass }}">
+                {{ listitem.getNetPriceFormated() }} <small>{{ edit.oxorder__oxcurrency.value }}</small>
+            </td>
+            <td style="vertical-align: top" class="{{ listclass }}">
+                {{ listitem.getTotalNetPriceFormated() }} <small>{{ edit.oxorder__oxcurrency.value }}</small>
+            </td>
+        {% else %}
+            <td style="vertical-align: top" class="{{ listclass }}">
+                {{ listitem.getBrutPriceFormated() }} <small>{{ edit.oxorder__oxcurrency.value }}</small>
+            </td>
+            <td style="vertical-align: top" class="{{ listclass }}">
+                {{ listitem.getTotalBrutPriceFormated() }} <small>{{ edit.oxorder__oxcurrency.value }}</small>
+            </td>
+        {% endif %}
+        <td style="vertical-align: top" class="{{ listclass }}">
+            {{ listitem.oxorderarticles__oxvat.value }}
+        </td>
+        <td style="vertical-align: top" class="{{ listclass }}"></td>
+        <td style="vertical-align: top" class="{{ listclass }}"></td>
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "order_overview.html.twig" %}
+
+{% block admin_order_overview_total %}
+    {{ parent() }}
+    {% if edit.oxorder__ecredinterestsvalue.value  %}
+        <table>
+            <tr>
+                <td class="edittext" height="15">{{ translate({ ident: "OXPS_EASY_CREDIT_SUMTOTAL_INCLUDES_INTERESTS" }) }}&nbsp;&nbsp;</td>
+                <td class="edittext" style="text-align: right;"><b>{{  edit.getFInterestsValue()  }}</b></td>
+                <td class="edittext">
+                    &nbsp;<b>{% if edit.oxorder__oxcurrency.value %} {{ edit.oxorder__oxcurrency.value }} {% else %} {{  currency.name }} {% endif %}</b>
+                </td>
+            </tr>
+        </table>
+    {% endif %}
+{% endblock %}
+
+{% block admin_order_overview_send_form %}
+    {{ parent() }}
+    {% if edit.oxorder__ecredinterestsvalue.value  %}
+        <tr>
+            <td class="edittext"></td>
+            <td class="edittext" style="vertical-align: bottom;"><br>
+                {{ translate({ ident: "OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE" }) }}: {{ oView.getDeliveryState(edit) }}
+            </td>
+        </tr>
+    {% endif %}
+{% endblock %}

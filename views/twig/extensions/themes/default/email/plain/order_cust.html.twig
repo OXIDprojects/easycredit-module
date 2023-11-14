@@ -1,0 +1,19 @@
+{% extends "email/plain/order_cust.html.twig" %}
+
+{% block email_plain_order_owner_interests %}
+    {% set interestsAmount = order.getFInterestsValue() %}
+    {% if interestsAmount %}
+        {{ translate({ ident: "OXPS_EASY_CREDIT_INTERESTS" }) }} {{ interestsAmount }} {{ currency.sign }}
+    {% endif %}
+    {{ parent() }}
+{% endblock %}
+
+{% block email_plain_order_owner_easycredit_paymentplan %}
+    {{ parent() }}
+    {% if payment.oxuserpayments__oxpaymentsid.value == "easycreditinstallment" %}
+        {% set instalmentPaymentText = order.getTilgungsplanTxt() %}
+        {% if instalmentPaymentText  %}
+            {{ translate({ ident: "OXPS_EASY_CREDIT_INSTALMENT_PLAN" }) }} {{ instalmentPaymentText }}
+        {% endif %}
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,97 @@
+{% set easyCreditIsPossible = oView.isEasyCreditPossible() %}
+<dl>
+    <dt>
+        <input id="payment_{{ sPaymentID }}" type="radio" name="paymentid" value="{{ sPaymentID }}" {% if oView.getCheckedPaymentId() == paymentmethod.oxpayments__oxid.value and oView.isEasyCreditPossible() %}checked{% endif %}{% if not oView.isEasyCreditPossible() %} disabled{% endif %}>
+        <label for="payment_{{ sPaymentID }}"{% if not easyCreditIsPossible %} class="easycreditdisabled"{% endif %}><b>{{ paymentmethod.oxpayments__oxdesc.value }}</b></label>
+        {% if not oView.isEasyCreditPossible() %}
+            <div class="col-lg-offset-3">
+                <img class="payment-logo-easycredit" src="{{ oViewConf.getModuleUrl('oxpseasycredit') }}out/pictures/eclogo.png" alt="Easy Credit">
+                {% set errorMsgs = oView.getErrorMessages() %}
+                {% for errorMsg in errorMsgs %}
+                    <div>{{ errorMsg }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </dt>
+    <dd class="payment-option{% if oView.getCheckedPaymentId() == paymentmethod.oxpayments__oxid.value %}activePayment{% endif %}">
+        {% if easyCreditIsPossible %}
+            <div class="col-lg-offset-3">
+                <img class="payment-logo-easycredit" src="{{ oViewConf.getModuleUrl('oxpseasycredit') }}out/pictures/eclogo.png" alt="Easy Credit">
+            </div>
+
+            {% for value in paymentmethod.getDynValues() %}
+                <div class="form-group">
+                    <label class="control-label col-lg-3" for="{{ sPaymentID }}_{{ loop.index }}">{{ value.name }}</label>
+                    <div class="col-lg-9">
+                        <input id="{{ sPaymentID }}_{{ loop.index }}" type="text" class="form-control textbox" size="20" maxlength="64" name="dynvalue[{{ value.name }}]" value="{{ value.value }}">
+                    </div>
+                </div>
+            {% endfor %}
+
+            {% block checkout_payment_longdesc %}
+                {% if paymentmethod.oxpayments__oxlongdesc.value|striptags|trim %}
+                    <div class="clearfix"></div>
+                    <div class="alert alert-info col-lg-offset-3 desc">
+                        {{ paymentmethod.oxpayments__oxlongdesc.getRawValue() }}
+                    </div>
+                {% endif %}
+            {% endblock %}
+
+            {% block checkout_payment_easycreditagreement %}
+
+                <div class="clearfix"></div>
+
+                {% if oView.isProfileDataMissing() %}
+                    <div class="row easycredit-payment-missing-profile" style="margin-top:1em;margin-bottom:1em;">
+                        <div class="col-lg-9 col-lg-offset-3 offset-lg-3">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">{{ translate({ ident: "OXPS_EASY_CREDIT_PAYMENT_PROFILEDATA_CAPTION" }) }}</h3>
+                                </div>
+                                <div class="panel-body">
+
+                                    {% if not oView.hasSalutation() %}
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-3" for="invadr_oxuser__oxfname">{{ translate({ ident: "TITLE" }) }}</label>
+                                            <div class="col-lg-9">
+                                                {% include "form/fieldset/salutation.html.twig" with {name: "ecred[oxuser__oxsal]", class: "form-control selectpicker"} %}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="form-group">
+                    <div class="col-lg-9 col-lg-offset-3 offset-lg-3">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="easycreditagreement" id="easycredit_agreement" value=""> {{ oView.getAgreementTxt() }}
+                                <div id="easycredit_agreement_error" style="display:none;" class="text-danger">{{ translate({ ident: "OXPS_EASY_CREDIT_AGREEMENT_ERROR" }) }}</div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                {% capture assign = "easycreditAgreementValidationJS" %}
+                    {% spaceless %}
+                        $("#paymentNextStepBottom").click(function(event){
+                        $("#easycredit_agreement_error").hide();
+                        var success = true;
+                        if ( $('#easycredit_agreement').is(':visible') && $('#easycredit_agreement').is(':not(:checked)') )
+                        {
+                        event.preventDefault();
+                        $("#easycredit_agreement_error").show();
+                        }
+                        return true;
+                        });
+                    {% endspaceless %}
+                {% endcapture %}
+                {{ script({ add: easycreditAgreementValidationJS, dynamic: __oxid_include_dynamic }) }}
+
+            {% endblock %}
+        {% endif %}
+    </dd>
+</dl>

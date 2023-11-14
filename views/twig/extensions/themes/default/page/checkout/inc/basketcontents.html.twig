@@ -1,0 +1,12 @@
+{% extends "page/checkout/inc/basketcontents.html.twig" %}
+
+{% block checkout_basketcontents_interests %}
+    {{ parent() }}
+    {% set interestsAmount = oxcmp_basket.getInterestsAmount() %}
+    {% if interestsAmount  %}
+        <tr>
+            <th>{{ translate({ ident: "OXPS_EASY_CREDIT_INTERESTS", suffix: "COLON" }) }}</th>
+            <td id="interestsAmount">{{ format_price(interestsAmount, { currency: currency }) }}</td>
+        </tr>
+    {% endif %}
+{% endblock %}

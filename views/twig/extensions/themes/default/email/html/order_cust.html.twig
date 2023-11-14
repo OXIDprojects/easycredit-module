@@ -1,0 +1,24 @@
+{% extends "email/html/order_cust.html.twig" %}
+
+{% block email_html_order_cust_interests %}
+    {% set interestsAmount = order.getFInterestsValue() %}
+    {% if interestsAmount %}
+        <tr style="vertical-align: top; background-color: #ebebeb;">
+            <td style="text-align: right;" colspan="{{ iFooterColspan }}" class="text-right odd">{{ translate({ ident: "OXPS_EASY_CREDIT_INTERESTS" }) }}</td>
+            <td style="text-align: right;" class="odd text-right">{{ interestsAmount }} {{ currency.sign }}</td>
+        </tr>
+    {% endif %}
+    {{ parent() }}
+{% endblock %}
+
+{% block email_html_order_owner_easycredit_paymentplan %}
+    {{ parent() }}
+    {% if payment.oxuserpayments__oxpaymentsid.value == "easycreditinstallment" %}
+        {% set instalmentPaymentText = order.getTilgungsplanTxt() %}
+        {% if instalmentPaymentText  %}
+            <h3 class="underline">{{ translate({ ident: "OXPS_EASY_CREDIT_INSTALMENT_PLAN" }) }}</h3>
+            <p>{{ instalmentPaymentText }}</p>
+            <br>
+        {% endif %}
+    {% endif %}
+{% endblock %}

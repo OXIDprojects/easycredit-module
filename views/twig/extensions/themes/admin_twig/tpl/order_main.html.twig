@@ -1,0 +1,53 @@
+{% extends "order_main.html.twig" %}
+
+{% block admin_order_main_form_details %}
+    {% if edit.oxorder__oxpaymenttype.value == "easycreditinstallment" %}
+        <tr>
+            <td class="edittext">
+                {{ translate({ ident: "ORDER_MAIN_IPADDRESS" }) }}
+            </td>
+            <td class="edittext">
+                {{ edit.oxorder__oxip.value }}
+            </td>
+        </tr>
+        <tr>
+            <td class="edittext">
+                {{ translate({ ident: "GENERAL_ORDERNUM" }) }}
+            </td>
+            <td class="edittext">
+                <input type="text" class="editinput" size="15" maxlength="{{ edit.oxorder__oxordernr.fldmax_length }}" name="editval[oxorder__oxordernr]" value="{{ edit.oxorder__oxordernr.value }}" {{ readonly }}>
+                {% include "inputhelp.html.twig" with {'sHelpId': help_id("HELP_GENERAL_ORDERNUM"), 'sHelpText': help_text("HELP_GENERAL_ORDERNUM")} %}
+            </td>
+        </tr>
+        <tr>
+            <td class="edittext">
+                {{ translate({ ident: "ORDER_MAIN_BILLNUM" }) }}
+            </td>
+            <td class="edittext">
+                <input type="text" class="editinput" size="15" maxlength="{{ edit.oxorder__oxbillnr.fldmax_length }}" name="editval[oxorder__oxbillnr]" value="{{ edit.oxorder__oxbillnr.value }}" {{ readonly }}>
+                {% include "inputhelp.html.twig" with {'sHelpId': help_id("HELP_ORDER_MAIN_BILLNUM"), 'sHelpText': help_text("HELP_ORDER_MAIN_BILLNUM")} %}
+            </td>
+        </tr>
+        <tr>
+            <td class="edittext">
+                {{ translate({ ident: "ORDER_MAIN_DISCOUNT" }) }}
+            </td>
+            <td class="edittext">
+                <input type="text" class="editinput" size="15" maxlength="{{ edit.oxorder__oxdiscount.fldmax_length }}" name="editval[oxorder__oxdiscount]" value="{{ edit.oxorder__oxdiscount.value }}" readonly disabled> ({{ edit.oxorder__oxcurrency.value }})
+                {% include "inputhelp.html.twig" with {'sHelpId': help_id("HELP_ORDER_MAIN_DISCOUNT"), 'sHelpText': help_text("HELP_ORDER_MAIN_DISCOUNT")} %}
+            </td>
+        </tr>
+        {% for sVoucher in aVouchers %}
+            <tr>
+                <td class="edittext">
+                    {{ translate({ ident: "ORDER_MAIN_USERVOUCHER" }) }}:&nbsp;
+                </td>
+                <td class="edittext">
+                    {{ sVoucher }}
+                </td>
+            </tr>
+        {% endfor %}
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
