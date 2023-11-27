@@ -13,12 +13,14 @@
 
 namespace OxidSolutionCatalysts\EasyCredit\Core;
 
+use OxidEsales\DoctrineMigrationWrapper\MigrationsBuilder;
 use OxidEsales\Eshop\Core\DatabaseProvider;
 use OxidEsales\Eshop\Core\DbMetaDataHandler;
 use OxidEsales\Eshop\Core\Field;
 use \OxidEsales\Eshop\Core\Model\MultiLanguageModel;
 use OxidEsales\Eshop\Application\Model\Content;
 use OxidEsales\Eshop\Core\Registry;
+use Symfony\Component\Console\Output\BufferedOutput;
 
 /**
  * Class oxpsEasyCreditModule
@@ -57,7 +59,7 @@ class Events
      */
     public static function onActivate()
     {
-        self::_dbEventAddColums();
+        self::executeModuleMigrations();
         self::_dbEventShopSpecific('install_shopspecific.sql', 'Error activating module: ');
         return self::_dbEvent('install.sql', 'Error activating module: ');
     }
@@ -112,47 +114,6 @@ class Events
     }
 
     /**
-     * Get CMS snippet content by identified ID.
-     *
-     * @param string $sIdentifier
-     * @param bool   $blNoHtml
-     *
-     * @return string
-     */
-    public function getCmsContent($sIdentifier, $blNoHtml = true)
-    {
-        $sValue = '';
-
-        /** @var Content|MultiLanguageModel $oContent */
-        $oContent = oxNew(Content::class);
-        $oContent->loadByIdent(trim((string) $sIdentifier));
-
-        if ($oContent->oxcontents__oxcontent instanceof Field) {
-            $sValue = (string) $oContent->oxcontents__oxcontent->getRawValue();
-            $sValue = (empty($blNoHtml) ? $sValue : nl2br(strip_tags($sValue)));
-        }
-
-        return $sValue;
-    }
-
-    /**
-     * Get module setting value.
-     *
-     * @param string  $sModuleSettingName Module setting parameter name (key).
-     * @param boolean $blUseModulePrefix  If True - adds the module settings prefix, if False - not.
-     *
-     * @return mixed
-     */
-    public function getSetting($sModuleSettingName, $blUseModulePrefix = true)
-    {
-        if ($blUseModulePrefix) {
-            $sModuleSettingName = 'oxpsEasyCredit' . (string) $sModuleSettingName;
-        }
-
-        return Registry::getConfig()->getConfigParam((string) $sModuleSettingName);
-    }
-
-    /**
      * Get module path.
      *
      * @return string Full path to the module directory.
@@ -173,7 +134,7 @@ class Events
     {
         try {
             $oDb  = DatabaseProvider::getDb();
-            $sSql = file_get_contents(dirname(__FILE__) . '/../installments/' . (string) $sSqlFile);
+            $sSql = file_get_contents(dirname(__FILE__) . '/../../installments/' . (string) $sSqlFile);
             $aSql = (array) explode(';', $sSql);
 
             foreach ($aSql as $sQuery) {
@@ -234,51 +195,6 @@ class Events
     }
 
     /**
-     * Adds easyCredit new columns
-     */
-    protected static function _dbEventAddColums() {
-
-        $oDb = DatabaseProvider::getDb();
-
-        $dbStructure = file_get_contents(dirname(__FILE__) . '/../installments/install_adddbcolumns.json');
-        if(!$dbStructure ) {
-            return;
-        }
-
-        $addColumns = json_decode($dbStructure, true);
-        if( empty($addColumns) ) {
-            return;
-        }
-
-        $tables = $addColumns["tables"];
-
-        /** @var $oDbMetaDataHandler DbMetaDataHandler */
-        $oDbMetaDataHandler = oxNew(DbMetaDataHandler::class);
-
-        foreach ($tables as $tableName => $columns) {
-            self::_dbEventAddTableColums($oDb, $columns, $oDbMetaDataHandler, $tableName);
-        }
-    }
-
-    protected static function _dbEventAddTableColums($oDb, $columns, $oDbMetaDataHandler, $tableName)
-    {
-        foreach ($columns as $columnData) {
-
-            if (!$oDbMetaDataHandler->fieldExists($columnData["colname"], $tableName)) {
-                $addColumnSql = sprintf(
-                    "ALTER TABLE %s ADD COLUMN %s %s %s COMMENT %s"
-                    , $tableName
-                    , $columnData["colname"]
-                    , $columnData["coltype"]
-                    , $columnData["colnullable"]
-                    , $oDb->quote($columnData["comment"])
-                );
-                DatabaseProvider::getDb()->execute($addColumnSql);
-            }
-        }
-    }
-
-    /**
      * Install/uninstall event.
      * Executes SQL queries from a shop specific file.
      *
@@ -287,7 +203,7 @@ class Events
      */
     protected static function _dbEventShopSpecific($sSqlFile, $sFailureError = 'Operation failed: ')
     {
-        $sqls = file_get_contents(dirname(__FILE__) . '/../installments/' . (string) $sSqlFile);
+        $sqls = file_get_contents(dirname(__FILE__) . '/../../installments/' . (string) $sSqlFile);
         $aShops = DatabaseProvider::getDb()->getAll('SELECT oxid FROM oxshops');
 
         // Iterate all SubShops
@@ -315,6 +231,19 @@ class Events
             } catch (\Exception $ex) {
                 error_log($sFailureError . $ex->getMessage());
             }
+        }
+    }
+
+    private static function executeModuleMigrations(): void
+    {
+        $migrations = (new MigrationsBuilder())->build();
+
+        $output = new BufferedOutput();
+        $migrations->setOutput($output);
+        $neeedsUpdate = $migrations->execute('migrations:up-to-date', 'osceasycredit');
+
+        if ($neeedsUpdate) {
+            $migrations->execute('migrations:migrate', 'osceasycredit');
         }
     }
 }

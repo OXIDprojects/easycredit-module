@@ -23,7 +23,7 @@ use OxidEsales\Eshop\Core\Field;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
-use OxidSolutionCatalysts\EasyCredit\Application\Model\EasyCreditTradingApiAccess;
+use OxidSolutionCatalysts\EasyCredit\Model\EasyCreditTradingApiAccess;
 use OxidSolutionCatalysts\EasyCredit\Core\Api\EasyCreditWebServiceClientFactory;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditApiConfig;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDic;

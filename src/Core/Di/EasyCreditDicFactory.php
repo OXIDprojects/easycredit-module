@@ -16,7 +16,6 @@ namespace OxidSolutionCatalysts\EasyCredit\Core\Di;
 
 use OxidEsales\Eshop\Core\Exception\SystemComponentException;
 use OxidEsales\Eshop\Core\Registry;
-use OxidSolutionCatalysts\EasyCredit\Application\Model\EasyCreditTradingApiAccess;
 use OxidSolutionCatalysts\EasyCredit\Core\CrossCutting\EasyCreditLogging;
 use OxidSolutionCatalysts\EasyCredit\Core\PayLoad\EasyCreditPayloadFactory;
 

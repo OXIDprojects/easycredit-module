@@ -11,7 +11,7 @@
  * @copyright (C) OXID eSales AG 2003-2021
  */
 
-namespace OxidSolutionCatalysts\EasyCredit\Application\Controller;
+namespace OxidSolutionCatalysts\EasyCredit\Controller;
 
 use OxidEsales\Eshop\Application\Controller\FrontendController;
 use OxidEsales\Eshop\Application\Model\Address;

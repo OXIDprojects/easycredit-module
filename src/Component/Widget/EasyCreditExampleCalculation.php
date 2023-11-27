@@ -11,7 +11,7 @@
  * @copyright (C) OXID eSales AG 2003-2021
  */
 
-namespace OxidSolutionCatalysts\EasyCredit\Application\Component\Widget;
+namespace OxidSolutionCatalysts\EasyCredit\Component\Widget;
 
 use OxidEsales\Eshop\Application\Component\Widget\WidgetController;
 use OxidEsales\Eshop\Application\Model\Basket;

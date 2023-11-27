@@ -11,11 +11,11 @@
  * @copyright (C) OXID eSales AG 2003-2021
  */
 
-namespace OxidSolutionCatalysts\EasyCredit\Application\Controller\Admin;
+namespace OxidSolutionCatalysts\EasyCredit\Controller\Admin;
 
 use OxidEsales\Eshop\Application\Model\Order;
 use OxidEsales\Eshop\Core\Field;
-use OxidSolutionCatalysts\EasyCredit\Application\Model\EasyCreditTradingApiAccess;
+use OxidSolutionCatalysts\EasyCredit\Model\EasyCreditTradingApiAccess;
 
 /**
  * Class EasyCreditOrderOverviewController

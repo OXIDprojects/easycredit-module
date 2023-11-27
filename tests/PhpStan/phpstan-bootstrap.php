@@ -4,32 +4,32 @@ declare(strict_types=1);
 
 class_alias(
     \OxidEsales\Eshop\Application\Controller\PaymentController::class,
-    \OxidSolutionCatalysts\EasyCredit\Application\Controller\EasyCreditPaymentController_parent::class
+    \OxidSolutionCatalysts\EasyCredit\Controller\EasyCreditPaymentController_parent::class
 );
 
 class_alias(
     \OxidEsales\Eshop\Application\Controller\OrderController::class,
-    \OxidSolutionCatalysts\EasyCredit\Application\Controller\EasyCreditOrderController_parent::class
+    \OxidSolutionCatalysts\EasyCredit\Controller\EasyCreditOrderController_parent::class
 );
 
 class_alias(
     \OxidEsales\Eshop\Application\Controller\Admin\OrderAddress::class,
-    \OxidSolutionCatalysts\EasyCredit\Application\Controller\Admin\EasyCreditOrderAddressController_parent::class
+    \OxidSolutionCatalysts\EasyCredit\Controller\Admin\EasyCreditOrderAddressController_parent::class
 );
 
 class_alias(
     \OxidEsales\Eshop\Application\Controller\Admin\OrderArticle::class,
-    \OxidSolutionCatalysts\EasyCredit\Application\Controller\Admin\EasyCreditOrderArticleController_parent::class
+    \OxidSolutionCatalysts\EasyCredit\Controller\Admin\EasyCreditOrderArticleController_parent::class
 );
 
 class_alias(
     \OxidEsales\Eshop\Application\Controller\Admin\OrderOverview::class,
-    \OxidSolutionCatalysts\EasyCredit\Application\Controller\Admin\EasyCreditOrderOverviewController_parent::class
+    \OxidSolutionCatalysts\EasyCredit\Controller\Admin\EasyCreditOrderOverviewController_parent::class
 );
 
 class_alias(
     \OxidEsales\Eshop\Application\Controller\Admin\OrderList::class,
-    \OxidSolutionCatalysts\EasyCredit\Application\Controller\Admin\EasyCreditOrderListController_parent::class
+    \OxidSolutionCatalysts\EasyCredit\Controller\Admin\EasyCreditOrderListController_parent::class
 );
 
 class_alias(

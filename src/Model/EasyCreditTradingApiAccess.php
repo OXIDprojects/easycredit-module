@@ -11,7 +11,7 @@
  * @copyright (C) OXID eSales AG 2003-2021
  */
 
-namespace OxidSolutionCatalysts\EasyCredit\Application\Model;
+namespace OxidSolutionCatalysts\EasyCredit\Model;
 
 use OxidEsales\Eshop\Application\Model\Order;
 use OxidEsales\Eshop\Core\Field;
