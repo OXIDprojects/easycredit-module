@@ -29,7 +29,7 @@ use OxidSolutionCatalysts\EasyCredit\Core\Helper\EasyCreditHelper;
  */
 class EasyCreditExampleCalculationPopup extends WidgetController
 {
-    protected $_sThisTemplate = 'oxpseasycredit_examplecalculation_popup.tpl';
+    protected $_sThisTemplate = 'widget/easycredit/oxpseasycredit_examplecalculation_popup';
 
     /** @var EasyCreditDic */
     private $dic;

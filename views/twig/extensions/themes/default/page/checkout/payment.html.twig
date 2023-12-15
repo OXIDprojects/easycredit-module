@@ -3,7 +3,7 @@
 {% block select_payment %}
     {% if sPaymentID == "easycreditinstallment" %}
         <div class="well well-sm">
-            {% include "@osceasycredit/frontend/tpl/page/checkout/inc/payment_easycreditinstallment.html.twig" %}
+            {% include "frontend/tpl/page/checkout/inc/payment_easycreditinstallment.html.twig" %}
         </div>
     {% else %}
         {{ parent() }}
