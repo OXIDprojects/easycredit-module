@@ -1,12 +1,8 @@
 {% extends "page/checkout/basket.html.twig" %}
 
-{% block checkout_basket_next_step_bottom %}
-    {% if not isset(oConfig) %}
-        {% set oConfig = oViewConf.getConfig() %}
-    {% endif %}
-
-    {% if oConfig.getConfigParam('oxpsECExampleCalcBasket') %}
-        {{ include_widget({ cl: "EasyCreditExampleCalculation", _parent: oView.getClassName(), placeholderId: "oxpseasycredit-example-basket" }) }}
+{% block checkout_basket_next_step_top %}
+    {% if oViewConf.getOxpsECExampleCalcBasket() %}
+        {{ include_widget({ cl: "EasyCreditExampleCalculation", _parent: oView.getClassKey(), placeholderId: "oxpseasycredit-example-basket" }) }}
     {% endif %}
     {{ parent() }}
 {% endblock %}

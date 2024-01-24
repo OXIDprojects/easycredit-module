@@ -51,3 +51,8 @@ class_alias(
     \OxidEsales\Eshop\Application\Model\Order::class,
     \OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditOrder_parent::class
 );
+
+class_alias(
+    \OxidEsales\Eshop\Core\ViewConfig::class,
+    \OxidSolutionCatalysts\EasyCredit\Core\EasyCreditViewConfig_parent::class
+);

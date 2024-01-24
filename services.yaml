@@ -1,0 +1,9 @@
+services:
+
+  _defaults:
+    public: false
+    autowire: true
+
+  OxidSolutionCatalysts\EasyCredit\Service\:
+    resource: 'src/Service/*'
+    public: true

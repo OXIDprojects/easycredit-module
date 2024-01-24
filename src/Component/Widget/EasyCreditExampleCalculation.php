@@ -32,7 +32,7 @@ use OxidSolutionCatalysts\EasyCredit\Core\Helper\EasyCreditHelper;
  */
 class EasyCreditExampleCalculation extends WidgetController
 {
-    protected $_sThisTemplate = 'widget/easycredit/oxpseasycredit_examplecalculation';
+    protected $_sThisTemplate = '@osceasycredit/widget/easycredit/oxpseasycredit_examplecalculation';
 
     /** @var EasyCreditDic */
     private $dic;
@@ -195,6 +195,6 @@ class EasyCreditExampleCalculation extends WidgetController
      */
     public function isAjax()
     {
-        return (Registry::getConfig()->getRequestParameter('ajax') == 1);
+        return (Registry::getRequest()->getRequestParameter('ajax') == 1);
     }
 }

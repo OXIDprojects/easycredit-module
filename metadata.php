@@ -23,6 +23,7 @@ use OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditBasket;
 use OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditOrder;
 use OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditPayment;
 use OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditSession;
+use OxidSolutionCatalysts\EasyCredit\Core\EasyCreditViewConfig;
 
 $sMetadataVersion = '2.1';
 
@@ -67,7 +68,8 @@ $aModule = [
         Session::class                                                      => EasyCreditSession::class,
         \OxidEsales\Eshop\Application\Model\Payment::class                  => EasyCreditPayment::class,
         \OxidEsales\Eshop\Application\Model\Basket::class                   => EasyCreditBasket::class,
-        \OxidEsales\Eshop\Application\Model\Order::class                    => EasyCreditOrder::class
+        \OxidEsales\Eshop\Application\Model\Order::class                    => EasyCreditOrder::class,
+        \OxidEsales\Eshop\Core\ViewConfig::class                            => EasyCreditViewConfig::class
     ],
     'templates'   => [
         'page/checkout/inc/payment_easycreditinstallment.tpl' => 'views/page/checkout/inc/oxpseasycredit_payment_easycreditinstallment.tpl',
