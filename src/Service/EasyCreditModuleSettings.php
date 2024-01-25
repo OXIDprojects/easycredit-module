@@ -30,4 +30,32 @@ class EasyCreditModuleSettings
     public function getOxpsECExampleCalcMinibasket() {
         return $this->moduleSettingService->getBoolean('oxpsECExampleCalcMinibasket', 'osceasycredit');
     }
+
+    public function getOxpsECBaseUrl() {
+        return $this->moduleSettingService->getString('oxpsECBaseUrl', 'osceasycredit');
+    }
+
+    public function getOxpsECDealerInterfaceUrl() {
+        return $this->moduleSettingService->getString('oxpsECDealerInterfaceUrl', 'osceasycredit');
+    }
+
+    public function getOxpsECWebshopId() {
+        return $this->moduleSettingService->getString('oxpsECWebshopId', 'osceasycredit');
+    }
+
+    public function getOxpsECWebshopToken() {
+        return $this->moduleSettingService->getString('oxpsECWebshopToken', 'osceasycredit');
+    }
+
+    public function getOxpsECLogging() {
+        return $this->moduleSettingService->getBoolean('oxpsECLogging', 'osceasycredit');
+    }
+
+    public function getOxpsECCheckoutValidConfirm() {
+        return $this->moduleSettingService->getBoolean('oxpsECCheckoutValidConfirm', 'osceasycredit');
+    }
+
+    public function getOxpsECExampleUseOwnjQueryUI() {
+        return $this->moduleSettingService->getBoolean('oxpsECExampleUseOwnjQueryUI', 'osceasycredit');
+    }
 }

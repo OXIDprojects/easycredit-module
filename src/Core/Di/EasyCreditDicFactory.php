@@ -16,8 +16,10 @@ namespace OxidSolutionCatalysts\EasyCredit\Core\Di;
 
 use OxidEsales\Eshop\Core\Exception\SystemComponentException;
 use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidSolutionCatalysts\EasyCredit\Core\CrossCutting\EasyCreditLogging;
 use OxidSolutionCatalysts\EasyCredit\Core\PayLoad\EasyCreditPayloadFactory;
+use OxidSolutionCatalysts\EasyCredit\Service\EasyCreditModuleSettings;
 
 /**
  * Class DicFactory
@@ -46,17 +48,19 @@ class EasyCreditDicFactory
 
     public static function getApiConfigArray()
     {
-        $config = Registry::getConfig();
+        $config = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(EasyCreditModuleSettings::class);
 
         $services = self::getServices();
         $validationSchemes = self::getValidationSchemes();
 
         return array(
             EasyCreditApiConfig::API_CONFIG_CREDENTIALS => array(
-                EasyCreditApiConfig::API_CONFIG_CREDENTIAL_BASE_URL      => $config->getConfigParam('oxpsECBaseUrl'),
-                EasyCreditApiConfig::API_CONFIG_CREDENTIAL_APP_URL       => $config->getConfigParam('oxpsECDealerInterfaceUrl'),
-                EasyCreditApiConfig::API_CONFIG_CREDENTIAL_WEBSHOP_ID    => $config->getConfigParam('oxpsECWebshopId'),
-                EasyCreditApiConfig::API_CONFIG_CREDENTIAL_WEBSHOP_TOKEN => $config->getConfigParam('oxpsECWebshopToken'),
+                EasyCreditApiConfig::API_CONFIG_CREDENTIAL_BASE_URL      => $config->getOxpsECBaseUrl(),
+                EasyCreditApiConfig::API_CONFIG_CREDENTIAL_APP_URL       => $config->getOxpsECDealerInterfaceUrl(),
+                EasyCreditApiConfig::API_CONFIG_CREDENTIAL_WEBSHOP_ID    => $config->getOxpsECWebshopId(),
+                EasyCreditApiConfig::API_CONFIG_CREDENTIAL_WEBSHOP_TOKEN => $config->getOxpsECWebshopToken(),
             ),
             EasyCreditApiConfig::API_CONFIG_SERVICES => $services,
             EasyCreditApiConfig::API_CONFIG_VALIDATION_SCHEMES => $validationSchemes
@@ -66,9 +70,13 @@ class EasyCreditDicFactory
     private static function getLoggingConfigArray()
     {
         $config = Registry::getConfig();
+        $moduleSettings = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(EasyCreditModuleSettings::class);
+
         return array(
             EasyCreditLogging::LOG_CONFIG_LOG_DIR     => $config->getLogsDir(),
-            EasyCreditLogging::LOG_CONFIG_LOG_ENABLED => $config->getConfigParam('oxpsECLogging'),
+            EasyCreditLogging::LOG_CONFIG_LOG_ENABLED => $moduleSettings->getOxpsECLogging(),
         );
     }
 

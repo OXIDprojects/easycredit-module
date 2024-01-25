@@ -24,6 +24,8 @@ use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditApiConfig;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDic;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDicFactory;
 use OxidSolutionCatalysts\EasyCredit\Core\Helper\EasyCreditHelper;
+use OxidSolutionCatalysts\EasyCredit\Service\EasyCreditModuleSettings;
+use OxidSolutionCatalysts\EasyCredit\Traits\EasyCreditServiceContainer;
 
 /**
  * Class EasyCreditExampleCalculation
@@ -32,6 +34,8 @@ use OxidSolutionCatalysts\EasyCredit\Core\Helper\EasyCreditHelper;
  */
 class EasyCreditExampleCalculation extends WidgetController
 {
+    use EasyCreditServiceContainer;
+
     protected $_sThisTemplate = '@osceasycredit/widget/easycredit/oxpseasycredit_examplecalculation';
 
     /** @var EasyCreditDic */
@@ -161,7 +165,8 @@ class EasyCreditExampleCalculation extends WidgetController
      */
     public function getUseOwnjQueryUI()
     {
-        return Registry::getConfig()->getConfigParam('oxpsECExampleUseOwnjQueryUI');
+        $moduleSettings = $this->getServiceFromContainer(EasyCreditModuleSettings::class);
+        return $moduleSettings->getOxpsECExampleUseOwnjQueryUI();
     }
 
     /**

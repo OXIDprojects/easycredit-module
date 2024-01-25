@@ -33,12 +33,16 @@ use OxidSolutionCatalysts\EasyCredit\Core\Exception\EasyCreditException;
 use OxidSolutionCatalysts\EasyCredit\Core\Exception\EasyCreditInitializationFailedException;
 use OxidSolutionCatalysts\EasyCredit\Core\Helper\EasyCreditHelper;
 use OxidSolutionCatalysts\EasyCredit\Core\Helper\EasyCreditInitializeRequestBuilder;
+use OxidSolutionCatalysts\EasyCredit\Service\EasyCreditModuleSettings;
+use OxidSolutionCatalysts\EasyCredit\Traits\EasyCreditServiceContainer;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class oxpsEasyCreditOxOrder
  */
 class EasyCreditOrder extends EasyCreditOrder_parent {
+
+    use EasyCreditServiceContainer;
 
     /** @var string */
     const EASYCREDIT_BESTELLUNG_BESTAETIGT = "BestellungBestaetigenServiceActivity.Infos.ERFOLGREICH";
@@ -165,7 +169,8 @@ class EasyCreditOrder extends EasyCreditOrder_parent {
      */
     protected function isConfirmed($response)
     {
-        $validateResponse = $this->getConfig()->getConfigParam('oxpsECCheckoutValidConfirm');
+        $moduleSettings = $this->getServiceFromContainer(EasyCreditModuleSettings::class);
+        $validateResponse = $moduleSettings->getOxpsECCheckoutValidConfirm();
         if(!$validateResponse) {
             return true;
         }
