@@ -33,8 +33,8 @@ $aLang = [
     'SHOP_MODULE_oxpsECExampleCalcArticle'              => 'Modellrechnung auf Artikeldetailseite aktivieren',
     'SHOP_MODULE_oxpsECExampleCalcBasket'               => 'Modellrechnung in der Warenkorbansicht aktivieren',
     'SHOP_MODULE_oxpsECExampleCalcMinibasket'           => 'Modellrechnung im Mini-Warenkorb aktivieren',
-    'SHOP_MODULE_oxpsECExampleUseOwnjQueryUI'           => 'Benutze Modul-eigene jQuery UI Bibliothek',
-    'HELP_SHOP_MODULE_oxpsECExampleUseOwnjQueryUI'      => 'Performance: Die Javscript-Bibliothek jQuery UI ist normalerweise bereits Bestandteil Ihres OXID-Themes und muss nicht noch einmal vom easyCredit-Modul geladen werden.',
+    'SHOP_MODULE_oxpsECExampleUseOwnjQuery'           => 'Benutze Modul-eigene jQuery UI Bibliothek',
+    'HELP_SHOP_MODULE_oxpsECExampleUseOwnjQuery'      => 'Performance: Die Javscript-Bibliothek jQuery UI ist normalerweise bereits Bestandteil Ihres OXID-Themes und muss nicht noch einmal vom easyCredit-Modul geladen werden.',
     'SHOP_MODULE_oxpsECLogging'                         => 'Log aktivieren',
     'SHOP_MODULE_oxpsECCheckoutValidConfirm'            => 'Bestellung bestätigen: Validierung der Nachricht von easyCredit',
 

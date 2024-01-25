@@ -250,7 +250,7 @@ $aModule = [
         ],
         [
             'group' => 'EasyCreditExampleCalculation',
-            'name'  => 'oxpsECExampleUseOwnjQueryUI',
+            'name'  => 'oxpsECExampleUseOwnjQuery',
             'type'  => 'bool',
             'value' => true,
         ],

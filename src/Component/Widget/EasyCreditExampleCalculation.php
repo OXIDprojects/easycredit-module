@@ -163,7 +163,7 @@ class EasyCreditExampleCalculation extends WidgetController
      *
      * @return mixed
      */
-    public function getUseOwnjQueryUI()
+    public function getUseOwnjQuery()
     {
         $moduleSettings = $this->getServiceFromContainer(EasyCreditModuleSettings::class);
         return $moduleSettings->getOxpsECExampleUseOwnjQueryUI();

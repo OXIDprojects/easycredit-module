@@ -56,6 +56,6 @@ class EasyCreditModuleSettings
     }
 
     public function getOxpsECExampleUseOwnjQueryUI() {
-        return $this->moduleSettingService->getBoolean('oxpsECExampleUseOwnjQueryUI', 'osceasycredit');
+        return $this->moduleSettingService->getBoolean('oxpsECExampleUseOwnjQuery', 'osceasycredit');
     }
 }

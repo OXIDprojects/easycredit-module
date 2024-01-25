@@ -33,8 +33,8 @@ $aLang = [
     'SHOP_MODULE_oxpsECExampleCalcArticle'                    => 'Activate example calculation on product details page',
     'SHOP_MODULE_oxpsECExampleCalcBasket'                     => 'Activate example calculation on basket page',
     'SHOP_MODULE_oxpsECExampleCalcMinibasket'                 => 'Activate example calculation on mini basket widget',
-    'SHOP_MODULE_oxpsECExampleUseOwnjQueryUI'                 => 'Use modules own jQuery UI library',
-    'HELP_SHOP_MODULE_oxpsECExampleUseOwnjQueryUI'            => 'Performance: The javscript library jQuery UI is usually already part of your OXID theme and does not need to be loaded again from the easyCredit module.',
+    'SHOP_MODULE_oxpsECExampleUseOwnjQuery'                 => 'Use modules own jQuery and jQuery UI library',
+    'HELP_SHOP_MODULE_oxpsECExampleUseOwnjQuery'            => 'Performance: The javscript library jQuery UI is usually already part of your OXID theme and does not need to be loaded again from the easyCredit module.',
     'SHOP_MODULE_oxpsECLogging'                               => 'Activate log',
     'SHOP_MODULE_oxpsECCheckoutValidConfirm'                  => 'Confirm order: Validation of the message from easyCredit',
 

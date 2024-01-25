@@ -12,15 +12,17 @@
     {% endif %}
 {% else %}
     {{ style({ include: oViewConf.getModuleUrl('osceasycredit', 'css/oxpseasycredit_style.css'), priority: 10 }) }}
-    {% if oView.getUseOwnjQueryUI() %}
+    {% if oView.getUseOwnjQuery() %}
         {{ style({ include: oViewConf.getModuleUrl('osceasycredit', 'css/base/jquery-ui.css'), priority: 9 }) }}
+        {{ script({ include: oViewConf.getModuleUrl('osceasycredit', 'js/libs/jquery.min.js'), priority: 8 }) }}
         {{ script({ include: oViewConf.getModuleUrl('osceasycredit', 'css/base/jquery-ui.js'), priority: 9, dynamic: __oxid_include_dynamic }) }}
     {% endif %}
 
     <div id="{{ oView.getViewParameter('placeholderId') }}"></div>
+
     <script>
     {% capture assign = "pageScript" %}
-        document.addEventListener('DOMContentLoaded', function(){
+
             function openExampleCalculationDialog (easyCreditPopupUrl) {
                 fetch('{{ oView.getPopupAjaxUrl()|raw }}', function (data) {
                     document.getElementById("easycredit-example-dialog").innerHTML = data;
@@ -34,11 +36,11 @@
                 })
             }
 
-            fetch('{{ oView.getAjaxUrl()|raw }}').then(data => {
-                document.getElementById('{{ oView.getViewParameter('placeholderId') }}').innerHTML = data.text();
-                document.getElementById('{{ oView.getViewParameter('placeholderId') }}').on('click', '.easycredit-link', openExampleCalculationDialog);
-            })
-        });
+    $.get('{{ oView.getAjaxUrl()|raw }}', function(data){
+        $('#{{ oView.getViewParameter('placeholderId') }}').html(data);
+        $('#{{ oView.getViewParameter('placeholderId') }}').on('click', '.easycredit-link', openExampleCalculationDialog);
+    });
+
     {% endcapture %}
     </script>
     {{ script({ add: pageScript, dynamic: __oxid_include_dynamic }) }}

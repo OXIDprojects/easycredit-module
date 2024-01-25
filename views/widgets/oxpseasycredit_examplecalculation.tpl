@@ -12,7 +12,7 @@
     [{/if}]
 [{else}]
     [{oxstyle include=$oViewConf->getModuleUrl('oxpseasycredit','out/src/css/oxpseasycredit_style.css') priority=10}]
-    [{if $oView->getUseOwnjQueryUI()}]
+    [{if $oView->getUseOwnjQuery()}]
         [{oxstyle include=$oViewConf->getModuleUrl('oxpseasycredit','out/src/css/base/jquery-ui.css') priority=9}]
         [{oxscript include=$oViewConf->getModuleUrl('oxpseasycredit','out/src/css/base/jquery-ui.js') priority=9}]
     [{/if}]
