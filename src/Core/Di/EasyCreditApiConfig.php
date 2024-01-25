@@ -75,7 +75,7 @@ class EasyCreditApiConfig
     const API_CONFIG_SERVICE_REST_ARGUMENTS = 'restArguments';
     const API_CONFIG_SERVICE_REST_ARGUMENT_FINANZIERUNGSBETRAG = 'finanzierungsbetrag';
 
-    const API_REDIRECT_URL = "https://ratenkauf.easycredit-module.de/ratenkauf/content/intern/einstieg.jsf?vorgangskennung=%s";
+    const API_REDIRECT_URL = "https://ratenkauf.easycredit.de/ratenkauf/content/intern/einstieg.jsf?vorgangskennung=%s";
 
     private $config;
 

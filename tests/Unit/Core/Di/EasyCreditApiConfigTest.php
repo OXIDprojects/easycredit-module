@@ -88,7 +88,7 @@ class EasyCreditApiConfigTest extends UnitTestCase
 
     public function testGetBaseUrl()
     {
-        $this->assertEquals('https://ratenkauf.easycredit-module.de/ratenkauf-ws/rest', $this->apiConfig->getBaseUrl());
+        $this->assertEquals('https://ratenkauf.easycredit.de/ratenkauf-ws/rest', $this->apiConfig->getBaseUrl());
     }
 
     public function testGetWebShopId()
@@ -117,7 +117,7 @@ class EasyCreditApiConfigTest extends UnitTestCase
 
     public function testGetRedirectUrl()
     {
-        $this->assertEquals('https://ratenkauf.easycredit-module.de/ratenkauf/content/intern/einstieg.jsf?vorgangskennung=%s', $this->apiConfig->getRedirectUrl());
+        $this->assertEquals('https://ratenkauf.easycredit.de/ratenkauf/content/intern/einstieg.jsf?vorgangskennung=%s', $this->apiConfig->getRedirectUrl());
     }
 
     public function testGetEasyCreditInstalmentPaymentId()

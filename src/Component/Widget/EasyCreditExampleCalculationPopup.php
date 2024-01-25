@@ -78,7 +78,7 @@ class EasyCreditExampleCalculationPopup extends WidgetController
     {
         $webshopId = $this->getWebshopId();
         $price = $this->getPrice()->getBruttoPrice();
-        return "https://ratenkauf.easycredit-module.de/ratenkauf/content/intern/paymentPageBeispielrechnung.jsf?shopKennung=$webshopId&bestellwert=$price";
+        return "https://ratenkauf.easycredit.de/ratenkauf/content/intern/paymentPageBeispielrechnung.jsf?shopKennung=$webshopId&bestellwert=$price";
     }
 
     /**

@@ -204,13 +204,13 @@ $aModule = [
             'group' => 'EasyCreditApi',
             'name'  => 'oxpsECBaseUrl',
             'type'  => 'str',
-            'value' => 'https://ratenkauf.easycredit-module.de/ratenkauf-ws/rest',
+            'value' => 'https://ratenkauf.easycredit.de/ratenkauf-ws/rest',
         ],
         [
             'group' => 'EasyCreditApi',
             'name'  => 'oxpsECDealerInterfaceUrl',
             'type'  => 'str',
-            'value' => 'https://app.easycredit-module.de/ratenkauf/transaktionsverwaltung-ws/rest',
+            'value' => 'https://app.easycredit.de/ratenkauf/transaktionsverwaltung-ws/rest',
         ],
         [
             'group' => 'EasyCreditApi',
