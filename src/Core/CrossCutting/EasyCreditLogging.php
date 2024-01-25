@@ -62,7 +62,7 @@ class EasyCreditLogging
     protected function buildRequestString($encodedData, $encodedResponse, $serviceUrl, $duration)
     {
         $result = $serviceUrl . PHP_EOL;
-        $result .= EasyCreditLogging . phpstr_repeat('=', 60);
+        $result .= str_repeat('=', 60) . PHP_EOL;
 
         if ($encodedData) {
             $result .= 'data:' . PHP_EOL;
@@ -76,7 +76,7 @@ class EasyCreditLogging
 
         $result .= 'took ' . round($duration * 1000) . ' milliseconds' . PHP_EOL;
 
-        $result .= EasyCreditLogging . phpstr_repeat('=', 60) . PHP_EOL;
+        $result .= str_repeat('=', 60) . PHP_EOL . PHP_EOL;
 
         return $result;
     }
@@ -106,13 +106,13 @@ class EasyCreditLogging
 
     protected function buildPrettyJsonString($jsonString)
     {
-        $result = EasyCreditLogging . phpstr_repeat('-', 40);
+        $result = str_repeat('-', 40) . PHP_EOL;
 
         $jsonObject = json_decode($jsonString);
         $prettyString = json_encode($jsonObject, JSON_PRETTY_PRINT);
         $result .= $prettyString . PHP_EOL;
 
-        $result .= EasyCreditLogging . phpstr_repeat('-', 40);
+        $result .= str_repeat('-', 40) . PHP_EOL;
 
         return $result;
     }

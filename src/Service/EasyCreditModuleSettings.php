@@ -32,19 +32,19 @@ class EasyCreditModuleSettings
     }
 
     public function getOxpsECBaseUrl() {
-        return $this->moduleSettingService->getString('oxpsECBaseUrl', 'osceasycredit');
+        return (string) $this->moduleSettingService->getString('oxpsECBaseUrl', 'osceasycredit');
     }
 
     public function getOxpsECDealerInterfaceUrl() {
-        return $this->moduleSettingService->getString('oxpsECDealerInterfaceUrl', 'osceasycredit');
+        return (string) $this->moduleSettingService->getString('oxpsECDealerInterfaceUrl', 'osceasycredit');
     }
 
     public function getOxpsECWebshopId() {
-        return $this->moduleSettingService->getString('oxpsECWebshopId', 'osceasycredit');
+        return (string) $this->moduleSettingService->getString('oxpsECWebshopId', 'osceasycredit');
     }
 
     public function getOxpsECWebshopToken() {
-        return $this->moduleSettingService->getString('oxpsECWebshopToken', 'osceasycredit');
+        return (string) $this->moduleSettingService->getString('oxpsECWebshopToken', 'osceasycredit');
     }
 
     public function getOxpsECLogging() {
