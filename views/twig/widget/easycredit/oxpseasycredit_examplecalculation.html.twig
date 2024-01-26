@@ -18,30 +18,35 @@
         {{ script({ include: oViewConf.getModuleUrl('osceasycredit', 'css/base/jquery-ui.js'), priority: 9, dynamic: __oxid_include_dynamic }) }}
     {% endif %}
 
+    {# EasyCredit offer injects into this eleemnt #}
     <div id="{{ oView.getViewParameter('placeholderId') }}"></div>
 
-    <script>
     {% capture assign = "pageScript" %}
+        //basketLoaded loaded event needs to be implemented in Apex theme
+        addEventListener('basketLoaded', function (){
+            insertEasyCreditWidget();
+        })
 
-            function openExampleCalculationDialog (easyCreditPopupUrl) {
-                fetch('{{ oView.getPopupAjaxUrl()|raw }}', function (data) {
-                    document.getElementById("easycredit-example-dialog").innerHTML = data;
+        function openExampleCalculationDialog (easyCreditPopupUrl) {
+            fetch('{{ oView.getPopupAjaxUrl()|raw }}', function (data) {
+                document.getElementById("easycredit-example-dialog").innerHTML = data;
 
-                    document.getElementById("easycredit-example-dialog").dialog({
-                        close: true,
-                        modal: true,
-                        width: 570,
-                        height: 786
-                    });
-                })
-            }
+                document.getElementById("easycredit-example-dialog").dialog({
+                    close: true,
+                    modal: true,
+                    width: 570,
+                    height: 786
+                });
+            })
+        }
 
-    $.get('{{ oView.getAjaxUrl()|raw }}', function(data){
-        $('#{{ oView.getViewParameter('placeholderId') }}').html(data);
-        $('#{{ oView.getViewParameter('placeholderId') }}').on('click', '.easycredit-link', openExampleCalculationDialog);
-    });
+        function insertEasyCreditWidget(){
+            $.get('{{ oView.getAjaxUrl()|raw }}', function(data){
+            $('#{{ oView.getViewParameter('placeholderId') }}').html(data);
+            $('#{{ oView.getViewParameter('placeholderId') }}').on('click', '.easycredit-link', openExampleCalculationDialog);
+        });}
 
+        insertEasyCreditWidget();
     {% endcapture %}
-    </script>
     {{ script({ add: pageScript, dynamic: __oxid_include_dynamic }) }}
 {% endif %}
