@@ -393,7 +393,7 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
         /** @var Session $session */
         $session = Registry::getSession();
 
-        if (!($sPaymentId = Registry::getConfig()->getRequestParameter('paymentid'))) {
+        if (!($sPaymentId = Registry::getRequest()->getRequestParameter('paymentid'))) {
             $sPaymentId = $session->getVariable('paymentid');
         }
 
@@ -430,7 +430,7 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
     {
         /** @var $user User */
         $user = $this->getUser();
-        $profileData = $this->getConfig()->getRequestParameter('ecred', true);
+        $profileData = Registry::getRequest()->getRequestParameter('ecred', true);
 
         $hasChanged = false;
 

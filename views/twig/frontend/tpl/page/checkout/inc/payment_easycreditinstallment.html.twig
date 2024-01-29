@@ -5,7 +5,7 @@
         <label for="payment_{{ sPaymentID }}"{% if not easyCreditIsPossible %} class="easycreditdisabled"{% endif %}><b>{{ paymentmethod.oxpayments__oxdesc.value }}</b></label>
         {% if not oView.isEasyCreditPossible() %}
             <div class="col-lg-offset-3">
-                <img class="payment-logo-easycredit" src="{{ oViewConf.getModuleUrl('oxpseasycredit') }}out/pictures/eclogo.png" alt="Easy Credit">
+                <img class="payment-logo-easycredit" src="{{ oViewConf.getModuleUrl('osceasycredit') }}img/eclogo.png" alt="Easy Credit">
                 {% set errorMsgs = oView.getErrorMessages() %}
                 {% for errorMsg in errorMsgs %}
                     <div>{{ errorMsg }}</div>
@@ -16,7 +16,7 @@
     <dd class="payment-option{% if oView.getCheckedPaymentId() == paymentmethod.oxpayments__oxid.value %}activePayment{% endif %}">
         {% if easyCreditIsPossible %}
             <div class="col-lg-offset-3">
-                <img class="payment-logo-easycredit" src="{{ oViewConf.getModuleUrl('oxpseasycredit') }}out/pictures/eclogo.png" alt="Easy Credit">
+                <img class="payment-logo-easycredit" src="{{ oViewConf.getModuleUrl('osceasycredit') }}img/eclogo.png" alt="Easy Credit">
             </div>
 
             {% for value in paymentmethod.getDynValues() %}
@@ -76,18 +76,17 @@
                 </div>
 
                 {% capture assign = "easycreditAgreementValidationJS" %}
-                    {% spaceless %}
-                        $("#paymentNextStepBottom").click(function(event){
+                    $("#paymentNextStepBottom").click(function(event){
                         $("#easycredit_agreement_error").hide();
                         var success = true;
+
                         if ( $('#easycredit_agreement').is(':visible') && $('#easycredit_agreement').is(':not(:checked)') )
                         {
-                        event.preventDefault();
-                        $("#easycredit_agreement_error").show();
+                            event.preventDefault();
+                            $("#easycredit_agreement_error").show();
                         }
                         return true;
-                        });
-                    {% endspaceless %}
+                    });
                 {% endcapture %}
                 {{ script({ add: easycreditAgreementValidationJS, dynamic: __oxid_include_dynamic }) }}
 

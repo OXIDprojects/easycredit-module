@@ -192,7 +192,7 @@ class EasyCreditDispatcherController extends FrontendController
      */
     public function getShopSystem()
     {
-        return EasyCreditHelper::getShopSystem($this->getConfig()->getActiveShop());
+        return EasyCreditHelper::getShopSystem(Registry::getConfig()->getActiveShop());
     }
 
     /**

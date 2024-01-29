@@ -28,4 +28,8 @@ class EasyCreditViewConfig extends EasyCreditViewConfig_parent
     public function getOxpsECExampleCalcMinibasket() {
         return $this->moduleSettings->getOxpsECExampleCalcMinibasket();
     }
+
+    public function getOxpsECExampleCalcArticle() {
+        return $this->moduleSettings->getOxpsECExampleCalcArticle();
+    }
 }

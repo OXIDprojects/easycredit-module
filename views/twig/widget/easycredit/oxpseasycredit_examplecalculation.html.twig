@@ -42,6 +42,7 @@
 
         function insertEasyCreditWidget(){
             $.get('{{ oView.getAjaxUrl()|raw }}', function(data){
+            debugger;
             $('#{{ oView.getViewParameter('placeholderId') }}').html(data);
             $('#{{ oView.getViewParameter('placeholderId') }}').on('click', '.easycredit-link', openExampleCalculationDialog);
         });}

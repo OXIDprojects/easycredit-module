@@ -31,6 +31,10 @@ class EasyCreditModuleSettings
         return $this->moduleSettingService->getBoolean('oxpsECExampleCalcMinibasket', 'osceasycredit');
     }
 
+    public function getOxpsECExampleCalcArticle() {
+        return $this->moduleSettingService->getBoolean('oxpsECExampleCalcArticle', 'osceasycredit');
+    }
+
     public function getOxpsECBaseUrl() {
         return (string) $this->moduleSettingService->getString('oxpsECBaseUrl', 'osceasycredit');
     }

@@ -5,7 +5,7 @@
         <label for="payment_[{$sPaymentID}]"[{if !$easyCreditIsPossible}] class="easycreditdisabled"[{/if}]><b>[{$paymentmethod->oxpayments__oxdesc->value}]</b></label>
         [{if !$oView->isEasyCreditPossible()}]
             <div class="col-lg-offset-3">
-                <img class="payment-logo-easycredit" src="[{$oViewConf->getModuleUrl('oxpseasycredit')}]out/pictures/eclogo.png" alt="Easy Credit">
+                <img class="payment-logo-easycredit" src="[{$oViewConf->getModuleUrl('osceasycredit')}]img/eclogo.png" alt="Easy Credit">
                 [{assign var="errorMsgs" value=$oView->getErrorMessages()}]
                 [{foreach from=$errorMsgs item=errorMsg}]
                     <div>[{$errorMsg}]</div>
@@ -16,7 +16,7 @@
     <dd class="payment-option[{if $oView->getCheckedPaymentId() == $paymentmethod->oxpayments__oxid->value}]activePayment[{/if}]">
         [{if $easyCreditIsPossible}]
             <div class="col-lg-offset-3">
-                <img class="payment-logo-easycredit" src="[{$oViewConf->getModuleUrl('oxpseasycredit')}]out/pictures/eclogo.png" alt="Easy Credit">
+                <img class="payment-logo-easycredit" src="[{$oViewConf->getModuleUrl('osceasycredit')}]img/eclogo.png" alt="Easy Credit">
             </div>
 
             [{foreach from=$paymentmethod->getDynValues() item=value name=PaymentDynValues}]
