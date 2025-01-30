@@ -7,15 +7,15 @@ use OxidEsales\Eshop\Application\Model\Address;
 use OxidEsales\Eshop\Application\Model\User;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\TestingLibrary\UnitTestCase;
-use OxidSolutionCatalysts\EasyCredit\Application\Controller\EasyCreditPaymentController;
+use OxidSolutionCatalysts\EasyCredit\Controller\EasyCreditPaymentController;
 use OxidSolutionCatalysts\EasyCredit\Core\CrossCutting\EasyCreditLogging;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditApiConfig;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDic;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDicConfig;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDicFactory;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDicSession;
-use OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditPayment;
 use OxidSolutionCatalysts\EasyCredit\Core\Exception\EasyCreditException;
+use OxidSolutionCatalysts\EasyCredit\Core\Helper\EasyCreditHelper;
 use OxidSolutionCatalysts\EasyCredit\Core\PayLoad\EasyCreditPayloadFactory;
 
 /**
@@ -183,7 +183,7 @@ class EasyCreditPaymentTest extends UnitTestCase
 
     public function testValidatePaymentEasyCreditNotPossible()
     {
-        Registry::getSession()->setVariable('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
+        Registry::getSession()->setVariable('paymentid', EasyCreditHelper::EASYCREDIT_PAYMENTID);
 
         $payment = oxNew(PaymentController::class);
         $this->assertNull($payment->validatePayment());
@@ -191,7 +191,7 @@ class EasyCreditPaymentTest extends UnitTestCase
 
     public function testValidatePaymentEasyCreditPossible()
     {
-        Registry::getSession()->setVariable('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
+        Registry::getSession()->setVariable('paymentid', EasyCreditHelper::EASYCREDIT_PAYMENTID);
 
         $payment = $this->getMock(EasyCreditPaymentController::class, ['isEasyCreditPossible']);
         $payment->expects($this->any())->method('isEasyCreditPossible')->willReturn(true);
@@ -201,7 +201,7 @@ class EasyCreditPaymentTest extends UnitTestCase
 
     public function testValidatePaymentEasyCreditPossibleAddProfileDataException()
     {
-        Registry::getSession()->setVariable('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
+        Registry::getSession()->setVariable('paymentid', EasyCreditHelper::EASYCREDIT_PAYMENTID);
 
         $payment = $this->getMock(EasyCreditPaymentController::class, ['isEasyCreditPossible', 'addProfileData']);
         $payment->expects($this->any())->method('isEasyCreditPossible')->willReturn(true);
@@ -273,7 +273,7 @@ class EasyCreditPaymentTest extends UnitTestCase
 
     public function testGetValidatedDateOfBirthInFuture()
     {
-        $this->expectExceptionMessage(OXPS_EASY_CREDIT_ERROR_DATEOFBIRTH_INVALID);
+        $this->expectExceptionMessage('OXPS_EASY_CREDIT_ERROR_DATEOFBIRTH_INVALID');
         $this->expectException(EasyCreditException::class);
         $requestData = [
             'oxuser__oxbirthdate' => [

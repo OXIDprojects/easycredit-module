@@ -26,6 +26,9 @@ use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDic;
  */
 class EasyCreditHelper
 {
+    /** string paymentid */
+    public const EASYCREDIT_PAYMENTID = "easycreditinstallment";
+
     /**
      * Returns the price relevant for the example calculation.
      *
@@ -108,5 +111,17 @@ class EasyCreditHelper
             return $module->getInfo('version');
         }
         return "";
+    }
+
+    /**
+     * Returns true if payment is ratenkauf by easyCredit
+     *
+     * @param $paymentId string
+     *
+     * @return bool
+     */
+    public static function isEasyCreditInstallmentById(string $paymentId): bool
+    {
+        return $paymentId === self::EASYCREDIT_PAYMENTID;
     }
 }

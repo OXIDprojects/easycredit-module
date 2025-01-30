@@ -18,7 +18,7 @@ namespace OxidSolutionCatalysts\EasyCredit\Tests\Unit\Core\Domain;
 
 use OxidEsales\Eshop\Application\Model\Payment;
 use OxidEsales\TestingLibrary\UnitTestCase;
-use OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditPayment;
+use OxidSolutionCatalysts\EasyCredit\Core\Helper\EasyCreditHelper;
 
 /**
  * Class EasyCreditOxPaymentTest
@@ -46,7 +46,7 @@ class EasyCreditOxPaymentTest extends UnitTestCase
     public function testIsEasyCreditInstallmentTrue(): void
     {
         $payment = oxNew(Payment::class);
-        $payment->setId(EasyCreditPayment::EASYCREDIT_PAYMENTID);
+        $payment->setId(EasyCreditHelper::EASYCREDIT_PAYMENTID);
         $this->assertTrue($payment->isEasyCreditInstallment());
     }
 
@@ -59,11 +59,11 @@ class EasyCreditOxPaymentTest extends UnitTestCase
 
     public function testIsEasyCreditInstallmentByIdTrue(): void
     {
-        $this->assertTrue(EasyCreditPayment::isEasyCreditInstallmentById(EasyCreditPayment::EASYCREDIT_PAYMENTID));
+        $this->assertTrue(EasyCreditHelper::isEasyCreditInstallmentById(EasyCreditHelper::EASYCREDIT_PAYMENTID));
     }
 
     public function testIsEasyCreditInstallmentByIdFalse(): void
     {
-        $this->assertFalse(EasyCreditPayment::isEasyCreditInstallmentById('something'));
+        $this->assertFalse(EasyCreditHelper::isEasyCreditInstallmentById('something'));
     }
 }
