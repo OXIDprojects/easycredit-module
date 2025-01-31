@@ -17,6 +17,7 @@ use OxidEsales\Eshop\Core\Exception\SystemComponentException;
 use OxidEsales\Eshop\Core\Price;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDic;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDicFactory;
+use OxidSolutionCatalysts\EasyCredit\Core\Helper\EasyCreditHelper;
 
 /**
  * Basket manager
@@ -43,7 +44,7 @@ class EasyCreditBasket extends EasyCreditBasket_parent
      */
     public function getInterestsAmount()
     {
-        if ( EasyCreditPayment::isEasyCreditInstallmentById($this->getPaymentId())) {
+        if ( EasyCreditHelper::isEasyCreditInstallmentById($this->getPaymentId())) {
 
             $storage = $this->getDic()->getSession()->getStorage();
             if( $storage ) {

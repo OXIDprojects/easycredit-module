@@ -95,3 +95,13 @@ composer update
 ### Version 3.0.8
 
 * Rebranding easyCredit-Ratenkauf
+
+### Version 5.0.0
+
+* Version for OXID7
+
+### Version 5.0.1
+
+## Fix
+
+* [0007754](https://bugs.oxid-esales.com/view.php?id=7754): fix ModuleChainGenerator that has issue loading EasyCreditPayment

@@ -32,7 +32,6 @@ use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDicFactory;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDicSession;
 use OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditBasket;
 use OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditOrder;
-use OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditPayment;
 use OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditSession;
 use OxidSolutionCatalysts\EasyCredit\Core\Dto\EasyCreditStorage;
 use OxidSolutionCatalysts\EasyCredit\Core\Helper\EasyCreditHelper;
@@ -79,7 +78,7 @@ class EasyCreditOrderTest extends UnitTestCase
     public function testFinalizeOrderNoStorage(): void
     {
         $oxBasket = $this->getMock(EasyCreditBasket::class, ['getPaymentId']);
-        $oxBasket->expects($this->any())->method('getPaymentId')->willReturn(EasyCreditPayment::EASYCREDIT_PAYMENTID);
+        $oxBasket->expects($this->any())->method('getPaymentId')->willReturn(EasyCreditHelper::EASYCREDIT_PAYMENTID);
 
         $oxUser = oxNew(User::class);
 
@@ -95,7 +94,7 @@ class EasyCreditOrderTest extends UnitTestCase
         $dic = $this->getMockedDic();
 
         $dicSession = $dic->getSession();
-        $dicSession->set('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
+        $dicSession->set('paymentid', EasyCreditHelper::EASYCREDIT_PAYMENTID);
         $dicSession->setStorage(
             oxNew(
                 EasyCreditStorage::class,
@@ -125,7 +124,7 @@ class EasyCreditOrderTest extends UnitTestCase
         $dic = $this->getMockedDic();
 
         $dicSession = $dic->getSession();
-        $dicSession->set('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
+        $dicSession->set('paymentid', EasyCreditHelper::EASYCREDIT_PAYMENTID);
         $dicSession->setStorage(null);
 
         $oxBasket = $this->getMock(EasyCreditBasket::class, ['getDic', 'getPrice']);
@@ -148,7 +147,7 @@ class EasyCreditOrderTest extends UnitTestCase
         $dic = $this->getMockedDic();
 
         $dicSession = $dic->getSession();
-        $dicSession->set('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
+        $dicSession->set('paymentid', EasyCreditHelper::EASYCREDIT_PAYMENTID);
 
         $oxBasket = $this->getMock(EasyCreditBasket::class, ['getDic', 'getPrice']);
         $oxBasket->expects($this->any())->method('getDic')->willReturn($dic);
@@ -186,7 +185,7 @@ class EasyCreditOrderTest extends UnitTestCase
         $dic = $this->getMockedDic();
 
         $dicSession = $dic->getSession();
-        $dicSession->set('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
+        $dicSession->set('paymentid', EasyCreditHelper::EASYCREDIT_PAYMENTID);
 
         $oxBasket = $this->getMock(EasyCreditBasket::class, ['getDic', 'getPrice']);
         $oxBasket->expects($this->any())->method('getDic')->willReturn($dic);
@@ -224,7 +223,7 @@ class EasyCreditOrderTest extends UnitTestCase
         $dic = $this->getMockedDic(true);
 
         $dicSession = $dic->getSession();
-        $dicSession->set('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
+        $dicSession->set('paymentid', EasyCreditHelper::EASYCREDIT_PAYMENTID);
 
 
         $oxBasket = $this->getMock(EasyCreditBasket::class, ['getDic', 'getPrice']);
@@ -265,7 +264,7 @@ class EasyCreditOrderTest extends UnitTestCase
         $dic = $this->getMockedDic(true);
 
         $dicSession = $dic->getSession();
-        $dicSession->set('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
+        $dicSession->set('paymentid', EasyCreditHelper::EASYCREDIT_PAYMENTID);
 
         $oxBasket = $this->getMock(EasyCreditBasket::class, ['getDic', 'getPrice']);
         $oxBasket->expects($this->any())->method('getDic')->willReturn($dic);
@@ -305,7 +304,7 @@ class EasyCreditOrderTest extends UnitTestCase
         $dic = $this->getMockedDic(true);
 
         $dicSession = $dic->getSession();
-        $dicSession->set('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
+        $dicSession->set('paymentid', EasyCreditHelper::EASYCREDIT_PAYMENTID);
 
         $oxBasket = $this->getMock(EasyCreditBasket::class, ['getDic', 'getPrice']);
         $oxBasket->expects($this->any())->method('getDic')->willReturn($dic);
@@ -364,7 +363,7 @@ class EasyCreditOrderTest extends UnitTestCase
         $dic = $this->getMockedDic(true);
 
         $dicSession = $dic->getSession();
-        $dicSession->set('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
+        $dicSession->set('paymentid', EasyCreditHelper::EASYCREDIT_PAYMENTID);
 
         $oxBasket = $this->getMock(EasyCreditBasket::class, ['getDic', 'getPrice']);
         $oxBasket->expects($this->any())->method('getDic')->willReturn($dic);
@@ -425,7 +424,7 @@ class EasyCreditOrderTest extends UnitTestCase
         $dic = $this->getMockedDic(true);
 
         $dicSession = $dic->getSession();
-        $dicSession->set('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
+        $dicSession->set('paymentid', EasyCreditHelper::EASYCREDIT_PAYMENTID);
 
         $oxBasket = $this->getMock(EasyCreditBasket::class, ['getDic', 'getPrice']);
         $oxBasket->expects($this->any())->method('getDic')->willReturn($dic);
@@ -488,7 +487,7 @@ class EasyCreditOrderTest extends UnitTestCase
         $dic = $this->getMockedDic(true);
 
         $dicSession = $dic->getSession();
-        $dicSession->set('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
+        $dicSession->set('paymentid', EasyCreditHelper::EASYCREDIT_PAYMENTID);
 
         $oxBasket = $this->getMock(EasyCreditBasket::class, ['getDic', 'getPrice']);
         $oxBasket->expects($this->any())->method('getDic')->willReturn($dic);
@@ -550,7 +549,7 @@ class EasyCreditOrderTest extends UnitTestCase
         $dic = $this->getMockedDic(true);
 
         $dicSession = $dic->getSession();
-        $dicSession->set('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
+        $dicSession->set('paymentid', EasyCreditHelper::EASYCREDIT_PAYMENTID);
 
         $oxBasket = $this->getMock(EasyCreditBasket::class, ['getDic', 'getPrice']);
         $oxBasket->expects($this->any())->method('getDic')->willReturn($dic);
@@ -616,7 +615,7 @@ class EasyCreditOrderTest extends UnitTestCase
         $dic = $this->getMockedDic(true);
 
         $dicSession = $dic->getSession();
-        $dicSession->set('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
+        $dicSession->set('paymentid', EasyCreditHelper::EASYCREDIT_PAYMENTID);
 
         $storage = oxNew(
             EasyCreditStorage::class,
@@ -664,7 +663,7 @@ class EasyCreditOrderTest extends UnitTestCase
         $dic = $this->getMockedDic(true);
 
         $dicSession = $dic->getSession();
-        $dicSession->set('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
+        $dicSession->set('paymentid', EasyCreditHelper::EASYCREDIT_PAYMENTID);
 
         $storage = oxNew(
             EasyCreditStorage::class,
@@ -712,7 +711,7 @@ class EasyCreditOrderTest extends UnitTestCase
         $dic = $this->getMockedDic(true);
 
         $dicSession = $dic->getSession();
-        $dicSession->set('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
+        $dicSession->set('paymentid', EasyCreditHelper::EASYCREDIT_PAYMENTID);
 
         $storage = oxNew(
             EasyCreditStorage::class,
@@ -760,7 +759,7 @@ class EasyCreditOrderTest extends UnitTestCase
         $dic = $this->getMockedDic(true);
 
         $dicSession = $dic->getSession();
-        $dicSession->set('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
+        $dicSession->set('paymentid', EasyCreditHelper::EASYCREDIT_PAYMENTID);
 
         $storage = oxNew(
             EasyCreditStorage::class,
@@ -808,7 +807,7 @@ class EasyCreditOrderTest extends UnitTestCase
         $dic = $this->getMockedDic(true);
 
         $dicSession = $dic->getSession();
-        $dicSession->set('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
+        $dicSession->set('paymentid', EasyCreditHelper::EASYCREDIT_PAYMENTID);
 
         $storage = oxNew(
             EasyCreditStorage::class,
