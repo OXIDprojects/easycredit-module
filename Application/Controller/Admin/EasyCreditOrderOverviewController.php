@@ -1,14 +1,10 @@
 <?php
-/**
- * This Software is the property of OXID eSales and is protected
- * by copyright law - it is NOT Freeware.
+
+/*
+ * This file is part of OXID eSales AG EasyCredit module
+ * Copyright © OXID eSales AG. All rights reserved.
  *
- * Any unauthorized use of this software without a valid license key
- * is a violation of the license agreement and will be prosecuted by
- * civil and criminal law.
- *
- * @link      http://www.oxid-esales.com
- * @copyright (C) OXID eSales AG 2003-2021
+ * Licensed under the GNU GPL v3 - See the file LICENSE for details.
  */
 
 namespace OxidProfessionalServices\EasyCredit\Application\Controller\Admin;

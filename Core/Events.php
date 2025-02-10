@@ -1,14 +1,10 @@
 <?php
-/**
- * This Software is the property of OXID eSales and is protected
- * by copyright law - it is NOT Freeware.
+
+/*
+ * This file is part of OXID eSales AG EasyCredit module
+ * Copyright © OXID eSales AG. All rights reserved.
  *
- * Any unauthorized use of this software without a valid license key
- * is a violation of the license agreement and will be prosecuted by
- * civil and criminal law.
- *
- * @link      http://www.oxid-esales.com
- * @copyright (C) OXID eSales AG 2003-2021
+ * Licensed under the GNU GPL v3 - See the file LICENSE for details.
  */
 
 namespace OxidProfessionalServices\EasyCredit\Core;
@@ -16,7 +12,7 @@ namespace OxidProfessionalServices\EasyCredit\Core;
 use OxidEsales\Eshop\Core\DatabaseProvider;
 use OxidEsales\Eshop\Core\DbMetaDataHandler;
 use OxidEsales\Eshop\Core\Field;
-use \OxidEsales\Eshop\Core\Model\MultiLanguageModel;
+use OxidEsales\Eshop\Core\Model\MultiLanguageModel;
 use OxidEsales\Eshop\Application\Model\Content;
 use OxidEsales\Eshop\Core\Registry;
 
@@ -28,7 +24,6 @@ use OxidEsales\Eshop\Core\Registry;
  */
 class Events
 {
-
     /**
      * Class constructor.
      * Sets current module main data and loads the rest module info.
@@ -224,7 +219,7 @@ class Events
      */
     protected static function _clear($sFileName, $sFilePath)
     {
-        if (!in_array($sFileName, array('.', '..', '.gitkeep', '.htaccess'))) {
+        if (!in_array($sFileName, ['.', '..', '.gitkeep', '.htaccess'])) {
             if (is_file($sFilePath)) {
                 @unlink($sFilePath);
             } else {
@@ -236,17 +231,18 @@ class Events
     /**
      * Adds easyCredit new columns
      */
-    protected static function _dbEventAddColums() {
+    protected static function _dbEventAddColums()
+    {
 
         $oDb = DatabaseProvider::getDb();
 
         $dbStructure = file_get_contents(dirname(__FILE__) . '/../installments/install_adddbcolumns.json');
-        if(!$dbStructure ) {
+        if (!$dbStructure) {
             return;
         }
 
         $addColumns = json_decode($dbStructure, true);
-        if( empty($addColumns) ) {
+        if (empty($addColumns)) {
             return;
         }
 
@@ -266,12 +262,12 @@ class Events
 
             if (!$oDbMetaDataHandler->fieldExists($columnData["colname"], $tableName)) {
                 $addColumnSql = sprintf(
-                    "ALTER TABLE %s ADD COLUMN %s %s %s COMMENT %s"
-                    , $tableName
-                    , $columnData["colname"]
-                    , $columnData["coltype"]
-                    , $columnData["colnullable"]
-                    , $oDb->quote($columnData["comment"])
+                    "ALTER TABLE %s ADD COLUMN %s %s %s COMMENT %s",
+                    $tableName,
+                    $columnData["colname"],
+                    $columnData["coltype"],
+                    $columnData["colnullable"],
+                    $oDb->quote($columnData["comment"])
                 );
                 DatabaseProvider::getDb()->execute($addColumnSql);
             }

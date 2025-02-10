@@ -1,0 +1,11 @@
+parameters:
+    paths:
+        - Application
+        - Core
+    scanDirectories:
+        - ./source # for OXID dependencies
+        - ./.phpstorm.meta.php # for _parent class definitions
+    level: 1
+    ignoreErrors:
+        - '#::\$oxorder__#'
+        - '#Call to static method getDb\(\)#'

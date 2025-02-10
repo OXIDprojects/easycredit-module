@@ -1,14 +1,10 @@
 <?php
-/**
- * This Software is the property of OXID eSales and is protected
- * by copyright law - it is NOT Freeware.
+
+/*
+ * This file is part of OXID eSales AG EasyCredit module
+ * Copyright © OXID eSales AG. All rights reserved.
  *
- * Any unauthorized use of this software without a valid license key
- * is a violation of the license agreement and will be prosecuted by
- * civil and criminal law.
- *
- * @link      http://www.oxid-esales.com
- * @copyright (C) OXID eSales AG 2003-2021
+ * Licensed under the GNU GPL v3 - See the file LICENSE for details.
  */
 
 namespace OxidProfessionalServices\EasyCredit\Application\Component\Widget;
@@ -46,7 +42,7 @@ class EasyCreditExampleCalculation extends WidgetController
     /**
      * Return the monthly fee to pay for credit.
      *
-     * @return string
+     * @return string|void
      */
     public function getExampleCalculationRate()
     {
@@ -62,7 +58,7 @@ class EasyCreditExampleCalculation extends WidgetController
      */
     public function hasExampleCalculation()
     {
-        return (bool)$this->getExampleCalulation();
+        return (bool) $this->getExampleCalulation();
     }
 
     /**
@@ -121,7 +117,7 @@ class EasyCreditExampleCalculation extends WidgetController
     /**
      * Load example calculation from ec service.
      *
-     * @return false|\stdClass
+     * @return false|\stdClass|void
      * @throws SystemComponentException
      */
     protected function getExampleCalculationResponse()
@@ -132,8 +128,8 @@ class EasyCreditExampleCalculation extends WidgetController
 
         if (
             !$price ||
-            (int)$price->getBruttoPrice() < (int)$payment->getFieldData('oxfromamount') ||
-            (int)$price->getBruttoPrice() > (int)$payment->getFieldData('oxtoamount')
+            (int) $price->getBruttoPrice() < (int) $payment->getFieldData('oxfromamount') ||
+            (int) $price->getBruttoPrice() > (int) $payment->getFieldData('oxtoamount')
         ) {
             return false;
         }
@@ -145,8 +141,9 @@ class EasyCreditExampleCalculation extends WidgetController
             $webServiceClient = EasyCreditWebServiceClientFactory::getWebServiceClient(
                 EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_MODELLRECHNUNG_GUENSTIGSTER_RATENPLAN,
                 $dic,
-                array(),
-                array(EasyCreditApiConfig::API_CONFIG_SERVICE_REST_ARGUMENT_FINANZIERUNGSBETRAG => $price->getBruttoPrice()));
+                [],
+                [EasyCreditApiConfig::API_CONFIG_SERVICE_REST_ARGUMENT_FINANZIERUNGSBETRAG => $price->getBruttoPrice()]
+            );
             return $webServiceClient->execute();
         } catch (\Exception $ex) {
             $this->getDic()->getLogging()->log($ex->getMessage());

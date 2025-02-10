@@ -1,14 +1,10 @@
 <?php
-/**
- * This Software is the property of OXID eSales and is protected
- * by copyright law - it is NOT Freeware.
+
+/*
+ * This file is part of OXID eSales AG EasyCredit module
+ * Copyright © OXID eSales AG. All rights reserved.
  *
- * Any unauthorized use of this software without a valid license key
- * is a violation of the license agreement and will be prosecuted by
- * civil and criminal law.
- *
- * @link      http://www.oxid-esales.com
- * @copyright (C) OXID eSales AG 2003-2021
+ * Licensed under the GNU GPL v3 - See the file LICENSE for details.
  */
 
 namespace OxidProfessionalServices\EasyCredit\Application\Controller;
@@ -29,7 +25,6 @@ use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicSession;
  */
 class EasyCreditOrderController extends EasyCreditOrderController_parent
 {
-
     /** @var EasyCreditDic */
     private $dic = false;
 
@@ -48,8 +43,7 @@ class EasyCreditOrderController extends EasyCreditOrderController_parent
 
                 $this->checkStorage();
                 $this->appendInstalmentRatesToPaymentDescription($payment);
-            }
-            else {
+            } else {
                 $this->_oPayment = $payment;
             }
         }
@@ -77,11 +71,10 @@ class EasyCreditOrderController extends EasyCreditOrderController_parent
             /** @var $viewConfig ViewConfig */
             $viewConfig = $this->getViewConfig();
             $logoFile = $viewConfig->getModulePath('oxpseasycredit', "out" . DIRECTORY_SEPARATOR . "pictures" . DIRECTORY_SEPARATOR . "eclogo.png");
-            if( file_exists($logoFile)) {
+            if (file_exists($logoFile)) {
                 return $viewConfig->getModuleUrl('oxpseasycredit') . 'out/pictures/eclogo.png';
             }
-        }
-        catch (\Exception $ex) {
+        } catch (\Exception $ex) {
             //that's expected, do nothing else
         }
         return null;
@@ -95,7 +88,7 @@ class EasyCreditOrderController extends EasyCreditOrderController_parent
     public function getTilgungsplanText()
     {
         $storage = $this->getDicSession()->getStorage();
-        if( $storage ) {
+        if ($storage) {
             return $storage->getTilgungsplanTxt();
         }
         return null;
@@ -109,7 +102,7 @@ class EasyCreditOrderController extends EasyCreditOrderController_parent
     protected function getAllgemeineVorgangsdaten()
     {
         $storage = $this->getDicSession()->getStorage();
-        if( $storage ) {
+        if ($storage) {
             return $storage->getAllgemeineVorgangsdaten();
         }
         return null;
@@ -123,7 +116,7 @@ class EasyCreditOrderController extends EasyCreditOrderController_parent
     public function getUrlVorvertraglicheInformationen()
     {
         $allgemeineVorgangsdaten = $this->getAllgemeineVorgangsdaten();
-        if( $allgemeineVorgangsdaten ) {
+        if ($allgemeineVorgangsdaten) {
             return $allgemeineVorgangsdaten->urlVorvertraglicheInformationen;
         }
         return null;
@@ -137,7 +130,7 @@ class EasyCreditOrderController extends EasyCreditOrderController_parent
     public function getPaymentPlanTxt()
     {
         $storage = $this->getDicSession()->getStorage();
-        if( $storage ) {
+        if ($storage) {
             return $storage->getRatenplanTxt();
         }
         return null;
@@ -182,7 +175,7 @@ class EasyCreditOrderController extends EasyCreditOrderController_parent
      */
     protected function getDic()
     {
-        if(!$this->dic) {
+        if (!$this->dic) {
             $this->dic = EasyCreditDicFactory::getDic();
         }
 

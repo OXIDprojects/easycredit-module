@@ -1,14 +1,10 @@
 <?php
-/**
- * This Software is the property of OXID eSales and is protected
- * by copyright law - it is NOT Freeware.
+
+/*
+ * This file is part of OXID eSales AG EasyCredit module
+ * Copyright © OXID eSales AG. All rights reserved.
  *
- * Any unauthorized use of this software without a valid license key
- * is a violation of the license agreement and will be prosecuted by
- * civil and criminal law.
- *
- * @link          http://www.oxid-esales.com
- * @copyright (C) OXID eSales AG 2003-2021
+ * Licensed under the GNU GPL v3 - See the file LICENSE for details.
  */
 
 namespace OxidProfessionalServices\EasyCredit\Application\Model;
@@ -29,11 +25,11 @@ use OxidProfessionalServices\EasyCredit\Core\Exception\EasyCreditException;
  */
 class EasyCreditTradingApiAccess
 {
-    const OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_LIEFERUNG_MELDEN            = 'LIEFERUNG_MELDEN';
-    const OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_LIEFERUNG_MELDEN_AUSLAUFEND = 'LIEFERUNG_MELDEN_AUSLAUFEND';
-    const OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_IN_ABRECHNUNG               = 'IN_ABRECHNUNG';
-    const OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_ABGERECHNET                 = 'ABGERECHNET';
-    const OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_AUSLAUFEND                  = 'AUSLAUFEND';
+    public const OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_LIEFERUNG_MELDEN            = 'LIEFERUNG_MELDEN';
+    public const OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_LIEFERUNG_MELDEN_AUSLAUFEND = 'LIEFERUNG_MELDEN_AUSLAUFEND';
+    public const OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_IN_ABRECHNUNG               = 'IN_ABRECHNUNG';
+    public const OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_ABGERECHNET                 = 'ABGERECHNET';
+    public const OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_AUSLAUFEND                  = 'AUSLAUFEND';
 
     /**
      * @var Order|null
@@ -139,12 +135,17 @@ class EasyCreditTradingApiAccess
     protected function getService(
         $serviceName,
         EasyCreditDic $dic,
-        array $additionalArguments = array(),
-        array $queryArguments = array(),
+        array $additionalArguments = [],
+        array $queryArguments = [],
         $addheaders = false
     ) {
-        return EasyCreditWebServiceClientFactory::getWebServiceClient($serviceName, $dic, $additionalArguments,
-                                                                      $queryArguments, $addheaders);
+        return EasyCreditWebServiceClientFactory::getWebServiceClient(
+            $serviceName,
+            $dic,
+            $additionalArguments,
+            $queryArguments,
+            $addheaders
+        );
     }
 
     /**
@@ -167,10 +168,10 @@ class EasyCreditTradingApiAccess
             true
         );
         $response = $service->execute([
-                                          'datum'  => date('Y-m-d'),
-                                          'grund'  => $reason,
-                                          'betrag' => $amount,
-                                      ]);
+            'datum'  => date('Y-m-d'),
+            'grund'  => $reason,
+            'betrag' => $amount,
+        ]);
     }
 
     /**

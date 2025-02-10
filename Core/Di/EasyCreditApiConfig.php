@@ -1,18 +1,13 @@
 <?php
-/**
- * This Software is the property of OXID eSales and is protected
- * by copyright law - it is NOT Freeware.
+
+/*
+ * This file is part of OXID eSales AG EasyCredit module
+ * Copyright © OXID eSales AG. All rights reserved.
  *
- * Any unauthorized use of this software without a valid license key
- * is a violation of the license agreement and will be prosecuted by
- * civil and criminal law.
- *
- * @link      http://www.oxid-esales.com
- * @copyright (C) OXID eSales AG 2003-2021
+ * Licensed under the GNU GPL v3 - See the file LICENSE for details.
  */
 
 namespace OxidProfessionalServices\EasyCredit\Core\Di;
-
 
 use OxidProfessionalServices\EasyCredit\Core\Helper\EasyCreditHelper;
 
@@ -38,43 +33,43 @@ use OxidProfessionalServices\EasyCredit\Core\Helper\EasyCreditHelper;
  */
 class EasyCreditApiConfig
 {
-    const API_CONFIG_EASYCREDIT_MODULE_ID = "oxpseasycredit";
+    public const API_CONFIG_EASYCREDIT_MODULE_ID = "oxpseasycredit";
 
-    const API_CONFIG_CREDENTIALS = 'credentials';
-    const API_CONFIG_CREDENTIAL_BASE_URL = 'oxpsEasyCreditWebshopBaseUrl';
-    const API_CONFIG_CREDENTIAL_APP_URL = 'oxpsEasyCreditDealerInterfaceUrl';
-    const API_CONFIG_CREDENTIAL_WEBSHOP_ID = 'oxpsECWebshopId';
-    const API_CONFIG_CREDENTIAL_WEBSHOP_TOKEN = 'oxpsECWebshopToken';
-    const API_CONFIG_LOG_ENABLED = 'oxpsEasyCreditLogEnabled';
+    public const API_CONFIG_CREDENTIALS = 'credentials';
+    public const API_CONFIG_CREDENTIAL_BASE_URL = 'oxpsEasyCreditWebshopBaseUrl';
+    public const API_CONFIG_CREDENTIAL_APP_URL = 'oxpsEasyCreditDealerInterfaceUrl';
+    public const API_CONFIG_CREDENTIAL_WEBSHOP_ID = 'oxpsECWebshopId';
+    public const API_CONFIG_CREDENTIAL_WEBSHOP_TOKEN = 'oxpsECWebshopToken';
+    public const API_CONFIG_LOG_ENABLED = 'oxpsEasyCreditLogEnabled';
 
-    const API_CONFIG_SERVICES = 'services';
-    const API_CONFIG_SERVICE_HTTP_METHOD = 'httpMethod';
-    const API_CONFIG_SERVICE_REST_FUNCTION = 'restFunction';
-    const API_CONFIG_SERVICE_ENDPOINT_TYPE = 'endpointtype';
-    const API_CONFIG_SERVICE_ENDPOINT_TYPE_RATENKAUF = 'ratenkauf';
-    const API_CONFIG_SERVICE_ENDPOINT_TYPE_DEALER_INTERFACE = 'haendlerinterface';
+    public const API_CONFIG_SERVICES = 'services';
+    public const API_CONFIG_SERVICE_HTTP_METHOD = 'httpMethod';
+    public const API_CONFIG_SERVICE_REST_FUNCTION = 'restFunction';
+    public const API_CONFIG_SERVICE_ENDPOINT_TYPE = 'endpointtype';
+    public const API_CONFIG_SERVICE_ENDPOINT_TYPE_RATENKAUF = 'ratenkauf';
+    public const API_CONFIG_SERVICE_ENDPOINT_TYPE_DEALER_INTERFACE = 'haendlerinterface';
 
-    const API_CONFIG_VALIDATION_SCHEMES = 'validationSchemes';
+    public const API_CONFIG_VALIDATION_SCHEMES = 'validationSchemes';
 
-    const API_CONFIG_SERVICE_NAME_V1_MODELLRECHNUNG_DURCHFUEHREN = 'v1_modellrechnung_durchfuehren';
-    const API_CONFIG_SERVICE_NAME_V1_MODELLRECHNUNG_GUENSTIGSTER_RATENPLAN = 'v1_modellrechnung_guenstigsterRatenplan';
-    const API_CONFIG_SERVICE_NAME_V1_ZUSTIMMUNGSTEXTE = 'v1_texte_zustimmung';
-    const API_CONFIG_SERVICE_NAME_V1_VORGANG = 'v1_vorgang';
-    const API_CONFIG_SERVICE_NAME_V1_DECISION = 'v1_decision';
-    const API_CONFIG_SERVICE_NAME_V1_FINANCIAL_INFORMATION = 'v1_financialinformation';
-    const API_CONFIG_SERVICE_NAME_V1_FINANZIERUNG = 'v1_finanzierung';
-    const API_CONFIG_SERVICE_NAME_V1_BESTAETIGEN = 'v1_bestaetigen';
-    const API_CONFIG_SERVICE_NAME_V2_DELIVERY_REPORT = 'v2_delivery_report';
-    const API_CONFIG_SERVICE_NAME_V2_DELIVERY_STATE = 'v2_delivery_state';
-    const API_CONFIG_SERVICE_NAME_V2_ORDER_OVERVIEW = 'v2_transaktionen_suchen';
-    const API_CONFIG_SERVICE_NAME_V2_ORDER_REVERSAL = 'v2_transaktionen_storno';
+    public const API_CONFIG_SERVICE_NAME_V1_MODELLRECHNUNG_DURCHFUEHREN = 'v1_modellrechnung_durchfuehren';
+    public const API_CONFIG_SERVICE_NAME_V1_MODELLRECHNUNG_GUENSTIGSTER_RATENPLAN = 'v1_modellrechnung_guenstigsterRatenplan';
+    public const API_CONFIG_SERVICE_NAME_V1_ZUSTIMMUNGSTEXTE = 'v1_texte_zustimmung';
+    public const API_CONFIG_SERVICE_NAME_V1_VORGANG = 'v1_vorgang';
+    public const API_CONFIG_SERVICE_NAME_V1_DECISION = 'v1_decision';
+    public const API_CONFIG_SERVICE_NAME_V1_FINANCIAL_INFORMATION = 'v1_financialinformation';
+    public const API_CONFIG_SERVICE_NAME_V1_FINANZIERUNG = 'v1_finanzierung';
+    public const API_CONFIG_SERVICE_NAME_V1_BESTAETIGEN = 'v1_bestaetigen';
+    public const API_CONFIG_SERVICE_NAME_V2_DELIVERY_REPORT = 'v2_delivery_report';
+    public const API_CONFIG_SERVICE_NAME_V2_DELIVERY_STATE = 'v2_delivery_state';
+    public const API_CONFIG_SERVICE_NAME_V2_ORDER_OVERVIEW = 'v2_transaktionen_suchen';
+    public const API_CONFIG_SERVICE_NAME_V2_ORDER_REVERSAL = 'v2_transaktionen_storno';
 
-    const API_CONFIG_SERVICE_REST_ARGUMENT_WEBSHOP_ID = 'webshopId';
+    public const API_CONFIG_SERVICE_REST_ARGUMENT_WEBSHOP_ID = 'webshopId';
 
-    const API_CONFIG_SERVICE_REST_ARGUMENTS = 'restArguments';
-    const API_CONFIG_SERVICE_REST_ARGUMENT_FINANZIERUNGSBETRAG = 'finanzierungsbetrag';
+    public const API_CONFIG_SERVICE_REST_ARGUMENTS = 'restArguments';
+    public const API_CONFIG_SERVICE_REST_ARGUMENT_FINANZIERUNGSBETRAG = 'finanzierungsbetrag';
 
-    const API_REDIRECT_URL = "https://ratenkauf.easycredit.de/ratenkauf/content/intern/einstieg.jsf?vorgangskennung=%s";
+    public const API_REDIRECT_URL = "https://ratenkauf.easycredit.de/ratenkauf/content/intern/einstieg.jsf?vorgangskennung=%s";
 
     private $config;
 
@@ -97,7 +92,7 @@ class EasyCreditApiConfig
      */
     public function getApiConfigValue($key)
     {
-        return isset($this->config[$key]) ? $this->config[$key] : false;
+        return $this->config[$key] ?? false;
     }
 
     /**
@@ -169,7 +164,7 @@ class EasyCreditApiConfig
         // TODO may be extend for other services?
         switch ($serviceName) {
             default:
-                return array(self::API_CONFIG_SERVICE_REST_ARGUMENT_WEBSHOP_ID => $this->getWebShopId());
+                return [self::API_CONFIG_SERVICE_REST_ARGUMENT_WEBSHOP_ID => $this->getWebShopId()];
         }
     }
 
@@ -179,7 +174,7 @@ class EasyCreditApiConfig
         $urlIdent = self::API_CONFIG_CREDENTIAL_BASE_URL;
         if ($serviceName) {
             $service = $this->getService($serviceName);
-            if($service[self::API_CONFIG_SERVICE_ENDPOINT_TYPE] == self::API_CONFIG_SERVICE_ENDPOINT_TYPE_DEALER_INTERFACE) {
+            if ($service[self::API_CONFIG_SERVICE_ENDPOINT_TYPE] == self::API_CONFIG_SERVICE_ENDPOINT_TYPE_DEALER_INTERFACE) {
                 $urlIdent = self::API_CONFIG_CREDENTIAL_APP_URL;
             }
         }
@@ -211,7 +206,7 @@ class EasyCreditApiConfig
     public function getValidationScheme($serviceName)
     {
         $schemes = $this->getValidationSchemes();
-        return isset($schemes[$serviceName]) ? $schemes[$serviceName] : false;
+        return $schemes[$serviceName] ?? false;
     }
 
     public function getRedirectUrl()

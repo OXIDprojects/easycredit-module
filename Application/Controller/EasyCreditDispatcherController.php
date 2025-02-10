@@ -1,14 +1,10 @@
 <?php
-/**
- * This Software is the property of OXID eSales and is protected
- * by copyright law - it is NOT Freeware.
+
+/*
+ * This file is part of OXID eSales AG EasyCredit module
+ * Copyright © OXID eSales AG. All rights reserved.
  *
- * Any unauthorized use of this software without a valid license key
- * is a violation of the license agreement and will be prosecuted by
- * civil and criminal law.
- *
- * @link      http://www.oxid-esales.com
- * @copyright (C) OXID eSales AG 2003-2021
+ * Licensed under the GNU GPL v3 - See the file LICENSE for details.
  */
 
 namespace OxidProfessionalServices\EasyCredit\Application\Controller;
@@ -38,7 +34,7 @@ use OxidProfessionalServices\EasyCredit\Core\Helper\EasyCreditInitializeRequestB
  */
 class EasyCreditDispatcherController extends FrontendController
 {
-    const INSTALMENT_DECISION_OK = "GRUEN";
+    public const INSTALMENT_DECISION_OK = "GRUEN";
 
     /** @var EasyCreditDic */
     private $dic = false;
@@ -59,12 +55,11 @@ class EasyCreditDispatcherController extends FrontendController
         try {
             $currentInitData = $this->getCurrentInitializationData();
             $currentPaymentHash = EasyCreditInitializeRequestBuilder::generatePaymentHash($currentInitData);
-            if(!$this->isInitialized($currentPaymentHash) ) {
+            if (!$this->isInitialized($currentPaymentHash)) {
                 $this->initialize($currentPaymentHash, $currentInitData);
             }
             $this->redirectToEasyCredit();
-        }
-        catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             $this->handleException($ex);
         }
         return "payment";
@@ -81,8 +76,7 @@ class EasyCreditDispatcherController extends FrontendController
         try {
             $this->processEasyCreditDetails();
             return "order";
-        }
-        catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             $this->getDicSession()->clearStorage();
             $this->getBasket()->setPayment(null);
             $this->handleUserException($ex->getMessage());
@@ -95,7 +89,8 @@ class EasyCreditDispatcherController extends FrontendController
      *
      * @return string
      */
-    protected function processEasyCreditDetails() {
+    protected function processEasyCreditDetails()
+    {
 
         $this->checkInitialization();
 
@@ -127,16 +122,16 @@ class EasyCreditDispatcherController extends FrontendController
     protected function isInitialized($newPaymentHash)
     {
         $storage = $this->getInstalmentStorage();
-        if( empty($storage) ) {
+        if (empty($storage)) {
             return false;
         }
 
-        if(!$storage->getTbVorgangskennung() ) {
+        if (!$storage->getTbVorgangskennung()) {
             return false;
         }
 
         $basketPrice = $this->getBasketPrice();
-        if( $storage->getAuthorizationHash() !== $newPaymentHash || $storage->getAuthorizedAmount() !== $basketPrice) {
+        if ($storage->getAuthorizationHash() !== $newPaymentHash || $storage->getAuthorizedAmount() !== $basketPrice) {
             return false;
         }
         return true;
@@ -152,12 +147,10 @@ class EasyCreditDispatcherController extends FrontendController
     {
         $this->getDicSession()->clearStorage();
 
-        $response = $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_VORGANG
-            , array()
-            , array()
-            , $data);
+        $response = $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_VORGANG, [], [], $data);
 
-        $storage = oxNew(EasyCreditStorage::class,
+        $storage = oxNew(
+            EasyCreditStorage::class,
             $response->tbVorgangskennung,
             $response->fachlicheVorgangskennung,
             $authorizationHash,
@@ -220,9 +213,7 @@ class EasyCreditDispatcherController extends FrontendController
      */
     protected function getInstalmentDecision()
     {
-        $response = $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_DECISION
-            , array($this->getTbVorgangskennung())
-            , array());
+        $response = $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_DECISION, [$this->getTbVorgangskennung()], []);
 
         if (!isset($response->entscheidung->entscheidungsergebnis)) {
             return null;
@@ -265,7 +256,8 @@ class EasyCreditDispatcherController extends FrontendController
      * Returns url to easyCredit payment page
      * @return string
      */
-    public function getRedirectUrl() {
+    public function getRedirectUrl()
+    {
 
         $storage = $this->getInstalmentStorage();
         $url = sprintf($this->getApiConfig()->getRedirectUrl(), $storage->getTbVorgangskennung());
@@ -301,7 +293,7 @@ class EasyCreditDispatcherController extends FrontendController
         //check payment hash again
         $data = $this->getCurrentInitializationData();
         $paymentHash = EasyCreditInitializeRequestBuilder::generatePaymentHash($data);
-        if(!$this->isInitialized($paymentHash)) {
+        if (!$this->isInitialized($paymentHash)) {
             throw new EasyCreditException("OXPS_EASY_CREDIT_ERROR_INITIALIZATION_FAILED");
         }
     }
@@ -327,7 +319,7 @@ class EasyCreditDispatcherController extends FrontendController
     protected function getTbVorgangskennung()
     {
         $storage = $this->getInstalmentStorage();
-        if( $storage ) {
+        if ($storage) {
             return $storage->getTbVorgangskennung();
         }
         throw new EasyCreditException("OXPS_EASY_CREDIT_ERROR_MISSING_VORGANGSKENNUNG");
@@ -351,15 +343,15 @@ class EasyCreditDispatcherController extends FrontendController
     protected function loadEasyCreditFinancialInformation()
     {
         $storage = $this->getInstalmentStorage();
-        if( $storage == null ) {
+        if ($storage == null) {
             throw new EasyCreditException("OXPS_EASY_CREDIT_ERROR_EXPIRED");
         }
 
-        $response = $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_FINANCIAL_INFORMATION, array($storage->getTbVorgangskennung()));
+        $response = $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_FINANCIAL_INFORMATION, [$storage->getTbVorgangskennung()]);
         $allgemeineVorgangsdaten = $response->allgemeineVorgangsdaten;
         $tilgungsplanText = $response->tilgungsplanText;
 
-        $response = $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_FINANZIERUNG, array($storage->getTbVorgangskennung()));
+        $response = $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_FINANZIERUNG, [$storage->getTbVorgangskennung()]);
         $paymentPlan = $response->ratenplan;
         $paymentPlanTxt = $this->getFormattedPaymentPlan($paymentPlan->zahlungsplan);
 
@@ -400,10 +392,11 @@ class EasyCreditDispatcherController extends FrontendController
      * @param $paymentPlan \stdClass
      * @return string
      */
-    protected function getInterestAmount($paymentPlan) {
+    protected function getInterestAmount($paymentPlan)
+    {
 
-        $interestAmount = (float)$paymentPlan->zinsen->anfallendeZinsen;
-        if( empty($interestAmount) || $interestAmount < 0.0 ) {
+        $interestAmount = (float) $paymentPlan->zinsen->anfallendeZinsen;
+        if (empty($interestAmount) || $interestAmount < 0.0) {
             $interestAmount = 0.0;
         }
         return $interestAmount;
@@ -429,13 +422,9 @@ class EasyCreditDispatcherController extends FrontendController
      * @return string response of webservice
      * @throws \Exception if something happened
      */
-    protected function call($endpoint, $additionalArguments = array(), $queryArguments = array(), $data = null)
+    protected function call($endpoint, $additionalArguments = [], $queryArguments = [], $data = null)
     {
-        $webServiceClient = EasyCreditWebServiceClientFactory::getWebServiceClient($endpoint
-            , $this->getDic()
-            , $additionalArguments
-            , $queryArguments
-            , true);
+        $webServiceClient = EasyCreditWebServiceClientFactory::getWebServiceClient($endpoint, $this->getDic(), $additionalArguments, $queryArguments, true);
 
         return $webServiceClient->execute($data);
     }
@@ -470,7 +459,7 @@ class EasyCreditDispatcherController extends FrontendController
      */
     protected function getDic()
     {
-        if(!$this->dic) {
+        if (!$this->dic) {
             $this->dic = EasyCreditDicFactory::getDic();
         }
 
@@ -484,7 +473,7 @@ class EasyCreditDispatcherController extends FrontendController
      */
     protected function getApiConfig()
     {
-        if(!$this->apiConfig ) {
+        if (!$this->apiConfig) {
             $this->apiConfig = $this->getDic()->getApiConfig();
         }
         return $this->apiConfig;

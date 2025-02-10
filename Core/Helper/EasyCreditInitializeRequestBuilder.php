@@ -1,14 +1,10 @@
 <?php
-/**
- * This Software is the property of OXID eSales and is protected
- * by copyright law - it is NOT Freeware.
+
+/*
+ * This file is part of OXID eSales AG EasyCredit module
+ * Copyright © OXID eSales AG. All rights reserved.
  *
- * Any unauthorized use of this software without a valid license key
- * is a violation of the license agreement and will be prosecuted by
- * civil and criminal law.
- *
- * @link      http://www.oxid-esales.com
- * @copyright (C) OXID eSales AG 2003-2021
+ * Licensed under the GNU GPL v3 - See the file LICENSE for details.
  */
 
 namespace OxidProfessionalServices\EasyCredit\Core\Helper;
@@ -25,10 +21,12 @@ use OxidEsales\Eshop\Application\Model\Order;
 use OxidEsales\Eshop\Application\Model\User;
 use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Exception\SystemComponentException;
+use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\Session;
 use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditApiConfig;
 use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDic;
 use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicFactory;
+use OxidProfessionalServices\EasyCredit\Core\Exception\EasyCreditException;
 
 /**
  * Class to build the data for request "VorgangInitialisierenRequest" as part of initialization of easyCredit
@@ -36,12 +34,12 @@ use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicFactory;
  */
 class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestBuilderInterface
 {
-    const INTEGRATIONSART           = 'PAYMENT_PAGE';
-    const DEFAULT_INSTALMENT_TIME   = 36;
-    const RISCS_NO_INFO             = "KEINE_INFORMATION";
-    const RISCS_NEUKUNDE            = "NEUKUNDE";
-    const RISCS_BESTANDSKUNDE       = "BESTANDSKUNDE";
-    const ARTICLE_GTIN              = "GTIN";
+    public const INTEGRATIONSART           = 'PAYMENT_PAGE';
+    public const DEFAULT_INSTALMENT_TIME   = 36;
+    public const RISCS_NO_INFO             = "KEINE_INFORMATION";
+    public const RISCS_NEUKUNDE            = "NEUKUNDE";
+    public const RISCS_BESTANDSKUNDE       = "BESTANDSKUNDE";
+    public const ARTICLE_GTIN              = "GTIN";
 
     /** @var User */
     private $user;
@@ -70,10 +68,10 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
     /** @var EasyCreditDic */
     private $dic;
 
-    private $salutationMapping = array(
+    private $salutationMapping = [
         "MR"    => "HERR",
         "MRS"   => "FRAU",
-    );
+    ];
 
     /**
      * Builds and gets request body content for VorgangInitialisierenRequest
@@ -82,7 +80,7 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
      */
     public function getInitializationData()
     {
-        $initRequest = array(
+        $initRequest = [
             'integrationsart'           => self::INTEGRATIONSART,
             'shopKennung'               => $this->getWebshopId(),
             'bestellwert'               => $this->getBasketPrice(),
@@ -96,8 +94,8 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
             'risikorelevanteAngaben'    => $this->getRiscs(),
             'warenkorbinfos'            => array_filter($this->getBasketInfo()),
             'technischeShopparameter'   => array_filter($this->getTechnicals()),
-            'VorgangskennungShop'       => $this->getOrderNr()
-        );
+            'VorgangskennungShop'       => $this->getOrderNr(),
+        ];
 
         return array_filter($initRequest);
     }
@@ -129,11 +127,11 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
      */
     protected function getBasketInfo()
     {
-        $basketInfo = array();
+        $basketInfo = [];
 
         $basketitemlist = $this->getBasket()->getBasketArticles();
         $basketContents = $this->getBasket()->getContents();
-        if( empty($basketContents) ) {
+        if (empty($basketContents)) {
             return $basketInfo;
         }
 
@@ -170,18 +168,17 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
         $user = $this->getUser();
 
         $isGuestOrder = empty($user->oxuser__oxpassword->value);
-        if( $isGuestOrder) {
+        if ($isGuestOrder) {
             $registerDate = "";
             $customerStatus = self::RISCS_NEUKUNDE;
-        }
-        else { //registered user
+        } else { //registered user
             $registerDate = $this->getDate($user->oxuser__oxregister->value);
 
             $customerStatus = $this->getRegisteredCustomerStatus($user);
         }
 
         $basket = $this->getBasket();
-        return array(
+        return [
             "bestellungErfolgtUeberLogin" => !$isGuestOrder,
             "kundeSeit" => $registerDate,
             "anzahlBestellungen" => $user->getOrderCount(),
@@ -189,8 +186,8 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
             "anzahlProdukteImWarenkorb" => $basket->getItemsCount(),
             "negativeZahlungsinformation" => self::RISCS_NO_INFO,
             "risikoartikelImWarenkorb" => false,
-            "logistikDienstleister" => ""
-        );
+            "logistikDienstleister" => "",
+        ];
     }
 
     protected function getRegisteredCustomerStatus($user)
@@ -200,7 +197,7 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
         if (count($userGroups)) {
             /** @var $userGroup Groups */
             foreach ($userGroups as $userGroup) {
-                if( $userGroup->getId() == "oxidnotyetordered" ) {
+                if ($userGroup->getId() == "oxidnotyetordered") {
                     return self::RISCS_NEUKUNDE;
                 }
             }
@@ -212,10 +209,11 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
      *
      * @return string|null
      */
-    protected function getSalutation() {
+    protected function getSalutation()
+    {
         $salutation = $this->getUser()->oxuser__oxsal->value;
-        if( $salutation ) {
-            if( key_exists($salutation, $this->salutationMapping) ) {
+        if ($salutation) {
+            if (key_exists($salutation, $this->salutationMapping)) {
                 return $this->salutationMapping[$salutation];
             }
         }
@@ -227,9 +225,10 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
      *
      * @return false|null|string
      */
-    protected function convertBirthday() {
+    protected function convertBirthday()
+    {
         $birthday = $this->getUser()->oxuser__oxbirthdate->value;
-        if( $birthday && $birthday != "0000-00-00" ) {
+        if ($birthday && $birthday != "0000-00-00") {
             return $this->getDate($birthday);
         }
         return null;
@@ -240,20 +239,21 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
      *
      * @return array
      */
-    protected function getBillingAddress() {
+    protected function getBillingAddress()
+    {
 
         $user = $this->getUser();
 
         $countryIso2 = $this->getBillingCountryIso2($user->oxuser__oxcountryid->value);
         $fullStreet = $this->getFullStreet($user->oxuser__oxstreet->value, $user->oxuser__oxstreetnr->value);
 
-        $address = array(
+        $address = [
             "strasseHausNr" => $fullStreet,
             "adresszusatz" => $user->oxuser__oxaddinfo->value,
             "plz" => $user->oxuser__oxzip->value,
             "ort" => $user->oxuser__oxcity->value,
-            "land" => $countryIso2
-        );
+            "land" => $countryIso2,
+        ];
 
         return $address;
     }
@@ -263,22 +263,23 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
      *
      * @return array
      */
-    protected function convertShippingAddress() {
+    protected function convertShippingAddress()
+    {
 
         $user = $this->getUser();
-        $address = array(
+        $address = [
             "vorname" => $user->oxuser__oxfname->value,
             "nachname" => $user->oxuser__oxlname->value,
-            "packstation" => false
-        );
+            "packstation" => false,
+        ];
 
         $delivadr = $this->getShippingAddress();
-        if( $delivadr ) {
+        if ($delivadr) {
             $countryIso2 = $this->getShippingCountryIso($delivadr->oxaddress__oxcountryid->value);
             $street = $delivadr->oxaddress__oxstreet->value;
             $streetNr = $delivadr->oxaddress__oxstreetnr->value;
             $fullStreet = $this->getFullStreet($street, $streetNr);
-            $address = array(
+            $address = [
                 "vorname" => $delivadr->oxaddress__oxfname->value,
                 "nachname" => $delivadr->oxaddress__oxlname->value,
                 "strasseHausNr" => $fullStreet,
@@ -286,10 +287,9 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
                 "plz" => $delivadr->oxaddress__oxzip->value,
                 "ort" => $delivadr->oxaddress__oxcity->value,
                 "land" => $countryIso2,
-                "packstation" => EasyCreditHelper::hasPackstationFormat($street, $streetNr)
-            );
-        }
-        else {
+                "packstation" => EasyCreditHelper::hasPackstationFormat($street, $streetNr),
+            ];
+        } else {
             $address = array_merge($address, $this->getBillingAddress());
         }
 
@@ -304,7 +304,7 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
      */
     protected function getBillingCountryIso2($countryId)
     {
-        if(!$this->billingCountryIso ) {
+        if (!$this->billingCountryIso) {
             $this->billingCountryIso = $this->getCountryIso2ByCountryId($countryId);
         }
         return $this->billingCountryIso;
@@ -318,7 +318,7 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
      */
     protected function getShippingCountryIso($countryId)
     {
-        if(!$this->shippingCountryIso ) {
+        if (!$this->shippingCountryIso) {
             $this->shippingCountryIso = $this->getCountryIso2ByCountryId($countryId);
         }
         return $this->shippingCountryIso;
@@ -393,7 +393,8 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
      *
      * @return Session
      */
-    protected function getSession() {
+    protected function getSession()
+    {
 
         $session = $this->getDic()->getSession();
         return $session;
@@ -404,7 +405,8 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
      *
      * @return Config
      */
-    protected function getConfig() {
+    protected function getConfig()
+    {
 
         $config = $this->getDic()->getConfig();
         return $config;
@@ -425,7 +427,8 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
      *
      * @return int
      */
-    protected function getInstalmentTime() {
+    protected function getInstalmentTime()
+    {
 
         return self::DEFAULT_INSTALMENT_TIME;
     }
@@ -435,7 +438,8 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
      *
      * @return Basket
      */
-    protected function getBasket() {
+    protected function getBasket()
+    {
 
         return $this->basket;
     }
@@ -455,9 +459,10 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
      *
      * @return object oxaddress
      */
-    protected function getShippingAddress() {
+    protected function getShippingAddress()
+    {
 
-         return $this->shippingAddress;
+        return $this->shippingAddress;
     }
 
     /**
@@ -465,7 +470,8 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
      *
      * @return User
      */
-    protected function getUser() {
+    protected function getUser()
+    {
 
         return $this->user;
     }
@@ -475,7 +481,8 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
      *
      * @param string $shopEdition
      */
-    public function setShopEdition($shopEdition) {
+    public function setShopEdition($shopEdition)
+    {
 
         $this->shopEdition = $shopEdition;
     }
@@ -542,7 +549,7 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
     private function getCountryIso2ByCountryId($countryId)
     {
         $country = oxNew(Country::class);
-        if($country->load($countryId)) {
+        if ($country->load($countryId)) {
             return $country->oxcountry__oxisoalpha2->value;
         }
         return "";
@@ -555,11 +562,11 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
      */
     protected function getResponseUrls()
     {
-        return array(
+        return [
             'urlAbbruch'   => $this->getAbortUrl(),
             'urlErfolg'    => $this->getSuccessUrl(),
-            'urlAblehnung' => $this->getRejectUrl()
-        );
+            'urlAblehnung' => $this->getRejectUrl(),
+        ];
     }
 
     /**
@@ -570,12 +577,54 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
     protected function getPersonals()
     {
         $user = $this->getUser();
-        return array(
+        $this->validateUser($user);
+        return [
             'anrede'       => $this->getSalutation(),
             'vorname'      => $user->oxuser__oxfname->value,
             'nachname'     => $user->oxuser__oxlname->value,
-            'geburtsdatum' => $this->convertBirthday()
-        );
+            'geburtsdatum' => $this->convertBirthday(),
+        ];
+    }
+
+    private function validateUser($user)
+    {
+        $fname = $user->oxuser__oxfname->value;
+        $lname = $user->oxuser__oxlname->value;
+        $fnameLength = strlen($fname);
+        $lnameLength = strlen($lname);
+
+        if ($fnameLength < 2) {
+            throw new EasyCreditException('OXPS_EASY_CREDIT_ERROR_FNAME_SMALL');
+        }
+
+        if ($fnameLength > 27) {
+            throw new EasyCreditException('OXPS_EASY_CREDIT_ERROR_FNAME_LONG');
+        }
+
+        if ($lnameLength < 2) {
+            throw new EasyCreditException('OXPS_EASY_CREDIT_ERROR_LNAME_SMALL');
+        }
+
+        if ($lnameLength > 27) {
+            throw new EasyCreditException('OXPS_EASY_CREDIT_ERROR_LNAME_LONG');
+        }
+
+        // Define the allowed character set
+        $pattern = '/[^-a-zÀ-žA-ZäüößÄÖÜěščřžůďťňĎŇŤŠČŘŽŮĚO\'\.\, ]/';
+
+        // Check for invalid characters in first name
+        if (preg_match_all($pattern, $fname, $matches)) {
+            $invalidChars = implode(', ', array_unique($matches[0]));
+            $exceptionMessage = Registry::getLang()->translateString('OXPS_EASY_CREDIT_ERROR_FNAME_CONTAINS_INVALID_CHAR');
+            throw new EasyCreditException(sprintf($exceptionMessage, $invalidChars));
+        }
+
+        // Check for invalid characters in last name
+        if (preg_match_all($pattern, $lname, $matches)) {
+            $invalidChars = implode(', ', array_unique($matches[0]));
+            $exceptionMessage = Registry::getLang()->translateString('OXPS_EASY_CREDIT_ERROR_LNAME_CONTAINS_INVALID_CHAR');
+            throw new EasyCreditException(sprintf($exceptionMessage, $invalidChars));
+        }
     }
 
     /**
@@ -586,11 +635,11 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
     protected function getContacts()
     {
         $customer = $this->getUser();
-        $contacts = array(
-            'email' => $customer->oxuser__oxusername->value
-        );
+        $contacts = [
+            'email' => $customer->oxuser__oxusername->value,
+        ];
         $phoneNumber = $customer->oxuser__oxfon->value;
-        if( $this->isValidPhoneNumber($phoneNumber) ) {
+        if ($this->isValidPhoneNumber($phoneNumber)) {
             $contacts["mobilfunknummer"] = $phoneNumber;
             $contacts["pruefungMobilfunknummerUebergehen"] = true;
         }
@@ -606,7 +655,7 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
      */
     protected function isValidPhoneNumber($phoneNumber)
     {
-        if( empty($phoneNumber) ) {
+        if (empty($phoneNumber)) {
             return false;
         }
         return preg_match('/^[\+]?[\d \- ]+$/', $phoneNumber); //leading +, then numbers, minus and spaces
@@ -620,9 +669,9 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
     protected function getFurtherCustomerInfo()
     {
         $customer = $this->getUser();
-        return array(
+        return [
             'telefonnummer' => $customer->oxuser__oxfon->value,
-        );
+        ];
     }
 
     /**
@@ -632,10 +681,10 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
      */
     protected function getTechnicals()
     {
-        return array(
+        return [
             'shopSystemHersteller'   => "OXID eShop " . $this->getShopSystem(),
-            'shopSystemModulversion' => $this->getModuleVersion()
-        );
+            'shopSystemModulversion' => $this->getModuleVersion(),
+        ];
     }
 
     /**
@@ -682,19 +731,19 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
             $price = $unitPrice->getPrice();
         }
 
-        return array(
+        return [
             "produktbezeichnung" => $basketitem->getTitle(),
             "menge"              => $basketitem->getAmount(),
             "preis"              => $price,
             "hersteller"         => $manufacturerTitle,
             "produktkategorie"   => $categoryTitle,
-            "artikelnummern"     => array(
-                array(
+            "artikelnummern"     => [
+                [
                     "nummerntyp" => self::ARTICLE_GTIN,
                     "nummer"     => $basketproduct->oxarticles__oxartnum->value,
-                )
-            )
-        );
+                ],
+            ],
+        ];
     }
 
     /**
@@ -705,11 +754,11 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
      */
     protected function getDate($date)
     {
-        if( empty($date) || $date < 1 ) {
+        if (empty($date) || $date < 1) {
             return "";
         }
 
-        if( strtotime($date) === false ) {
+        if (strtotime($date) === false) {
             return "";
         }
 

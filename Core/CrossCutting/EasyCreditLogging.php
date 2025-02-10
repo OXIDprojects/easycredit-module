@@ -1,24 +1,20 @@
 <?php
-/**
- * This Software is the property of OXID eSales and is protected
- * by copyright law - it is NOT Freeware.
+
+/*
+ * This file is part of OXID eSales AG EasyCredit module
+ * Copyright © OXID eSales AG. All rights reserved.
  *
- * Any unauthorized use of this software without a valid license key
- * is a violation of the license agreement and will be prosecuted by
- * civil and criminal law.
- *
- * @link      http://www.oxid-esales.com
- * @copyright (C) OXID eSales AG 2003-2021
+ * Licensed under the GNU GPL v3 - See the file LICENSE for details.
  */
 
 namespace OxidProfessionalServices\EasyCredit\Core\CrossCutting;
 
 class EasyCreditLogging
 {
-    const LOG_CONFIG_LOG_DIR = 'logDir';
-    const LOG_CONFIG_LOG_ENABLED = 'logEnabled';
+    public const LOG_CONFIG_LOG_DIR = 'logDir';
+    public const LOG_CONFIG_LOG_ENABLED = 'logEnabled';
 
-    const EASYCREDIT_DEFAULT_LOG_FILENAME = 'easycredit.log';
+    public const EASYCREDIT_DEFAULT_LOG_FILENAME = 'easycredit.log';
 
     /**
      * @var string
@@ -74,7 +70,7 @@ class EasyCreditLogging
             $result .= $this->buildPrettyJsonString($encodedResponse);
         }
 
-        $result .= 'took ' . round($duration * 1000) . ' milliseconds' . PHP_EOL;
+        $result .= 'took ' . round($duration * 1_000) . ' milliseconds' . PHP_EOL;
 
         $result .= str_repeat('=', 60) . PHP_EOL . PHP_EOL;
 

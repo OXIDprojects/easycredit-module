@@ -1,14 +1,10 @@
 <?php
-/**
- * This Software is the property of OXID eSales and is protected
- * by copyright law - it is NOT Freeware.
+
+/*
+ * This file is part of OXID eSales AG EasyCredit module
+ * Copyright © OXID eSales AG. All rights reserved.
  *
- * Any unauthorized use of this software without a valid license key
- * is a violation of the license agreement and will be prosecuted by
- * civil and criminal law.
- *
- * @link      http://www.oxid-esales.com
- * @copyright (C) OXID eSales AG 2003-2021
+ * Licensed under the GNU GPL v3 - See the file LICENSE for details.
  */
 
 namespace OxidProfessionalServices\EasyCredit\Core\Domain;
@@ -44,10 +40,10 @@ class EasyCreditBasket extends EasyCreditBasket_parent
      */
     public function getInterestsAmount()
     {
-        if ( EasyCreditHelper::isEasyCreditInstallmentById($this->getPaymentId())) {
+        if (EasyCreditHelper::isEasyCreditInstallmentById($this->getPaymentId())) {
 
             $storage = $this->getDic()->getSession()->getStorage();
-            if( $storage ) {
+            if ($storage) {
                 return $storage->getInterestAmount();
             }
         }
@@ -75,7 +71,7 @@ class EasyCreditBasket extends EasyCreditBasket_parent
     public function setCost($sCostName, $oPrice = null)
     {
         parent::setCost($sCostName, $oPrice);
-        if(!$this->excludeInstalmentsCosts && $sCostName == "oxpayment") {
+        if (!$this->excludeInstalmentsCosts && $sCostName == "oxpayment") {
             $this->setCost('easycredit_interests', $this->calcInterestsCost());
         }
     }
@@ -85,7 +81,8 @@ class EasyCreditBasket extends EasyCreditBasket_parent
      *
      * @return Price
      */
-    public function calcInterestsCost() {
+    public function calcInterestsCost()
+    {
 
         /** @var $interestsPrice Price */
         $interestsPrice = oxNew(Price::class);
