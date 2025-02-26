@@ -78,7 +78,7 @@ class EasyCreditOrderOverviewController extends EasyCreditOrderOverviewControlle
      *
      * @return EasyCreditTradingApiAccess
      */
-    protected function getService($order)
+    protected function getApiService($order)
     {
         return oxNew(EasyCreditTradingApiAccess::class, $order);
     }
@@ -103,7 +103,7 @@ class EasyCreditOrderOverviewController extends EasyCreditOrderOverviewControlle
      */
     protected function setOrderDelivered(): void
     {
-        $tradingApiService = $this->getService($this->order);
+        $tradingApiService = $this->getApiService($this->order);
         $tradingApiService->setOrderDeliveredState();
 
         $orderdata = $tradingApiService->getOrderData();

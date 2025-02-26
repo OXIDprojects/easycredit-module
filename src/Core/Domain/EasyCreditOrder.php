@@ -71,7 +71,7 @@ class EasyCreditOrder extends EasyCreditOrder_parent {
         }
         catch(EasyCreditInitializationFailedException $iex) {
             $this->handleUserException($iex->getMessage());
-            Registry::getUtils()->redirect($this->getConfig()->getShopCurrentURL() . '&cl=payment', true, 302);
+            Registry::getUtils()->redirect(Registry::getConfig()->getShopCurrentURL() . '&cl=payment', true, 302);
         }
         catch(\Exception $ex) {
             $this->handleException($ex);
@@ -274,7 +274,7 @@ class EasyCreditOrder extends EasyCreditOrder_parent {
         $requestBuilder->setBasket($oBasket);
         $requestBuilder->setShippingAddress($this->getShippingAddress());
 
-        $shopEdition = EasyCreditHelper::getShopSystem($this->getConfig()->getActiveShop());
+        $shopEdition = EasyCreditHelper::getShopSystem(Registry::getConfig()->getActiveShop());
         $requestBuilder->setShopEdition($shopEdition);
 
         $moduleVersion = EasyCreditHelper::getModuleVersion($this->getDic());

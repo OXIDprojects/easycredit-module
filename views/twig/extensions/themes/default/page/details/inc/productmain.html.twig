@@ -2,7 +2,7 @@
 
 {% block details_productmain_tobasket %}
     {% if oViewConf.getOxpsECExampleCalcArticle() %}
-        {{ include_widget({ cl: "EasyCreditExampleCalculation", _parent: oView.getClassKey(), articleId: oDetailsProduct.getId(), placeholderId: "oxpseasycredit-example-product" }) }}
+        {{ include_widget({ cl: "EasyCreditExampleCalculation", _parent: oView.getClassKey(), articleId: oDetailsProduct.getId(), placeholderId: "oxpseasycredit-example-product", jsFunctionSuffix: "Product" }) }}
     {% endif %}
     {{ parent() }}
 {% endblock %}

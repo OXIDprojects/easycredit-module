@@ -148,7 +148,7 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
      */
     protected function getEasyCreditDeliveryState()
     {
-        $service = $this->getService();
+        $service = $this->getApiService();
 
         return $service->getOrderState();
     }
@@ -161,8 +161,8 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
      */
     protected function getEasyCreditOrderData()
     {
-        $orderData = $this->getService()->getOrderData();
-        if (1 > count($orderData)) {
+        $orderData = $this->getApiService()->getOrderData();
+        if (!is_array($orderData) || count($orderData) < 1) {
             throw new EasyCreditException(
                 "No data found for order with identifier {$this->order->getFieldData('ecredfunctionalid')}"
             );
@@ -194,7 +194,7 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
      *
      * @return mixed|EasyCreditTradingApiAccess
      */
-    protected function getService()
+    protected function getApiService()
     {
         return oxNew(EasyCreditTradingApiAccess::class, $this->getOrder());
     }
@@ -219,7 +219,7 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
                 throw new EasyCreditException("Functional ID mismatch");
             }
             # match reversal amount to max open amount
-            $service               = $this->getService();
+            $service               = $this->getApiService();
             $orderData             = $service->getOrderData();
             $maxReversalAmount     = (float)$orderData[0]->bestellwertAktuell;
             $requestReversalAmount = (float)$request['amount'];
@@ -242,7 +242,7 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
     {
         $amount = (float) $request['amount'];
         $reason = $request['reason'];
-        $service = $this->getService();
+        $service = $this->getApiService();
         $service->sendReversal($amount, $reason);
     }
 }

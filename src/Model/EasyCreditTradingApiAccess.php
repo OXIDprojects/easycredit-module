@@ -92,7 +92,7 @@ class EasyCreditTradingApiAccess
     public function getOrderState($blUpdateLocalOrderState = false)
     {
         $state = $this->getOrderData($blUpdateLocalOrderState);
-        if (count($state)) {
+        if (is_array($state) && !empty($state)) {
             $state = Registry::getLang()->translateString('OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_' . $state[0]->haendlerstatusV2);
         } else {
             $state = Registry::getLang()->translateString('OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_ERROR');

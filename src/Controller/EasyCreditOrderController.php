@@ -76,9 +76,9 @@ class EasyCreditOrderController extends EasyCreditOrderController_parent
         try {
             /** @var $viewConfig ViewConfig */
             $viewConfig = $this->getViewConfig();
-            $logoFile = $viewConfig->getModulePath('oxpseasycredit', "out" . DIRECTORY_SEPARATOR . "pictures" . DIRECTORY_SEPARATOR . "eclogo.png");
-            if( file_exists($logoFile)) {
-                return $viewConfig->getModuleUrl('oxpseasycredit') . 'out/pictures/eclogo.png';
+            $logoFile = $viewConfig->getModulePath('osceasycredit', "img" . DIRECTORY_SEPARATOR . "eclogo.png");
+            if(file_exists($logoFile)) {
+                return $viewConfig->getModuleUrl('osceasycredit', 'img/eclogo.png');
             }
         }
         catch (\Exception $ex) {
