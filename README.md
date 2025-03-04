@@ -1,6 +1,6 @@
 # OXID Solution Catalyst easyCredit-Ratenkauf Module
 
-# Version 3.0.8
+# Version 3.0.9
 
 ## Description
 
