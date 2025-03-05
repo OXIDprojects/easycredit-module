@@ -37,7 +37,6 @@ use OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditSession;
 use OxidSolutionCatalysts\EasyCredit\Core\Dto\EasyCreditStorage;
 use OxidSolutionCatalysts\EasyCredit\Core\Helper\EasyCreditHelper;
 use OxidSolutionCatalysts\EasyCredit\Core\Helper\EasyCreditInitializeRequestBuilder;
-use OxidSolutionCatalysts\EasyCredit\Core\PayLoad\EasyCreditPayloadFactory;
 
 /**
  * Class EasyCreditOxOrderTest
@@ -871,7 +870,6 @@ class EasyCreditOrderTest extends UnitTestCase
             EasyCreditDic::class,
             oxNew(EasyCreditDicSession::class, oxNew(EasyCreditSession::class)),
             oxNew(EasyCreditApiConfig::class, $apiConfigured ? EasyCreditDicFactory::getApiConfigArray() : []),
-            oxNew(EasyCreditPayloadFactory::class),
             oxNew(EasyCreditLogging::class, []),
             oxNew(EasyCreditDicConfig::class, Registry::getConfig())
         );

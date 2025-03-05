@@ -10,8 +10,8 @@
  * @link      http://www.oxid-esales.com
  * @copyright (C) OXID eSales AG 2003-2021
  */
-namespace OxidSolutionCatalysts\EasyCredit\Controller\Admin;
 
+namespace OxidSolutionCatalysts\EasyCredit\Controller\Admin;
 
 use OxidEsales\Eshop\Core\Registry;
 
@@ -44,11 +44,10 @@ class EasyCreditOrderListController extends EasyCreditOrderListController_parent
      * @param string $fullQuery  SQL query string
      *
      * @return string
-     * @deprecated underscore prefix violates PSR12, will be renamed to "prepareWhereQuery" in next major
      */
-    protected function _prepareWhereQuery($whereQuery, $fullQuery) // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
+    protected function prepareWhereQuery($whereQuery, $fullQuery)
     {
-        $query = parent::_prepareWhereQuery($whereQuery, $fullQuery);
+        $query = parent::prepareWhereQuery($whereQuery, $fullQuery);
         $orders = Registry::getRequest()->getRequestParameter('ecorders');
         switch ($orders) {
             case 'only':

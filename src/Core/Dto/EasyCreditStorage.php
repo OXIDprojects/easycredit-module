@@ -49,8 +49,8 @@ class EasyCreditStorage
     function __construct($tbVorgangskennung,
                          $fachlicheVorgangskennung,
                          $authorizationHash,
-                         $authorizedAmount) {
-
+                         $authorizedAmount)
+    {
         $this->tbVorgangskennung = $tbVorgangskennung;
         $this->fachlicheVorgangskennung = $fachlicheVorgangskennung;
         $this->authorizationHash = $authorizationHash;
@@ -74,12 +74,12 @@ class EasyCreditStorage
      *
      * @return bool
      */
-    public function hasExpired() {
-
-        if( empty($this->lastUpdate) ) {
+    public function hasExpired()
+    {
+        if (empty($this->lastUpdate)) {
             return true;
         }
-        if (time() > ($this->lastUpdate + $this->getStorageExpiredTimeRange()) ) {
+        if (time() > ($this->lastUpdate + $this->getStorageExpiredTimeRange())) {
             return true;
         }
         return false;

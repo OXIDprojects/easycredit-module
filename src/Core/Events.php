@@ -30,30 +30,6 @@ use Symfony\Component\Console\Output\BufferedOutput;
  */
 class Events
 {
-
-    /**
-     * Class constructor.
-     * Sets current module main data and loads the rest module info.
-     *
-     * Can see no reason for this
-    function __construct()
-    {
-        $sModuleId = 'oxpseasycredit';
-
-        $this->setModuleData(
-            array(
-                 'id'          => $sModuleId,
-                 'title'       => 'OXPS Easy Credit',
-                 'description' => 'OXPS Easy Credit Module',
-            )
-        );
-
-        $this->load($sModuleId);
-
-        Registry::set('oxpsEasyCreditModule', $this);
-    }*/
-
-
     /**
      * Module activation script.
      */
@@ -111,16 +87,6 @@ class Events
         }
 
         return Registry::getLang()->translateString($sCode, Registry::getLang()->getBaseLanguage(), false);
-    }
-
-    /**
-     * Get module path.
-     *
-     * @return string Full path to the module directory.
-     */
-    public function getPath()
-    {
-        return Registry::getConfig()->getModulesDir() . 'oxps/easycredit-module/';
     }
 
     /**
@@ -185,7 +151,7 @@ class Events
      */
     protected static function _clear($sFileName, $sFilePath)
     {
-        if (!in_array($sFileName, array('.', '..', '.gitkeep', '.htaccess'))) {
+        if (!in_array($sFileName, ['.', '..', '.gitkeep', '.htaccess'])) {
             if (is_file($sFilePath)) {
                 @unlink($sFilePath);
             } else {
@@ -219,7 +185,6 @@ class Events
 
     protected static function _dbEventShopSpecificSql($sql, $aShops, $sFailureError)
     {
-
         foreach ($aShops as $sShopId) {
             $sShopId = reset($sShopId);
             if (!$sShopId) {

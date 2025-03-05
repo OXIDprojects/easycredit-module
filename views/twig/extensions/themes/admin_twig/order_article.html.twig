@@ -14,11 +14,13 @@
 {% endblock %}
 
 {% block admin_order_article_listitem %}
+    <h1>A</h1>
     {% if edit.oxorder__oxpaymenttype.value == "easycreditinstallment" %}
+        <h1>B</h1>
         {% if listitem.oxorderarticles__oxstorno.value == 1 %}
             {% set listclass = "listitem3" %}
         {% else %}
-            {% set listclass = "listitem"|blWhite %}
+            {% set listclass = "listitem" ~ blWhite %}
         {% endif %}
         <td style="vertical-align: top" class="{{ listclass }}">
             {{ listitem.oxorderarticles__oxamount.value }}

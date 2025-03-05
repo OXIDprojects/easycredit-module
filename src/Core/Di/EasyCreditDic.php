@@ -14,7 +14,6 @@
 namespace OxidSolutionCatalysts\EasyCredit\Core\Di;
 
 use OxidSolutionCatalysts\EasyCredit\Core\CrossCutting\EasyCreditLogging;
-use OxidSolutionCatalysts\EasyCredit\Core\PayLoad\EasyCreditPayloadFactory;
 
 /**
  * Class Dic
@@ -29,9 +28,6 @@ class EasyCreditDic
     /** @var EasyCreditApiConfig */
     private $apiConfig;
 
-    /** @var EasyCreditPayloadFactory */
-    private $payloadFactory;
-
     /** @var EasyCreditLogging */
     private $logging;
 
@@ -43,15 +39,13 @@ class EasyCreditDic
      *
      * @param EasyCreditDicSession     $dicSession
      * @param EasyCreditApiConfig      $apiConfig
-     * @param EasyCreditPayloadFactory $payloadFactory
      * @param EasyCreditLogging        $logging
      * @param EasyCreditDicConfig          $dicConfig
      */
-    public function __construct($dicSession, $apiConfig, $payloadFactory, $logging, $dicConfig)
+    public function __construct($dicSession, $apiConfig, $logging, $dicConfig)
     {
         $this->dicSession = $dicSession;
         $this->apiConfig = $apiConfig;
-        $this->payloadFactory = $payloadFactory;
         $this->logging = $logging;
         $this->dicConfig = $dicConfig;
     }
@@ -75,15 +69,6 @@ class EasyCreditDic
     }
 
     /**
-     * @return EasyCreditPayloadFactory
-     * @codeCoverageIgnore
-     */
-    public function getPayloadFactory()
-    {
-        return $this->payloadFactory;
-    }
-
-    /**
      * @return EasyCreditLogging
      * @codeCoverageIgnore
      */
@@ -100,6 +85,4 @@ class EasyCreditDic
     {
         return $this->dicConfig;
     }
-
-
 }

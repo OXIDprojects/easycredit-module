@@ -16,7 +16,6 @@ use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDicFactory;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDicSession;
 use OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditPayment;
 use OxidSolutionCatalysts\EasyCredit\Core\Exception\EasyCreditException;
-use OxidSolutionCatalysts\EasyCredit\Core\PayLoad\EasyCreditPayloadFactory;
 
 /**
  * Class EasyCreditPaymentTest
@@ -48,14 +47,12 @@ class EasyCreditPaymentTest extends UnitTestCase
         $session = oxNew(EasyCreditDicSession::class, $oxSession);
         $mockApiConfig = oxNew(EasyCreditApiConfig::class, EasyCreditDicFactory::getApiConfigArray());
         $mockLogging = $this->getMock(EasyCreditLogging::class, [], [[]]);
-        $mockPayloadFactory = $this->getMock(EasyCreditPayloadFactory::class, [], []);
         $mockDicConfig = $this->getMock(EasyCreditDicConfig::class, [], [$mockOxConfig]);
 
         $mockDic = oxNew(
             EasyCreditDic::class,
             $session,
             $mockApiConfig,
-            $mockPayloadFactory,
             $mockLogging,
             $mockDicConfig
         );

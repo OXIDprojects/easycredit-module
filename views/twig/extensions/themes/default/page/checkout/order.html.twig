@@ -5,24 +5,30 @@
 
     {% set payment = oView.getPayment() %}
     {% if payment.getId() == "easycreditinstallment" %}
-        <div class="easycredit_tilgungsplan panel panel-default">
-
-            <div class="panel-heading">
-                <h3 class="panel-title">{{ translate({ ident: "OXPS_EASY_CREDIT_INSTALMENT_PLAN" }) }}</h3>
-            </div>
-
-            <div class="panel-body">
-                {% set instalmentPaymentText = oView.getTilgungsplanText() %}
-                {% if instalmentPaymentText  %}
-                    <p>{{ instalmentPaymentText }}</p>
-                    {% set urlVorvertraglicheInformationen = oView.getUrlVorvertraglicheInformationen() %}
-                    {% if urlVorvertraglicheInformationen  %}
-                        <p><a class="easycredit-precontract-info" target="_blank" title="{{ translate({ ident: "OXPS_EASY_CREDIT_PRECONTRACT_INFORMATION" }) }}" href="{{ urlVorvertraglicheInformationen }}">{{ translate({ ident: "OXPS_EASY_CREDIT_PRECONTRACT_INFORMATION" }) }}</a></p>
-                    {% endif %}
-                {% else %}
-                    <p>{{ translate({ ident: "OXPS_EASY_CREDIT_INSTALMENT_NO_PLAN" }) }}</p>
+        <h2 class="h4 card-header card-title card-header-edit d-flex justify-content-between align-items-center">
+            {{ translate({ ident: "OXPS_EASY_CREDIT_INSTALMENT_PLAN" }) }}
+        </h2>
+        <div class="card-body">
+            {% set instalmentPaymentText = oView.getTilgungsplanText() %}
+            {% if instalmentPaymentText  %}
+                <p>{{ instalmentPaymentText }}</p>
+                {% set urlVorvertraglicheInformationen = oView.getUrlVorvertraglicheInformationen() %}
+                {% if urlVorvertraglicheInformationen  %}
+                    <p><a class="easycredit-precontract-info" target="_blank" title="{{ translate({ ident: "OXPS_EASY_CREDIT_PRECONTRACT_INFORMATION" }) }}" href="{{ urlVorvertraglicheInformationen }}">{{ translate({ ident: "OXPS_EASY_CREDIT_PRECONTRACT_INFORMATION" }) }}</a></p>
                 {% endif %}
-            </div>
+            {% else %}
+                <p>{{ translate({ ident: "OXPS_EASY_CREDIT_INSTALMENT_NO_PLAN" }) }}</p>
+            {% endif %}
         </div>
     {% endif %}
 {% endblock %}
+
+{% block checkout_order_payment_method_desc %}
+    {{ parent() }}
+
+    {% set payment = oView.getPayment() %}
+    {% if payment.getId() == "easycreditinstallment" %}
+        {{ oView.oscGetPaymentDescription()|raw }}
+    {% endif %}
+{% endblock %}
+

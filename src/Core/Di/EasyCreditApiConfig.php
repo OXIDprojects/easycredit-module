@@ -13,7 +13,6 @@
 
 namespace OxidSolutionCatalysts\EasyCredit\Core\Di;
 
-
 use JetBrains\PhpStorm\ArrayShape;
 use OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditPayment;
 
@@ -170,7 +169,7 @@ class EasyCreditApiConfig
         // TODO may be extend for other services?
         switch ($serviceName) {
             default:
-                return array(self::API_CONFIG_SERVICE_REST_ARGUMENT_WEBSHOP_ID => $this->getWebShopId());
+                return [self::API_CONFIG_SERVICE_REST_ARGUMENT_WEBSHOP_ID => $this->getWebShopId()];
         }
     }
 
@@ -180,7 +179,7 @@ class EasyCreditApiConfig
         $urlIdent = self::API_CONFIG_CREDENTIAL_BASE_URL;
         if ($serviceName) {
             $service = $this->getService($serviceName);
-            if($service[self::API_CONFIG_SERVICE_ENDPOINT_TYPE] == self::API_CONFIG_SERVICE_ENDPOINT_TYPE_DEALER_INTERFACE) {
+            if ($service[self::API_CONFIG_SERVICE_ENDPOINT_TYPE] == self::API_CONFIG_SERVICE_ENDPOINT_TYPE_DEALER_INTERFACE) {
                 $urlIdent = self::API_CONFIG_CREDENTIAL_APP_URL;
             }
         }

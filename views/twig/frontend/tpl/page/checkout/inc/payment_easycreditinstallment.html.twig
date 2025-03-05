@@ -1,8 +1,11 @@
 {% set easyCreditIsPossible = oView.isEasyCreditPossible() %}
-<dl>
-    <dt>
-        <input id="payment_{{ sPaymentID }}" type="radio" name="paymentid" value="{{ sPaymentID }}" {% if oView.getCheckedPaymentId() == paymentmethod.oxpayments__oxid.value and oView.isEasyCreditPossible() %}checked{% endif %}{% if not oView.isEasyCreditPossible() %} disabled{% endif %}>
-        <label for="payment_{{ sPaymentID }}"{% if not easyCreditIsPossible %} class="easycreditdisabled"{% endif %}><b>{{ paymentmethod.oxpayments__oxdesc.value }}</b></label>
+<div class="payment-option">
+    <div class="payment-option-form">
+        <input class="form-check-input" id="payment_{{ sPaymentID }}" type="radio" name="paymentid"
+               value="{{ sPaymentID }}"{% if oView.getCheckedPaymentId() == paymentmethod.oxpayments__oxid.value and oView.isEasyCreditPossible() %} checked{% endif %}{% if not oView.isEasyCreditPossible() %} disabled{% endif %}>
+        <label class="form-check-label{% if not easyCreditIsPossible %} easycreditdisabled{% endif %}"
+               for="payment_{{ sPaymentID }}">{{ paymentmethod.oxpayments__oxdesc.value }}</label>
+
         {% if not oView.isEasyCreditPossible() %}
             <div class="col-lg-offset-3">
                 <img class="payment-logo-easycredit" src="{{ oViewConf.getModuleUrl('osceasycredit') }}img/eclogo.png" alt="Easy Credit">
@@ -12,33 +15,11 @@
                 {% endfor %}
             </div>
         {% endif %}
-    </dt>
-    <dd class="payment-option{% if oView.getCheckedPaymentId() == paymentmethod.oxpayments__oxid.value %}activePayment{% endif %}">
         {% if easyCreditIsPossible %}
             <div class="col-lg-offset-3">
                 <img class="payment-logo-easycredit" src="{{ oViewConf.getModuleUrl('osceasycredit') }}img/eclogo.png" alt="Easy Credit">
             </div>
-
-            {% for value in paymentmethod.getDynValues() %}
-                <div class="form-group">
-                    <label class="control-label col-lg-3" for="{{ sPaymentID }}_{{ loop.index }}">{{ value.name }}</label>
-                    <div class="col-lg-9">
-                        <input id="{{ sPaymentID }}_{{ loop.index }}" type="text" class="form-control textbox" size="20" maxlength="64" name="dynvalue[{{ value.name }}]" value="{{ value.value }}">
-                    </div>
-                </div>
-            {% endfor %}
-
-            {% block checkout_payment_longdesc %}
-                {% if paymentmethod.oxpayments__oxlongdesc.value|striptags|trim %}
-                    <div class="clearfix"></div>
-                    <div class="alert alert-info col-lg-offset-3 desc">
-                        {{ paymentmethod.oxpayments__oxlongdesc.getRawValue() }}
-                    </div>
-                {% endif %}
-            {% endblock %}
-
             {% block checkout_payment_easycreditagreement %}
-
                 <div class="clearfix"></div>
 
                 {% if oView.isProfileDataMissing() %}
@@ -76,21 +57,47 @@
                 </div>
 
                 {% capture assign = "easycreditAgreementValidationJS" %}
-                    $("#paymentNextStepBottom").click(function(event){
-                        $("#easycredit_agreement_error").hide();
-                        var success = true;
-
-                        if ( $('#easycredit_agreement').is(':visible') && $('#easycredit_agreement').is(':not(:checked)') )
-                        {
-                            event.preventDefault();
-                            $("#easycredit_agreement_error").show();
-                        }
-                        return true;
-                    });
+                    oscHandlePaymentCheckoutEvents();
                 {% endcapture %}
+                {{ script({ include: oViewConf.getModuleUrl('osceasycredit','js/easycredit.js'), dynamic: __oxid_include_dynamic }) }}
                 {{ script({ add: easycreditAgreementValidationJS, dynamic: __oxid_include_dynamic }) }}
-
             {% endblock %}
         {% endif %}
-    </dd>
-</dl>
+        {% if paymentmethod.getDynValues() or paymentmethod.oxpayments__oxlongdesc.value|striptags|trim %}
+            <div class="payment-option-info{% if oView.getCheckedPaymentId() == paymentmethod.oxpayments__oxid.value %} activePayment{% endif %}">
+                {% for value in paymentmethod.getDynValues() %}
+                    <div class="form-floating mb-3">
+                        <input type="text" size="20"
+                               maxlength="64" name="dynvalue[{{ value.name }}]" value="{{ value.value }}"
+                               class="form-control" id="{{ sPaymentID }}_{{ loop.index }}"
+                               placeholder="name@example.com">
+                        <label for="{{ sPaymentID }}_{{ loop.index }}">{{ value.name }}</label>
+                    </div>
+                {% endfor %}
+
+                {% block checkout_payment_longdesc %}
+                    {% if paymentmethod.oxpayments__oxlongdesc.value|striptags|trim %}
+                        <div class="desc">
+                            {{ paymentmethod.oxpayments__oxlongdesc.value|raw }}
+                        </div>
+                    {% endif %}
+                {% endblock %}
+            </div>
+        {% endif %}
+    </div>
+    {% if paymentmethod.getPrice() %}
+        <div class="payment-option-price">
+            {% set oPaymentPrice = paymentmethod.getPrice() %}
+            {% if oViewConf.isFunctionalityEnabled('blShowVATForPayCharge') %}
+                {% apply spaceless %}
+                    {{ format_price(oPaymentPrice.getNettoPrice(), { currency: currency }) }}
+                    {% if oPaymentPrice.getVatValue() > 0 %}
+                        {{ translate({ ident: "PLUS_VAT" }) }} {{ format_price(oPaymentPrice.getVatValue(), { currency: currency }) }}
+                    {% endif %}
+                {% endapply %}
+            {% else %}
+                {{ format_price(oPaymentPrice.getBruttoPrice(), { currency: currency }) }}
+            {% endif %}
+        </div>
+    {% endif %}
+</div>

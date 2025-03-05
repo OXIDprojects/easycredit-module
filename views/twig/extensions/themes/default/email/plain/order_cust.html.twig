@@ -1,19 +1,23 @@
 {% extends "email/plain/order_cust.html.twig" %}
 
-{% block email_plain_order_owner_interests %}
-    {% set interestsAmount = order.getFInterestsValue() %}
-    {% if interestsAmount %}
-        {{ translate({ ident: "OXPS_EASY_CREDIT_INTERESTS" }) }} {{ interestsAmount }} {{ currency.sign }}
-    {% endif %}
+{% block email_plain_order_cust_grandtotal %}
+    {% block email_plain_order_cust_interests %}
+        {% set interestsAmount = order.getFInterestsValue() %}
+        {% if interestsAmount %}
+            {{ translate({ ident: "OXPS_EASY_CREDIT_INTERESTS" }) }} {{ interestsAmount }} {{ currency.sign }}
+        {% endif %}
+    {% endblock %}
     {{ parent() }}
 {% endblock %}
 
-{% block email_plain_order_owner_easycredit_paymentplan %}
+{% block email_plain_order_cust_paymentinfo %}
     {{ parent() }}
-    {% if payment.oxuserpayments__oxpaymentsid.value == "easycreditinstallment" %}
-        {% set instalmentPaymentText = order.getTilgungsplanTxt() %}
-        {% if instalmentPaymentText  %}
-            {{ translate({ ident: "OXPS_EASY_CREDIT_INSTALMENT_PLAN" }) }} {{ instalmentPaymentText }}
+    {% block email_plain_order_cust_easycredit_paymentplan %}
+        {% if payment.oxuserpayments__oxpaymentsid.value == "easycreditinstallment" %}
+            {% set instalmentPaymentText = order.getTilgungsplanTxt() %}
+            {% if instalmentPaymentText  %}
+                {{ translate({ ident: "OXPS_EASY_CREDIT_INSTALMENT_PLAN" }) }} {{ instalmentPaymentText }}
+            {% endif %}
         {% endif %}
-    {% endif %}
+    {% endblock %}
 {% endblock %}

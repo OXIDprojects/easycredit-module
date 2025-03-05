@@ -9,10 +9,11 @@
         "proprietary"
     ],
     "require": {
-        "ext-curl": "*"
+        "ext-curl": "*",
+        "php": ">=8.0",
+        "oxid-esales/oxideshop-ce": ">=7.0"
     },
     "require-dev": {
-        "oxid-esales/oxideshop-ce": "^7.0",
         "squizlabs/php_codesniffer": "3.*",
         "phpstan/phpstan": "^1.9.2",
         "phpmd/phpmd": "^2.11"

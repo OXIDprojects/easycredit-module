@@ -29,7 +29,7 @@ class EasyCreditHttpClient
     /**
      * @var string[] Additional request headers.
      */
-    protected $_requestHeaders = array();
+    protected $_requestHeaders = [];
 
     /**
      * @var string Base url for the request.
@@ -206,7 +206,7 @@ class EasyCreditHttpClient
     protected function setPostData($data)
     {
         if (!$data) {
-            $data = array();
+            $data = [];
         }
 
         curl_setopt($this->_handle, CURLOPT_POSTFIELDS, $data);

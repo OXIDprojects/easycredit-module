@@ -1,7 +1,0 @@
-[{block name="email_plain_order_owner_interests"}]
-    [{assign var="interestsAmount" value=$order->getFInterestsValue()}]
-    [{if $interestsAmount}]
-        [{oxmultilang ident="OXPS_EASY_CREDIT_INTERESTS"}] [{$interestsAmount}] [{$currency->sign}]
-    [{/if}]
-[{/block}]
-[{$smarty.block.parent}]

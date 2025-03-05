@@ -31,12 +31,13 @@
             $.get('{{ oView.getPopupAjaxUrl()|raw }}', function (data) {
                 $('#easycredit-example-dialog').html(data);
 
-                $('#easycredit-example-dialog').dialog({
+                let dialog = $('#easycredit-example-dialog').dialog({
                     close: true,
                     modal: true,
                     width: 570,
-                    height: 786
-                });
+                    height: 786,
+                    classes: {"ui-dialog": "easycredit-widget"}
+                })
             })
         }
 
