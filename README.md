@@ -1,6 +1,6 @@
 # OXID Solution Catalyst easyCredit-Ratenkauf Module
 
-# Version 3.0.8
+# Version 4.0.0
 
 ## Description
 
@@ -96,11 +96,9 @@ composer update
 
 * Rebranding easyCredit-Ratenkauf
 
-### Version 5.0.0
+### Version 4.0.0
 
 * Version for OXID7
-
-### Version 5.0.1
 
 ## Fix
 
