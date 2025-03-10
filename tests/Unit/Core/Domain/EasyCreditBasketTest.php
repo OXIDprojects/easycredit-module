@@ -18,7 +18,7 @@ namespace OxidSolutionCatalysts\EasyCredit\Tests\Unit\Core\Domain;
 
 use OxidEsales\Eshop\Application\Model\Basket;
 use OxidEsales\Eshop\Core\Price;
-use OxidEsales\TestingLibrary\UnitTestCase;
+use PHPUnit\Framework\TestCase;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDic;
 use OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditBasket;
 use OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditPayment;
@@ -28,7 +28,7 @@ use OxidSolutionCatalysts\EasyCredit\Core\Dto\EasyCreditStorage;
 /**
  * Class EasyCreditOxBasketTest
  */
-class EasyCreditBasketTest extends UnitTestCase
+class EasyCreditBasketTest extends TestCase
 {
     /**
      * Set up test environment
@@ -59,18 +59,20 @@ class EasyCreditBasketTest extends UnitTestCase
         $session = oxNew(EasyCreditSession::class);
         $session->setVariable('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
 
-        $dic = $this->getMock(
-            EasyCreditDic::class,
-            ['getSession'],
-            [null, null, null, null, null]
-        );
+        $dic = $this->getMockBuilder(EasyCreditDic::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getSession'])
+            ->getMock();
         $dic->expects($this->any())->method('getSession')->willReturn($session);
 
         $storage = oxNew(EasyCreditStorage::class, "TEST", "TEST", "TEST", 500.0);
         $storage->setInterestAmount(20.7);
         $dic->getSession()->setStorage($storage);
 
-        $oxBasket = $this->getMock(EasyCreditBasket::class, ['getDic']);
+        $oxBasket = $this->getMockBuilder(EasyCreditBasket::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getDic'])
+            ->getMock();
         $oxBasket->expects($this->any())->method('getDic')->willReturn($dic);
 
         $this->assertEquals(20.7, $oxBasket->getInterestsAmount());
@@ -81,14 +83,16 @@ class EasyCreditBasketTest extends UnitTestCase
         $session = oxNew(EasyCreditSession::class);
         $session->setVariable('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
 
-        $dic = $this->getMock(
-            EasyCreditDic::class,
-            ['getSession'],
-            [null, null, null, null, null]
-        );
+        $dic = $this->getMockBuilder(EasyCreditDic::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getSession'])
+            ->getMock();
         $dic->expects($this->any())->method('getSession')->willReturn($session);
 
-        $oxBasket = $this->getMock(EasyCreditBasket::class, ['getDic']);
+        $oxBasket = $this->getMockBuilder(EasyCreditBasket::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getDic'])
+            ->getMock();
         $oxBasket->expects($this->any())->method('getDic')->willReturn($dic);
 
         $this->assertNull($oxBasket->getInterestsAmount());
@@ -138,18 +142,20 @@ class EasyCreditBasketTest extends UnitTestCase
         $session = oxNew(EasyCreditSession::class);
         $session->setVariable('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
 
-        $dic = $this->getMock(
-            EasyCreditDic::class,
-            ['getSession'],
-            [null, null, null, null, null]
-        );
+        $dic = $this->getMockBuilder(EasyCreditDic::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getSession'])
+            ->getMock();
         $dic->expects($this->any())->method('getSession')->willReturn($session);
 
         $storage = oxNew(EasyCreditStorage::class, "TEST", "TEST", "TEST", 500.0);
         $storage->setInterestAmount(20.7);
         $dic->getSession()->setStorage($storage);
 
-        $oxBasket = $this->getMock(EasyCreditBasket::class, ['getDic']);
+        $oxBasket = $this->getMockBuilder(EasyCreditBasket::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getDic'])
+            ->getMock();
         $oxBasket->expects($this->any())->method('getDic')->willReturn($dic);
 
         $interestCost = $oxBasket->calcInterestsCost();
@@ -161,6 +167,7 @@ class EasyCreditBasketTest extends UnitTestCase
     {
         // calling calculateBasket to test _calcTotalPrice
         $oxBasket = oxNew(Basket::class);
-        $oxBasket->calculateBasket();
+        $result = $oxBasket->calculateBasket();
+        $this->assertNull($result);
     }
 }

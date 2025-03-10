@@ -8,8 +8,8 @@ use OxidEsales\Eshop\Application\Model\Payment;
 use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Field;
 use OxidEsales\Eshop\Core\ViewConfig;
-use OxidEsales\TestingLibrary\UnitTestCase;
-use OxidSolutionCatalysts\EasyCredit\Application\Controller\EasyCreditOrderController;
+use PHPUnit\Framework\TestCase;
+use OxidSolutionCatalysts\EasyCredit\Controller\EasyCreditOrderController;
 use OxidSolutionCatalysts\EasyCredit\Core\CrossCutting\EasyCreditLogging;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditApiConfig;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDic;
@@ -24,7 +24,7 @@ use OxidSolutionCatalysts\EasyCredit\Core\Dto\EasyCreditStorage;
 /**
  * Class EasyCreditOrderTest
  */
-class EasyCreditOrderTest extends UnitTestCase
+class EasyCreditOrderTest extends TestCase
 {
     /**
      * Set up test environment
@@ -48,12 +48,12 @@ class EasyCreditOrderTest extends UnitTestCase
 
     protected function buildDic($oxSession)
     {
-        $mockOxConfig = $this->getMock(Config::class, [], []);
+        $mockOxConfig = $this->getMockBuilder(Config::class)->disableOriginalConstructor()->getMock();
 
         $session = oxNew(EasyCreditDicSession::class, $oxSession);
         $mockApiConfig = oxNew(EasyCreditApiConfig::class, EasyCreditDicFactory::getApiConfigArray());
-        $mockLogging = $this->getMock(EasyCreditLogging::class, [], [[]]);
-        $mockDicConfig = $this->getMock(EasyCreditDicConfig::class, [], [$mockOxConfig]);
+        $mockLogging = $this->getMockBuilder(EasyCreditLogging::class)->disableOriginalConstructor()->getMock();
+        $mockDicConfig = $this->getMockBuilder(EasyCreditDicConfig::class)->disableOriginalConstructor()->getMock();
 
         $mockDic = oxNew(
             EasyCreditDic::class,
@@ -90,7 +90,13 @@ class EasyCreditOrderTest extends UnitTestCase
         $payment = oxNew(Payment::class);
         $payment->setId(EasyCreditPayment::EASYCREDIT_PAYMENTID);
 
-        $order = $this->getMock(EasyCreditOrder::class, ['getDic', 'parentGetPayment']);
+        $order = $this->getMockBuilder(EasyCreditOrder::class)
+            ->disableOriginalConstructor()
+            ->setMethods([
+                'getDic',
+                'parentGetPayment',
+            ])
+            ->getMock();
         $order->expects($this->any())->method('getDic')->willReturn($dic);
         $order->expects($this->any())->method('parentGetPayment')->willReturn($payment);
 
@@ -117,7 +123,13 @@ class EasyCreditOrderTest extends UnitTestCase
         $payment->oxpayments__oxdesc = new Field('test payment');
         $payment->setId(EasyCreditPayment::EASYCREDIT_PAYMENTID);
 
-        $order = $this->getMock(EasyCreditOrder::class, ['getDic', 'parentGetPayment']);
+        $order = $this->getMockBuilder(EasyCreditOrder::class)
+            ->disableOriginalConstructor()
+            ->setMethods([
+                'getDic',
+                'parentGetPayment',
+            ])
+            ->getMock();
         $order->expects($this->any())->method('getDic')->willReturn($dic);
         $order->expects($this->any())->method('parentGetPayment')->willReturn($payment);
 
@@ -144,10 +156,22 @@ class EasyCreditOrderTest extends UnitTestCase
         $payment->oxpayments__oxdesc = new Field('test payment');
         $payment->setId(EasyCreditPayment::EASYCREDIT_PAYMENTID);
 
-        $viewConfig = $this->getMock(ViewConfig::class, ['getModulePath']);
+        $viewConfig = $this->getMockBuilder(ViewConfig::class)
+            ->disableOriginalConstructor()
+            ->setMethods([
+                'getModulePath',
+            ])
+            ->getMock();
         $viewConfig->expects($this->any())->method('getModulePath')->willThrowException(new \Exception('TEST'));
 
-        $order = $this->getMock(EasyCreditOrder::class, ['getDic', 'parentGetPayment', 'getViewConfig']);
+        $order = $this->getMockBuilder(EasyCreditOrder::class)
+            ->disableOriginalConstructor()
+            ->setMethods([
+                'getDic',
+                'parentGetPayment',
+                'getViewConfig',
+            ])
+            ->getMock();
         $order->expects($this->any())->method('getDic')->willReturn($dic);
         $order->expects($this->any())->method('parentGetPayment')->willReturn($payment);
         $order->expects($this->any())->method('getViewConfig')->willReturn($viewConfig);
@@ -165,7 +189,13 @@ class EasyCreditOrderTest extends UnitTestCase
         $payment->oxpayments__oxdesc = new Field('test payment');
         $payment->setId(EasyCreditPayment::EASYCREDIT_PAYMENTID);
 
-        $order = $this->getMock(EasyCreditOrder::class, ['getDic', 'parentGetPayment']);
+        $order = $this->getMockBuilder(EasyCreditOrder::class)
+            ->disableOriginalConstructor()
+            ->setMethods([
+                'getDic',
+                'parentGetPayment',
+            ])
+            ->getMock();
         $order->expects($this->any())->method('getDic')->willReturn($dic);
         $order->expects($this->any())->method('parentGetPayment')->willReturn($payment);
 
@@ -188,7 +218,12 @@ class EasyCreditOrderTest extends UnitTestCase
         $storage->setTilgungsplanTxt($tilgungsplanTxt);
         $session->setVariable(EasyCreditSession::API_CONFIG_STORAGE, serialize($storage));
 
-        $order = $this->getMock(EasyCreditOrder::class, ['getDic']);
+        $order = $this->getMockBuilder(EasyCreditOrder::class)
+            ->disableOriginalConstructor()
+            ->setMethods([
+                'getDic',
+            ])
+            ->getMock();
         $order->expects($this->any())->method('getDic')->willReturn($dic);
 
         $this->assertEquals($tilgungsplanTxt, $order->getTilgungsplanTxt());
@@ -199,7 +234,12 @@ class EasyCreditOrderTest extends UnitTestCase
         $session = oxNew(EasyCreditSession::class);
         $dic = $this->buildDic($session);
 
-        $order = $this->getMock(EasyCreditOrder::class, ['getDic']);
+        $order = $this->getMockBuilder(EasyCreditOrder::class)
+            ->disableOriginalConstructor()
+            ->setMethods([
+                'getDic',
+            ])
+            ->getMock();
         $order->expects($this->any())->method('getDic')->willReturn($dic);
 
         $this->assertNull($order->getTilgungsplanTxt());
@@ -223,7 +263,12 @@ class EasyCreditOrderTest extends UnitTestCase
         $storage->setAllgemeineVorgangsdaten($allgemeineVorgangsdaten);
         $session->setVariable(EasyCreditSession::API_CONFIG_STORAGE, serialize($storage));
 
-        $order = $this->getMock(EasyCreditOrderController::class, ['getDic']);
+        $order = $this->getMockBuilder(EasyCreditOrderController::class)
+            ->disableOriginalConstructor()
+            ->setMethods([
+                'getDic',
+            ])
+            ->getMock();
         $order->expects($this->any())->method('getDic')->willReturn($dic);
 
         $this->assertEquals($url, $order->getUrlVorvertraglicheInformationen());
@@ -234,7 +279,12 @@ class EasyCreditOrderTest extends UnitTestCase
         $session = oxNew(EasyCreditSession::class);
         $dic = $this->buildDic($session);
 
-        $order = $this->getMock(EasyCreditOrderController::class, ['getDic']);
+        $order = $this->getMockBuilder(EasyCreditOrderController::class)
+            ->disableOriginalConstructor()
+            ->setMethods([
+                'getDic',
+            ])
+            ->getMock();
         $order->expects($this->any())->method('getDic')->willReturn($dic);
 
         $this->assertNull($order->getUrlVorvertraglicheInformationen());
@@ -256,7 +306,12 @@ class EasyCreditOrderTest extends UnitTestCase
         $storage->setRatenplanTxt($text);
         $session->setVariable(EasyCreditSession::API_CONFIG_STORAGE, serialize($storage));
 
-        $order = $this->getMock(EasyCreditOrderController::class, ['getDic']);
+        $order = $this->getMockBuilder(EasyCreditOrderController::class)
+            ->disableOriginalConstructor()
+            ->setMethods([
+                'getDic',
+            ])
+            ->getMock();
         $order->expects($this->any())->method('getDic')->willReturn($dic);
 
         $this->assertEquals($text, $order->getPaymentPlanTxt());
@@ -267,7 +322,12 @@ class EasyCreditOrderTest extends UnitTestCase
         $session = oxNew(EasyCreditSession::class);
         $dic = $this->buildDic($session);
 
-        $order = $this->getMock(EasyCreditOrderController::class, ['getDic']);
+        $order = $this->getMockBuilder(EasyCreditOrderController::class)
+            ->disableOriginalConstructor()
+            ->setMethods([
+                'getDic',
+            ])
+            ->getMock();
         $order->expects($this->any())->method('getDic')->willReturn($dic);
 
         $this->assertNull($order->getPaymentPlanTxt());

@@ -20,7 +20,9 @@ use OxidEsales\Eshop\Application\Model\Basket;
 use OxidEsales\Eshop\Application\Model\Shop;
 use OxidEsales\Eshop\Core\Field;
 use OxidEsales\Eshop\Core\Price;
-use OxidEsales\TestingLibrary\UnitTestCase;
+use OxidEsales\Eshop\Core\UtilsObject;
+use OxidEsales\Eshop\Core\Module\Module;
+use PHPUnit\Framework\TestCase;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditApiConfig;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDic;
 use OxidSolutionCatalysts\EasyCredit\Core\Helper\EasyCreditHelper;
@@ -28,7 +30,7 @@ use OxidSolutionCatalysts\EasyCredit\Core\Helper\EasyCreditHelper;
 /**
  * Class EasyCreditHelperTest
  */
-class EasyCreditHelperTest extends UnitTestCase
+class EasyCreditHelperTest extends TestCase
 {
     /**
      * Set up test environment
@@ -53,7 +55,7 @@ class EasyCreditHelperTest extends UnitTestCase
         $price = oxNew(Price::class);
         $price->setPrice(450.99);
 
-        $basket = $this->getMock(Basket::class);
+        $basket = $this->getMockBuilder(Basket::class)->disableOriginalConstructor()->getMock();
         $basket->expects($this->any())->method('getPrice')->willReturn($price);
 
         $this->assertEquals($price, EasyCreditHelper::getExampleCalculationPrice(null, $basket));
@@ -115,15 +117,26 @@ class EasyCreditHelperTest extends UnitTestCase
 
     public function testGetModuleVersionOk(): void
     {
+        $expected = "5.0.0";
+
+        $module = $this->getMockBuilder(Module::class)->disableOriginalConstructor()->getMock();
+        $module->method('load')->willReturn(true);
+        $module->method('getInfo')->willReturn($expected);
+
+        UtilsObject::setClassInstance(Module::class, $module);
+
         $apiConfig = oxNew(EasyCreditApiConfig::class, []);
         $dic       = oxNew(EasyCreditDic::class, null, $apiConfig, null, null, null);
 
-        $this->assertEquals('3.0.0-dev', EasyCreditHelper::getModuleVersion($dic));
+        $this->assertEquals($expected, EasyCreditHelper::getModuleVersion($dic));
     }
 
     public function testGetModuleVersionWrongModuleId(): void
     {
-        $apiConfig = $this->getMock(EasyCreditApiConfig::class, ['getEasyCreditModuleId'], [[]]);
+        $apiConfig = $this->getMockBuilder(EasyCreditApiConfig::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getEasyCreditModuleId'])
+            ->getMock();
         $apiConfig->expects($this->any())->method('getEasyCreditModuleId')->willReturn('dummy');
         $dic = oxNew(EasyCreditDic::class, null, $apiConfig, null, null, null);
 

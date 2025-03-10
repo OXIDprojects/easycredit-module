@@ -3,13 +3,12 @@
 namespace OxidSolutionCatalysts\EasyCredit\Tests\Unit\Application\Component\Widget;
 
 use OxidEsales\Eshop\Core\Registry;
-use OxidEsales\TestingLibrary\UnitTestCase;
-use OxidSolutionCatalysts\EasyCredit\Application\Component\Widget\EasyCreditExampleCalculationPopup;
-
+use PHPUnit\Framework\TestCase;
+use OxidSolutionCatalysts\EasyCredit\Component\Widget\EasyCreditExampleCalculationPopup;
 /**
  * Class EasyCreditExampleCalculationPopupTest
  */
-class EasyCreditExampleCalculationPopupTest extends UnitTestCase
+class EasyCreditExampleCalculationPopupTest extends TestCase
 {
     private $shopkennung = null;
 

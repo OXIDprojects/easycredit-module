@@ -17,13 +17,13 @@
 namespace OxidSolutionCatalysts\EasyCredit\Tests\Unit\Core\Domain;
 
 use OxidEsales\Eshop\Application\Model\Payment;
-use OxidEsales\TestingLibrary\UnitTestCase;
+use PHPUnit\Framework\TestCase;
 use OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditPayment;
 
 /**
- * Class EasyCreditOxPaymentTest
+ * Class EasyCreditPaymentTest
  */
-class EasyCreditOxPaymentTest extends UnitTestCase
+class EasyCreditPaymentTest extends TestCase
 {
     /**
      * Set up test environment

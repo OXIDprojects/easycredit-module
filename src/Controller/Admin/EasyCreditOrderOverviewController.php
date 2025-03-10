@@ -55,7 +55,7 @@ class EasyCreditOrderOverviewController extends EasyCreditOrderOverviewControlle
     {
         parent::sendOrder();
         $order = $this->loadOrder();
-        if (!empty($this->order->oxorder__ecredfunctionalid->value)) {
+        if (!empty($order->oxorder__ecredfunctionalid->value)) {
             $order->oscSetOrderDelivered();
         }
     }

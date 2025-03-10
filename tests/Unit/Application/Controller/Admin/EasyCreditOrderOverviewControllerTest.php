@@ -4,14 +4,16 @@
 namespace OxidSolutionCatalysts\EasyCredit\Tests\Unit\Application\Controller\Admin;
 
 
+use Mollie\Payment\Application\Model\PaymentConfig;
 use OxidEsales\Eshop\Application\Model\Order;
 use OxidEsales\Eshop\Core\Field;
-use OxidEsales\TestingLibrary\UnitTestCase;
-use OxidSolutionCatalysts\EasyCredit\Application\Controller\Admin\EasyCreditOrderOverviewController;
-use OxidSolutionCatalysts\EasyCredit\Application\Model\EasyCreditTradingApiAccess;
+use OxidEsales\Eshop\Core\UtilsObject;
+use PHPUnit\Framework\TestCase;
+use OxidSolutionCatalysts\EasyCredit\Controller\Admin\EasyCreditOrderOverviewController;
+use OxidSolutionCatalysts\EasyCredit\Model\EasyCreditTradingApiAccess;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditApiConfig;
 
-class EasyCreditOrderOverviewControllerTest extends UnitTestCase
+class EasyCreditOrderOverviewControllerTest extends TestCase
 {
     protected function setUp(): void
     {
@@ -25,39 +27,41 @@ class EasyCreditOrderOverviewControllerTest extends UnitTestCase
 
     public function testGetDeliveryState()
     {
-        $result        = 'testresult';
+        $expected = 'testresult';
+
         $order = oxNew(Order::class);
         $order->oxorder__functionalid = new Field('functionalId');
+
         $tradingApiService = $this->getMockBuilder(EasyCreditTradingApiAccess::class)
             ->onlyMethods(['getOrderState'])
             ->setConstructorArgs([$order])
             ->getMock();
-        $tradingApiService->expects($this->once())->method('getOrderState')->willReturn($result);
+        $tradingApiService->expects($this->once())->method('getOrderState')->willReturn($expected);
 
-        $controller = $this->getMockBuilder(EasyCreditOrderOverviewController::class)
-            ->onlyMethods(['getService'])->getMock();
-        $controller->expects($this->once())
-            ->method('getService')
-            ->willReturn($tradingApiService);
-        $this->assertEquals($result, $controller->getDeliveryState($order));
+        UtilsObject::setClassInstance(EasyCreditTradingApiAccess::class, $tradingApiService);
+
+        $controller = oxNew(EasyCreditOrderOverviewController::class);
+
+        $this->assertEquals($expected, $controller->getDeliveryState($order));
     }
 
     public function testSendOrderNoOrder()
     {
         $controller = $this->getMockBuilder(EasyCreditOrderOverviewController::class)
-            ->onlyMethods(['getService', 'getEditObjectId'])->getMock();
-        $controller->expects($this->never())
-            ->method('getService');
+            ->onlyMethods(['getEditObjectId'])
+            ->getMock();
+
         $controller->expects($this->exactly(2))
             ->method('getEditObjectId')
             ->willReturn(null);
+
         $this->assertNull($controller->sendOrder());
     }
 
     public function testSendOrderWithOrder()
     {
         $order = oxNew(Order::class);
-        $order->oxorder__functionalid = new Field('functionalId');
+        $order->oxorder__ecredfunctionalid = new Field('functionalId');
 
         $orderData                   = new \stdClass();
         $orderData->haendlerstatusV2 = 'returnstate';
@@ -69,15 +73,14 @@ class EasyCreditOrderOverviewControllerTest extends UnitTestCase
             ->getMock();
         $tradingApiService->expects($this->once())->method('setOrderDeliveredState')->willReturn(null);
         $tradingApiService->expects($this->once())->method('getOrderData')->willReturn($state);
+
+        UtilsObject::setClassInstance(EasyCreditTradingApiAccess::class, $tradingApiService);
+
         $controller = $this->getMockBuilder(EasyCreditOrderOverviewController::class)
-            ->onlyMethods(['getService','loadFunctionalIdFromOrder','loadOrder'])->getMock();
-        $controller->expects($this->once())
-            ->method('loadOrder')
-            ->willReturn($order);
-        $controller->expects($this->once())
-            ->method('loadFunctionalIdFromOrder')
-            ->willReturn('functionalId');
-        $controller->expects($this->once())->method('getService')->willReturn($tradingApiService);
+            ->onlyMethods(['loadOrder'])
+            ->getMock();
+
+        $controller->expects($this->once())->method('loadOrder')->willReturn($order);
 
         $controller->sendOrder();
     }
@@ -92,14 +95,7 @@ class EasyCreditOrderOverviewControllerTest extends UnitTestCase
             ->getMock();
         $tradingApiService->expects($this->never())->method('setOrderDeliveredState');
 
-        $controller = $this->getMockBuilder(EasyCreditOrderOverviewController::class)
-            ->onlyMethods(['getService','loadFunctionalIdFromOrder'])->getMock();
-        $controller->expects($this->once())
-            ->method('loadFunctionalIdFromOrder')
-            ->willReturn(null);
-
-        $controller->expects($this->never())->method('getService');
-
+        $controller = oxNew(EasyCreditOrderOverviewController::class);
         $controller->sendOrder();
     }
 }

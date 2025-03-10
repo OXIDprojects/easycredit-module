@@ -4,7 +4,7 @@ namespace OxidSolutionCatalysts\EasyCredit\Tests\Unit\Application\Core\Di;
 
 use OxidEsales\Eshop\Core\Exception\SystemComponentException;
 use OxidEsales\Eshop\Core\Session;
-use OxidEsales\TestingLibrary\UnitTestCase;
+use PHPUnit\Framework\TestCase;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDicSession;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDicSessionInterface;
 use OxidSolutionCatalysts\EasyCredit\Core\Dto\EasyCreditStorage;
@@ -12,7 +12,7 @@ use OxidSolutionCatalysts\EasyCredit\Core\Dto\EasyCreditStorage;
 /**
  * Class EasyCreditDicSessionTest
  */
-class EasyCreditDicSessionTest extends UnitTestCase
+class EasyCreditDicSessionTest extends TestCase
 {
     const GET_KEY   = 'GET_KEY_TEST';
     const GET_VALUE = 'GET_VALUE_TEST';
@@ -46,9 +46,9 @@ class EasyCreditDicSessionTest extends UnitTestCase
         $this->sessionStore                = [];
         $this->sessionStore[self::GET_KEY] = self::GET_VALUE;
 
-        $oxSession = $this->getMock(
-            Session::class,
-            [
+        $oxSession = $this->getMockBuilder(Session::class)
+            ->disableOriginalConstructor()
+            ->setMethods([
                 'getVariable',
                 'setVariable',
                 'deleteVariable',
@@ -56,9 +56,9 @@ class EasyCreditDicSessionTest extends UnitTestCase
                 'getId',
                 'setStorage',
                 'getStorage',
-                'clearStorage'
-            ]
-        );
+                'clearStorage',
+            ])
+            ->getMock();
 
         $oxSession->expects($this->any())->method('getVariable')->willReturnCallback(
             function ($key) {

@@ -5,13 +5,13 @@ namespace OxidSolutionCatalysts\EasyCredit\Tests\Unit\Application\Core\Di;
 use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Exception\SystemComponentException;
 use OxidEsales\Eshop\Core\Registry;
-use OxidEsales\TestingLibrary\UnitTestCase;
+use PHPUnit\Framework\TestCase;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDicConfig;
 
 /**
  * Class EasyCreditDicConfigTest
  */
-class EasyCreditDicConfigTest extends UnitTestCase
+class EasyCreditDicConfigTest extends TestCase
 {
     const SHOP_ID = '3';
 
@@ -47,10 +47,16 @@ class EasyCreditDicConfigTest extends UnitTestCase
         $this->configStore = [];
         $this->configStore[self::CONFIG_GET_PARAM_NAME] = self::CONFIG_GET_PARAM_VALUE;
 
-        $oxConfig = $this->getMock(
-            Config::class,
-            ['getShopId', 'getSslShopUrl', 'getConfigParam', 'setConfigParam', 'saveShopConfVar']
-        );
+        $oxConfig = $this->getMockBuilder(Config::class)
+            ->disableOriginalConstructor()
+            ->setMethods([
+                'getShopId',
+                'getSslShopUrl',
+                'getConfigParam',
+                'setConfigParam',
+                'saveShopConfVar',
+            ])
+            ->getMock();
 
         $oxConfig->expects($this->any())->method('getShopId')->willReturn(self::SHOP_ID);
         $oxConfig->expects($this->any())->method('getSslShopUrl')->willReturn(self::SSL_SHOP_URL);

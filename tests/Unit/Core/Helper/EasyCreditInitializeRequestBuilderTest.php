@@ -26,14 +26,17 @@ use OxidEsales\Eshop\Application\Model\User;
 use OxidEsales\Eshop\Core\Field;
 use OxidEsales\Eshop\Core\Price;
 use OxidEsales\Eshop\Core\Registry;
-use OxidEsales\TestingLibrary\UnitTestCase;
+use OxidEsales\Eshop\Core\UtilsObject;
+use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditApiConfig;
+use OxidSolutionCatalysts\EasyCredit\Model\EasyCreditTradingApiAccess;
+use PHPUnit\Framework\TestCase;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDicFactory;
 use OxidSolutionCatalysts\EasyCredit\Core\Helper\EasyCreditInitializeRequestBuilder;
 
 /**
  * Class EasyCreditInitializeRequestBuilderTest
  */
-class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
+class EasyCreditInitializeRequestBuilderTest extends TestCase
 {
     private $shopkennung = null;
 
@@ -44,7 +47,7 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->shopkennung = Registry::getConfig()->getConfigParam('oxpsECWebshopId');
+        $this->shopkennung = 'test';
     }
 
     /**
@@ -58,6 +61,10 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
 
     public function testGetInitializationDataWithBasketItems(): void
     {
+        $apiConfig = $this->getMockBuilder(EasyCreditApiConfig::class)->disableOriginalConstructor()->getMock();
+        $apiConfig->method('getWebShopId')->willReturn($this->shopkennung);
+        UtilsObject::setClassInstance(EasyCreditApiConfig::class, $apiConfig);
+        
         $articleIds = ['1000', '2000'];
         $articles   = [
             oxNew(Article::class),
@@ -69,12 +76,21 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
             $id = $articleIds[$i];
             $article->setId($id);
 
-            $basketItem = $this->getMock(BasketItem::class, ['getArticle']);
+            $basketItem = $this->getMockBuilder(BasketItem::class)
+                ->disableOriginalConstructor()
+                ->setMethods(['getArticle'])
+                ->getMock();
             $basketItem->expects($this->any())->method('getArticle')->willReturn($article);
             $basketContents[$id] = $basketItem;
         }
 
-        $basket = $this->getMock(Basket::class, ['getBasketArticles', 'getContents']);
+        $basket = $this->getMockBuilder(Basket::class)
+            ->disableOriginalConstructor()
+            ->setMethods([
+                'getBasketArticles',
+                'getContents',
+            ])
+            ->getMock();
         $basket->expects($this->any())->method('getBasketArticles')->willReturn($basketContents);
         $basket->expects($this->any())->method('getContents')->willReturn($basketContents);
 
@@ -118,7 +134,7 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
                     'menge'              => 0.0,
                     'preis'              => '',
                     'hersteller'         => '',
-                    'produktkategorie'   => 'Bindungen',
+                    'produktkategorie'   => 'Koffer',
                     'artikelnummern'     => [
                         0 => [
                             'nummerntyp' => 'GTIN',
@@ -131,7 +147,7 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
                     'menge'              => 0.0,
                     'preis'              => '',
                     'hersteller'         => '',
-                    'produktkategorie'   => 'Bindungen',
+                    'produktkategorie'   => 'Koffer',
                     'artikelnummern'     => [
                         0 => [
                             'nummerntyp' => 'GTIN',
@@ -146,6 +162,10 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
 
     public function testGetInitializationDataWithRegisteredUserWithGroups(): void
     {
+        $apiConfig = $this->getMockBuilder(EasyCreditApiConfig::class)->disableOriginalConstructor()->getMock();
+        $apiConfig->method('getWebShopId')->willReturn($this->shopkennung);
+        UtilsObject::setClassInstance(EasyCreditApiConfig::class, $apiConfig);
+
         $basket = oxNew(Basket::class);
 
         $groupIds = ['dummy', 'oxidnotyetordered'];
@@ -156,7 +176,10 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
             $groups[$groupId] = $group;
         }
 
-        $user = $this->getMock(User::class, ['getUserGroups']);
+        $user = $this->getMockBuilder(User::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getUserGroups'])
+            ->getMock();
         $user->expects($this->any())->method('getUserGroups')->willReturn($groups);
         $user->oxuser__oxpassword = new Field('password');
 
@@ -198,9 +221,16 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
 
     public function testGetInitializationDataWithSalutationMapping(): void
     {
+        $apiConfig = $this->getMockBuilder(EasyCreditApiConfig::class)->disableOriginalConstructor()->getMock();
+        $apiConfig->method('getWebShopId')->willReturn($this->shopkennung);
+        UtilsObject::setClassInstance(EasyCreditApiConfig::class, $apiConfig);
+
         $basket = oxNew(Basket::class);
 
-        $user                = $this->getMock(User::class, ['getUserGroups']);
+        $user = $this->getMockBuilder(User::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getUserGroups'])
+            ->getMock();
         $user->oxuser__oxsal = new Field('MRS');
 
         $rb = oxNew(EasyCreditInitializeRequestBuilder::class);
@@ -244,9 +274,16 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
 
     public function testGetInitializationDataWithBirthday(): void
     {
+        $apiConfig = $this->getMockBuilder(EasyCreditApiConfig::class)->disableOriginalConstructor()->getMock();
+        $apiConfig->method('getWebShopId')->willReturn($this->shopkennung);
+        UtilsObject::setClassInstance(EasyCreditApiConfig::class, $apiConfig);
+
         $basket = oxNew(Basket::class);
 
-        $user                      = $this->getMock(User::class, ['getUserGroups']);
+        $user = $this->getMockBuilder(User::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getUserGroups'])
+            ->getMock();
         $user->oxuser__oxbirthdate = new Field('1985-07-13');
 
         $rb = oxNew(EasyCreditInitializeRequestBuilder::class);
@@ -290,9 +327,16 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
 
     public function testGetInitializationDataWithInvalidBirthday(): void
     {
+        $apiConfig = $this->getMockBuilder(EasyCreditApiConfig::class)->disableOriginalConstructor()->getMock();
+        $apiConfig->method('getWebShopId')->willReturn($this->shopkennung);
+        UtilsObject::setClassInstance(EasyCreditApiConfig::class, $apiConfig);
+
         $basket = oxNew(Basket::class);
 
-        $user                      = $this->getMock('oxUser', ['getUserGroups']);
+        $user = $this->getMockBuilder(User::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getUserGroups'])
+            ->getMock();
         $user->oxuser__oxbirthdate = new Field('12345');
 
         $rb = oxNew(EasyCreditInitializeRequestBuilder::class);
@@ -333,9 +377,16 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
 
     public function testGetInitializationDataWithDeliveryAddress(): void
     {
+        $apiConfig = $this->getMockBuilder(EasyCreditApiConfig::class)->disableOriginalConstructor()->getMock();
+        $apiConfig->method('getWebShopId')->willReturn($this->shopkennung);
+        UtilsObject::setClassInstance(EasyCreditApiConfig::class, $apiConfig);
+
         $basket = oxNew(Basket::class);
 
-        $user = $this->getMock('oxUser', ['getUserGroups']);
+        $user = $this->getMockBuilder(User::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getUserGroups'])
+            ->getMock();
 
         $deliveryAddress = oxNew(Address::class);
 
@@ -378,9 +429,16 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
 
     public function testGetInitializationDataWithCountry(): void
     {
+        $apiConfig = $this->getMockBuilder(EasyCreditApiConfig::class)->disableOriginalConstructor()->getMock();
+        $apiConfig->method('getWebShopId')->willReturn($this->shopkennung);
+        UtilsObject::setClassInstance(EasyCreditApiConfig::class, $apiConfig);
+
         $basket = oxNew(Basket::class);
 
-        $user                      = $this->getMock(User::class, ['getUserGroups']);
+        $user = $this->getMockBuilder(User::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getUserGroups'])
+            ->getMock();
         $user->oxuser__oxcountryid = new Field('a7c40f631fc920687.20179984');
 
         $rb = oxNew(EasyCreditInitializeRequestBuilder::class);
@@ -427,9 +485,16 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
 
     public function testGetInitializationDataWithValidPhoneNumber(): void
     {
+        $apiConfig = $this->getMockBuilder(EasyCreditApiConfig::class)->disableOriginalConstructor()->getMock();
+        $apiConfig->method('getWebShopId')->willReturn($this->shopkennung);
+        UtilsObject::setClassInstance(EasyCreditApiConfig::class, $apiConfig);
+
         $basket = oxNew(Basket::class);
 
-        $user                = $this->getMock(User::class, ['getUserGroups']);
+        $user = $this->getMockBuilder(User::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getUserGroups'])
+            ->getMock();
         $user->oxuser__oxfon = new Field('+49 123-1234');
 
         $rb = oxNew(EasyCreditInitializeRequestBuilder::class);
@@ -475,6 +540,10 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
 
     public function testGetInitializationDataWithDeps(): void
     {
+        $apiConfig = $this->getMockBuilder(EasyCreditApiConfig::class)->disableOriginalConstructor()->getMock();
+        $apiConfig->method('getWebShopId')->willReturn($this->shopkennung);
+        UtilsObject::setClassInstance(EasyCreditApiConfig::class, $apiConfig);
+
         $manufacturer = oxNew(Manufacturer::class);
         $manufacturer->setId('1000');
         $manufacturer->oxmanufacturer__oxtitle = new Field('testmanufacturer');
@@ -490,18 +559,36 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
 
         $basketContents = [];
         foreach ($articleIds as $i => $articleId) {
-            $article = $this->getMock(Article::class, ['getManufacturer', 'getCategory']);
+            $article = $this->getMockBuilder(Article::class)
+                ->disableOriginalConstructor()
+                ->setMethods([
+                    'getManufacturer',
+                    'getCategory',
+                ])
+                ->getMock();
             $article->expects($this->any())->method('getManufacturer')->willReturn($manufacturer);
             $article->expects($this->any())->method('getCategory')->willReturn($category);
             $article->setId($articleId);
 
-            $basketItem = $this->getMock(BasketItem::class, ['getArticle', 'getUnitPrice']);
+            $basketItem = $this->getMockBuilder(BasketItem::class)
+                ->disableOriginalConstructor()
+                ->setMethods([
+                    'getArticle',
+                    'getUnitPrice',
+                ])
+                ->getMock();
             $basketItem->expects($this->any())->method('getArticle')->willReturn($article);
             $basketItem->expects($this->any())->method('getUnitPrice')->willReturn($unitPrice);
             $basketContents[$articleId] = $basketItem;
         }
 
-        $basket = $this->getMock(Basket::class, ['getBasketArticles', 'getContents']);
+        $basket = $this->getMockBuilder(Basket::class)
+            ->disableOriginalConstructor()
+            ->setMethods([
+                'getBasketArticles',
+                'getContents',
+            ])
+            ->getMock();
         $basket->expects($this->any())->method('getBasketArticles')->willReturn($basketContents);
         $basket->expects($this->any())->method('getContents')->willReturn($basketContents);
 

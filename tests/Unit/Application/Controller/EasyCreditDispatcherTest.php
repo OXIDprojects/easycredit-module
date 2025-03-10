@@ -4,9 +4,10 @@ namespace OxidSolutionCatalysts\EasyCredit\Tests\Unit\Application\Controller;
 
 use OxidEsales\Eshop\Application\Model\Order;
 use OxidEsales\Eshop\Application\Model\User;
+use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Registry;
-use OxidEsales\TestingLibrary\UnitTestCase;
-use OxidSolutionCatalysts\EasyCredit\Application\Controller\EasyCreditDispatcherController;
+use PHPUnit\Framework\TestCase;
+use OxidSolutionCatalysts\EasyCredit\Controller\EasyCreditDispatcherController;
 use OxidSolutionCatalysts\EasyCredit\Core\CrossCutting\EasyCreditLogging;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDic;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDicConfig;
@@ -22,7 +23,7 @@ use OxidSolutionCatalysts\EasyCredit\Core\Helper\EasyCreditInitializeRequestBuil
 /**
  * Class EasyCreditDispatcherControllerTest
  */
-class EasyCreditDispatcherTest extends UnitTestCase
+class EasyCreditDispatcherTest extends TestCase
 {
     /**
      * Set up test environment
@@ -46,12 +47,10 @@ class EasyCreditDispatcherTest extends UnitTestCase
 
     protected function buildDic($oxSession)
     {
-        $mockOxConfig = $this->getMock('oxConfig', [], []);
-
         $session = oxNew(EasyCreditDicSession::class, $oxSession);
         $mockApiConfig = oxNew(EasyCreditApiConfig::class, EasyCreditDicFactory::getApiConfigArray());
-        $mockLogging = $this->getMock(EasyCreditLogging::class, [], [[]]);
-        $mockDicConfig = $this->getMock(EasyCreditDicConfig::class, [], [$mockOxConfig]);
+        $mockLogging = $this->getMockBuilder(EasyCreditLogging::class)->disableOriginalConstructor()->getMock();
+        $mockDicConfig = $this->getMockBuilder(Config::class)->disableOriginalConstructor()->getMock();
 
         $mockDic = oxNew(
             EasyCreditDic::class,
@@ -81,7 +80,14 @@ class EasyCreditDispatcherTest extends UnitTestCase
 
         $user = oxNew(User::class);
 
-        $dispatcher = $this->getMock(EasyCreditDispatcherController::class, ['isInitialized', 'initialize', 'getDic']);
+        $dispatcher = $this->getMockBuilder(EasyCreditDispatcherController::class)
+            ->disableOriginalConstructor()
+            ->setMethods([
+                'isInitialized',
+                'initialize',
+                'getDic',
+            ])
+            ->getMock();
         $dispatcher->expects($this->any())->method('isInitialized')->willReturn(false);
         $dispatcher->expects($this->any())->method('initialize')->willReturn(null);
         $dispatcher->expects($this->any())->method('getDic')->willReturn($dic);
@@ -92,7 +98,10 @@ class EasyCreditDispatcherTest extends UnitTestCase
 
     public function testGetEasyCreditDetails(): void
     {
-        $dispatcher = $this->getMock(EasyCreditDispatcherController::class, ['processEasyCreditDetails']);
+        $dispatcher = $this->getMockBuilder(EasyCreditDispatcherController::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['processEasyCreditDetails'])
+            ->getMock();
         $dispatcher->expects($this->any())->method('processEasyCreditDetails')->willReturn(null);
 
         $this->assertEquals('order', $dispatcher->getEasyCreditDetails());
@@ -102,7 +111,13 @@ class EasyCreditDispatcherTest extends UnitTestCase
     {
         $dic = $this->buildDic(oxNew(EasyCreditSession::class));
 
-        $dispatcher = $this->getMock(EasyCreditDispatcherController::class, ['getDic', 'processEasyCreditDetails']);
+        $dispatcher = $this->getMockBuilder(EasyCreditDispatcherController::class)
+            ->disableOriginalConstructor()
+            ->setMethods([
+                'getDic',
+                'processEasyCreditDetails',
+            ])
+            ->getMock();
         $dispatcher->expects($this->any())->method('processEasyCreditDetails')->willThrowException(new \Exception('test'));
         $dispatcher->expects($this->any())->method('getDic')->willReturn($dic);
 
@@ -114,7 +129,13 @@ class EasyCreditDispatcherTest extends UnitTestCase
         $session = oxNew(EasyCreditSession::class);
         $dic = $this->buildDic($session);
 
-        $oxBasket = $this->getMock(EasyCreditBasket::class, ['getDic', 'getPrice']);
+        $oxBasket = $this->getMockBuilder(EasyCreditBasket::class)
+            ->disableOriginalConstructor()
+            ->setMethods([
+                'getDic',
+                'getPrice',
+            ])
+            ->getMock();
         $oxBasket->expects($this->any())->method('getDic')->willReturn($dic);
 
         $price = oxNew('oxprice');
@@ -134,7 +155,13 @@ class EasyCreditDispatcherTest extends UnitTestCase
         );
         $session->setVariable(EasyCreditSession::API_CONFIG_STORAGE, serialize($storage));
 
-        $dispatcher = $this->getMock(EasyCreditDispatcherController::class, ['getDic', 'call']);
+        $dispatcher = $this->getMockBuilder(EasyCreditDispatcherController::class)
+            ->disableOriginalConstructor()
+            ->setMethods([
+                'getDic',
+                'call',
+            ])
+            ->getMock();
         $dispatcher->expects($this->any())->method('getDic')->willReturn($dic);
 
         $response = new \stdClass();
@@ -144,7 +171,6 @@ class EasyCreditDispatcherTest extends UnitTestCase
         $dispatcher->expects($this->any())->method('call')->willReturn($response);
 
         $dispatcher->setUser($user);
-
 
         $this->assertEquals('order', $dispatcher->getEasyCreditDetails());
     }
@@ -156,7 +182,10 @@ class EasyCreditDispatcherTest extends UnitTestCase
 
         $user = oxNew(User::class);
 
-        $dispatcher = $this->getMock(EasyCreditDispatcherController::class, ['getDic']);
+        $dispatcher = $this->getMockBuilder(EasyCreditDispatcherController::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getDic'])
+            ->getMock();
         $dispatcher->expects($this->any())->method('getDic')->willReturn($dic);
 
         $dispatcher->setUser($user);
@@ -181,7 +210,10 @@ class EasyCreditDispatcherTest extends UnitTestCase
 
         $user = oxNew(User::class);
 
-        $dispatcher = $this->getMock(EasyCreditDispatcherController::class, ['getDic']);
+        $dispatcher = $this->getMockBuilder(EasyCreditDispatcherController::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getDic'])
+            ->getMock();
         $dispatcher->expects($this->any())->method('getDic')->willReturn($dic);
 
         $dispatcher->setUser($user);
@@ -206,7 +238,10 @@ class EasyCreditDispatcherTest extends UnitTestCase
 
         $user = oxNew(User::class);
 
-        $dispatcher = $this->getMock(EasyCreditDispatcherController::class, ['getDic']);
+        $dispatcher = $this->getMockBuilder(EasyCreditDispatcherController::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getDic'])
+            ->getMock();
         $dispatcher->expects($this->any())->method('getDic')->willReturn($dic);
 
         $dispatcher->setUser($user);
@@ -223,7 +258,14 @@ class EasyCreditDispatcherTest extends UnitTestCase
 
         $user = oxNew(User::class);
 
-        $dispatcher = $this->getMock(EasyCreditDispatcherController::class, ['isInitialized', 'getDic', 'call']);
+        $dispatcher = $this->getMockBuilder(EasyCreditDispatcherController::class)
+            ->disableOriginalConstructor()
+            ->setMethods([
+                'isInitialized',
+                'getDic',
+                'call',
+            ])
+            ->getMock();
         $dispatcher->expects($this->any())->method('isInitialized')->willReturn(false);
         $dispatcher->expects($this->any())->method('getDic')->willReturn($dic);
 
@@ -253,7 +295,13 @@ class EasyCreditDispatcherTest extends UnitTestCase
 
         $user = oxNew(User::class);
 
-        $dispatcher = $this->getMock(EasyCreditDispatcherController::class, ['getDic', 'call']);
+        $dispatcher = $this->getMockBuilder(EasyCreditDispatcherController::class)
+            ->disableOriginalConstructor()
+            ->setMethods([
+                'getDic',
+                'call',
+            ])
+            ->getMock();
         $dispatcher->expects($this->any())->method('getDic')->willReturn($dic);
 
         $response = new \stdClass();
@@ -272,7 +320,14 @@ class EasyCreditDispatcherTest extends UnitTestCase
 
         $user = oxNew(User::class);
 
-        $dispatcher = $this->getMock(EasyCreditDispatcherController::class, ['isInitialized', 'getDic', 'call']);
+        $dispatcher = $this->getMockBuilder(EasyCreditDispatcherController::class)
+            ->disableOriginalConstructor()
+            ->setMethods([
+                'isInitialized',
+                'getDic',
+                'call',
+            ])
+            ->getMock();
         $dispatcher->expects($this->any())->method('isInitialized')->willReturn(true);
         $dispatcher->expects($this->any())->method('getDic')->willReturn($dic);
 
@@ -292,7 +347,15 @@ class EasyCreditDispatcherTest extends UnitTestCase
 
         $user = oxNew(User::class);
 
-        $dispatcher = $this->getMock(EasyCreditDispatcherController::class, ['getDic', 'call', 'isInitialized', 'getTbVorgangskennung']);
+        $dispatcher = $this->getMockBuilder(EasyCreditDispatcherController::class)
+            ->disableOriginalConstructor()
+            ->setMethods([
+                'isInitialized',
+                'getDic',
+                'call',
+                'getTbVorgangskennung',
+            ])
+            ->getMock();
         $dispatcher->expects($this->any())->method('getDic')->willReturn($dic);
         $dispatcher->expects($this->any())->method('isInitialized')->willReturn(true);
         $dispatcher->expects($this->any())->method('getTbVorgangskennung')->willReturn('dummy');
@@ -325,7 +388,14 @@ class EasyCreditDispatcherTest extends UnitTestCase
 
         $user = oxNew(User::class);
 
-        $dispatcher = $this->getMock(EasyCreditDispatcherController::class, ['getDic', 'call', 'isInitialized']);
+        $dispatcher = $this->getMockBuilder(EasyCreditDispatcherController::class)
+            ->disableOriginalConstructor()
+            ->setMethods([
+                'isInitialized',
+                'getDic',
+                'call',
+            ])
+            ->getMock();
         $dispatcher->expects($this->any())->method('getDic')->willReturn($dic);
         $dispatcher->expects($this->any())->method('isInitialized')->willReturn(true);
 
@@ -383,20 +453,29 @@ class EasyCreditDispatcherTest extends UnitTestCase
 
         $user = oxNew(User::class);
 
-        $dispatcher = $this->getMock(EasyCreditDispatcherController::class, ['getDic', 'isInitialized', 'getInstalmentDecision']);
+        $dispatcher = $this->getMockBuilder(EasyCreditDispatcherController::class)
+            ->disableOriginalConstructor()
+            ->setMethods([
+                'isInitialized',
+                'getDic',
+                'getInstalmentDecision',
+            ])
+            ->getMock();
         $dispatcher->expects($this->any())->method('getDic')->willReturn($dic);
         $dispatcher->expects($this->any())->method('isInitialized')->willReturn(true);
         $dispatcher->expects($this->any())->method('getInstalmentDecision')->willReturn(EasyCreditDispatcherController::INSTALMENT_DECISION_OK);
 
         $dispatcher->setUser($user);
 
-
         $this->assertEquals('payment', $dispatcher->getEasyCreditDetails());
     }
 
     public function testGetDic(): void
     {
-        $dispatcher = $this->getMock(EasyCreditDispatcherController::class, ['processEasyCreditDetails']);
+        $dispatcher = $this->getMockBuilder(EasyCreditDispatcherController::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['processEasyCreditDetails'])
+            ->getMock();
         $dispatcher->expects($this->any())->method('processEasyCreditDetails')->willThrowException(new \Exception('test'));
 
         $this->assertEquals('payment', $dispatcher->getEasyCreditDetails());
@@ -415,7 +494,7 @@ class EasyCreditDispatcherTest extends UnitTestCase
         $requestBuilder->setBasket($oBasket);
         $requestBuilder->setShippingAddress($this->getShippingAddress());
 
-        $shopEdition = EasyCreditHelper::getShopSystem($this->getConfig()->getActiveShop());
+        $shopEdition = EasyCreditHelper::getShopSystem(Registry::getConfig()->getActiveShop());
         $requestBuilder->setShopEdition($shopEdition);
 
         $moduleVersion = EasyCreditHelper::getModuleVersion($dic);

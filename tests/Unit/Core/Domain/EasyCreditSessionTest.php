@@ -17,13 +17,13 @@
 namespace OxidSolutionCatalysts\EasyCredit\Tests\Unit\Core\Domain;
 
 use OxidEsales\Eshop\Core\Session;
-use OxidEsales\TestingLibrary\UnitTestCase;
+use PHPUnit\Framework\TestCase;
 use OxidSolutionCatalysts\EasyCredit\Core\Dto\EasyCreditStorage;
 
 /**
- * Class EasyCreditOxSessionTest
+ * Class EasyCreditSessionTest
  */
-class EasyCreditOxSessionTest extends UnitTestCase
+class EasyCreditSessionTest extends TestCase
 {
     /**
      * Set up test environment
@@ -53,17 +53,12 @@ class EasyCreditOxSessionTest extends UnitTestCase
     {
         $session = oxNew(Session::class);
 
-        $storage = $this->getMock(
-            EasyCreditStorage::class,
-            ['hasExpired'],
-            [
-                'EasyCreditStorage',
-                'tbVorgangskennung',
-                'fachlicheVorgangskennung',
-                'authorizationHash',
-                500.50
-            ]
-        );
+        $storage = $this->getMockBuilder(EasyCreditStorage::class)
+            ->disableOriginalConstructor()
+            ->setMethods([
+                'hasExpired'
+            ])
+            ->getMock();
         $storage->expects($this->any())->method('hasExpired')->willReturn(true);
         $session->setStorage($storage);
 

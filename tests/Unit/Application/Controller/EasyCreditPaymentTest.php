@@ -6,8 +6,9 @@ use OxidEsales\Eshop\Application\Controller\PaymentController;
 use OxidEsales\Eshop\Application\Model\Address;
 use OxidEsales\Eshop\Application\Model\User;
 use OxidEsales\Eshop\Core\Registry;
-use OxidEsales\TestingLibrary\UnitTestCase;
-use OxidSolutionCatalysts\EasyCredit\Application\Controller\EasyCreditPaymentController;
+use OxidEsales\Eshop\Core\Config;
+use PHPUnit\Framework\TestCase;
+use OxidSolutionCatalysts\EasyCredit\Controller\EasyCreditPaymentController;
 use OxidSolutionCatalysts\EasyCredit\Core\CrossCutting\EasyCreditLogging;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditApiConfig;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDic;
@@ -20,7 +21,7 @@ use OxidSolutionCatalysts\EasyCredit\Core\Exception\EasyCreditException;
 /**
  * Class EasyCreditPaymentTest
  */
-class EasyCreditPaymentTest extends UnitTestCase
+class EasyCreditPaymentTest extends TestCase
 {
     /**
      * Set up test environment
@@ -42,12 +43,12 @@ class EasyCreditPaymentTest extends UnitTestCase
 
     protected function buildDic($oxSession)
     {
-        $mockOxConfig = $this->getMock('oxConfig', [], []);
+        $mockOxConfig = $this->getMockBuilder(Config::class)->disableOriginalConstructor()->getMock();
 
         $session = oxNew(EasyCreditDicSession::class, $oxSession);
         $mockApiConfig = oxNew(EasyCreditApiConfig::class, EasyCreditDicFactory::getApiConfigArray());
-        $mockLogging = $this->getMock(EasyCreditLogging::class, [], [[]]);
-        $mockDicConfig = $this->getMock(EasyCreditDicConfig::class, [], [$mockOxConfig]);
+        $mockLogging = $this->getMockBuilder(EasyCreditLogging::class)->disableOriginalConstructor()->getMock();
+        $mockDicConfig = $this->getMockBuilder(EasyCreditDicConfig::class)->disableOriginalConstructor()->getMock();
 
         $mockDic = oxNew(
             EasyCreditDic::class,
@@ -80,7 +81,10 @@ class EasyCreditPaymentTest extends UnitTestCase
 
     public function testIsEasyCreditPossibleAddressMismatch()
     {
-        $payment = $this->getMock(EasyCreditPaymentController::class, ['isAddressMismatch']);
+        $payment = $this->getMockBuilder(EasyCreditPaymentController::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['isAddressMismatch'])
+            ->getMock();
         $payment->expects($this->any())->method('isAddressMismatch')->willReturn(true);
 
         $this->assertFalse($payment->isEasyCreditPossible());
@@ -88,7 +92,10 @@ class EasyCreditPaymentTest extends UnitTestCase
 
     public function testIsEasyCreditPossibleExampleCalculation()
     {
-        $payment = $this->getMock(EasyCreditPaymentController::class, ['getExampleCalulation']);
+        $payment = $this->getMockBuilder(EasyCreditPaymentController::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getExampleCalulation'])
+            ->getMock();
         $payment->expects($this->any())->method('getExampleCalulation')->willReturn(false);
 
         $this->assertFalse($payment->isEasyCreditPossible());
@@ -96,7 +103,10 @@ class EasyCreditPaymentTest extends UnitTestCase
 
     public function testGetExampleCalculationResponse()
     {
-        $payment = $this->getMock(EasyCreditPaymentController::class, ['getPrice']);
+        $payment = $this->getMockBuilder(EasyCreditPaymentController::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getPrice'])
+            ->getMock();
         $payment->expects($this->any())->method('getPrice')->willReturn(false);
 
         $this->assertFalse($payment->getExampleCalculationResponse());
@@ -112,8 +122,12 @@ class EasyCreditPaymentTest extends UnitTestCase
     {
         $delAddress = oxNew(Address::class);
 
-        $payment = $this->getMock(EasyCreditPaymentController::class, ['getDelAddress']);
+        $payment = $this->getMockBuilder(EasyCreditPaymentController::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getDelAddress', 'getUser'])
+            ->getMock();
         $payment->expects($this->any())->method('getDelAddress')->willReturn($delAddress);
+        $payment->expects($this->any())->method('getUser')->willReturn(null);
 
         $this->assertTrue($payment->isAddressMismatch());
     }
@@ -123,7 +137,13 @@ class EasyCreditPaymentTest extends UnitTestCase
         $delAddress = oxNew(Address::class);
         $user = oxNew(User::class);
 
-        $payment = $this->getMock(EasyCreditPaymentController::class, ['getDelAddress', 'getUser']);
+        $payment = $this->getMockBuilder(EasyCreditPaymentController::class)
+            ->disableOriginalConstructor()
+            ->setMethods([
+                'getDelAddress',
+                'getUser',
+            ])
+            ->getMock();
         $payment->expects($this->any())->method('getDelAddress')->willReturn($delAddress);
         $payment->expects($this->any())->method('getUser')->willReturn($user);
 
@@ -135,7 +155,13 @@ class EasyCreditPaymentTest extends UnitTestCase
         $delAddress = oxNew(Address::class);
         $user = oxNew(User::class);
 
-        $payment = $this->getMock(EasyCreditPaymentController::class, ['getDelAddress', 'getUser']);
+        $payment = $this->getMockBuilder(EasyCreditPaymentController::class)
+            ->disableOriginalConstructor()
+            ->setMethods([
+                'getDelAddress',
+                'getUser',
+            ])
+            ->getMock();
         $payment->expects($this->any())->method('getDelAddress')->willReturn($delAddress);
         $payment->expects($this->any())->method('getUser')->willReturn($user);
 
@@ -146,7 +172,10 @@ class EasyCreditPaymentTest extends UnitTestCase
     {
         $user = oxNew(User::class);
 
-        $payment = $this->getMock(EasyCreditPaymentController::class, ['getUser']);
+        $payment = $this->getMockBuilder(EasyCreditPaymentController::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getUser'])
+            ->getMock();
         $payment->expects($this->any())->method('getUser')->willReturn($user);
 
         $this->assertTrue($payment->isForeignAddress());
@@ -156,7 +185,10 @@ class EasyCreditPaymentTest extends UnitTestCase
     {
         $delAddress = oxNew(Address::class);
 
-        $payment = $this->getMock(EasyCreditPaymentController::class, ['getDelAddress']);
+        $payment =         $payment = $this->getMockBuilder(EasyCreditPaymentController::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getDelAddress'])
+            ->getMock();
         $payment->expects($this->any())->method('getDelAddress')->willReturn($delAddress);
 
         $this->assertFalse($payment->isPackstation());
@@ -166,7 +198,10 @@ class EasyCreditPaymentTest extends UnitTestCase
     {
         $user = oxNew(User::class);
 
-        $payment = $this->getMock(EasyCreditPaymentController::class, ['getUser']);
+        $payment = $this->getMockBuilder(EasyCreditPaymentController::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getUser'])
+            ->getMock();
         $payment->expects($this->any())->method('getUser')->willReturn($user);
 
         $this->assertFalse($payment->isPackstation());
@@ -190,7 +225,10 @@ class EasyCreditPaymentTest extends UnitTestCase
     {
         Registry::getSession()->setVariable('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
 
-        $payment = $this->getMock(EasyCreditPaymentController::class, ['isEasyCreditPossible']);
+        $payment = $this->getMockBuilder(EasyCreditPaymentController::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['isEasyCreditPossible'])
+            ->getMock();
         $payment->expects($this->any())->method('isEasyCreditPossible')->willReturn(true);
 
         $this->assertEquals('EasyCreditDispatcher?fnc=initializeandredirect', $payment->validatePayment());
@@ -200,7 +238,13 @@ class EasyCreditPaymentTest extends UnitTestCase
     {
         Registry::getSession()->setVariable('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
 
-        $payment = $this->getMock(EasyCreditPaymentController::class, ['isEasyCreditPossible', 'addProfileData']);
+        $payment = $this->getMockBuilder(EasyCreditPaymentController::class)
+            ->disableOriginalConstructor()
+            ->setMethods([
+                'isEasyCreditPossible',
+                'addProfileData',
+            ])
+            ->getMock();
         $payment->expects($this->any())->method('isEasyCreditPossible')->willReturn(true);
         $payment->expects($this->any())->method('addProfileData')->willThrowException(new \Exception('TEST'));
 
@@ -211,7 +255,13 @@ class EasyCreditPaymentTest extends UnitTestCase
     {
         $user = oxNew(User::class);
 
-        $payment = $this->getMock(EasyCreditPaymentController::class, ['getValidatedDateOfBirth', 'getUser']);
+        $payment = $this->getMockBuilder(EasyCreditPaymentController::class)
+            ->disableOriginalConstructor()
+            ->setMethods([
+                'getValidatedDateOfBirth',
+                'getUser',
+            ])
+            ->getMock();
         $payment->expects($this->any())->method('getValidatedDateOfBirth')->willReturn('1980-05-25');
         $payment->expects($this->any())->method('getUser')->willReturn($user);
 
@@ -222,7 +272,13 @@ class EasyCreditPaymentTest extends UnitTestCase
     {
         $user = oxNew(User::class);
 
-        $payment = $this->getMock(EasyCreditPaymentController::class, ['getValidatedSalutation', 'getUser']);
+        $payment = $this->getMockBuilder(EasyCreditPaymentController::class)
+            ->disableOriginalConstructor()
+            ->setMethods([
+                'getValidatedSalutation',
+                'getUser',
+            ])
+            ->getMock();
         $payment->expects($this->any())->method('getValidatedSalutation')->willReturn('MR');
         $payment->expects($this->any())->method('getUser')->willReturn($user);
 
@@ -234,7 +290,10 @@ class EasyCreditPaymentTest extends UnitTestCase
         $response = new \stdClass();
         $response->zustimmungDatenuebertragungPaymentPage = 'dummy';
 
-        $payment = $this->getMock(EasyCreditPaymentController::class, ['call']);
+        $payment = $this->getMockBuilder(EasyCreditPaymentController::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['call'])
+            ->getMock();
         $payment->expects($this->any())->method('call')->willReturn($response);
 
         $this->assertEquals('dummy', $payment->loadAgreementTxt());
@@ -270,7 +329,7 @@ class EasyCreditPaymentTest extends UnitTestCase
 
     public function testGetValidatedDateOfBirthInFuture()
     {
-        $this->expectExceptionMessage(OXPS_EASY_CREDIT_ERROR_DATEOFBIRTH_INVALID);
+        $this->expectExceptionMessage(Registry::getLang()->translateString('OXPS_EASY_CREDIT_ERROR_DATEOFBIRTH_INVALID'));
         $this->expectException(EasyCreditException::class);
         $requestData = [
             'oxuser__oxbirthdate' => [
