@@ -236,7 +236,7 @@ class EasyCreditPaymentTest extends TestCase
 
     public function testValidatePaymentEasyCreditPossibleAddProfileDataException()
     {
-        Registry::getSession()->setVariable('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
+        Registry::getSession()->setVariable('paymentid', EasyCreditHelper::EASYCREDIT_PAYMENTID);
 
         $payment = $this->getMockBuilder(EasyCreditPaymentController::class)
             ->disableOriginalConstructor()

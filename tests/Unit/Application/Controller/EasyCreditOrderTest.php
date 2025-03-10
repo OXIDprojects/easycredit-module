@@ -121,7 +121,7 @@ class EasyCreditOrderTest extends TestCase
 
         $payment = oxNew(Payment::class);
         $payment->oxpayments__oxdesc = new Field('test payment');
-        $payment->setId(EasyCreditPayment::EASYCREDIT_PAYMENTID);
+        $payment->setId(EasyCreditHelper::EASYCREDIT_PAYMENTID);
 
         $order = $this->getMockBuilder(EasyCreditOrder::class)
             ->disableOriginalConstructor()
@@ -154,7 +154,7 @@ class EasyCreditOrderTest extends TestCase
 
         $payment = oxNew(Payment::class);
         $payment->oxpayments__oxdesc = new Field('test payment');
-        $payment->setId(EasyCreditPayment::EASYCREDIT_PAYMENTID);
+        $payment->setId(EasyCreditHelper::EASYCREDIT_PAYMENTID);
 
         $viewConfig = $this->getMockBuilder(ViewConfig::class)
             ->disableOriginalConstructor()
@@ -187,7 +187,7 @@ class EasyCreditOrderTest extends TestCase
 
         $payment = oxNew(Payment::class);
         $payment->oxpayments__oxdesc = new Field('test payment');
-        $payment->setId(EasyCreditPayment::EASYCREDIT_PAYMENTID);
+        $payment->setId(EasyCreditHelper::EASYCREDIT_PAYMENTID);
 
         $order = $this->getMockBuilder(EasyCreditOrder::class)
             ->disableOriginalConstructor()

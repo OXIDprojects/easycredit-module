@@ -3,6 +3,8 @@
 namespace OxidSolutionCatalysts\EasyCredit\Tests\Unit\Application\Component\Widget;
 
 use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\Eshop\Core\UtilsObject;
+use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditApiConfig;
 use PHPUnit\Framework\TestCase;
 use OxidSolutionCatalysts\EasyCredit\Component\Widget\EasyCreditExampleCalculationPopup;
 /**
@@ -19,7 +21,6 @@ class EasyCreditExampleCalculationPopupTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->shopkennung = Registry::getConfig()->getConfigParam('oxpsECWebshopId');
     }
 
     /**
@@ -57,7 +58,13 @@ class EasyCreditExampleCalculationPopupTest extends TestCase
 
     public function testGetIFrameUrl(): void
     {
+        $apiConfig = $this->getMockBuilder(EasyCreditApiConfig::class)->disableOriginalConstructor()->getMock();
+        $apiConfig->method('getWebShopId')->willReturn($this->shopkennung);
+        UtilsObject::setClassInstance(EasyCreditApiConfig::class, $apiConfig);
+
         $popup = oxNew(EasyCreditExampleCalculationPopup::class);
         $this->assertEquals('https://ratenkauf.easycredit.de/ratenkauf/content/intern/paymentPageBeispielrechnung.jsf?shopKennung='. $this->shopkennung .'&bestellwert=0', $popup->getIFrameUrl());
+
+        UtilsObject::resetClassInstances();
     }
 }

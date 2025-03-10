@@ -171,6 +171,7 @@ class EasyCreditApiConfig
             default:
                 return [self::API_CONFIG_SERVICE_REST_ARGUMENT_WEBSHOP_ID => $this->getWebShopId()];
         }
+        return [];
     }
 
     public function getBaseUrl($serviceName = null)

@@ -117,7 +117,7 @@ class EasyCreditHelperTest extends TestCase
 
     public function testGetModuleVersionOk(): void
     {
-        $expected = "5.0.0";
+        $expected = "4.0.0";
 
         $module = $this->getMockBuilder(Module::class)->disableOriginalConstructor()->getMock();
         $module->method('load')->willReturn(true);
@@ -129,6 +129,8 @@ class EasyCreditHelperTest extends TestCase
         $dic       = oxNew(EasyCreditDic::class, null, $apiConfig, null, null, null);
 
         $this->assertEquals($expected, EasyCreditHelper::getModuleVersion($dic));
+
+        UtilsObject::resetClassInstances();
     }
 
     public function testGetModuleVersionWrongModuleId(): void

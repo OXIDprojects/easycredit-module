@@ -49,7 +49,7 @@ class EasyCreditWebServiceClientFactory
         $client->setFunction(
             $apiConfig->getServiceRestFunction($serviceName),
             $additionalArguments,
-            array_merge($apiConfig->getServiceRestFunctionArguments($serviceName), $queryArguments)
+            array_merge($apiConfig->getServiceRestFunctionArguments($serviceName) ?? [], $queryArguments)
         );
 
         $scheme = $apiConfig->getValidationScheme($serviceName);

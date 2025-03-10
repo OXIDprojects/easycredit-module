@@ -158,6 +158,8 @@ class EasyCreditInitializeRequestBuilderTest extends TestCase
             ]
         ];
         $this->assertEquals($expected, $rb->getInitializationData());
+
+        UtilsObject::resetClassInstances();
     }
 
     public function testGetInitializationDataWithRegisteredUserWithGroups(): void
@@ -217,6 +219,8 @@ class EasyCreditInitializeRequestBuilderTest extends TestCase
             ]
         ];
         $this->assertEquals($expected, $rb->getInitializationData());
+
+        UtilsObject::resetClassInstances();
     }
 
     public function testGetInitializationDataWithSalutationMapping(): void
@@ -270,6 +274,8 @@ class EasyCreditInitializeRequestBuilderTest extends TestCase
             ]
         ];
         $this->assertEquals($expected, $rb->getInitializationData());
+
+        UtilsObject::resetClassInstances();
     }
 
     public function testGetInitializationDataWithBirthday(): void
@@ -323,6 +329,8 @@ class EasyCreditInitializeRequestBuilderTest extends TestCase
             ]
         ];
         $this->assertEquals($expected, $rb->getInitializationData());
+
+        UtilsObject::resetClassInstances();
     }
 
     public function testGetInitializationDataWithInvalidBirthday(): void
@@ -373,6 +381,8 @@ class EasyCreditInitializeRequestBuilderTest extends TestCase
             ]
         ];
         $this->assertEquals($expected, $rb->getInitializationData());
+
+        UtilsObject::resetClassInstances();
     }
 
     public function testGetInitializationDataWithDeliveryAddress(): void
@@ -425,6 +435,8 @@ class EasyCreditInitializeRequestBuilderTest extends TestCase
             ]
         ];
         $this->assertEquals($expected, $rb->getInitializationData());
+
+        UtilsObject::resetClassInstances();
     }
 
     public function testGetInitializationDataWithCountry(): void
@@ -481,6 +493,8 @@ class EasyCreditInitializeRequestBuilderTest extends TestCase
             ]
         ];
         $this->assertEquals($expected, $rb->getInitializationData());
+
+        UtilsObject::resetClassInstances();
     }
 
     public function testGetInitializationDataWithValidPhoneNumber(): void
@@ -536,6 +550,8 @@ class EasyCreditInitializeRequestBuilderTest extends TestCase
             ]
         ];
         $this->assertEquals($expected, $rb->getInitializationData());
+
+        UtilsObject::resetClassInstances();
     }
 
     public function testGetInitializationDataWithDeps(): void
@@ -656,5 +672,7 @@ class EasyCreditInitializeRequestBuilderTest extends TestCase
             ]
         ];
         $this->assertEquals($expected, $rb->getInitializationData());
+
+        UtilsObject::resetClassInstances();
     }
 }

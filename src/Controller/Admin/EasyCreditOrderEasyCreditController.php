@@ -15,6 +15,7 @@ namespace OxidSolutionCatalysts\EasyCredit\Controller\Admin;
 
 use OxidEsales\Eshop\Application\Model\Order;
 use OxidEsales\Eshop\Core\Registry;
+use OxidSolutionCatalysts\EasyCredit\Core\Helper\EasyCreditHelper;
 use OxidSolutionCatalysts\EasyCredit\Model\EasyCreditTradingApiAccess;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDicFactory;
 use OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditPayment;
@@ -92,7 +93,7 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
     {
         /** @var $order Order */
         $order = $this->getOrder();
-        return $order && EasyCreditPayment::isEasyCreditInstallmentById($order->getFieldData('oxpaymenttype'));
+        return $order && EasyCreditHelper::isEasyCreditInstallmentById($order->getFieldData('oxpaymenttype'));
     }
 
     /**

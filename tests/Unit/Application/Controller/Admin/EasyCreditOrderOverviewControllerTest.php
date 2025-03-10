@@ -43,6 +43,8 @@ class EasyCreditOrderOverviewControllerTest extends TestCase
         $controller = oxNew(EasyCreditOrderOverviewController::class);
 
         $this->assertEquals($expected, $controller->getDeliveryState($order));
+
+        UtilsObject::resetClassInstances();
     }
 
     public function testSendOrderNoOrder()
@@ -83,6 +85,8 @@ class EasyCreditOrderOverviewControllerTest extends TestCase
         $controller->expects($this->once())->method('loadOrder')->willReturn($order);
 
         $controller->sendOrder();
+
+        UtilsObject::resetClassInstances();
     }
 
     public function testSendOrderNoECOrder()

@@ -44,7 +44,7 @@ class EasyCreditBasket extends EasyCreditBasket_parent
      */
     public function getInterestsAmount()
     {
-        if (EasyCreditHelper::isEasyCreditInstallmentById($this->getPaymentId())) {
+        if (EasyCreditHelper::isEasyCreditInstallmentById($this->getPaymentId() ?? '')) {
             $storage = $this->getDic()->getSession()->getStorage();
             if ($storage) {
                 return $storage->getInterestAmount();
