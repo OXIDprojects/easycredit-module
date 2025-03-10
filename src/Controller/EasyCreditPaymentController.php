@@ -63,7 +63,7 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
      * @return EasyCreditDic
      * @throws SystemComponentException
      */
-    protected function getDic()
+    public function getDic()
     {
         if (!$this->dic) {
             $this->dic = EasyCreditDicFactory::getDic();
@@ -76,7 +76,7 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
      *
      * @return Basket
      */
-    protected function getBasket()
+    public function getBasket()
     {
         return Registry::getSession()->getBasket();
     }
@@ -569,7 +569,7 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
      * @return string date of birth
      * @throws EasyCreditException
      */
-    protected function getValidatedDateOfBirth($requestData, $user)
+    public function getValidatedDateOfBirth($requestData, $user)
     {
         $birthday = $requestData["oxuser__oxbirthdate"] ?? false;
         if (!empty($birthday) && is_array($birthday)) {
@@ -592,7 +592,7 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
      * @return string salutation
      * @throws EasyCreditException
      */
-    protected function getValidatedSalutation($requestData)
+    public function getValidatedSalutation($requestData)
     {
         $salutation = $requestData["oxuser__oxsal"] ?? false;
         if ($this->isValidSalutation($salutation)) {

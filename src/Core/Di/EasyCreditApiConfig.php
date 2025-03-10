@@ -13,8 +13,8 @@
 
 namespace OxidSolutionCatalysts\EasyCredit\Core\Di;
 
-use JetBrains\PhpStorm\ArrayShape;
-use OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditPayment;
+
+use OxidSolutionCatalysts\EasyCredit\Core\Helper\EasyCreditHelper;
 
 /**
  * This Software is the property of OXID eSales and is protected
@@ -221,7 +221,7 @@ class EasyCreditApiConfig
 
     public function getEasyCreditInstalmentPaymentId()
     {
-        return EasyCreditPayment::EASYCREDIT_PAYMENTID;
+        return EasyCreditHelper::EASYCREDIT_PAYMENTID;
     }
 
     public function getEasyCreditModuleId()

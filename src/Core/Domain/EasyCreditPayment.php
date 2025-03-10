@@ -13,16 +13,13 @@
 
 namespace OxidSolutionCatalysts\EasyCredit\Core\Domain;
 
-use OxidEsales\Eshop\Core\Registry;
+use OxidSolutionCatalysts\EasyCredit\Core\Helper\EasyCreditHelper;
 
 /**
  * Class oxpsEasyCreditOxPayment
  */
 class EasyCreditPayment extends EasyCreditPayment_parent
 {
-    /** string paymentid */
-    const EASYCREDIT_PAYMENTID = "easycreditinstallment";
-
     /**
      * Returns true if payment is ratenkauf by easyCredit
      *
@@ -30,18 +27,6 @@ class EasyCreditPayment extends EasyCreditPayment_parent
      */
     public function isEasyCreditInstallment()
     {
-        return self::isEasyCreditInstallmentById($this->getId());
-    }
-
-    /**
-     * Returns true if payment is ratenkauf by easyCredit
-     *
-     * @param $paymentId string
-     *
-     * @return bool
-     */
-    public static function isEasyCreditInstallmentById($paymentId)
-    {
-        return $paymentId == self::EASYCREDIT_PAYMENTID;
+        return EasyCreditHelper::isEasyCreditInstallmentById($this->getId());
     }
 }

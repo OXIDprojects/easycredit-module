@@ -17,9 +17,9 @@ use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDicConfig;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDicFactory;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDicSession;
 use OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditOrder;
-use OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditPayment;
 use OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditSession;
 use OxidSolutionCatalysts\EasyCredit\Core\Dto\EasyCreditStorage;
+use OxidSolutionCatalysts\EasyCredit\Core\Helper\EasyCreditHelper;
 
 /**
  * Class EasyCreditOrderTest
@@ -88,7 +88,7 @@ class EasyCreditOrderTest extends TestCase
         $session->setVariable(EasyCreditSession::API_CONFIG_STORAGE, serialize($storage));
 
         $payment = oxNew(Payment::class);
-        $payment->setId(EasyCreditPayment::EASYCREDIT_PAYMENTID);
+        $payment->setId(EasyCreditHelper::EASYCREDIT_PAYMENTID);
 
         $order = $this->getMockBuilder(EasyCreditOrder::class)
             ->disableOriginalConstructor()

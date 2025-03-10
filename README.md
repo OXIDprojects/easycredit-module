@@ -1,6 +1,6 @@
 # OXID Solution Catalyst easyCredit-Ratenkauf Oxid 7 Module
 
-# Version 5.0.0
+# Version 4.0.0
 
 ## Description
 
@@ -12,7 +12,7 @@
 
 Use Composer to add the module to your project
 ```bash
-composer require oxid-professional-services/easycredit-module-module:^5.0
+composer require oxid-professional-services/easycredit-module-module:^4.0
 ```
 
  * Activate the module in administration area
@@ -96,6 +96,10 @@ composer update
 
 * Rebranding easyCredit-Ratenkauf
 
-### Version 5.0.0
+### Version 4.0.0
 
-* Version for OXID7 installable via Composer
+* Version for OXID7
+
+## Fix
+
+* [0007754](https://bugs.oxid-esales.com/view.php?id=7754): fix ModuleChainGenerator that has issue loading EasyCreditPayment

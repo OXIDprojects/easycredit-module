@@ -15,8 +15,8 @@ use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDic;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDicConfig;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDicFactory;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDicSession;
-use OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditPayment;
 use OxidSolutionCatalysts\EasyCredit\Core\Exception\EasyCreditException;
+use OxidSolutionCatalysts\EasyCredit\Core\Helper\EasyCreditHelper;
 
 /**
  * Class EasyCreditPaymentTest
@@ -215,7 +215,7 @@ class EasyCreditPaymentTest extends TestCase
 
     public function testValidatePaymentEasyCreditNotPossible()
     {
-        Registry::getSession()->setVariable('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
+        Registry::getSession()->setVariable('paymentid', EasyCreditHelper::EASYCREDIT_PAYMENTID);
 
         $payment = oxNew(PaymentController::class);
         $this->assertNull($payment->validatePayment());
@@ -223,7 +223,7 @@ class EasyCreditPaymentTest extends TestCase
 
     public function testValidatePaymentEasyCreditPossible()
     {
-        Registry::getSession()->setVariable('paymentid', EasyCreditPayment::EASYCREDIT_PAYMENTID);
+        Registry::getSession()->setVariable('paymentid', EasyCreditHelper::EASYCREDIT_PAYMENTID);
 
         $payment = $this->getMockBuilder(EasyCreditPaymentController::class)
             ->disableOriginalConstructor()
