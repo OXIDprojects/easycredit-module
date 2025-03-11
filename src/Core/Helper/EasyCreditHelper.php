@@ -107,7 +107,7 @@ class EasyCreditHelper
     {
         /** @var $module Module */
         $module = oxNew(Module::class);
-        if ($module->load($dic->getApiConfig()->getEasyCreditModuleId())) {
+        if ($module->load($dic->getApiConfig()->getEasyCreditModuleId() ?? '')) {
             return $module->getInfo('version');
         }
         return "";

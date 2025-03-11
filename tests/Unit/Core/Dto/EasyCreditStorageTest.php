@@ -16,12 +16,13 @@
 
 namespace OxidSolutionCatalysts\EasyCredit\Tests\Unit\Core\Dto;
 
+use PHPUnit\Framework\TestCase;
 use OxidSolutionCatalysts\EasyCredit\Core\Dto\EasyCreditStorage;
 
 /**
  * Class EasyCreditStorageTest
  */
-class EasyCreditStorageTest extends \OxidEsales\TestingLibrary\UnitTestCase
+class EasyCreditStorageTest extends TestCase
 {
     /**
      * Set up test environment
@@ -55,11 +56,12 @@ class EasyCreditStorageTest extends \OxidEsales\TestingLibrary\UnitTestCase
 
     public function testHasExpiredExpiredLastUpdate(): void
     {
-        $oTest = $this->getMock(
-            EasyCreditStorage::class,
-            ['getStorageExpiredTimeRange'],
-            ['TEST', 'TEST', 'TEST', 450.0]
-        );
+        $oTest = $this->getMockBuilder(EasyCreditStorage::class)
+            ->disableOriginalConstructor()
+            ->setMethods([
+                'getStorageExpiredTimeRange'
+            ])
+            ->getMock();
 
         sleep(2);
 

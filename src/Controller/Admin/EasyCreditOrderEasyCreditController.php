@@ -15,6 +15,7 @@ namespace OxidSolutionCatalysts\EasyCredit\Controller\Admin;
 
 use OxidEsales\Eshop\Application\Model\Order;
 use OxidEsales\Eshop\Core\Registry;
+use OxidSolutionCatalysts\EasyCredit\Core\Helper\EasyCreditHelper;
 use OxidSolutionCatalysts\EasyCredit\Model\EasyCreditTradingApiAccess;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDicFactory;
 use OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditPayment;
@@ -28,9 +29,21 @@ use OxidSolutionCatalysts\EasyCredit\Core\Exception\EasyCreditException;
 class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController
 {
     /**
+     * Template to be used
+     *
+     * @var string
+     */
+    protected $_sThisTemplate = "@osceasycredit/admin/oxpseasycredit_order_easycredit.html.twig";
+
+    /**
      * @var Order order
      */
     private $order = false;
+
+    /**
+     * @var EasyCreditTradingApiAccess|null
+     */
+    protected $apiService = null;
 
     /**
      * Valid reasons for reversal.
@@ -51,7 +64,7 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
      */
     public function render()
     {
-        parent::render();
+        $parentReturn = parent::render();
 
         $this->_aViewData["sOxid"] = $this->getEditObjectId();
 
@@ -66,10 +79,9 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
                 EasyCreditDicFactory::getDic()->getLogging()->log($e->getMessage());
                 $this->_aViewData['invalidECIdentifier'] = 1;
             }
-
         }
 
-        return "oxpseasycredit_order_easycredit.tpl";
+        return $parentReturn;
     }
 
     /**
@@ -81,7 +93,7 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
     {
         /** @var $order Order */
         $order = $this->getOrder();
-        return $order && EasyCreditPayment::isEasyCreditInstallmentById($order->getFieldData('oxpaymenttype'));
+        return $order && EasyCreditHelper::isEasyCreditInstallmentById($order->getFieldData('oxpaymenttype'));
     }
 
     /**
@@ -97,9 +109,8 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
             $reversalSuccess = Registry::getLang()->translateString('OXPS_EASY_CREDIT_ADMIN_REVERSAL_SUCCESS');
             $this->addTplParam('reversalsuccess', $reversalSuccess);
         } catch (EasyCreditException $e) {
-            if( 0 < $e->getCode()) {
+            if ($e->getCode() > 0) {
                 $reversalError = Registry::getLang()->translateString('OXPS_EASY_CREDIT_ADMIN_REVERSAL_ERROR_AMOUNT');
-
             } else {
                 $reversalError = Registry::getLang()->translateString('OXPS_EASY_CREDIT_ADMIN_REVERSAL_ERROR_COMMON');
             }
@@ -119,7 +130,6 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
             $this->order = oxNew(Order::class);
             $this->order->load($soxId);
         }
-
         return $this->order;
     }
 
@@ -148,7 +158,7 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
      */
     protected function getEasyCreditDeliveryState()
     {
-        $service = $this->getService();
+        $service = $this->getApiService();
 
         return $service->getOrderState();
     }
@@ -161,8 +171,8 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
      */
     protected function getEasyCreditOrderData()
     {
-        $orderData = $this->getService()->getOrderData();
-        if (1 > count($orderData)) {
+        $orderData = $this->getApiService()->getOrderData();
+        if (!is_array($orderData) || count($orderData) < 1) {
             throw new EasyCreditException(
                 "No data found for order with identifier {$this->order->getFieldData('ecredfunctionalid')}"
             );
@@ -194,9 +204,12 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
      *
      * @return mixed|EasyCreditTradingApiAccess
      */
-    protected function getService()
+    protected function getApiService()
     {
-        return oxNew(EasyCreditTradingApiAccess::class, $this->getOrder());
+        if ($this->apiService === null) {
+            $this->apiService = oxNew(EasyCreditTradingApiAccess::class, $this->getOrder());
+        }
+        return $this->apiService;
     }
 
     /**
@@ -211,27 +224,27 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
      */
     protected function validateInput(array $request)
     {
-        if (false !== $this->getOrder()) {
-            # ist request tecid = ordertecid
-            $fIdRequest = $request['functionalid'];
-            $fIdOrder   = $this->order->getFieldData('ecredfunctionalid');
-            if ($fIdOrder != $fIdRequest) {
-                throw new EasyCreditException("Functional ID mismatch");
-            }
-            # match reversal amount to max open amount
-            $service               = $this->getService();
-            $orderData             = $service->getOrderData();
-            $maxReversalAmount     = (float)$orderData[0]->bestellwertAktuell;
-            $requestReversalAmount = (float)$request['amount'];
-            if ($requestReversalAmount > $maxReversalAmount || 0 >= $requestReversalAmount) {
-                throw new EasyCreditException("Requested reversal greater than actual amount", 10);
-            }
-            if (in_array($request['reason'], $this->allowedReversalReasons)) {
-                throw new EasyCreditException("Requested reversal reason invalid");
-            }
-
-        } else {
+        if (empty($this->getOrder())) {
             throw new EasyCreditException("No order given");
+        }
+
+        # ist request tecid = ordertecid
+        $fIdRequest = $request['functionalid'];
+        $fIdOrder   = $this->order->getFieldData('ecredfunctionalid');
+        if ($fIdOrder != $fIdRequest) {
+            throw new EasyCreditException("Functional ID mismatch");
+        }
+
+        # match reversal amount to max open amount
+        $service               = $this->getApiService();
+        $orderData             = $service->getOrderData();
+        $maxReversalAmount     = (float)$orderData[0]->bestellwertAktuell;
+        $requestReversalAmount = (float)$request['amount'];
+        if ($requestReversalAmount > $maxReversalAmount || $requestReversalAmount <= 0) {
+            throw new EasyCreditException("Requested reversal greater than actual amount", 10);
+        }
+        if (in_array($request['reason'], $this->allowedReversalReasons) === false) {
+            throw new EasyCreditException("Requested reversal reason invalid");
         }
     }
 
@@ -242,7 +255,7 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
     {
         $amount = (float) $request['amount'];
         $reason = $request['reason'];
-        $service = $this->getService();
+        $service = $this->getApiService();
         $service->sendReversal($amount, $reason);
     }
 }

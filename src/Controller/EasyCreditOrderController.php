@@ -41,15 +41,11 @@ class EasyCreditOrderController extends EasyCreditOrderController_parent
     public function getPayment()
     {
         if ($this->_oPayment === null) {
-
             /** @var $payment Payment */
             $payment = $this->parentGetPayment();
             if ($payment && $payment->getId() == $this->getDic()->getApiConfig()->getEasyCreditInstalmentPaymentId()) {
-
                 $this->checkStorage();
-                $this->appendInstalmentRatesToPaymentDescription($payment);
-            }
-            else {
+            } else {
                 $this->_oPayment = $payment;
             }
         }
@@ -76,12 +72,11 @@ class EasyCreditOrderController extends EasyCreditOrderController_parent
         try {
             /** @var $viewConfig ViewConfig */
             $viewConfig = $this->getViewConfig();
-            $logoFile = $viewConfig->getModulePath('oxpseasycredit', "out" . DIRECTORY_SEPARATOR . "pictures" . DIRECTORY_SEPARATOR . "eclogo.png");
-            if( file_exists($logoFile)) {
-                return $viewConfig->getModuleUrl('oxpseasycredit') . 'out/pictures/eclogo.png';
+            $logoFile = $viewConfig->getModulePath('osceasycredit', "img" . DIRECTORY_SEPARATOR . "eclogo.png");
+            if (file_exists($logoFile)) {
+                return $viewConfig->getModuleUrl('osceasycredit', 'img/eclogo.png');
             }
-        }
-        catch (\Exception $ex) {
+        } catch (\Exception $ex) {
             //that's expected, do nothing else
         }
         return null;
@@ -95,7 +90,7 @@ class EasyCreditOrderController extends EasyCreditOrderController_parent
     public function getTilgungsplanText()
     {
         $storage = $this->getDicSession()->getStorage();
-        if( $storage ) {
+        if ($storage) {
             return $storage->getTilgungsplanTxt();
         }
         return null;
@@ -109,7 +104,7 @@ class EasyCreditOrderController extends EasyCreditOrderController_parent
     protected function getAllgemeineVorgangsdaten()
     {
         $storage = $this->getDicSession()->getStorage();
-        if( $storage ) {
+        if ($storage) {
             return $storage->getAllgemeineVorgangsdaten();
         }
         return null;
@@ -123,7 +118,7 @@ class EasyCreditOrderController extends EasyCreditOrderController_parent
     public function getUrlVorvertraglicheInformationen()
     {
         $allgemeineVorgangsdaten = $this->getAllgemeineVorgangsdaten();
-        if( $allgemeineVorgangsdaten ) {
+        if ($allgemeineVorgangsdaten) {
             return $allgemeineVorgangsdaten->urlVorvertraglicheInformationen;
         }
         return null;
@@ -137,7 +132,7 @@ class EasyCreditOrderController extends EasyCreditOrderController_parent
     public function getPaymentPlanTxt()
     {
         $storage = $this->getDicSession()->getStorage();
-        if( $storage ) {
+        if ($storage) {
             return $storage->getRatenplanTxt();
         }
         return null;
@@ -146,23 +141,28 @@ class EasyCreditOrderController extends EasyCreditOrderController_parent
     /**
      * Modify information about easycredit-module payment (append payment logo and individual installment rates)
      * Result: more info for customer
-     *
-     * @param $payment Payment
      */
-    protected function appendInstalmentRatesToPaymentDescription($payment)
+    public function oscGetPaymentDescription()
     {
-        $paymentPlanTxt = $this->getPaymentPlanTxt();
-        if ($paymentPlanTxt) {
+        $paymentDescription = "";
+
+        $payment = $this->parentGetPayment();
+        if ($payment && $payment->getId() == $this->getDic()->getApiConfig()->getEasyCreditInstalmentPaymentId()) {
             $paymentDescription = $payment->oxpayments__oxdesc->value;
 
-            $logoUrl = $this->getEasyCreditLogoUrl();
-            if ($logoUrl) {
-                $logoUrlImgPattern = Registry::getLang()->translateString("OXPS_EASY_CREDIT_LOGO_IMG");
-                $paymentDescription = sprintf($logoUrlImgPattern, $logoUrl);
+            $paymentPlanTxt = $this->getPaymentPlanTxt();
+            if ($paymentPlanTxt) {
+                $paymentDescription = $payment->oxpayments__oxdesc->value;
+
+                $logoUrl = $this->getEasyCreditLogoUrl();
+                if ($logoUrl) {
+                    $logoUrlImgPattern = Registry::getLang()->translateString("OXPS_EASY_CREDIT_LOGO_IMG");
+                    $paymentDescription = sprintf($logoUrlImgPattern, $logoUrl);
+                }
+                $paymentDescription .= "<p>" . $paymentPlanTxt . "</p>";
             }
-            $paymentDescription .= "<p>" . $paymentPlanTxt . "</p>";
-            $payment->oxpayments__oxdesc->value = new Field($paymentDescription, Field::T_RAW);
         }
+        return $paymentDescription;
     }
 
     /**
@@ -178,14 +178,13 @@ class EasyCreditOrderController extends EasyCreditOrderController_parent
      * Returns the dic container.
      *
      * @return EasyCreditDic
-     * @throws SystemComponentException^
+     * @throws SystemComponentException
      */
     protected function getDic()
     {
-        if(!$this->dic) {
+        if (!$this->dic) {
             $this->dic = EasyCreditDicFactory::getDic();
         }
-
         return $this->dic;
     }
 

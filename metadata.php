@@ -17,14 +17,6 @@
 /**
  * Metadata version
  */
-
-use OxidEsales\Eshop\Core\Session;
-use OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditBasket;
-use OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditOrder;
-use OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditPayment;
-use OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditSession;
-use OxidSolutionCatalysts\EasyCredit\Core\EasyCreditViewConfig;
-
 $sMetadataVersion = '2.1';
 
 /**
@@ -62,142 +54,15 @@ $aModule = [
         OxidEsales\Eshop\Application\Controller\Admin\OrderAddress::class => OxidSolutionCatalysts\EasyCredit\Controller\Admin\EasyCreditOrderAddressController::class,
         OxidEsales\Eshop\Application\Controller\Admin\OrderArticle::class => OxidSolutionCatalysts\EasyCredit\Controller\Admin\EasyCreditOrderArticleController::class,
         OxidEsales\Eshop\Application\Controller\Admin\OrderOverview::class => OxidSolutionCatalysts\EasyCredit\Controller\Admin\EasyCreditOrderOverviewController::class,
+        OxidEsales\Eshop\Application\Controller\Admin\OrderMain::class => OxidSolutionCatalysts\EasyCredit\Controller\Admin\EasyCreditOrderMainController::class,
         OxidEsales\Eshop\Application\Controller\Admin\OrderList::class => OxidSolutionCatalysts\EasyCredit\Controller\Admin\EasyCreditOrderListController::class,
 
         # Extending core classes
-        Session::class                                                      => EasyCreditSession::class,
-        \OxidEsales\Eshop\Application\Model\Payment::class                  => EasyCreditPayment::class,
-        \OxidEsales\Eshop\Application\Model\Basket::class                   => EasyCreditBasket::class,
-        \OxidEsales\Eshop\Application\Model\Order::class                    => EasyCreditOrder::class,
-        \OxidEsales\Eshop\Core\ViewConfig::class                            => EasyCreditViewConfig::class
-    ],
-    'templates'   => [
-        'page/checkout/inc/payment_easycreditinstallment.tpl' => 'views/page/checkout/inc/oxpseasycredit_payment_easycreditinstallment.tpl',
-        'widget/easycredit/oxpseasycredit_examplecalculation' => 'views/widgets/oxpseasycredit_examplecalculation.tpl',
-        'widget/easycredit/oxpseasycredit_examplecalculation_popup' => 'views/widgets/oxpseasycredit_examplecalculation_popup.tpl',
-        'oxpseasycredit_order_easycredit.tpl'                 => 'views/admin/tpl/oxpseasycredit_order_easycredit.tpl',
-        'easycredit_overview.tpl'                             => 'views/admin/tpl/easycredit_overview.tpl',
-        'easycredit_overview_list.tpl'                        => 'views/admin/tpl/easycredit_overview_list.tpl',
-        'easycredit_overview_main.tpl'                        => 'views/admin/tpl/easycredit_overview_main.tpl',
-    ],
-    'blocks'      => [
-        [
-            'template' => 'page/checkout/payment.tpl',
-            'block'    => 'select_payment',
-            'file'     => 'views/blocks/oxpseasycreditselect_payment.tpl',
-        ],
-        [
-            'template' => 'page/details/inc/productmain.tpl',
-            'block'    => 'details_productmain_price_value',
-            'file'     => 'views/blocks/oxpseasycreditselect_productmain.tpl',
-        ],
-        [
-            'template' => 'page/checkout/basket.tpl',
-            'block'    => 'checkout_basket_next_step_bottom',
-            'file'     => 'views/blocks/oxpseasycreditselect_basket.tpl',
-        ],
-        [
-            'template' => 'widget/header/minibasket.tpl',
-            'block'    => 'dd_layout_page_header_icon_menu_minibasket_list',
-            'file'     => 'views/blocks/oxpseasycreditselect_minibasket.tpl',
-        ],
-        [
-            'template' => 'page/checkout/order.tpl',
-            'block'    => 'shippingAndPayment',
-            'file'     => 'views/blocks/oxpseasycredit_order_payment.tpl',
-        ],
-        [
-            'template' => 'page/checkout/inc/basketcontents.tpl',
-            'block'    => 'checkout_basketcontents_delcosts',
-            'file'     => 'views/blocks/oxpseasycredit_basketcontents_interests.tpl',
-        ],
-        [
-            'template' => 'email/html/order_owner.tpl',
-            'block'    => 'email_html_order_owner_grandtotal',
-            'file'     => 'views/blocks/email/html/oxpseasycredit_order_owner_grandtotal.tpl',
-        ],
-        [
-            'template' => 'email/html/order_owner.tpl',
-            'block'    => 'email_html_order_owner_paymentinfo',
-            'file'     => 'views/blocks/email/html/oxpseasycredit_order_owner_paymentinfo.tpl',
-        ],
-        [
-            'template' => 'email/html/order_cust.tpl',
-            'block'    => 'email_html_order_cust_grandtotal',
-            'file'     => 'views/blocks/email/html/oxpseasycredit_order_cust_grandtotal.tpl',
-        ],
-        [
-            'template' => 'email/html/order_cust.tpl',
-            'block'    => 'email_html_order_cust_paymentinfo_top',
-            'file'     => 'views/blocks/email/html/oxpseasycredit_order_cust_paymentinfo.tpl',
-        ],
-        [
-            'template' => 'email/plain/order_owner.tpl',
-            'block'    => 'email_plain_order_ownergrandtotal',
-            'file'     => 'views/blocks/email/plain/oxpseasycredit_order_owner_grandtotal.tpl',
-        ],
-        [
-            'template' => 'email/plain/order_owner.tpl',
-            'block'    => 'email_plain_order_ownerpaymentinfo',
-            'file'     => 'views/blocks/email/plain/oxpseasycredit_order_owner_paymentinfo.tpl',
-        ],
-        [
-            'template' => 'email/plain/order_cust.tpl',
-            'block'    => 'email_plain_order_cust_grandtotal',
-            'file'     => 'views/blocks/email/plain/oxpseasycredit_order_cust_grandtotal.tpl',
-        ],
-        [
-            'template' => 'email/plain/order_cust.tpl',
-            'block'    => 'email_plain_order_cust_paymentinfo',
-            'file'     => 'views/blocks/email/plain/oxpseasycredit_order_cust_paymentinfo.tpl',
-        ],
-        [
-            'template' => 'order_overview.tpl',
-            'block'    => 'admin_order_overview_total',
-            'file'     => 'views/blocks/admin/oxpseasycredit_order_overview_total.tpl',
-        ],
-        [
-            'template' => 'order_overview.tpl',
-            'block'    => 'admin_order_overview_send_form',
-            'file'     => 'views/blocks/admin/oxpseasycredit_order_overview_ec_delivery_state.tpl',
-        ],
-        [
-            'template' => 'order_article.tpl',
-            'block'    => 'admin_order_article_total',
-            'file'     => 'views/blocks/admin/oxpseasycredit_order_article_total.tpl',
-        ],
-        [
-            'template' => 'order_article.tpl',
-            'block'    => 'admin_order_article_listitem',
-            'file'     => 'views/blocks/admin/oxpseasycredit_order_article_listitem.tpl',
-        ],
-
-        [
-            'template' => 'order_list.tpl',
-            'block'    => 'admin_order_list_colgroup',
-            'file'     => 'views/blocks/admin/oxpseasycredit_order_list_colgroups.tpl',
-        ],
-        [
-            'template' => 'order_list.tpl',
-            'block'    => 'admin_order_list_filter',
-            'file'     => 'views/blocks/admin/oxpseasycredit_order_list_filter.tpl',
-        ],
-        [
-            'template' => 'order_list.tpl',
-            'block'    => 'admin_order_list_sorting',
-            'file'     => 'views/blocks/admin/oxpseasycredit_order_list_sorting.tpl',
-        ],
-        [
-            'template' => 'order_list.tpl',
-            'block'    => 'admin_order_list_item',
-            'file'     => 'views/blocks/admin/oxpseasycredit_order_list_item.tpl',
-        ],
-
-        [
-            'template' => 'order_main.tpl',
-            'block'    => 'admin_order_main_form_details',
-            'file'     => 'views/blocks/admin/oxpseasycredit_order_main_form_details.tpl',
-        ]
+        \OxidEsales\Eshop\Core\Session::class => OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditSession::class,
+        \OxidEsales\Eshop\Application\Model\Payment::class => OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditPayment::class,
+        \OxidEsales\Eshop\Application\Model\Basket::class => OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditBasket::class,
+        \OxidEsales\Eshop\Application\Model\Order::class => OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditOrder::class,
+        \OxidEsales\Eshop\Core\ViewConfig::class => OxidSolutionCatalysts\EasyCredit\Core\EasyCreditViewConfig::class,
     ],
     'settings'    => [
         [

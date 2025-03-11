@@ -2,14 +2,14 @@
 
 namespace OxidSolutionCatalysts\EasyCredit\Tests\Unit\Application\Component\Widget;
 
-use OxidEsales\TestingLibrary\UnitTestCase;
-use OxidSolutionCatalysts\EasyCredit\Application\Component\Widget\EasyCreditExampleCalculation;
+use PHPUnit\Framework\TestCase;
+use OxidSolutionCatalysts\EasyCredit\Component\Widget\EasyCreditExampleCalculation;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDicFactory;
 
 /**
  * Class EasyCreditExampleCalculationTest
  */
-class EasyCreditExampleCalculationTest extends UnitTestCase
+class EasyCreditExampleCalculationTest extends TestCase
 {
     /**
      * Set up test environment
@@ -38,7 +38,10 @@ class EasyCreditExampleCalculationTest extends UnitTestCase
 
     public function testGetExampleCalculationRateHasExampleCalculation(): void
     {
-        $calculation = $this->getMock(EasyCreditExampleCalculation::class, ['hasExampleCalculation']);
+        $calculation = $this->getMockBuilder(EasyCreditExampleCalculation::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['hasExampleCalculation'])
+            ->getMock();
         $calculation->expects($this->any())->method('hasExampleCalculation')->willReturn(true);
 
         $this->assertEquals('0,00', $calculation->getExampleCalculationRate());
@@ -55,7 +58,10 @@ class EasyCreditExampleCalculationTest extends UnitTestCase
     {
         $response = "dummy";
 
-        $calculation = $this->getMock(EasyCreditExampleCalculation::class, ['getExampleCalculationResponse']);
+        $calculation = $this->getMockBuilder(EasyCreditExampleCalculation::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getExampleCalculationResponse'])
+            ->getMock();
         $calculation->expects($this->any())->method('getExampleCalculationResponse')->willReturn($response);
 
         $this->assertEquals($response, $calculation->getExampleCalulation());
@@ -63,7 +69,10 @@ class EasyCreditExampleCalculationTest extends UnitTestCase
 
     public function testGetExampleCalculationResponse(): void
     {
-        $calculation = $this->getMock(EasyCreditExampleCalculation::class, ['getPrice']);
+        $calculation = $this->getMockBuilder(EasyCreditExampleCalculation::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getPrice'])
+            ->getMock();
         $calculation->expects($this->any())->method('getPrice')->willReturn(false);
 
         $this->assertFalse($calculation->getExampleCalculationResponse());

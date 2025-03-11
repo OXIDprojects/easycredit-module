@@ -2,14 +2,14 @@
 
 namespace OxidSolutionCatalysts\EasyCredit\Tests\Unit\Application\Core\Api;
 
-use OxidEsales\TestingLibrary\UnitTestCase;
+use PHPUnit\Framework\TestCase;
 use OxidSolutionCatalysts\EasyCredit\Core\Api\EasyCreditCurlException;
 use OxidSolutionCatalysts\EasyCredit\Core\Api\EasyCreditWebServiceClient;
 
 /**
  * Class EasyCreditWebServiceClientTest
  */
-class EasyCreditWebServiceClientTest extends UnitTestCase
+class EasyCreditWebServiceClientTest extends TestCase
 {
     /**
      * Set up test environment

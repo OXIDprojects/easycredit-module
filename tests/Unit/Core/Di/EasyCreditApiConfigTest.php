@@ -3,7 +3,7 @@
 namespace OxidSolutionCatalysts\EasyCredit\Tests\Unit\Application\Core\Di;
 
 use OxidEsales\Eshop\Core\Exception\SystemComponentException;
-use OxidEsales\TestingLibrary\UnitTestCase;
+use PHPUnit\Framework\TestCase;
 use OxidSolutionCatalysts\EasyCredit\Core\Api\EasyCreditResponseValidator;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditApiConfig;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditConfigException;
@@ -12,7 +12,7 @@ use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDicFactory;
 /**
  * Class EasyCreditApiConfigTest
  */
-class EasyCreditApiConfigTest extends UnitTestCase
+class EasyCreditApiConfigTest extends TestCase
 {
     const WEBSHOP_ID = '7';
     const WEBSHOP_TOKEN = 'A1378XY';

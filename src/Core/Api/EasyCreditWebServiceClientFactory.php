@@ -36,13 +36,8 @@ class EasyCreditWebServiceClientFactory
      * @throws EasyCreditConfigException
      * @throws EasyCreditCurlException
      */
-    public static function getWebServiceClient(
-        $serviceName,
-        EasyCreditDic $dic,
-        array $additionalArguments = array(),
-        array $queryArguments = array(),
-        $addheaders = false
-    ) {
+    public static function getWebServiceClient($serviceName, EasyCreditDic $dic, array $additionalArguments = [], array $queryArguments = [], $addheaders = false)
+    {
         /** @var EasyCreditWebServiceClient $client */
         $client = oxNew(EasyCreditWebServiceClient::class);
 
@@ -54,7 +49,7 @@ class EasyCreditWebServiceClientFactory
         $client->setFunction(
             $apiConfig->getServiceRestFunction($serviceName),
             $additionalArguments,
-            array_merge($apiConfig->getServiceRestFunctionArguments($serviceName), $queryArguments)
+            array_merge($apiConfig->getServiceRestFunctionArguments($serviceName) ?? [], $queryArguments)
         );
 
         $scheme = $apiConfig->getValidationScheme($serviceName);
@@ -67,12 +62,12 @@ class EasyCreditWebServiceClientFactory
             );
         }
 
-        if( $addheaders ) {
-            $headers = array(
+        if ($addheaders) {
+            $headers = [
                 "Content-Type: application/json;charset=UTF-8",
                 "tbk-rk-shop: " . $apiConfig->getWebshopId(),
-                "tbk-rk-token: " . $apiConfig->getWebShopToken()
-            );
+                "tbk-rk-token: " . $apiConfig->getWebShopToken(),
+            ];
             $client->setRequestHeaders($headers);
         }
 

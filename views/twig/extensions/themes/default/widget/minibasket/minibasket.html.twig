@@ -3,6 +3,6 @@
 {% block widget_minibasket_menu_total %}
     {{ parent() }}
     {% if oViewConf.getOxpsECExampleCalcMinibasket() %}
-        {{ include_widget({ cl: "EasyCreditExampleCalculation", _parent: oView.getClassKey(), placeholderId: "oxpseasycredit-example-minibasket" }) }}
+        {{ include_widget({ cl: "EasyCreditExampleCalculation", _parent: oView.getClassKey(), placeholderId: "oxpseasycredit-example-minibasket", jsFunctionSuffix: "MiniBasket" }) }}
     {% endif %}
 {% endblock %}

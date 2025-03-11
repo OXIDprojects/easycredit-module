@@ -2,13 +2,13 @@
 
 namespace OxidSolutionCatalysts\EasyCredit\Tests\Unit\Application\Core\CrossCutting;
 
-use OxidEsales\TestingLibrary\UnitTestCase;
+use PHPUnit\Framework\TestCase;
 use OxidSolutionCatalysts\EasyCredit\Core\CrossCutting\EasyCreditLogging;
 
 /**
  * Class EasyCreditLoggingTest
  */
-class EasyCreditLoggingTest extends UnitTestCase
+class EasyCreditLoggingTest extends TestCase
 {
     /**
      * Set up test environment

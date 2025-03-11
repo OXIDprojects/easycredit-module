@@ -2,7 +2,7 @@
 
 namespace OxidSolutionCatalysts\EasyCredit\Tests\Unit\Application\Core\Api;
 
-use OxidEsales\TestingLibrary\UnitTestCase;
+use PHPUnit\Framework\TestCase;
 use OxidSolutionCatalysts\EasyCredit\Core\Api\EasyCreditCurlException;
 use OxidSolutionCatalysts\EasyCredit\Core\Api\EasyCreditHttpClient;
 use OxidSolutionCatalysts\EasyCredit\Core\CrossCutting\EasyCreditLogging;
@@ -10,7 +10,7 @@ use OxidSolutionCatalysts\EasyCredit\Core\CrossCutting\EasyCreditLogging;
 /**
  * Class EasyCreditHttpClientTest
  */
-class EasyCreditHttpClientTest extends UnitTestCase
+class EasyCreditHttpClientTest extends TestCase
 {
     /**
      * Set up test environment
@@ -46,7 +46,10 @@ class EasyCreditHttpClientTest extends UnitTestCase
 
     public function testExecuteJsonRequestWithData()
     {
-        $client = $this->getMock(EasyCreditHttpClient::class, ['executeHttpRequest']);
+        $client = $this->getMockBuilder(EasyCreditHttpClient::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['executeHttpRequest'])
+            ->getMock();
         $client->expects($this->any())->method('executeHttpRequest')->willReturn('{"success": true}');
 
         $logging = oxNew(EasyCreditLogging::class, []);
@@ -82,10 +85,13 @@ class EasyCreditHttpClientTest extends UnitTestCase
     {
         $expected = '{"success": true}';
 
-        $client = $this->getMock(EasyCreditHttpClient::class, ['curl_exec']);
+        $client = $this->getMockBuilder(EasyCreditHttpClient::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['curl_exec'])
+            ->getMock();
         $client->expects($this->any())->method('curl_exec')->willReturn($expected);
 
-        $this->assertEquals($expected, $client->executeHttpRequest('POST', 'https://test.url', new \stdClass()));
+        $this->assertEquals($expected, $client->executeHttpRequest('POST', 'https://test.url', []));
     }
 
 }

@@ -24,30 +24,31 @@
     {% capture assign = "pageScript" %}
         //basketLoaded loaded event needs to be implemented in Apex theme
         addEventListener('basketLoaded', function (){
-            insertEasyCreditWidget();
+            insertEasyCreditWidget{{ oView.getViewParameter('jsFunctionSuffix') }}();
         })
 
         function openExampleCalculationDialog (easyCreditPopupUrl) {
-            fetch('{{ oView.getPopupAjaxUrl()|raw }}', function (data) {
-                document.getElementById("easycredit-example-dialog").innerHTML = data;
+            $.get('{{ oView.getPopupAjaxUrl()|raw }}', function (data) {
+                $('#easycredit-example-dialog').html(data);
 
-                document.getElementById("easycredit-example-dialog").dialog({
+                let dialog = $('#easycredit-example-dialog').dialog({
                     close: true,
                     modal: true,
                     width: 570,
-                    height: 786
-                });
+                    height: 786,
+                    classes: {"ui-dialog": "easycredit-widget"}
+                })
             })
         }
 
-        function insertEasyCreditWidget(){
+        function insertEasyCreditWidget{{ oView.getViewParameter('jsFunctionSuffix') }}(){
             $.get('{{ oView.getAjaxUrl()|raw }}', function(data){
-            debugger;
-            $('#{{ oView.getViewParameter('placeholderId') }}').html(data);
-            $('#{{ oView.getViewParameter('placeholderId') }}').on('click', '.easycredit-link', openExampleCalculationDialog);
-        });}
+                $('#{{ oView.getViewParameter('placeholderId') }}').html(data);
+                $('#{{ oView.getViewParameter('placeholderId') }}').on('click', '.easycredit-link', openExampleCalculationDialog);
+            });
+        }
 
-        insertEasyCreditWidget();
+        insertEasyCreditWidget{{ oView.getViewParameter('jsFunctionSuffix') }}();
     {% endcapture %}
     {{ script({ add: pageScript, dynamic: __oxid_include_dynamic }) }}
 {% endif %}

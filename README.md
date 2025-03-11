@@ -1,4 +1,4 @@
-# OXID Solution Catalyst easyCredit-Ratenkauf Module
+# OXID Solution Catalyst easyCredit-Ratenkauf Oxid 7 Module
 
 # Version 4.0.0
 
@@ -12,7 +12,7 @@
 
 Use Composer to add the module to your project
 ```bash
-composer require oxid-professional-services/easycredit-module-module
+composer require oxid-professional-services/easycredit-module-module:^4.0
 ```
 
  * Activate the module in administration area

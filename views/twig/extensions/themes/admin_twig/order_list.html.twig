@@ -30,10 +30,10 @@
     {% if listitem.oxorder__oxstorno.value == 1 %}
         {% set listclass = "listitem3" %}
     {% else %}
-        {% if listitem.blacklist == 1 %}
+        {% if listitem['blacklist'] is defined and listitem.blacklist == 1 %}
             {% set listclass = "listitem3" %}
         {% else %}
-            {% set listclass = "listitem"|blWhite %}
+            {% set listclass = 'listitem' ~ blWhite %}
         {% endif %}
     {% endif %}
     {% if listitem.getId() == oxid %}

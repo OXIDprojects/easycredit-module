@@ -2,11 +2,11 @@
 
 namespace OxidSolutionCatalysts\EasyCredit\Tests\Unit\Application\Controller\Admin;
 
-use OxidEsales\TestingLibrary\UnitTestCase;
-use OxidSolutionCatalysts\EasyCredit\Application\Controller\Admin\EasyCreditOrderEasyCreditController;
+use PHPUnit\Framework\TestCase;
+use OxidSolutionCatalysts\EasyCredit\Controller\Admin\EasyCreditOrderEasyCreditController;
 use OxidEsales\Eshop\Application\Model\Order;
 use OxidEsales\Eshop\Core\Field;
-use OxidSolutionCatalysts\EasyCredit\Application\Model\EasyCreditTradingApiAccess;
+use OxidSolutionCatalysts\EasyCredit\Model\EasyCreditTradingApiAccess;
 use OxidSolutionCatalysts\EasyCredit\Core\Api\EasyCreditWebServiceClient;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditApiConfig;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDicFactory;
@@ -14,7 +14,7 @@ use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDicFactory;
 /**
  * Class EasyCreditOrderEasyCreditControllerTest
  */
-class EasyCreditOrderEasyCreditControllerTest extends UnitTestCase
+class EasyCreditOrderEasyCreditControllerTest extends TestCase
 {
     /**
      * Set up test environment
@@ -37,7 +37,7 @@ class EasyCreditOrderEasyCreditControllerTest extends UnitTestCase
     public function testRender(): void
     {
         $controller = oxNew(EasyCreditOrderEasyCreditController::class);
-        $this->assertEquals('oxpseasycredit_order_easycredit.tpl', $controller->render());
+        $this->assertEquals('@osceasycredit/admin/oxpseasycredit_order_easycredit.html.twig', $controller->render());
     }
 
     public function testRenderWithEditObjectId(): void
@@ -49,7 +49,7 @@ class EasyCreditOrderEasyCreditControllerTest extends UnitTestCase
         $controller->expects($this->any())->method('hasEasyCreditPayment')->willReturn(true);
         $controller->expects($this->any())->method('getEasyCreditDeliveryState')->willReturn('text');
 
-        $this->assertEquals('oxpseasycredit_order_easycredit.tpl', $controller->render());
+        $this->assertEquals('@osceasycredit/admin/oxpseasycredit_order_easycredit.html.twig', $controller->render());
     }
 
     public function testGetEasyCreditConfirmationResponse(): void
@@ -112,12 +112,11 @@ class EasyCreditOrderEasyCreditControllerTest extends UnitTestCase
         $tradingApiService->expects($this->once())->method('getOrderData')->with(false)->willReturn($response);
 
         $controller = $this->getMockBuilder(EasyCreditOrderEasyCreditController::class)
-            ->onlyMethods(['getService'])
+            ->onlyMethods(['getApiService'])
             ->getMock();
-        $controller->expects($this->once())->method('getService')
+        $controller->expects($this->once())->method('getApiService')
             ->willReturn($tradingApiService);
 
-        $this->assertEquals($expected,
-                            $controller->getEasyCreditDeliveryState());
+        $this->assertEquals($expected, $controller->getEasyCreditDeliveryState());
     }
 }

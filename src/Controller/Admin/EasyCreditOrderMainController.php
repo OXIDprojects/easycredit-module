@@ -18,13 +18,13 @@ use OxidEsales\Eshop\Core\Field;
 use OxidSolutionCatalysts\EasyCredit\Model\EasyCreditTradingApiAccess;
 
 /**
- * Class EasyCreditOrderOverviewController
- * Extends the order overviww controller with functionality used for easy credit payment orders.
+ * Class EasyCreditOrderMainController
+ * Extends the order overview controller with functionality used for easy credit payment orders.
  * Extend sendOrder method to set state at ec interface to delivered
  *
  * @package OxidSolutionCatalysts\EasyCredit\Application\Controller\Admin
  */
-class EasyCreditOrderOverviewController extends EasyCreditOrderOverviewController_parent
+class EasyCreditOrderMainController extends EasyCreditOrderMainController_parent
 {
     /**
      * @var Order
@@ -55,7 +55,7 @@ class EasyCreditOrderOverviewController extends EasyCreditOrderOverviewControlle
     {
         parent::sendOrder();
         $order = $this->loadOrder();
-        if (!empty($order->oxorder__ecredfunctionalid->value)) {
+        if (!empty($this->order->oxorder__ecredfunctionalid->value)) {
             $order->oscSetOrderDelivered();
         }
     }

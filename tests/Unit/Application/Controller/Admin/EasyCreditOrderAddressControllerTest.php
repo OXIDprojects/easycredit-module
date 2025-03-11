@@ -2,13 +2,13 @@
 
 namespace OxidSolutionCatalysts\EasyCredit\Tests\Unit\Application\Controller\Admin;
 
-use OxidEsales\TestingLibrary\UnitTestCase;
-use OxidSolutionCatalysts\EasyCredit\Application\Controller\Admin\EasyCreditOrderAddressController;
+use PHPUnit\Framework\TestCase;
+use OxidSolutionCatalysts\EasyCredit\Controller\Admin\EasyCreditOrderAddressController;
 
 /**
  * Class EasyCreditOrderAddressControllerTest
  */
-class EasyCreditOrderAddressControllerTest extends UnitTestCase
+class EasyCreditOrderAddressControllerTest extends TestCase
 {
     /**
      * Set up test environment
@@ -31,14 +31,17 @@ class EasyCreditOrderAddressControllerTest extends UnitTestCase
     public function testRender(): void
     {
         $controller = oxNew(EasyCreditOrderAddressController::class);
-        $this->assertEquals('order_address.tpl', $controller->render());
+        $this->assertEquals('order_address', $controller->render());
     }
 
     public function testRenderWithEditObjectId(): void
     {
-        $controller = $this->getMock(EasyCreditOrderAddressController::class, ['getEditObjectId']);
+        $controller = $this->getMockBuilder(EasyCreditOrderAddressController::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getEditObjectId'])
+            ->getMock();
         $controller->expects($this->any())->method('getEditObjectId')->willReturn('1');
 
-        $this->assertEquals('order_address.tpl', $controller->render());
+        $this->assertEquals('order_address', $controller->render());
     }
 }

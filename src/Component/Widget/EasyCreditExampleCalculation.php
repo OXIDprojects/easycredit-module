@@ -148,8 +148,8 @@ class EasyCreditExampleCalculation extends WidgetController
             $webServiceClient = EasyCreditWebServiceClientFactory::getWebServiceClient(
                 EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_MODELLRECHNUNG_GUENSTIGSTER_RATENPLAN,
                 $dic,
-                array(),
-                array(EasyCreditApiConfig::API_CONFIG_SERVICE_REST_ARGUMENT_FINANZIERUNGSBETRAG => $price->getBruttoPrice()));
+                [],
+                [EasyCreditApiConfig::API_CONFIG_SERVICE_REST_ARGUMENT_FINANZIERUNGSBETRAG => $price->getBruttoPrice()]);
             return $webServiceClient->execute();
         } catch (\Exception $ex) {
             $this->getDic()->getLogging()->log($ex->getMessage());

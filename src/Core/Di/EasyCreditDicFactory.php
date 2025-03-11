@@ -18,7 +18,6 @@ use OxidEsales\Eshop\Core\Exception\SystemComponentException;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidSolutionCatalysts\EasyCredit\Core\CrossCutting\EasyCreditLogging;
-use OxidSolutionCatalysts\EasyCredit\Core\PayLoad\EasyCreditPayloadFactory;
 use OxidSolutionCatalysts\EasyCredit\Service\EasyCreditModuleSettings;
 
 /**
@@ -40,7 +39,6 @@ class EasyCreditDicFactory
             EasyCreditDic::class,
             oxNew(EasyCreditDicSession::class, Registry::getSession()),
             oxNew(EasyCreditApiConfig::class, self::getApiConfigArray()),
-            oxNew(EasyCreditPayloadFactory::class),
             oxNew(EasyCreditLogging::class, self::getLoggingConfigArray()),
             oxNew(EasyCreditDicConfig::class, Registry::getConfig())
         );
@@ -55,16 +53,16 @@ class EasyCreditDicFactory
         $services = self::getServices();
         $validationSchemes = self::getValidationSchemes();
 
-        return array(
-            EasyCreditApiConfig::API_CONFIG_CREDENTIALS => array(
+        return [
+            EasyCreditApiConfig::API_CONFIG_CREDENTIALS => [
                 EasyCreditApiConfig::API_CONFIG_CREDENTIAL_BASE_URL      => $config->getOxpsECBaseUrl(),
                 EasyCreditApiConfig::API_CONFIG_CREDENTIAL_APP_URL       => $config->getOxpsECDealerInterfaceUrl(),
                 EasyCreditApiConfig::API_CONFIG_CREDENTIAL_WEBSHOP_ID    => $config->getOxpsECWebshopId(),
                 EasyCreditApiConfig::API_CONFIG_CREDENTIAL_WEBSHOP_TOKEN => $config->getOxpsECWebshopToken(),
-            ),
+            ],
             EasyCreditApiConfig::API_CONFIG_SERVICES => $services,
-            EasyCreditApiConfig::API_CONFIG_VALIDATION_SCHEMES => $validationSchemes
-        );
+            EasyCreditApiConfig::API_CONFIG_VALIDATION_SCHEMES => $validationSchemes,
+        ];
     }
 
     private static function getLoggingConfigArray()
@@ -74,10 +72,10 @@ class EasyCreditDicFactory
             ->getContainer()
             ->get(EasyCreditModuleSettings::class);
 
-        return array(
+        return [
             EasyCreditLogging::LOG_CONFIG_LOG_DIR     => $config->getLogsDir(),
             EasyCreditLogging::LOG_CONFIG_LOG_ENABLED => $moduleSettings->getOxpsECLogging(),
-        );
+        ];
     }
 
     private static function getJsonFromFile($filepath)

@@ -47,13 +47,5 @@ $aLang = array(
     'OXPS_EASY_CREDIT_PAYMENT_PROFILEDATA_CAPTION'           => 'Für eine optimale Ratenentscheidung vervollständigen Sie bitte diese Profildaten',
     'OXPS_EASY_CREDIT_VALIDATION_ERROR'                      => 'Es ist ein Fehler aufgetreten.',
 
-    'OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_LIEFERUNG_MELDEN'            => 'Lieferung melden',
-
-    'OXPS_EASY_CREDIT_ORDER_INFO'=>'Bestellinformation',
-    'OXPS_EASY_CREDIT_ORDER_'=>'',
-    'OXPS_EASY_CREDIT_ORDER_'=>'',
-    'OXPS_EASY_CREDIT_ORDER_'=>'',
-    'OXPS_EASY_CREDIT_ORDER_'=>'',
-    'OXPS_EASY_CREDIT_ORDER_'=>'',
-    'OXPS_EASY_CREDIT_ORDER_'=>'',
+    'OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_LIEFERUNG_MELDEN' => 'Lieferung melden',
 );

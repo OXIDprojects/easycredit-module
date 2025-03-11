@@ -40,6 +40,8 @@ class EasyCreditTradingApiAccess
      */
     protected $order = null;
 
+    protected $orderData = null;
+
     /**
      * EasyCreditTradingApiAccess constructor. Set order object, if given
      *
@@ -62,21 +64,29 @@ class EasyCreditTradingApiAccess
      */
     public function getOrderData($blUpdateLocalOrderState = false)
     {
-        $service  = $this->getService(
-            EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V2_DELIVERY_STATE,
-            EasyCreditDicFactory::getDic(),
-            [$this->order->oxorder__ecredfunctionalid->value],
-            [],
-            true
-        );
-        $response = $service->execute();
-        if ($blUpdateLocalOrderState) {
-            $state                                    = $response->ergebnisse[0]->haendlerstatusV2;
-            $this->order->oxorder__ecreddeliverystate = new Field($state, Field::T_RAW);
-            $this->order->save();
-        }
+        if ($this->orderData === null) {
+            $service  = $this->getService(
+                EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V2_DELIVERY_STATE,
+                EasyCreditDicFactory::getDic(),
+                [$this->order->oxorder__ecredfunctionalid->value],
+                [],
+                true
+            );
 
-        return $response->ergebnisse;
+            $response = $service->execute();
+            if (!isset($response->ergebnisse)) {
+                $this->orderData = false;
+            }
+
+            if ($blUpdateLocalOrderState) {
+                $state                                    = $response->ergebnisse[0]->haendlerstatusV2;
+                $this->order->oxorder__ecreddeliverystate = new Field($state, Field::T_RAW);
+                $this->order->save();
+            }
+
+            $this->orderData = $response->ergebnisse;
+        }
+        return $this->orderData;
     }
 
     /**
@@ -92,12 +102,11 @@ class EasyCreditTradingApiAccess
     public function getOrderState($blUpdateLocalOrderState = false)
     {
         $state = $this->getOrderData($blUpdateLocalOrderState);
-        if (count($state)) {
+        if (is_array($state) && !empty($state)) {
             $state = Registry::getLang()->translateString('OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_' . $state[0]->haendlerstatusV2);
         } else {
             $state = Registry::getLang()->translateString('OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_ERROR');
         }
-
         return $state;
     }
 
@@ -136,15 +145,9 @@ class EasyCreditTradingApiAccess
      * @throws \OxidSolutionCatalysts\EasyCredit\Core\Api\EasyCreditCurlException
      * @throws \OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditConfigException
      */
-    protected function getService(
-        $serviceName,
-        EasyCreditDic $dic,
-        array $additionalArguments = array(),
-        array $queryArguments = array(),
-        $addheaders = false
-    ) {
-        return EasyCreditWebServiceClientFactory::getWebServiceClient($serviceName, $dic, $additionalArguments,
-                                                                      $queryArguments, $addheaders);
+    protected function getService($serviceName, EasyCreditDic $dic, array $additionalArguments = [], array $queryArguments = [], $addheaders = false)
+    {
+        return EasyCreditWebServiceClientFactory::getWebServiceClient($serviceName, $dic, $additionalArguments, $queryArguments, $addheaders);
     }
 
     /**
@@ -167,10 +170,10 @@ class EasyCreditTradingApiAccess
             true
         );
         $response = $service->execute([
-                                          'datum'  => date('Y-m-d'),
-                                          'grund'  => $reason,
-                                          'betrag' => $amount,
-                                      ]);
+            'datum'  => date('Y-m-d'),
+            'grund'  => $reason,
+            'betrag' => $amount,
+        ]);
     }
 
     /**
