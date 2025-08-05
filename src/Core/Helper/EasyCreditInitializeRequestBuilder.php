@@ -583,11 +583,14 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
         $contacts = [
             'email' => $customer->oxuser__oxusername->value,
         ];
+        /* EasyCredit redirect page is buggy with the telephone number at the moment - don't send a phone number and let the customer enter it on the EC site
+           Current telephone number implementation is not optimal in general with oxid having 3 different fields for phone number and the module only looking at the "landline" oxfon number instead of the mobile phone fields
         $phoneNumber = $customer->oxuser__oxfon->value;
         if ($this->isValidPhoneNumber($phoneNumber)) {
             $contacts["mobilfunknummer"] = $phoneNumber;
             $contacts["pruefungMobilfunknummerUebergehen"] = true;
         }
+        */
         return $contacts;
     }
 
@@ -615,7 +618,10 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
     {
         $customer = $this->getUser();
         return [
+            /* EasyCredit redirect page is buggy with the telephone number at the moment - don't send a phone number and let the customer enter it on the EC site
+               Current telephone number implementation is not optimal in general with oxid having 3 different fields for phone number and the module only looking at the "landline" oxfon number instead of the mobile phone fields
             'telefonnummer' => $customer->oxuser__oxfon->value,
+            */
         ];
     }
 
