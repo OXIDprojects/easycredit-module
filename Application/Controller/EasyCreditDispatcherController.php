@@ -54,6 +54,10 @@ class EasyCreditDispatcherController extends FrontendController
      */
     public function initializeandredirect()
     {
+        // Reset storage (EasyCredit transaction) for every new customer movement from payment to order controller
+        // Added because when customer changed order details like the address when the Easycredit data was already confirmed there were problems in the process
+        $this->getDicSession()->clearStorage();
+
         $this->calculateBasket($this->getApiConfig()->getEasyCreditInstalmentPaymentId(), $this->getBasket(), true);
 
         try {
