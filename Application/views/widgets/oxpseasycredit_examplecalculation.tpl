@@ -28,8 +28,14 @@
                         $('#easycredit-example-dialog').dialog({
                             close: true,
                             modal: true,
+                            draggable: false,
+                            resizable: false,
                             width: 570,
-                            height: 786
+                            height: 786,
+                            classes: {
+                                "ui-dialog": "easycredit-widget",
+                                "ui-dialog-titlebar-close": "btn-close"
+                            }
                         });
                     }
                 )
