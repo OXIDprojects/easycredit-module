@@ -54,6 +54,10 @@ class EasyCreditDispatcherController extends FrontendController
      */
     public function initializeandredirect()
     {
+        if (!Registry::getSession()->checkSessionChallenge()) {
+            return 'payment';
+        }
+
         $this->calculateBasket($this->getApiConfig()->getEasyCreditInstalmentPaymentId(), $this->getBasket(), true);
 
         try {

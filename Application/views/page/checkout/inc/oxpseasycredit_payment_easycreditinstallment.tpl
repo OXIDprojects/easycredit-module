@@ -32,7 +32,7 @@
                 [{if $paymentmethod->oxpayments__oxlongdesc->value|strip_tags|trim}]
                     <div class="clearfix"></div>
                     <div class="alert alert-info col-lg-offset-3 desc">
-                        [{$paymentmethod->oxpayments__oxlongdesc->getRawValue()}]
+                        [{$paymentmethod->oxpayments__oxlongdesc->value}]
                     </div>
                 [{/if}]
             [{/block}]
