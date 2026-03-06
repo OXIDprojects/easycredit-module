@@ -143,8 +143,12 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
     {
         $response = $this->getOrder()->oxorder__ecredconfirmresponse->value;
         if ($response) {
-            $response = unserialize(base64_decode($response));
-            if (is_object($response)) {
+            $decoded = base64_decode($response);
+            $response = json_decode($decoded);
+            if ($response === null) {
+                $response = unserialize($decoded, ['allowed_classes' => false]);
+            }
+            if (is_object($response) || is_array($response)) {
                 $response = json_encode($response, JSON_PRETTY_PRINT);
             }
         }

@@ -139,7 +139,7 @@ class EasyCreditOrder extends EasyCreditOrder_parent {
 
             $isConfirmed = $this->isConfirmed($response);
 
-            $this->oxorder__ecredconfirmresponse = new Field(base64_encode(serialize($response)), Field::T_RAW);
+            $this->oxorder__ecredconfirmresponse = new Field(base64_encode(json_encode($response)), Field::T_RAW);
             $this->oxorder__ecredpaymentstatus = new Field($this->getPaymentStatus($isConfirmed), Field::T_RAW);
 
             if (!$isConfirmed) {

@@ -159,7 +159,7 @@ class EasyCreditOrderController extends EasyCreditOrderController_parent
                     $logoUrlImgPattern = Registry::getLang()->translateString("OXPS_EASY_CREDIT_LOGO_IMG");
                     $paymentDescription = sprintf($logoUrlImgPattern, $logoUrl);
                 }
-                $paymentDescription .= "<p>" . $paymentPlanTxt . "</p>";
+                $paymentDescription .= "<p>" . htmlspecialchars($paymentPlanTxt, ENT_QUOTES, 'UTF-8') . "</p>";
             }
         }
         return $paymentDescription;

@@ -46,7 +46,10 @@ class EasyCreditSession extends EasyCreditSession_parent
     public function getStorage()
     {
         /** @var $storage EasyCreditStorage */
-        $storage = unserialize((string)$this->getVariable(self::API_CONFIG_STORAGE));
+        $storage = unserialize(
+            (string)$this->getVariable(self::API_CONFIG_STORAGE),
+            ['allowed_classes' => [EasyCreditStorage::class]]
+        );
         if (!empty($storage) && $storage->hasExpired()) {
             $this->clearStorage();
             $storage = null;

@@ -764,6 +764,6 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
      */
     public static function generatePaymentHash($initializationData)
     {
-        return md5(json_encode($initializationData));
+        return hash('sha256', json_encode($initializationData));
     }
 }
