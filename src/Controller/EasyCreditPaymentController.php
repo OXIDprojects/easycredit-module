@@ -165,6 +165,7 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
     {
         $response = $this->getExampleCalulation();
         if (is_string($response)) {
+            $this->errorMessages[]    = $response;
             $this->easyCreditPossible = false;
         } else {
             $this->easyCreditPossible = $this->easyCreditPossible && true;
@@ -398,6 +399,11 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
         if ($sPaymentId == $this->getApiConfig()->getEasyCreditInstalmentPaymentId()) {
             if (!$this->isEasyCreditPossible()) {
                 $session->deleteVariable('paymentid');
+                if (!empty($this->errorMessages)) {
+                    foreach ($this->errorMessages as $message) {
+                        $this->handleUserException($message);
+                    }
+                }
                 return;
             }
 
@@ -407,7 +413,7 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
                 $this->handleUserException($ex->getMessage());
                 return;
             }
-            return 'EasyCreditDispatcher?fnc=initializeandredirect';
+            return 'EasyCreditDispatcher?fnc=initializeandredirect&stoken=' . Registry::getSession()->getSessionChallengeToken();
         }
 
         return parent::validatePayment();
@@ -464,7 +470,9 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
         try {
             $response = $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_ZUSTIMMUNGSTEXTE, [$this->getWebshopId()]);
             return $response->zustimmungDatenuebertragungPaymentPage;
-        } catch(\Exception $ex) {}
+        } catch(\Exception $ex) {
+            Registry::getLogger()->error('EasyCredit loadAgreementTxt failed: ' . $ex->getMessage(), ['exception' => $ex]);
+        }
         return null;
     }
 
