@@ -4,7 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [3.0.10] - 2026-??-??
+## [3.0.10] - 2026-04-09
+
+### Fixed
+
+- Add stoken to EasyCreditDispatcher redirect to fix checkSessionChallenge() always failing in frontend
+- Add error logging to loadAgreementTxt() instead of silently swallowing exceptions
+- Add error message to checkEasyCreditExampleCalulation() when API call fails
+- Display collected error messages to user via OXID error display when isEasyCreditPossible() returns false
 
 ### Security
 

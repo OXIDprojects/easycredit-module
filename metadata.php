@@ -33,7 +33,7 @@ $aModule = [
         'en' => 'Use easyCredit-Ratenkauf for purchases in OXID',
     ],
     'thumbnail'   => 'out/pictures/picture.png',
-    'version'     => '3.0.9-rc.1',
+    'version'     => '3.0.10',
     'author'      => 'OXID Solution Catalysts',
     'url'         => 'https://www.oxid-esales.com',
     'email'       => 'info@oxid-esales.com',
@@ -44,12 +44,6 @@ $aModule = [
         # Widgets
         'easycreditexamplecalculation'      => \OxidProfessionalServices\EasyCredit\Application\Component\Widget\EasyCreditExampleCalculation::class,
         'easycreditexamplecalculationpopup' => \OxidProfessionalServices\EasyCredit\Application\Component\Widget\EasyCreditExampleCalculationPopup::class,
-
-        // To delete
-        'easycreditoverview'                => \OxidProfessionalServices\EasyCredit\Application\Controller\Admin\EasyCreditOverviewController::class,
-        'easycreditoverview_list'           => \OxidProfessionalServices\EasyCredit\Application\Controller\Admin\EasyCreditOverviewListController::class,
-        'easycreditoverview_main'           => \OxidProfessionalServices\EasyCredit\Application\Controller\Admin\EasyCreditOverviewMainController::class,
-
     ],
     'extend'      => [
         # extended controller
