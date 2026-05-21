@@ -12,7 +12,7 @@ class EasyCreditViewConfig extends EasyCreditViewConfig_parent
     /** @var EasyCreditModuleSettings $moduleSettings */
     protected $moduleSettings;
 
-    protected function getModuleSettings()
+    protected function getEasyCreditModuleSettings()
     {
         if (!$this->moduleSettings) {
             $this->moduleSettings = $this->getServiceFromContainer(EasyCreditModuleSettings::class);
@@ -22,16 +22,16 @@ class EasyCreditViewConfig extends EasyCreditViewConfig_parent
 
     public function getOxpsECExampleCalcBasket()
     {
-        return $this->getModuleSettings()->getOxpsECExampleCalcBasket();
+        return $this->getEasyCreditModuleSettings()->getOxpsECExampleCalcBasket();
     }
 
     public function getOxpsECExampleCalcMinibasket()
     {
-        return $this->getModuleSettings()->getOxpsECExampleCalcMinibasket();
+        return $this->getEasyCreditModuleSettings()->getOxpsECExampleCalcMinibasket();
     }
 
     public function getOxpsECExampleCalcArticle()
     {
-        return $this->getModuleSettings()->getOxpsECExampleCalcArticle();
+        return $this->getEasyCreditModuleSettings()->getOxpsECExampleCalcArticle();
     }
 }
