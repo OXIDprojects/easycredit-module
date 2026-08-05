@@ -14,7 +14,11 @@
 namespace OxidSolutionCatalysts\EasyCredit\Component\Widget;
 
 use OxidEsales\Eshop\Application\Component\Widget\WidgetController;
+use OxidEsales\Eshop\Application\Model\Article;
 use OxidEsales\Eshop\Application\Model\Basket;
+use OxidEsales\Eshop\Application\Model\BasketItem;
+use OxidEsales\Eshop\Application\Model\Category;
+use OxidEsales\Eshop\Application\Model\Manufacturer;
 use OxidEsales\Eshop\Application\Model\Payment;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\Exception\SystemComponentException;
@@ -24,8 +28,10 @@ use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditApiConfig;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDic;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDicFactory;
 use OxidSolutionCatalysts\EasyCredit\Core\Helper\EasyCreditHelper;
+use OxidSolutionCatalysts\EasyCredit\Core\Helper\EasyCreditInitializeRequestBuilder;
 use OxidSolutionCatalysts\EasyCredit\Service\EasyCreditModuleSettings;
 use OxidSolutionCatalysts\EasyCredit\Traits\EasyCreditServiceContainer;
+use stdClass;
 
 /**
  * Class EasyCreditExampleCalculation
@@ -55,6 +61,7 @@ class EasyCreditExampleCalculation extends WidgetController
     public function getExampleCalculationRate()
     {
         if ($this->hasExampleCalculation()) {
+            $test = $this->getExampleCalulation()->betragRate;
             return Registry::getLang()->formatCurrency($this->getExampleCalulation()->betragRate);
         }
     }
@@ -144,13 +151,28 @@ class EasyCreditExampleCalculation extends WidgetController
         try {
             /** @var EasyCreditDic $dic */
             $dic = $this->getDic();
+            if (EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3()) {
+                $apiConfig = $dic->getApiConfig();
+                $articleData = $this->getBasketInfoV3();
 
-            $webServiceClient = EasyCreditWebServiceClientFactory::getWebServiceClient(
-                EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_MODELLRECHNUNG_GUENSTIGSTER_RATENPLAN,
-                $dic,
-                [],
-                [EasyCreditApiConfig::API_CONFIG_SERVICE_REST_ARGUMENT_FINANZIERUNGSBETRAG => $price->getBruttoPrice()]);
-            return $webServiceClient->execute();
+                $webServiceClient = EasyCreditWebServiceClientFactory::getWebServiceClient(
+                    EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V3_MODELLRECHNUNG_GUENSTIGSTER_RATENPLAN,
+                    $dic,
+                    [$apiConfig->getWebShopId()],
+                    $articleData,
+                    true
+                );
+                $response = $webServiceClient->executeJsonRequest('POST', $webServiceClient->getFunction(), $articleData);
+                $plan = $this->getInstallmentPlanV3($response);
+                return $plan;
+            } else {
+                $webServiceClient = EasyCreditWebServiceClientFactory::getWebServiceClient(
+                    EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_MODELLRECHNUNG_GUENSTIGSTER_RATENPLAN,
+                    $dic,
+                    [],
+                    [EasyCreditApiConfig::API_CONFIG_SERVICE_REST_ARGUMENT_FINANZIERUNGSBETRAG => $price->getBruttoPrice()]);
+                return $webServiceClient->execute();
+            }
         } catch (\Exception $ex) {
             $this->getDic()->getLogging()->log($ex->getMessage());
         }
@@ -201,5 +223,59 @@ class EasyCreditExampleCalculation extends WidgetController
     public function isAjax()
     {
         return (Registry::getRequest()->getRequestParameter('ajax') == 1);
+    }
+
+    /**
+     * Returns "warenkorbinfos"
+     *
+     * @return array
+     */
+    public function getBasketInfoV3()
+    {
+        $basketInfo = [];
+
+        $basketitemlist = $this->getBasket()->getBasketArticles();
+        $basketContents = $this->getBasket()->getContents();
+        if (empty($basketContents)) {
+            return $basketInfo;
+        }
+
+        foreach ($basketContents as $basketindex => $basketitem) {
+            $basketproduct = $basketitemlist[$basketindex];
+            $basketInfo[] = $this->getBasketPositionInfoV3($basketitem, $basketproduct);
+        }
+        // $return = ['articles' => $basketInfo];
+        $return = ['articles' => [['identifier' => 'Basket', 'price' => $this->getBasket()->getPrice()->getBruttoPrice()]]];
+        return $return;
+    }
+
+    /**
+     * Returns information about an certain basket position
+     *
+     * @param $basketitem BasketItem
+     * @param $basketproduct
+     *
+     * @return array
+     */
+    protected function getBasketPositionInfoV3($basketitem, $basketproduct)
+    {
+        $price = "";
+        $unitPrice = $basketitem->getUnitPrice();
+        if ($unitPrice) {
+            $price = $unitPrice->getPrice();
+        }
+            return [
+                    "identifier" => $basketitem->getTitle(),
+                    "price" => $price,
+            ];
+    }
+    
+    protected function getInstallmentPlanV3($response) {
+        $cheapestPlan = $response->installmentPlans[0]->plans[19];
+        $return = new StdClass();
+        $return->anzahlRaten = $cheapestPlan->numberOfInstallments;
+        $return->betragRate = $cheapestPlan->installment;
+        $return->gesamtsumme = $cheapestPlan->totalValue;
+        return $return;
     }
 }

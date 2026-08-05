@@ -39,6 +39,7 @@ use OxidSolutionCatalysts\EasyCredit\Core\Helper\EasyCreditInitializeRequestBuil
 class EasyCreditDispatcherController extends FrontendController
 {
     const INSTALMENT_DECISION_OK = "GRUEN";
+    const INSTALMENT_DECISION_OK_V3 = "POSITIVE";
 
     /** @var EasyCreditDic */
     private $dic = false;
@@ -52,7 +53,7 @@ class EasyCreditDispatcherController extends FrontendController
      *
      * @return string targetpage
      */
-    public function initializeandredirect()
+    public function initializeandredirectInstallment()
     {
         if (!Registry::getSession()->checkSessionChallenge()) {
             return 'payment';
@@ -62,7 +63,7 @@ class EasyCreditDispatcherController extends FrontendController
         // Added because when customer changed order details like the address when the Easycredit data was already confirmed there were problems in the process
         $this->getDicSession()->clearStorage();
 
-        $this->calculateBasket($this->getApiConfig()->getEasyCreditInstalmentPaymentId(), $this->getBasket(), true);
+        $this->calculateBasket($this->getApiConfig()->getEasyCreditInstallmentPaymentId(), $this->getBasket(), true);
 
         try {
             $currentInitData = $this->getCurrentInitializationData();
@@ -71,8 +72,58 @@ class EasyCreditDispatcherController extends FrontendController
                 $this->initialize($currentPaymentHash, $currentInitData);
             }
             $this->redirectToEasyCredit();
-        } catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             $this->handleException($ex);
+        }
+        return "payment";
+    }
+
+    /**
+     * Executes initialization process via "VorgangInitialisierenRequest" and redirects user to easyCredit on success
+     * easyCredit paymentpage returns to oxid payment page to show errors or to order page on success
+     *
+     * @return string targetpage
+     */
+    public function initializeandredirectInvoice()
+    {
+        if (!Registry::getSession()->checkSessionChallenge()) {
+            return 'payment';
+        }
+
+        // Reset storage (EasyCredit transaction) for every new customer movement from payment to order controller
+        // Added because when customer changed order details like the address when the Easycredit data was already confirmed there were problems in the process
+        $this->getDicSession()->clearStorage();
+
+        $this->calculateBasket($this->getApiConfig()->getEasyCreditInvoicePaymentId(), $this->getBasket(), true);
+
+        try {
+            $currentInitData = $this->getCurrentInitializationData();
+            $currentPaymentHash = EasyCreditInitializeRequestBuilder::generatePaymentHash($currentInitData);
+            if (!$this->isInitialized($currentPaymentHash)) {
+                $this->initialize($currentPaymentHash, $currentInitData);
+            }
+            $this->redirectToEasyCredit();
+        } catch (\Exception $ex) {
+            $this->handleException($ex);
+        }
+        return "payment";
+    }    
+
+    /**
+     * Will be called by easyCredit
+     * Process response of easycredit-module about instalment process.
+     *
+     * @return string pages "order" or "payment" to display errors
+     */
+    public function getEasyCreditInstallmentDetails()
+    {
+        try {
+            $this->processEasyCreditInstallmentDetails();
+            return "order";
+        } catch (\Exception $ex) {
+            $this->getDicSession()->clearStorage();
+            $this->getBasket()->setPayment(null);
+            $this->handleUserException($ex->getMessage());
         }
         return "payment";
     }
@@ -83,12 +134,12 @@ class EasyCreditDispatcherController extends FrontendController
      *
      * @return string pages "order" or "payment" to display errors
      */
-    public function getEasyCreditDetails()
+    public function getEasyCreditInvoiceDetails()
     {
         try {
-            $this->processEasyCreditDetails();
+            $this->processEasyCreditInvoiceDetails();
             return "order";
-        } catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             $this->getDicSession()->clearStorage();
             $this->getBasket()->setPayment(null);
             $this->handleUserException($ex->getMessage());
@@ -101,15 +152,31 @@ class EasyCreditDispatcherController extends FrontendController
      *
      * @return string
      */
-    protected function processEasyCreditDetails() {
-
+    protected function processEasyCreditInstallmentDetails()
+    {
         $this->checkInitialization();
 
         $this->checkAuthorization();
 
         $this->loadEasyCreditFinancialInformation();
 
-        $this->setEasyCreditInstalmentAsCurrentPayment();
+        $this->setEasyCreditInstallmentAsCurrentPayment();
+
+        return "order";
+    }
+
+    /**
+     * Validates easyCredit response
+     *
+     * @return string
+     */
+    protected function processEasyCreditInvoiceDetails()
+    {
+        $this->checkInitialization();
+
+        $this->checkAuthorization();
+
+        $this->setEasyCreditInvoiceAsCurrentPayment();
 
         return "order";
     }
@@ -158,14 +225,24 @@ class EasyCreditDispatcherController extends FrontendController
     {
         $this->getDicSession()->clearStorage();
 
-        $response = $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_VORGANG, [], [], $data);
-
-        $storage = oxNew(EasyCreditStorage::class,
-            $response->tbVorgangskennung,
-            $response->fachlicheVorgangskennung,
-            $authorizationHash,
-            $this->getBasketPrice()
-        );
+        if (EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3()) {
+            $response = $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V3_VORGANG, [], [], $data);
+            $storage = oxNew(
+                EasyCreditStorage::class,
+                $response->technicalTransactionId,
+                $response->transactionId,
+                $authorizationHash,
+                $this->getBasketPrice()
+            );
+        } else {
+            $response = $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_VORGANG, [], [], $data);
+            $storage = oxNew(EasyCreditStorage::class,
+                $response->tbVorgangskennung,
+                $response->fachlicheVorgangskennung,
+                $authorizationHash,
+                $this->getBasketPrice()
+            );
+        }
         $this->getDicSession()->setStorage($storage);
     }
 
@@ -222,13 +299,20 @@ class EasyCreditDispatcherController extends FrontendController
      */
     protected function getInstalmentDecision()
     {
-        $response = $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_DECISION, [$this->getTbVorgangskennung()], []);
-
-        if (!isset($response->entscheidung->entscheidungsergebnis)) {
-            return null;
+        $test = EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3(); 
+        if (EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3()) {
+            $response = $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V3_DECISION, [$this->getTbVorgangskennung()], []);
+            if (!isset($response->decision->decisionOutcome)) {
+                return null;
+            }
+            return $response->decision->decisionOutcome;
+        } else {
+            $response = $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_DECISION, [$this->getTbVorgangskennung()], []);
+            if (!isset($response->entscheidung->entscheidungsergebnis)) {
+                return null;
+            }
+            return $response->entscheidung->entscheidungsergebnis;
         }
-
-        return $response->entscheidung->entscheidungsergebnis;
     }
 
     /**
@@ -265,10 +349,15 @@ class EasyCreditDispatcherController extends FrontendController
      * Returns url to easyCredit payment page
      * @return string
      */
-    public function getRedirectUrl() {
+    public function getRedirectUrl()
+    {
 
         $storage = $this->getInstalmentStorage();
-        return sprintf($this->getApiConfig()->getRedirectUrl(), $storage->getTbVorgangskennung());
+        if (EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3()) {
+            return sprintf($this->getApiConfig()->getRedirectUrl(), $storage->getTbVorgangskennung());
+        } else {
+            return sprintf($this->getApiConfig()->getRedirectUrl(), $storage->getTbVorgangskennung());
+        }
     }
 
     /**
@@ -311,8 +400,14 @@ class EasyCreditDispatcherController extends FrontendController
      */
     protected function checkAuthorization()
     {
-        if ($this->getInstalmentDecision() !== self::INSTALMENT_DECISION_OK) {
-            throw new EasyCreditException("OXPS_EASY_CREDIT_ERROR_NOT_APPROVED");
+        if (EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3()) {
+            if ($this->getInstalmentDecision() !== self::INSTALMENT_DECISION_OK_V3) {
+                throw new EasyCreditException("OXPS_EASY_CREDIT_ERROR_NOT_APPROVED");
+            }
+        } else {
+            if ($this->getInstalmentDecision() !== self::INSTALMENT_DECISION_OK) {
+                throw new EasyCreditException("OXPS_EASY_CREDIT_ERROR_NOT_APPROVED");
+            }
         }
     }
 
@@ -334,9 +429,19 @@ class EasyCreditDispatcherController extends FrontendController
     /**
      * Set easyCredit as current payment
      */
-    protected function setEasyCreditInstalmentAsCurrentPayment()
+    protected function setEasyCreditInstallmentAsCurrentPayment()
     {
-        $paymentId = $this->getApiConfig()->getEasyCreditInstalmentPaymentId();
+        $paymentId = $this->getApiConfig()->getEasyCreditInstallmentPaymentId();
+        Registry::getSession()->setVariable('paymentid', $paymentId);
+        $this->getBasket()->setPayment($paymentId);
+    }
+
+    /**
+     * Set easyCredit as current payment
+     */
+    protected function setEasyCreditInvoiceAsCurrentPayment()
+    {
+        $paymentId = $this->getApiConfig()->getEasyCreditInvoicePaymentId();
         Registry::getSession()->setVariable('paymentid', $paymentId);
         $this->getBasket()->setPayment($paymentId);
     }
@@ -353,15 +458,30 @@ class EasyCreditDispatcherController extends FrontendController
             throw new EasyCreditException("OXPS_EASY_CREDIT_ERROR_EXPIRED");
         }
 
-        $response = $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_FINANCIAL_INFORMATION, [$storage->getTbVorgangskennung()]);
-        $allgemeineVorgangsdaten = $response->allgemeineVorgangsdaten;
-        $tilgungsplanText = $response->tilgungsplanText;
+        if (EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3()) {
+            $response = $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V3_FINANCIAL_INFORMATION, [$storage->getTbVorgangskennung()]);
+            $allgemeineVorgangsdaten = $response->decision->urlPreContractualInformation;
+            $tilgungsplanText = $response->decision->amortizationPlanText;
+            
+            foreach ($response->decision->installmentPlans as $plan) {
+                if ($response->decision->totalValue !== $plan->totalValuePlan) {
+                    // do nothing
+                } else {
+                    $paymentPlan = $plan;
+                }
+            }
+            $paymentPlanTxt = $this->getFormattedPaymentPlan($paymentPlan);
+        } else {
+            $response = $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_FINANCIAL_INFORMATION, [$storage->getTbVorgangskennung()]);
+            $allgemeineVorgangsdaten = $response->allgemeineVorgangsdaten;
+            $tilgungsplanText = $response->tilgungsplanText;
 
-        $response = $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_FINANZIERUNG, [$storage->getTbVorgangskennung()]);
-        $paymentPlan = $response->ratenplan;
-        $paymentPlanTxt = $this->getFormattedPaymentPlan($paymentPlan->zahlungsplan);
+            $response = $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_FINANZIERUNG, [$storage->getTbVorgangskennung()]);
+            $paymentPlan = $response->ratenplan;
+            $paymentPlanTxt = $this->getFormattedPaymentPlan($paymentPlan->zahlungsplan);
 
-        $tilgungsplanText = $tilgungsplanText ?: $response->tilgungsplanText;
+            $tilgungsplanText = $tilgungsplanText ?: $response->tilgungsplanText;
+        }
 
         $storage->setAllgemeineVorgangsdaten($allgemeineVorgangsdaten);
         $storage->setTilgungsplanTxt($tilgungsplanText);
@@ -381,9 +501,16 @@ class EasyCreditDispatcherController extends FrontendController
     protected function getFormattedPaymentPlan($paymentPlan)
     {
         if (is_object($paymentPlan)) {
-            $rateTotalCount = (int) $paymentPlan->anzahlRaten;
-            $ratePerMonth   = (float) $paymentPlan->betragRate;
-            $lastRate       = (float) $paymentPlan->betragLetzteRate;
+            if (EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3()) {
+                $rateTotalCount = (int)$paymentPlan->paymentPlan->numberOfInstallments;
+                $ratePerMonth = (float)$paymentPlan->paymentPlan->installment;
+                $lastRate = (float)$paymentPlan->paymentPlan->lastInstallment;
+                
+            } else {
+                $rateTotalCount = (int)$paymentPlan->anzahlRaten;
+                $ratePerMonth = (float)$paymentPlan->betragRate;
+                $lastRate = (float)$paymentPlan->betragLetzteRate;
+            }
 
             $paymentPlanPattern = Registry::getLang()->translateString("OXPS_EASY_CREDIT_FORMATTED_PAYMENT_PLAN");
             return sprintf($paymentPlanPattern, $rateTotalCount, $ratePerMonth, $rateTotalCount - 1, $ratePerMonth, $lastRate);
@@ -399,7 +526,11 @@ class EasyCreditDispatcherController extends FrontendController
      */
     protected function getInterestAmount($paymentPlan)
     {
-        $interestAmount = (float)$paymentPlan->zinsen->anfallendeZinsen;
+        if (EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3()) {
+            $interestAmount = (float)$paymentPlan->interests->interest;
+        } else {
+            $interestAmount = (float)$paymentPlan->zinsen->anfallendeZinsen;
+        }
         if (empty($interestAmount) || $interestAmount < 0.0) {
             $interestAmount = 0.0;
         }
@@ -419,18 +550,39 @@ class EasyCreditDispatcherController extends FrontendController
     /**
      * Calls webservice endpoint
      *
-     * @var string $endpoint name of service
-     * @var array $additionalArguments args which can be used in url
-     * @var array $queryArguments query args
-     * @var array $data postdata
      * @return string response of webservice
      * @throws \Exception if something happened
+     * @var array $queryArguments query args
+     * @var array $data postdata
+     * @var string $endpoint name of service
+     * @var array $additionalArguments args which can be used in url
      */
     protected function call($endpoint, $additionalArguments = [], $queryArguments = [], $data = null)
     {
-        $webServiceClient = EasyCreditWebServiceClientFactory::getWebServiceClient($endpoint, $this->getDic(), $additionalArguments, $queryArguments, true);
-
-        return $webServiceClient->execute($data);
+        if (EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3()) {
+            $webServiceClient = EasyCreditWebServiceClientFactory::getWebServiceClient(
+                $endpoint,
+                $this->getDic(),
+                $additionalArguments,
+                $queryArguments,
+                true
+            );
+            $response = $webServiceClient->executeJsonRequest(
+                $webServiceClient->getHttpmethod(),
+                $webServiceClient->getFunction(),
+                $data
+            );
+            return $response;
+        } else {
+            $webServiceClient = EasyCreditWebServiceClientFactory::getWebServiceClient(
+                $endpoint,
+                $this->getDic(),
+                $additionalArguments,
+                $queryArguments,
+                true
+            );
+            return $webServiceClient->execute($data);
+        }
     }
 
     /**
@@ -477,7 +629,7 @@ class EasyCreditDispatcherController extends FrontendController
      */
     protected function getApiConfig()
     {
-        if (!$this->apiConfig ) {
+        if (!$this->apiConfig) {
             $this->apiConfig = $this->getDic()->getApiConfig();
         }
         return $this->apiConfig;

@@ -25,7 +25,7 @@ class EasyCreditStorage
     /** @var string */
     private $tbVorgangskennung;
 
-    /** @var string  */
+    /** @var string */
     private $fachlicheVorgangskennung;
 
     /** @var string */
@@ -46,10 +46,12 @@ class EasyCreditStorage
     /** @var string */
     private $ratenplanTxt;
 
-    function __construct($tbVorgangskennung,
-                         $fachlicheVorgangskennung,
-                         $authorizationHash,
-                         $authorizedAmount)
+    function __construct(
+        $tbVorgangskennung,
+        $fachlicheVorgangskennung,
+        $authorizationHash,
+        $authorizedAmount
+    )
     {
         $this->tbVorgangskennung = $tbVorgangskennung;
         $this->fachlicheVorgangskennung = $fachlicheVorgangskennung;

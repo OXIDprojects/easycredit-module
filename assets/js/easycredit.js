@@ -1,5 +1,4 @@
-function oscHandlePaymentCheckoutEvents()
-{
+function oscHandlePaymentCheckoutEvents() {
     let result = document.querySelectorAll('INPUT[type=radio][name=paymentid]');
     if (result.length > 0) {
         for (var i = 0; i < result.length; i++) {
@@ -7,23 +6,30 @@ function oscHandlePaymentCheckoutEvents()
         }
     }
 
-    let elemPaymentRadio = document.getElementById('payment_easycreditinstallment');
-    if (elemPaymentRadio && elemPaymentRadio.checked === true) {
+    let elemInstallmentPaymentRadio = document.getElementById('payment_easycreditinstallment');
+    let elemInvoicePaymentRadio = document.getElementById('payment_easycreditinvoice');
+    if ((elemInstallmentPaymentRadio && elemInstallmentPaymentRadio.checked === true) ||
+        (elemInvoicePaymentRadio && elemInvoicePaymentRadio.checked === true)
+    ) {
         oscApexAddEvents();
     }
 }
 
-function oscHandlePaymentRadioChange(e)
-{
+function oscHandlePaymentRadioChange(e) {
     if (e.target.id === "payment_easycreditinstallment" && e.target.checked === true) {
+        oscApexAddEvents();
+    } else {
+        oscApexRevertEvents();
+    }
+
+    if (e.target.id === "payment_easycreditinvoice" && e.target.checked === true) {
         oscApexAddEvents();
     } else {
         oscApexRevertEvents();
     }
 }
 
-function oscApexAddEvents()
-{
+function oscApexAddEvents() {
     let button = oscGetApexNextButton();
     if (button !== null) {
         button.onclick = null; // remove on click event from button and add an extended on click event which also submits the form
@@ -35,8 +41,7 @@ function oscApexAddEvents()
     }
 }
 
-function oscApexRevertEvents()
-{
+function oscApexRevertEvents() {
     let button = oscGetApexNextButton();
     if (button !== null) {
         button.removeEventListener('click', oscHandlePaymentForm);
@@ -47,8 +52,7 @@ function oscApexRevertEvents()
     }
 }
 
-function oscGetApexNextButton()
-{
+function oscGetApexNextButton() {
     let button = null;
 
     let result = document.querySelectorAll("BUTTON.btn.btn-highlight.btn-lg.w-100");
@@ -64,20 +68,29 @@ function oscGetApexNextButton()
     return button;
 }
 
-function oscHandlePaymentForm(e)
-{
+function oscHandlePaymentForm(e) {
     var paymentForm = document.getElementById('payment');
-    if (paymentForm.elements['payment_easycreditinstallment'].checked === true) {
-        document.getElementById("easycredit_agreement_error").style.display = "none";
-        if (document.getElementById("easycredit_agreement").checked === false) {
+    var isEasycreditApiVersion3 = document.getElementById('is_easycredit_api_version_3').innerHTML;
+
+    if (typeof (paymentForm.elements['payment_easycreditinstallment']) !== 'undefined' && paymentForm.elements['payment_easycreditinstallment'].checked === true) {
+        document.getElementById("easycredit_installment_agreement_error").style.display = "none";
+        if (typeof (isEasycreditApiVersion3) !== 'undefined' && isEasycreditApiVersion3 !== '1' && document.getElementById("easycredit_installment_agreement").checked === false) {
             e.preventDefault();
-            document.getElementById("easycredit_agreement_error").style.display = "";
+            document.getElementById("easycredit_installment_agreement_error").style.display = "";
         } else {
             paymentForm.submit();
         }
         return true;
-    } else {
-        // default behaviour
-        paymentForm.submit();
     }
+    if (typeof (paymentForm.elements['payment_easycreditinvoice']) !== 'undefined' && paymentForm.elements['payment_easycreditinvoice'].checked === true) {
+        document.getElementById("easycredit_invoice_agreement_error").style.display = "none";
+        if (typeof (isEasycreditApiVersion3) !== 'undefined' && isEasycreditApiVersion3 !== '1' && document.getElementById("easycredit_invoice_agreement").checked === false) {
+            e.preventDefault();
+            document.getElementById("easycredit_invoice_agreement_error").style.display = "";
+        } else {
+            paymentForm.submit();
+        }
+        return true;
+    }
+    return true
 }

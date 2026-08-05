@@ -51,6 +51,7 @@ $aModule = [
         OxidEsales\Eshop\Application\Controller\OrderController::class => OxidSolutionCatalysts\EasyCredit\Controller\EasyCreditOrderController::class,
 
         # Extended admin controller
+        OxidEsales\Eshop\Application\Controller\Admin\ModuleConfiguration::class => OxidSolutionCatalysts\EasyCredit\Controller\Admin\EasyCreditModuleConfigurationController::class,
         OxidEsales\Eshop\Application\Controller\Admin\OrderAddress::class => OxidSolutionCatalysts\EasyCredit\Controller\Admin\EasyCreditOrderAddressController::class,
         OxidEsales\Eshop\Application\Controller\Admin\OrderArticle::class => OxidSolutionCatalysts\EasyCredit\Controller\Admin\EasyCreditOrderArticleController::class,
         OxidEsales\Eshop\Application\Controller\Admin\OrderOverview::class => OxidSolutionCatalysts\EasyCredit\Controller\Admin\EasyCreditOrderOverviewController::class,
@@ -79,6 +80,18 @@ $aModule = [
         ],
         [
             'group' => 'EasyCreditApi',
+            'name'  => 'oxpsECBaseUrlV3',
+            'type'  => 'str',
+            'value' => 'https://ratenkauf.easycredit.de',
+        ],
+        [
+            'group' => 'EasyCreditApi',
+            'name'  => 'oxpsECDealerInterfaceUrlV3',
+            'type'  => 'str',
+            'value' => 'https://app.easycredit.de/ratenkauf/transaktionsverwaltung-ws/rest',
+        ],
+        [
+            'group' => 'EasyCreditApi',
             'name'  => 'oxpsECWebshopId',
             'type'  => 'str',
             'value' => '',
@@ -86,6 +99,24 @@ $aModule = [
         [
             'group' => 'EasyCreditApi',
             'name'  => 'oxpsECWebshopToken',
+            'type'  => 'str',
+            'value' => '',
+        ],
+        [
+            'group' => 'EasyCreditApi',
+            'name'  => 'oxpsECUseV3',
+            'type'  => 'bool',
+            'value' => true,
+        ],
+        [
+            'group' => 'EasyCreditApi',
+            'name'  => 'oxpsECUseHMAC',
+            'type'  => 'bool',
+            'value' => false,
+        ],
+        [
+            'group' => 'EasyCreditApi',
+            'name'  => 'oxpsECHMACHeader',
             'type'  => 'str',
             'value' => '',
         ],

@@ -43,7 +43,8 @@ class EasyCreditOrderController extends EasyCreditOrderController_parent
         if ($this->_oPayment === null) {
             /** @var $payment Payment */
             $payment = $this->parentGetPayment();
-            if ($payment && $payment->getId() == $this->getDic()->getApiConfig()->getEasyCreditInstalmentPaymentId()) {
+            if ($payment && $payment->getId() === $this->getDic()->getApiConfig()->getEasyCreditInstallmentPaymentId() ||
+                $payment->getId() === $this->getDic()->getApiConfig()->getEasyCreditInvoicePaymentId()) {
                 $this->checkStorage();
             } else {
                 $this->_oPayment = $payment;
@@ -72,9 +73,9 @@ class EasyCreditOrderController extends EasyCreditOrderController_parent
         try {
             /** @var $viewConfig ViewConfig */
             $viewConfig = $this->getViewConfig();
-            $logoFile = $viewConfig->getModulePath('osceasycredit', "img" . DIRECTORY_SEPARATOR . "eclogo.png");
+            $logoFile = $viewConfig->getModulePath('osceasycredit', "img" . DIRECTORY_SEPARATOR . "ecinstallmentlogo.png");
             if (file_exists($logoFile)) {
-                return $viewConfig->getModuleUrl('osceasycredit', 'img/eclogo.png');
+                return $viewConfig->getModuleUrl('osceasycredit', 'img/ecinstallmentlogo.png');
             }
         } catch (\Exception $ex) {
             //that's expected, do nothing else
@@ -147,7 +148,7 @@ class EasyCreditOrderController extends EasyCreditOrderController_parent
         $paymentDescription = "";
 
         $payment = $this->parentGetPayment();
-        if ($payment && $payment->getId() == $this->getDic()->getApiConfig()->getEasyCreditInstalmentPaymentId()) {
+        if ($payment && $payment->getId() == $this->getDic()->getApiConfig()->getEasyCreditInstallmentPaymentId()) {
             $paymentDescription = $payment->oxpayments__oxdesc->value;
 
             $paymentPlanTxt = $this->getPaymentPlanTxt();

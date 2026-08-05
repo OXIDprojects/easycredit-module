@@ -1,7 +1,7 @@
 {%  extends "order_list.html.twig" %}
 
 {% block admin_order_list_colgroup %}
-    <col width="10%">
+    <col width="15%">
     {{ parent() }}
 {% endblock %}
 
@@ -42,8 +42,11 @@
 
     <td style="vertical-align: top;" class="{{ listclass }} ecorder" height="15"><div class="listitemfloating">
             &nbsp;<a href="Javascript:top.oxid.admin.editThis('{{ listitem.oxorder__oxid.value }}');" class="{{ listclass }}">
-                {% if listitem.oxorder__ecredfunctionalid.value %}
-                    {{ translate({ ident: "EASY_CREDIT_ORDER_TYPE" }) }}
+                {% if listitem.oxorder__ecredfunctionalid.value and listitem.oxorder__oxpaymenttype.value == 'easycreditinstallment'  %}
+                    {{ translate({ ident: "EASY_CREDIT_ORDER_TYPE_INSTALLMENT" }) }}
+                {% endif %}
+                {% if listitem.oxorder__ecredfunctionalid.value and listitem.oxorder__oxpaymenttype.value == 'easycreditinvoice'  %}
+                    {{ translate({ ident: "EASY_CREDIT_ORDER_TYPE_INVOICE" }) }}
                 {% endif %}
             </a>
         </div>

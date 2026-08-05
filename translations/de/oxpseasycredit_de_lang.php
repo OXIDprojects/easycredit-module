@@ -21,12 +21,14 @@ $aLang = array(
 
     'OXPS_EASY_CREDIT_FINANCE_FROM'                          => 'Finanzieren ab',
     'OXPS_EASY_CREDIT_MORE_INFO'                             => 'mehr Infos zum Ratenkauf',
-    'OXPS_EASY_CREDIT_EXAMPLE_DIALOG_TITLE'                  => 'easyCredit-Ratenkauf',
+    'OXPS_EASY_CREDIT_EXAMPLE_DIALOG_TITLE'                  => 'easyCredit Informationen',
     'OXPS_EASY_CREDIT_ERROR_NO_GERMAN_ADDRESS'               => 'Die Lieferadresse muss eine Adresse in Deutschland sein.',
     'OXPS_EASY_CREDIT_ERROR_DEL_ADDRESS'                     => 'Die Lieferadresse darf nicht von der Rechnungsadresse abweichen.',
     'OXPS_EASY_CREDIT_ERROR_PACKSTATION'                     => 'Die Lieferadresse darf keine Packstation sein.',
-    'OXPS_EASY_CREDIT_AGREEMENT_ERROR'                       => 'Bitte akzeptieren Sie die Bedingungen für easyCredit-Ratenkauf.',
-    'OXPS_EASY_CREDIT_ERROR_NO_AGREEMENTS'                   => 'Die Zustimmungstexte konnten nicht geladen werden [easyCredit-Ratenkauf].',
+    'OXPS_EASY_CREDIT_INSTALLMENT_AGREEMENT_ERROR'           => 'Bitte akzeptieren Sie die Bedingungen für easyCredit-Ratenkauf.',
+    'OXPS_EASY_CREDIT_INVOICE_AGREEMENT_ERROR'               => 'Bitte akzeptieren Sie die Bedingungen für easyCredit-Rechnungskauf.',
+    'OXPS_EASY_CREDIT_INSTALLMENT_ERROR_NO_AGREEMENTS'       => 'Die Zustimmungstexte konnten nicht geladen werden [easyCredit-Ratenkauf].',
+    'OXPS_EASY_CREDIT_INVOICE_ERROR_NO_AGREEMENTS'           => 'Die Zustimmungstexte konnten nicht geladen werden [easyCredit-Rechnungskauf].',
     'OXPS_EASY_CREDIT_ERROR_INITIALIZATION_FAILED'           => 'Vorgang konnte nicht gestartet werden [easyCredit-Ratenkauf].',
     'OXPS_EASY_CREDIT_ERROR_NOT_APPROVED'                    => 'Ratenkauf wurde nicht genehmigt. Bitte wählen Sie eine andere Zahlungsart.',
     'OXPS_EASY_CREDIT_ERROR_EXPIRED'                         => 'Die Gültigkeit Ihrer Sitzung ist abgelaufen. Bitte wiederholen Sie die Auswahl der Zahlungsart.',
@@ -48,4 +50,5 @@ $aLang = array(
     'OXPS_EASY_CREDIT_VALIDATION_ERROR'                      => 'Es ist ein Fehler aufgetreten.',
 
     'OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_LIEFERUNG_MELDEN' => 'Lieferung melden',
+    'OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_V3_REPORT_CAPTURE' => 'Lieferung melden',
 );

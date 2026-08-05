@@ -30,7 +30,7 @@
 
     <div class="row">
         <div class="col-12">
-            <h3>TR Bestellinformationen</h3>
+            <h3>Bestellinformationen</h3>
         </div>
     </div>
     <div class="row">
@@ -124,7 +124,7 @@
                         {{ order.oxorder__ecredpaymentstatus.value }}
                     </div>
                 </div>
-
+                
                 <div class="row">
                     <div class="col-12 col-md-4">
                         {{ translate({ ident: "OXPS_EASY_CREDIT_ADMIN_ORIGINAL_ORDER_VALUE" }) }}:
@@ -141,6 +141,7 @@
                         {{ ecorderdata.bestellwertAktuell }} {{ currency }}
                     </div>
                 </div>
+                
                 <div class="row">
                     <div class="col-12 col-md-4">
                         {{ translate({ ident: "OXPS_EASY_CREDIT_ADMIN_REVERSAL_VALUE" }) }}:
@@ -149,22 +150,51 @@
                         {{ ecorderdata.widerrufenerBetrag }} {{ currency }}
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-12 col-md-4">
-                        {{ translate({ ident: "OXPS_EASY_CREDIT_ADMIN_REVERSAL_DATE" }) }}:
+                {% if order.oxorder__ecredisv3order.value %}
+                    {% for refund in ecorderdata.refunds %}
+                    <div class="row">
+                        <div class="col-12 col-md-4">
+                            {{ translate({ ident: "OXPS_EASY_CREDIT_ADMIN_REVERSAL_DATE" }) }}:
+                        </div>
+                        <div class="col-12 col-md-8">
+                            {{ refund.rueckabwicklungEingegebenAm }}
+                        </div>
                     </div>
-                    <div class="col-12 col-md-8">
-                        {{ ecorderdata.rueckabwicklungEingegebenAm }}
+                    <div class="row">
+                        <div class="col-12 col-md-4">
+                            {{ translate({ ident: "OXPS_EASY_CREDIT_ADMIN_REVERSAL_ACCOUNT_DATE" }) }}:
+                        </div>
+                        <div class="col-12 col-md-8">
+                            {{ refund.rueckabwicklunngGebuchtAm }}
+                        </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-12 col-md-4">
-                        {{ translate({ ident: "OXPS_EASY_CREDIT_ADMIN_REVERSAL_ACCOUNT_DATE" }) }}:
+                    <div class="row">
+                        <div class="col-12 col-md-4">
+                            {{ translate({ ident: "OXPS_EASY_CREDIT_ADMIN_REVERSAL_VALUE" }) }}:
+                        </div>
+                        <div class="col-12 col-md-8">
+                            {{ refund.betrag }}
+                        </div>
                     </div>
-                    <div class="col-12 col-md-8">
-                        {{ ecorderdata.rueckabwicklunngGebuchtAm }}
+                    {% endfor %}
+                {% else %}
+                    <div class="row">
+                        <div class="col-12 col-md-4">
+                            {{ translate({ ident: "OXPS_EASY_CREDIT_ADMIN_REVERSAL_DATE" }) }}:
+                        </div>
+                        <div class="col-12 col-md-8">
+                            {{ ecorderdata.rueckabwicklungEingegebenAm }}
+                        </div>
                     </div>
-                </div>
+                    <div class="row">
+                        <div class="col-12 col-md-4">
+                            {{ translate({ ident: "OXPS_EASY_CREDIT_ADMIN_REVERSAL_ACCOUNT_DATE" }) }}:
+                        </div>
+                        <div class="col-12 col-md-8">
+                            {{ ecorderdata.rueckabwicklunngGebuchtAm }}
+                        </div>
+                    </div>
+                {% endif %}
             {% else %}
                 <div class="col-12 col-md-4 alert alert-danger">{{ translate({ ident: "OXPS_EASY_CREDIT_ADMIN_NO_DATA_LOADED" }) }}</div>
             {% endif %}

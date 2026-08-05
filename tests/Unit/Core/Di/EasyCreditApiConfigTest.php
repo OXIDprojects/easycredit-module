@@ -120,9 +120,9 @@ class EasyCreditApiConfigTest extends TestCase
         $this->assertEquals('https://ratenkauf.easycredit.de/ratenkauf/content/intern/einstieg.jsf?vorgangskennung=%s', $this->apiConfig->getRedirectUrl());
     }
 
-    public function testGetEasyCreditInstalmentPaymentId()
+    public function testGetEasyCreditInstallmentPaymentId()
     {
-        $this->assertEquals('easycreditinstallment', $this->apiConfig->getEasyCreditInstalmentPaymentId());
+        $this->assertEquals('easycreditinstallment', $this->apiConfig->getEasyCreditInstallmentPaymentId());
     }
 
     public function testGetEasyCreditModuleId()

@@ -46,7 +46,7 @@ class EasyCreditPaymentTest extends TestCase
     public function testIsEasyCreditInstallmentTrue(): void
     {
         $payment = oxNew(Payment::class);
-        $payment->setId(EasyCreditHelper::EASYCREDIT_PAYMENTID);
+        $payment->setId(EasyCreditHelper::EASYCREDIT_INSTALLMENT_PAYMENTID);
         $this->assertTrue($payment->isEasyCreditInstallment());
     }
 
@@ -59,7 +59,7 @@ class EasyCreditPaymentTest extends TestCase
 
     public function testIsEasyCreditInstallmentByIdTrue(): void
     {
-        $this->assertTrue(EasyCreditHelper::isEasyCreditInstallmentById(EasyCreditHelper::EASYCREDIT_PAYMENTID));
+        $this->assertTrue(EasyCreditHelper::isEasyCreditInstallmentById(EasyCreditHelper::EASYCREDIT_INSTALLMENT_PAYMENTID));
     }
 
     public function testIsEasyCreditInstallmentByIdFalse(): void

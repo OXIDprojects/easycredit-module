@@ -1,26 +1,27 @@
-{% set easyCreditInstallmentIsPossible = oView.isEasyCreditInstallmentPossible() %}
+{% set easyCreditInvoiceIsPossible = oView.isEasyCreditInvoicePossible() %}
 {% set isEasyCreditAPIV3 = oView.isEasyCreditAPIV3() %}
+
 <div class="payment-option">
     <div class="payment-option-form">
         <input class="form-check-input" id="payment_{{ sPaymentID }}" type="radio" name="paymentid"
-               value="{{ sPaymentID }}"{% if oView.getCheckedPaymentId() == paymentmethod.oxpayments__oxid.value and easyCreditInstallmentIsPossible %} checked{% endif %}{% if not easyCreditInstallmentIsPossible %} disabled{% endif %}>
-        <label class="form-check-label{% if not easyCreditInstallmentIsPossible %} easycreditdisabled{% endif %}"
+               value="{{ sPaymentID }}"{% if oView.getCheckedPaymentId() == paymentmethod.oxpayments__oxid.value and easyCreditInvoiceIsPossible %} checked{% endif %}{% if not easyCreditInvoiceIsPossible %} disabled{% endif %}>
+        <label class="form-check-label{% if not easyCreditInvoiceIsPossible %} easycreditdisabled{% endif %}"
                for="payment_{{ sPaymentID }}">{{ paymentmethod.oxpayments__oxdesc.value }}</label>
 
-        {% if not easyCreditInstallmentIsPossible %}
+        {% if not easyCreditInvoiceIsPossible %}
             <div class="col-lg-offset-3">
-                <img class="payment-logo-easycredit" src="{{ oViewConf.getModuleUrl('osceasycredit') }}img/ecinstallmentlogo.png" alt="Easy Credit">
+                <img class="payment-logo-easycredit" src="{{ oViewConf.getModuleUrl('osceasycredit') }}img/ecinvoicelogo.png" alt="Easy Credit">
                 {% set errorMsgs = oView.getErrorMessages() %}
                 {% for errorMsg in errorMsgs %}
                     <div>{{ errorMsg }}</div>
                 {% endfor %}
             </div>
         {% endif %}
-        {% if easyCreditInstallmentIsPossible %}
+        {% if easyCreditInvoiceIsPossible %}
             <div class="col-lg-offset-3">
-                <img class="payment-logo-easycredit" src="{{ oViewConf.getModuleUrl('osceasycredit') }}img/ecinstallmentlogo.png" alt="Easy Credit">
+                <img class="payment-logo-easycredit" src="{{ oViewConf.getModuleUrl('osceasycredit') }}img/ecinvoicelogo.png" alt="Easy Credit">
             </div>
-            {% block checkout_payment_easycreditinstallmentagreement %}
+            {% block checkout_payment_easycreditinvoiceagreement %}
                 <div class="clearfix"></div>
 
                 {% if oView.isProfileDataMissing() %}
@@ -50,8 +51,8 @@
                     <div class="col-lg-9 col-lg-offset-3 offset-lg-3">
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" name="easycreditinstallmentagreement" id="easycredit_installment_agreement" value=""> {{ oView.getInstallmentAgreementTxt() }}
-                                <div id="easycredit_installment_agreement_error" style="display:none;" class="text-danger">{{ translate({ ident: "OXPS_EASY_CREDIT_INSTALLMENT_AGREEMENT_ERROR" }) }}</div>
+                                <input type="checkbox" name="easycreditinvoiceagreement" id="easycredit_invoice_agreement" value=""> {{ oView.getInvoiceAgreementTxt() }}
+                                <div id="easycredit_invoice_agreement_error" style="display:none;" class="text-danger">{{ translate({ ident: "OXPS_EASY_CREDIT_INVOICE_AGREEMENT_ERROR" }) }}</div>
                                 <div id="is_easycredit_api_version_3" style="display:none;">{{ isEasyCreditAPIV3 }}</div>
                             </label>
                         </div>

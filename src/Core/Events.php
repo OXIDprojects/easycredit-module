@@ -16,10 +16,11 @@ namespace OxidSolutionCatalysts\EasyCredit\Core;
 use OxidEsales\DoctrineMigrationWrapper\MigrationsBuilder;
 use OxidEsales\Eshop\Core\DatabaseProvider;
 use OxidEsales\Eshop\Core\DbMetaDataHandler;
-use OxidEsales\Eshop\Core\Field;
-use \OxidEsales\Eshop\Core\Model\MultiLanguageModel;
-use OxidEsales\Eshop\Application\Model\Content;
 use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\Eshop\Core\Exception\StandardException;
+use OxidSolutionCatalysts\EasyCredit\Core\Api\EasyCreditWebServiceClientFactory;
+use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditApiConfig;
+use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDicFactory;
 use Symfony\Component\Console\Output\BufferedOutput;
 
 /**
@@ -49,6 +50,54 @@ class Events
     }
 
     /**
+     * Handles saved module settings.
+     */
+    public static function onModuleSettingsSaved(): void
+    {
+        self::checkEasyCreditCredentials();
+    }
+
+    /**
+     * Handles saved module settings.
+     */
+    public static function checkEasyCreditCredentials(): void
+    {
+        $apiConfig = EasyCreditDicFactory::getDic()->getApiConfig();
+        if ($apiConfig->getEasyCreditUseApiVersionV3()) {
+
+            try {
+                $webServiceClient = EasyCreditWebServiceClientFactory::getWebServiceClient(
+                    EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V3_INTEGRATIONCHECK,
+                    EasyCreditDicFactory::getDic(),
+                    [],
+                    [],
+                    true
+                );
+                $testMessage = 'Ratenkauf Integration Check';
+                $response = $webServiceClient->executeJsonRequest(
+                    'POST',
+                    '/api/payment/v3/webshop/integrationcheck',
+                    ['message' => $testMessage]
+                );
+            } catch (\Exception $ex) {
+                EasyCreditDicFactory::getDic()->getLogging()->log($ex->getMessage());
+            }
+            if ($response && $response->message === $testMessage) {
+                // Do nothing
+            } else {
+                // StefTest: Translations
+                EasyCreditDicFactory::getDic()->getLogging()->log('EasyCredit credentials are not valid.');
+                Registry::getUtilsView()->addErrorToDisplay(
+                    oxNew(
+                        StandardException::class,
+                        'Die easyCredit Zugangsdaten konnten nicht erfolgreich geprüft werden. Bitte prüfen Sie Webshop-ID, Token und API-URL V3.'
+                    )
+                );
+            }
+        }
+    }
+
+    /**
      * Clean temp folder content.
      *
      * @param string $sClearFolderPath Sub-folder path to delete from. Should be a full, valid path inside temp folder.
@@ -75,7 +124,7 @@ class Events
     /**
      * Get translated string by the translation code.
      *
-     * @param string  $sCode
+     * @param string $sCode
      * @param boolean $blUseModulePrefix If True - adds the module translations prefix, if False - not.
      *
      * @return string
@@ -93,15 +142,15 @@ class Events
      * Install/uninstall event.
      * Executes SQL queries form a file.
      *
-     * @param string $sSqlFile      SQL file located in module docs folder (usually install.sql or uninstall.sql).
+     * @param string $sSqlFile SQL file located in module docs folder (usually install.sql or uninstall.sql).
      * @param string $sFailureError An error message to show on failure.
      */
     protected static function _dbEvent($sSqlFile, $sFailureError = 'Operation failed: ')
     {
         try {
-            $oDb  = DatabaseProvider::getDb();
-            $sSql = file_get_contents(dirname(__FILE__) . '/../../installments/' . (string) $sSqlFile);
-            $aSql = (array) explode(';', $sSql);
+            $oDb = DatabaseProvider::getDb();
+            $sSql = file_get_contents(dirname(__FILE__) . '/../../installments/' . (string)$sSqlFile);
+            $aSql = (array)explode(';', $sSql);
 
             foreach ($aSql as $sQuery) {
                 if (!empty($sQuery)) {
@@ -130,7 +179,7 @@ class Events
      */
     protected static function _getFolderToClear($sClearFolderPath = '')
     {
-        $sTempFolderPath = (string) Registry::getConfig()->getConfigParam('sCompileDir');
+        $sTempFolderPath = (string)Registry::getConfig()->getConfigParam('sCompileDir');
 
         if (!empty($sClearFolderPath) and (strpos($sClearFolderPath, $sTempFolderPath) !== false)) {
             $sFolderPath = $sClearFolderPath;
@@ -164,12 +213,12 @@ class Events
      * Install/uninstall event.
      * Executes SQL queries from a shop specific file.
      *
-     * @param string $sSqlFile      SQL file located in module docs folder (usually install.sql or uninstall.sql).
+     * @param string $sSqlFile SQL file located in module docs folder (usually install.sql or uninstall.sql).
      * @param string $sFailureError An error message to show on failure.
      */
     protected static function _dbEventShopSpecific($sSqlFile, $sFailureError = 'Operation failed: ')
     {
-        $sqls = file_get_contents(dirname(__FILE__) . '/../../installments/' . (string) $sSqlFile);
+        $sqls = file_get_contents(dirname(__FILE__) . '/../../installments/' . (string)$sSqlFile);
         $aShops = DatabaseProvider::getDb()->getAll('SELECT oxid FROM oxshops');
 
         // Iterate all SubShops

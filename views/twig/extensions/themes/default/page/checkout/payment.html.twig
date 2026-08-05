@@ -5,6 +5,10 @@
         <div class="well well-sm">
             {% include "@osceasycredit/frontend/tpl/page/checkout/inc/payment_easycreditinstallment.html.twig" %}
         </div>
+    {% elseif sPaymentID == "easycreditinvoice" %}
+        <div class="well well-sm">
+            {% include "@osceasycredit/frontend/tpl/page/checkout/inc/payment_easycreditinvoice.html.twig" %}
+        </div>
     {% else %}
         {{ parent() }}
     {% endif %}

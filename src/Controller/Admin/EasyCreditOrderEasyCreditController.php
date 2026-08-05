@@ -69,12 +69,12 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
         $this->_aViewData["sOxid"] = $this->getEditObjectId();
 
         if ($this->hasEasyCreditPayment()) {
-            $this->_aViewData['order']                = $this->getOrder();
-            $this->_aViewData['currency']             = $this->getOrder()->getOrderCurrency()->name;
+            $this->_aViewData['order'] = $this->getOrder();
+            $this->_aViewData['currency'] = $this->getOrder()->getOrderCurrency()->name;
             $this->_aViewData['confirmationresponse'] = $this->getEasyCreditConfirmationResponse();
             try {
                 $this->_aViewData['deliverystate'] = $this->getEasyCreditDeliveryState();
-                $this->_aViewData['ecorderdata']   = $this->getEasyCreditOrderData();
+                $this->_aViewData['ecorderdata'] = $this->getEasyCreditOrderData();
             } catch (\Exception $e) {
                 EasyCreditDicFactory::getDic()->getLogging()->log($e->getMessage());
                 $this->_aViewData['invalidECIdentifier'] = 1;
@@ -93,7 +93,9 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
     {
         /** @var $order Order */
         $order = $this->getOrder();
-        return $order && EasyCreditHelper::isEasyCreditInstallmentById($order->getFieldData('oxpaymenttype'));
+        return $order &&
+            (EasyCreditHelper::isEasyCreditInstallmentById($order->getFieldData('oxpaymenttype')) ||
+             EasyCreditHelper::isEasyCreditInvoiceById($order->getFieldData('oxpaymenttype')));
     }
 
     /**
@@ -176,27 +178,71 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
     protected function getEasyCreditOrderData()
     {
         $orderData = $this->getApiService()->getOrderData();
-        if (!is_array($orderData) || count($orderData) < 1) {
-            throw new EasyCreditException(
-                "No data found for order with identifier {$this->order->getFieldData('ecredfunctionalid')}"
-            );
+        $test = $this->order->oxorder__ecredisv3order->value;
+        if (EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3() && $this->order->oxorder__ecredisv3order->value == 1) {
+            if (empty($orderData->status)) {
+                throw new EasyCreditException(
+                    "No data found for order with identifier {$this->order->getFieldData('ecredfunctionalid')}"
+                );
+            }
+            /** @var Language $lang */
+            $lang = Registry::getLang();
+            $dataobject = clone($orderData);
+            $dataobject->bestellwertAktuell = $lang->formatCurrency($orderData->currentOrderValue);
+            $dataobject->bestellwertUrspruenglich = $lang->formatCurrency($orderData->originalOrderValue);
+            $dataobject->widerrufenerBetrag = $lang->formatCurrency($orderData->refundsTotalValue);
+            $dataobject->bestelldatum = $orderData->orderDate;
+            $dataobject->vorgangskennungFachlich = $orderData->transactionId;
+            $date = new \DateTime($dataobject->bestelldatum);
+            $dataobject->bestelldatum = $date->format('d.m.Y');
+
+            $dataobject->refunds = [];
+            foreach ($dataobject->refundDetails as $refund) {
+                $date = new \DateTime($refund->refundEntryDate);
+                $rueckabwicklungEingegebenAm = $date->format('d.m.Y');
+                $date = new \DateTime($refund->refundBookingDate);
+                $rueckabwicklunngGebuchtAm = $date->format('d.m.Y');
+                $dataobject->refunds[] = [
+                    'betrag' => $lang->formatCurrency($refund->refundAmount),
+                    'rueckabwicklungEingegebenAm' => $rueckabwicklungEingegebenAm,
+                    'rueckabwicklunngGebuchtAm' => $rueckabwicklunngGebuchtAm,
+                ];
+            }
+            /*
+            if ($dataobject->refundDetails[0]->refundEntryDate) {
+                $date = new \DateTime($dataobject->refundDetails[0]->refundEntryDate);
+                $dataobject->rueckabwicklungEingegebenAm = $date->format('d.m.Y');
+            }
+
+            if ($dataobject->refundDetails[0]->refundBookingDate) {
+                $date = new \DateTime($dataobject->refundDetails[0]->refundBookingDate);
+                $dataobject->rueckabwicklunngGebuchtAm = $date->format('d.m.Y');
+            }
+            */
+
+        } else {
+            if (!is_array($orderData) || count($orderData) < 1) {
+                throw new EasyCreditException(
+                    "No data found for order with identifier {$this->order->getFieldData('ecredfunctionalid')}"
+                );
+            }
+            $dataobject = clone($orderData[0]);
+            /** @var Language $lang */
+            $lang = Registry::getLang();
+            $dataobject->bestellwertAktuell = $lang->formatCurrency($dataobject->bestellwertAktuell);
+            $dataobject->bestellwertUrspruenglich = $lang->formatCurrency($dataobject->bestellwertUrspruenglich);
+            $dataobject->widerrufenerBetrag = $lang->formatCurrency($dataobject->widerrufenerBetrag);
+            $date = new \DateTime($dataobject->bestelldatum);
+            $dataobject->bestelldatum = $date->format('d.m.Y');
         }
-        $dataobject = clone($orderData[0]);
-        /** @var Language $lang */
-        $lang                                 = Registry::getLang();
-        $dataobject->bestellwertAktuell       = $lang->formatCurrency($dataobject->bestellwertAktuell);
-        $dataobject->bestellwertUrspruenglich = $lang->formatCurrency($dataobject->bestellwertUrspruenglich);
-        $dataobject->widerrufenerBetrag       = $lang->formatCurrency($dataobject->widerrufenerBetrag);
-        $date                                 = new \DateTime($dataobject->bestelldatum);
-        $dataobject->bestelldatum             = $date->format('d.m.Y');
 
         if ($dataobject->rueckabwicklungEingegebenAm) {
-            $date                                    = new \DateTime($dataobject->rueckabwicklungEingegebenAm);
+            $date = new \DateTime($dataobject->rueckabwicklungEingegebenAm);
             $dataobject->rueckabwicklungEingegebenAm = $date->format('d.m.Y');
         }
 
         if ($dataobject->rueckabwicklunngGebuchtAm) {
-            $date                                  = new \DateTime($dataobject->rueckabwicklunngGebuchtAm);
+            $date = new \DateTime($dataobject->rueckabwicklunngGebuchtAm);
             $dataobject->rueckabwicklunngGebuchtAm = $date->format('d.m.Y');
         }
 
@@ -234,15 +280,19 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
 
         # ist request tecid = ordertecid
         $fIdRequest = $request['functionalid'];
-        $fIdOrder   = $this->order->getFieldData('ecredfunctionalid');
+        $fIdOrder = $this->order->getFieldData('ecredfunctionalid');
         if ($fIdOrder != $fIdRequest) {
             throw new EasyCreditException("Functional ID mismatch");
         }
 
         # match reversal amount to max open amount
-        $service               = $this->getApiService();
-        $orderData             = $service->getOrderData();
-        $maxReversalAmount     = (float)$orderData[0]->bestellwertAktuell;
+        $service = $this->getApiService();
+        $orderData = $service->getOrderData();
+        if (EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3() && $this->order->oxorder__ecredisv3order->value == 1) {
+            $maxReversalAmount = (float)$orderData->currentOrderValue;
+        } else {
+            $maxReversalAmount = (float)$orderData[0]->bestellwertAktuell;
+        }
         $requestReversalAmount = (float)$request['amount'];
         if ($requestReversalAmount > $maxReversalAmount || $requestReversalAmount <= 0) {
             throw new EasyCreditException("Requested reversal greater than actual amount", 10);
@@ -257,7 +307,7 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
      */
     private function sendReversalToEc(array $request)
     {
-        $amount = (float) $request['amount'];
+        $amount = (float)$request['amount'];
         $reason = $request['reason'];
         $service = $this->getApiService();
         $service->sendReversal($amount, $reason);

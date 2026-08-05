@@ -98,9 +98,14 @@ class EasyCreditHttpClient
 
         $startTime       = microtime(true);
         $encodedResponse = $this->executeHttpRequest($httpMethod, $serviceUrl, $encodedData);
+        $statusCode      = curl_getinfo($this->_handle, CURLINFO_HTTP_CODE);
         $duration        = microtime(true) - $startTime;
         $response        = json_decode($encodedResponse);
-        $this->logging->logRestRequest($encodedData, $encodedResponse, $serviceUrl, $duration);
+        $this->logging->logRestRequest($encodedData, $encodedResponse, $serviceUrl, $duration, $statusCode);
+        if (!$response) {
+            $response = new \stdClass();
+        }
+        $response->statusCode = $statusCode;
         return $response;
     }
 

@@ -19,7 +19,7 @@ use Psr\Log\LoggerInterface;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20230714100000 extends AbstractMigration
+final class Version20260628100000 extends AbstractMigration
 {
     /** @throws Exception */
     public function __construct(Connection $connection, LoggerInterface $logger)
@@ -79,6 +79,13 @@ final class Version20230714100000 extends AbstractMigration
                 ["default" => "", "comment" => "status of order - delivery reported, in account ..."]
             );
         }
+        if (!$oxorder->hasColumn("ECREDISV3ORDER"))
+        {
+            $oxorder->addColumn("ECREDISV3ORDER",
+                Types::BOOLEAN,
+                ["default" => 0, "comment" => "order was created with v3 api"]
+            );
+        }
     }
 
     public function down(Schema $schema): void
@@ -90,5 +97,6 @@ final class Version20230714100000 extends AbstractMigration
         $oxorder->dropColumn("ECREDPAYMENTSTATUS");
         $oxorder->dropColumn("ECREDCONFIRMRESPONSE");
         $oxorder->dropColumn("ECREDDELIVERYSTATE");
+        $oxorder->dropColumn("ECREDISV3ORDER");
     }
 }
