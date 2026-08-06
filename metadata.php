@@ -88,7 +88,7 @@ $aModule = [
             'group' => 'EasyCreditApi',
             'name'  => 'oxpsECDealerInterfaceUrlV3',
             'type'  => 'str',
-            'value' => 'https://app.easycredit.de/ratenkauf/transaktionsverwaltung-ws/rest',
+            'value' => 'https://partner.easycredit-ratenkauf.de',
         ],
         [
             'group' => 'EasyCreditApi',
