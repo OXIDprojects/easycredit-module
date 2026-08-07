@@ -754,4 +754,13 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
     {
         return $this->getApiConfig()->getEasyCreditUseApiVersionV3(); 
     }
+
+    public function getPaymentList()
+    {
+        $paymentList = parent::getPaymentList();
+        if (!$this->isEasyCreditAPIV3()) {
+            unset($paymentList[$this->getApiConfig()->getEasyCreditInvoicePaymentId()]);
+        }
+        return $paymentList;
+    }
 }
