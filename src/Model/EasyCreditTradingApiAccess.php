@@ -94,6 +94,10 @@ class EasyCreditTradingApiAccess
                     $this->orderData = false;
                 }
             }
+            
+            if ($this->orderData === false) {
+                return false;
+            }
 
             if ($blUpdateLocalOrderState) {
                 if (EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3() && $this->order->oxorder__ecredisv3order->value == 1) {
