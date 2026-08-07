@@ -80,7 +80,8 @@ class EasyCreditWebServiceClient extends EasyCreditHttpClient
             }
         }
 
-        if (EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3()) {
+        $isv3Url = strpos($function, 'v3/') !== false;
+        if (EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3() && $isv3Url !== false) {
             // do nothing
         } else {
             $function .= $this->addQueryArgs($queryArgs);

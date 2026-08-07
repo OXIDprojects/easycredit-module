@@ -203,7 +203,8 @@ class EasyCreditApiConfig
     public function getBaseUrl($serviceName = null)
     {
         $credentials = $this->getCredentials();
-        if ($this->config["oxpsECUseV3"]) {
+        $isV3Url = strpos($serviceName, 'v3/') !== false;
+        if ($this->config["oxpsECUseV3"] && $isV3Url !== false) {
             $urlIdent = self::API_CONFIG_CREDENTIAL_BASE_URL_V3;
             if ($serviceName) {
                 $service = $this->getService($serviceName);
