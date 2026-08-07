@@ -271,7 +271,7 @@ class EasyCreditExampleCalculation extends WidgetController
     }
     
     protected function getInstallmentPlanV3($response) {
-        $cheapestPlan = $response->installmentPlans[0]->plans[19];
+        $cheapestPlan = $response->installmentPlans[0]->plans[array_key_last($response->installmentPlans[0]->plans)];
         $return = new StdClass();
         $return->anzahlRaten = $cheapestPlan->numberOfInstallments;
         $return->betragRate = $cheapestPlan->installment;
