@@ -1,7 +1,7 @@
 {% if oView.getEasyCreditUseApiVersionV3() %}
         <div>
             <easycredit-widget amount="{{ oView.getPriceV3() }}" webshop-id="{{ oView.getEasyCreditWebShopId() }}" />
-        <div>
+        </div>
 {% else %}
     {% if oView.isAjax() %}
         {% if oView.hasExampleCalculation() %}
