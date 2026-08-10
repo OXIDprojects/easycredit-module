@@ -278,4 +278,26 @@ class EasyCreditExampleCalculation extends WidgetController
         $return->gesamtsumme = $cheapestPlan->totalValue;
         return $return;
     }
+    
+    public function getEasyCreditWebShopId() {
+        return $this->getDic()->getApiConfig()->getWebShopId();
+    }
+
+    public function getEasyCreditUseApiVersionV3() {
+        return $this->getDic()->getApiConfig()->getEasyCreditUseApiVersionV3();
+    }
+
+    /**
+     * Returns the price relevant for the example calculation.
+     *
+     * @return Price
+     * @throws SystemComponentException
+     */
+    public function getPriceV3()
+    {
+        $test = $this->getBasket()->getPrice()->getBruttoPrice();
+        return $test;
+    }
+    
+    
 }
