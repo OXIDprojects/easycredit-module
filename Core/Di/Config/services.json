@@ -58,5 +58,55 @@
     "httpMethod": "post",
     "restFunction": "/v2/transaktionen/%s/rueckabwicklung",
     "endpointtype": "haendlerinterface"
+  },
+  "v3_integrationcheck": {
+    "httpMethod": "post",
+    "restFunction": "/api/payment/v3/webshop/integrationcheck",
+    "endpointtype": "ratenkauf"
+  },
+  "v3_texte_zustimmung": {
+    "httpMethod": "post",
+    "restFunction": "/api/payment/v3/webshop/texte/%s",
+    "endpointtype": "ratenkauf"
+  },
+  "v3_vorgang": {
+    "httpMethod": "post",
+    "restFunction": "/api/payment/v3/transaction",
+    "endpointtype": "ratenkauf"
+  },
+  "v3_decision": {
+    "httpMethod": "get",
+    "restFunction": "/api/payment/v3/transaction/%s",
+    "endpointtype": "ratenkauf"
+  },
+  "v3_financialinformation": {
+    "httpMethod": "get",
+    "restFunction": "/api/payment/v3/transaction/%s",
+    "endpointtype": "ratenkauf"
+  },
+  "v3_modellrechnung_guenstigsterRatenplan": {
+    "httpMethod": "post",
+    "restFunction": "/api/ratenrechner/v3/webshop/%s/installmentplans",
+    "endpointtype": "ratenkauf"
+  },
+  "v3_bestaetigen": {
+    "httpMethod": "post",
+    "restFunction": "/api/payment/v3/transaction/%s/authorization",
+    "endpointtype": "ratenkauf"
+  },
+  "v3_delivery_state": {
+    "httpMethod": "get",
+    "restFunction": "/api/merchant/v3/transaction/%s",
+    "endpointtype": "haendlerinterface"
+  },
+  "v3_transaktionen_storno": {
+    "httpMethod": "post",
+    "restFunction": "/api/merchant/v3/transaction/%s/refund",
+    "endpointtype": "haendlerinterface"
+  },
+  "v3_delivery_report": {
+    "httpMethod": "post",
+    "restFunction": "/api/merchant/v3/transaction/%s/capture",
+    "endpointtype": "haendlerinterface"
   }
 }

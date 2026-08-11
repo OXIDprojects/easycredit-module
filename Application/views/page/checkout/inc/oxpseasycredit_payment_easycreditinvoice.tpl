@@ -1,10 +1,10 @@
-[{assign var="easyCreditInstallmentIsPossible" value=$oView->isEasyCreditInstallmentPossible() }]
+[{assign var="easyCreditInvoiceIsPossible" value=$oView->isEasyCreditInvoicePossible() }]
 [{assign var="isEasyCreditAPIV3" value=$oView->isEasyCreditAPIV3() }]
 <dl>
     <dt>
-        <input id="payment_[{$sPaymentID}]" type="radio" name="paymentid" value="[{$sPaymentID}]" [{if $oView->getCheckedPaymentId() == $paymentmethod->oxpayments__oxid->value && $easyCreditInstallmentIsPossible}]checked[{/if}][{if !$easyCreditInstallmentIsPossible}] disabled[{/if}]>
-        <label for="payment_[{$sPaymentID}]"[{if !$easyCreditIsPossible}] class="easycreditdisabled"[{/if}]><b>[{$paymentmethod->oxpayments__oxdesc->value}]</b></label>
-        [{if !$easyCreditInstallmentIsPossible}]
+        <input id="payment_[{$sPaymentID}]" type="radio" name="paymentid" value="[{$sPaymentID}]" [{if $oView->getCheckedPaymentId() == $paymentmethod->oxpayments__oxid->value && $easyCreditInvoiceIsPossible}]checked[{/if}][{if !$easyCreditInvoiceIsPossible}] disabled[{/if}]>
+        <label for="payment_[{$sPaymentID}]"[{if !$easyCreditInvoiceIsPossible}] class="easycreditdisabled"[{/if}]><b>[{$paymentmethod->oxpayments__oxdesc->value}]</b></label>
+        [{if !$easyCreditInvoiceIsPossible}]
             <div class="col-lg-offset-3">
                 <img class="payment-logo-easycredit" src="[{$oViewConf->getModuleUrl('oxpseasycredit')}]out/pictures/eclogo.png" alt="Easy Credit">
                 [{assign var="errorMsgs" value=$oView->getErrorMessages()}]
@@ -15,7 +15,7 @@
         [{/if}]
     </dt>
     <dd class="payment-option[{if $oView->getCheckedPaymentId() == $paymentmethod->oxpayments__oxid->value}]activePayment[{/if}]">
-        [{if $easyCreditInstallmentIsPossible}]
+        [{if $easyCreditInvoiceIsPossible}]
             <div class="col-lg-offset-3">
                 <img class="payment-logo-easycredit" src="[{$oViewConf->getModuleUrl('oxpseasycredit')}]out/pictures/eclogo.png" alt="Easy Credit">
             </div>
@@ -38,7 +38,7 @@
                 [{/if}]
             [{/block}]
 
-            [{block name="checkout_payment_easycreditagreement"}]
+            [{block name="checkout_payment_easycreditinvoiceagreement"}]
 
                 <div class="clearfix"></div>
 
@@ -69,28 +69,29 @@
                     <div class="col-lg-9 col-lg-offset-3 offset-lg-3">
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" name="easycreditagreement" id="easycredit_agreement" value=""> [{$oView->getInstallmentAgreementTxt()}]
-                                <div id="easycredit_agreement_error" style="display:none;" class="text-danger">[{oxmultilang ident="OXPS_EASY_CREDIT_AGREEMENT_ERROR" }]</div>
+                                <input type="checkbox" name="easycreditinvoiceagreement" id="easycredit_agreement" value=""> [{$oView->getInstallmentAgreementTxt()}]
+                                <div id="easycredit_invoice_agreement_error" style="display:none;" class="text-danger">[{oxmultilang ident="OXPS_EASY_CREDIT_AGREEMENT_ERROR" }]</div>
+                                <div id="is_easycredit_api_version_3" style="display:none;">{{ isEasyCreditAPIV3 }}</div>
                             </label>
                         </div>
                     </div>
                 </div>
 
-                [{capture assign="easycreditAgreementValidationJS"}]
+                [{capture assign="easycreditInvoiceAgreementValidationJS"}]
                     [{strip}]
                         $("#paymentNextStepBottom").click(function(event){
-                            $("#easycredit_agreement_error").hide();
+                            $("#easycredit_invoice_agreement_error").hide();
                             var success = true;
-                            if ( $('#easycredit_agreement').is(':visible') && $('#easycredit_agreement').is(':not(:checked)') )
+                            if ( $('#easycredit_invoice_agreement').is(':visible') && $('#easycredit_invoice_agreement').is(':not(:checked)') )
                             {
                                 event.preventDefault();
-                                $("#easycredit_agreement_error").show();
+                                $("#easycredit_invoice_agreement_error").show();
                             }
                             return true;
                         });
                     [{/strip}]
                 [{/capture}]
-                [{oxscript add=$easycreditAgreementValidationJS}]
+                [{oxscript add=$easycreditInvoiceAgreementValidationJS}]
 
             [{/block}]
         [{/if}]

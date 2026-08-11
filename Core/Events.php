@@ -28,30 +28,6 @@ use OxidEsales\Eshop\Core\Registry;
  */
 class Events
 {
-
-    /**
-     * Class constructor.
-     * Sets current module main data and loads the rest module info.
-     *
-     * Can see no reason for this
-    function __construct()
-    {
-        $sModuleId = 'oxpseasycredit';
-
-        $this->setModuleData(
-            array(
-                 'id'          => $sModuleId,
-                 'title'       => 'OXPS Easy Credit',
-                 'description' => 'OXPS Easy Credit Module',
-            )
-        );
-
-        $this->load($sModuleId);
-
-        Registry::set('oxpsEasyCreditModule', $this);
-    }*/
-
-
     /**
      * Module activation script.
      */
@@ -68,6 +44,54 @@ class Events
     public static function onDeactivate()
     {
         self::_dbEvent('uninstall.sql', 'Error deactivating module: ');
+    }
+
+    /**
+     * Handles saved module settings.
+     */
+    public static function onModuleSettingsSaved(): void
+    {
+        self::checkEasyCreditCredentials();
+    }
+
+    /**
+     * Handles saved module settings.
+     */
+    public static function checkEasyCreditCredentials(): void
+    {
+        $apiConfig = EasyCreditDicFactory::getDic()->getApiConfig();
+        if ($apiConfig->getEasyCreditUseApiVersionV3()) {
+
+            try {
+                $webServiceClient = EasyCreditWebServiceClientFactory::getWebServiceClient(
+                    EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V3_INTEGRATIONCHECK,
+                    EasyCreditDicFactory::getDic(),
+                    [],
+                    [],
+                    true
+                );
+                $testMessage = 'Ratenkauf Integration Check';
+                $response = $webServiceClient->executeJsonRequest(
+                    'POST',
+                    '/api/payment/v3/webshop/integrationcheck',
+                    ['message' => $testMessage]
+                );
+            } catch (\Exception $ex) {
+                EasyCreditDicFactory::getDic()->getLogging()->log($ex->getMessage());
+            }
+            if ($response && $response->message === $testMessage) {
+                // Do nothing
+            } else {
+                // StefTest: Translations
+                EasyCreditDicFactory::getDic()->getLogging()->log('EasyCredit credentials are not valid.');
+                Registry::getUtilsView()->addErrorToDisplay(
+                    oxNew(
+                        StandardException::class,
+                        'Die easyCredit Zugangsdaten konnten nicht erfolgreich geprüft werden. Bitte prüfen Sie Webshop-ID, Token und API-URL V3.'
+                    )
+                );
+            }
+        }
     }
 
     /**
@@ -97,7 +121,7 @@ class Events
     /**
      * Get translated string by the translation code.
      *
-     * @param string  $sCode
+     * @param string $sCode
      * @param boolean $blUseModulePrefix If True - adds the module translations prefix, if False - not.
      *
      * @return string
@@ -172,9 +196,9 @@ class Events
     protected static function _dbEvent($sSqlFile, $sFailureError = 'Operation failed: ')
     {
         try {
-            $oDb  = DatabaseProvider::getDb();
-            $sSql = file_get_contents(dirname(__FILE__) . '/../installments/' . (string) $sSqlFile);
-            $aSql = (array) explode(';', $sSql);
+            $oDb = DatabaseProvider::getDb();
+            $sSql = file_get_contents(dirname(__FILE__) . '/../../installments/' . (string)$sSqlFile);
+            $aSql = (array)explode(';', $sSql);
 
             foreach ($aSql as $sQuery) {
                 if (!empty($sQuery)) {
@@ -224,7 +248,7 @@ class Events
      */
     protected static function _clear($sFileName, $sFilePath)
     {
-        if (!in_array($sFileName, array('.', '..', '.gitkeep', '.htaccess'))) {
+        if (!in_array($sFileName, ['.', '..', '.gitkeep', '.htaccess'])) {
             if (is_file($sFilePath)) {
                 @unlink($sFilePath);
             } else {
@@ -303,7 +327,6 @@ class Events
 
     protected static function _dbEventShopSpecificSql($sql, $aShops, $sFailureError)
     {
-
         foreach ($aShops as $sShopId) {
             $sShopId = reset($sShopId);
             if (!$sShopId) {

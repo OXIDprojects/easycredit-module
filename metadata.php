@@ -64,10 +64,11 @@ $aModule = [
     ],
     'templates'   => [
         'page/checkout/inc/payment_easycreditinstallment.tpl' => 'oxps/easycredit/Application/views/page/checkout/inc/oxpseasycredit_payment_easycreditinstallment.tpl',
+        'page/checkout/inc/payment_easycreditinvoice.tpl'     => 'oxps/easycredit/Application/views/page/checkout/inc/oxpseasycredit_payment_easycreditinvoice.tpl',
         'oxpseasycredit_examplecalculation.tpl'               => 'oxps/easycredit/Application/views/widgets/oxpseasycredit_examplecalculation.tpl',
         'oxpseasycredit_examplecalculation_popup.tpl'         => 'oxps/easycredit/Application/views/widgets/oxpseasycredit_examplecalculation_popup.tpl',
         'oxpseasycredit_order_easycredit.tpl'                 => 'oxps/easycredit/Application/views/admin/tpl/oxpseasycredit_order_easycredit.tpl',
-        'easycredit_overview.tpl'                        => 'oxps/easycredit/Application/views/admin/tpl/easycredit_overview.tpl',
+        'easycredit_overview.tpl'                             => 'oxps/easycredit/Application/views/admin/tpl/easycredit_overview.tpl',
         'easycredit_overview_list.tpl'                        => 'oxps/easycredit/Application/views/admin/tpl/easycredit_overview_list.tpl',
         'easycredit_overview_main.tpl'                        => 'oxps/easycredit/Application/views/admin/tpl/easycredit_overview_main.tpl',
     ],
@@ -183,11 +184,15 @@ $aModule = [
             'block'    => 'admin_order_list_item',
             'file'     => 'Application/views/blocks/admin/oxpseasycredit_order_list_item.tpl',
         ],
-
         [
             'template' => 'order_main.tpl',
             'block'    => 'admin_order_main_form_details',
             'file'     => 'Application/views/blocks/admin/oxpseasycredit_order_main_form_details.tpl',
+        ],
+        [
+            'template' => 'layout/base.tpl',
+            'block'    => 'head_css',
+            'file'     => 'Application/views/blocks/layout/oxpseasycredit_base.tpl',
         ]
     ],
     'settings'    => [
@@ -205,6 +210,18 @@ $aModule = [
         ],
         [
             'group' => 'EasyCreditApi',
+            'name'  => 'oxpsECBaseUrlV3',
+            'type'  => 'str',
+            'value' => 'https://ratenkauf.easycredit.de',
+        ],
+        [
+            'group' => 'EasyCreditApi',
+            'name'  => 'oxpsECDealerInterfaceUrlV3',
+            'type'  => 'str',
+            'value' => 'https://partner.easycredit-ratenkauf.de',
+        ],
+        [
+            'group' => 'EasyCreditApi',
             'name'  => 'oxpsECWebshopId',
             'type'  => 'str',
             'value' => '',
@@ -212,6 +229,24 @@ $aModule = [
         [
             'group' => 'EasyCreditApi',
             'name'  => 'oxpsECWebshopToken',
+            'type'  => 'str',
+            'value' => '',
+        ],
+        [
+            'group' => 'EasyCreditApi',
+            'name'  => 'oxpsECUseV3',
+            'type'  => 'bool',
+            'value' => true,
+        ],
+        [
+            'group' => 'EasyCreditApi',
+            'name'  => 'oxpsECUseHMAC',
+            'type'  => 'bool',
+            'value' => false,
+        ],
+        [
+            'group' => 'EasyCreditApi',
+            'name'  => 'oxpsECHMACHeader',
             'type'  => 'str',
             'value' => '',
         ],
@@ -241,7 +276,7 @@ $aModule = [
         ],
         [
             'group' => 'EasyCreditExampleCalculation',
-            'name'  => 'oxpsECExampleUseOwnjQueryUI',
+            'name'  => 'oxpsECExampleUseOwnjQuery',
             'type'  => 'bool',
             'value' => true,
         ],

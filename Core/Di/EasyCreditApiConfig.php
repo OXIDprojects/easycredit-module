@@ -42,10 +42,15 @@ class EasyCreditApiConfig
 
     const API_CONFIG_CREDENTIALS = 'credentials';
     const API_CONFIG_CREDENTIAL_BASE_URL = 'oxpsEasyCreditWebshopBaseUrl';
+    const API_CONFIG_CREDENTIAL_BASE_URL_V3 = 'oxpsEasyCreditWebshopBaseUrlV3';
     const API_CONFIG_CREDENTIAL_APP_URL = 'oxpsEasyCreditDealerInterfaceUrl';
+    const API_CONFIG_CREDENTIAL_APP_URL_V3 = 'oxpsEasyCreditDealerInterfaceUrlV3';
     const API_CONFIG_CREDENTIAL_WEBSHOP_ID = 'oxpsECWebshopId';
     const API_CONFIG_CREDENTIAL_WEBSHOP_TOKEN = 'oxpsECWebshopToken';
     const API_CONFIG_LOG_ENABLED = 'oxpsEasyCreditLogEnabled';
+    const API_CONFIG_V3_ENABLED = 'oxpsECUseV3';
+    const API_CONFIG_HMAC_HEADER = 'oxpsECHMACHeader';
+    const API_CONFIG_HMAC_HEADER_ENABLED = 'oxpsECUseHMAC';
 
     const API_CONFIG_SERVICES = 'services';
     const API_CONFIG_SERVICE_HTTP_METHOD = 'httpMethod';
@@ -68,6 +73,17 @@ class EasyCreditApiConfig
     const API_CONFIG_SERVICE_NAME_V2_DELIVERY_STATE = 'v2_delivery_state';
     const API_CONFIG_SERVICE_NAME_V2_ORDER_OVERVIEW = 'v2_transaktionen_suchen';
     const API_CONFIG_SERVICE_NAME_V2_ORDER_REVERSAL = 'v2_transaktionen_storno';
+    
+    const API_CONFIG_SERVICE_NAME_V3_INTEGRATIONCHECK = 'v3_integrationcheck';
+    const API_CONFIG_SERVICE_NAME_V3_ZUSTIMMUNGSTEXTE = 'v3_texte_zustimmung';
+    const API_CONFIG_SERVICE_NAME_V3_VORGANG = 'v3_vorgang';
+    const API_CONFIG_SERVICE_NAME_V3_DECISION = 'v3_decision';
+    const API_CONFIG_SERVICE_NAME_V3_FINANCIAL_INFORMATION = 'v3_financialinformation';
+    const API_CONFIG_SERVICE_NAME_V3_BESTAETIGEN = 'v3_bestaetigen';
+    const API_CONFIG_SERVICE_NAME_V3_DELIVERY_STATE = 'v3_delivery_state';
+    const API_CONFIG_SERVICE_NAME_V3_ORDER_REVERSAL = 'v3_transaktionen_storno';
+    const API_CONFIG_SERVICE_NAME_V3_DELIVERY_REPORT = 'v3_delivery_report';
+    const API_CONFIG_SERVICE_NAME_V3_MODELLRECHNUNG_GUENSTIGSTER_RATENPLAN = 'v3_modellrechnung_guenstigsterRatenplan';
 
     const API_CONFIG_SERVICE_REST_ARGUMENT_WEBSHOP_ID = 'webshopId';
 
@@ -75,6 +91,7 @@ class EasyCreditApiConfig
     const API_CONFIG_SERVICE_REST_ARGUMENT_FINANZIERUNGSBETRAG = 'finanzierungsbetrag';
 
     const API_REDIRECT_URL = "https://ratenkauf.easycredit.de/ratenkauf/content/intern/einstieg.jsf?vorgangskennung=%s";
+    const API_REDIRECT_URL_V3 = "https://ratenkauf.easycredit.de/app/payment/%s/finanzierungsvorgaben";
 
     private $config;
 
@@ -166,21 +183,42 @@ class EasyCreditApiConfig
 
     public function getServiceRestFunctionArguments($serviceName)
     {
-        // TODO may be extend for other services?
-        switch ($serviceName) {
-            default:
-                return array(self::API_CONFIG_SERVICE_REST_ARGUMENT_WEBSHOP_ID => $this->getWebShopId());
+        if ($this->getEasyCreditUseApiVersionV3()) {
+            switch ($serviceName) {
+                case 'v3_texte_zustimmung':    
+                    return [self::API_CONFIG_SERVICE_REST_ARGUMENT_WEBSHOP_ID => $this->getWebShopId()];
+                default:
+                    return [];
+            }
+        } else {
+            // TODO may be extend for other services?
+            switch ($serviceName) {
+                default:
+                    return [self::API_CONFIG_SERVICE_REST_ARGUMENT_WEBSHOP_ID => $this->getWebShopId()];
+            }
         }
+        return [];
     }
 
     public function getBaseUrl($serviceName = null)
     {
         $credentials = $this->getCredentials();
-        $urlIdent = self::API_CONFIG_CREDENTIAL_BASE_URL;
-        if ($serviceName) {
-            $service = $this->getService($serviceName);
-            if($service[self::API_CONFIG_SERVICE_ENDPOINT_TYPE] == self::API_CONFIG_SERVICE_ENDPOINT_TYPE_DEALER_INTERFACE) {
-                $urlIdent = self::API_CONFIG_CREDENTIAL_APP_URL;
+        $isV3Url = strpos($serviceName, 'v3') !== false;
+        if ($this->config["oxpsECUseV3"] && $isV3Url !== false) {
+            $urlIdent = self::API_CONFIG_CREDENTIAL_BASE_URL_V3;
+            if ($serviceName) {
+                $service = $this->getService($serviceName);
+                if ($service[self::API_CONFIG_SERVICE_ENDPOINT_TYPE] == self::API_CONFIG_SERVICE_ENDPOINT_TYPE_DEALER_INTERFACE) {
+                    $urlIdent = self::API_CONFIG_CREDENTIAL_APP_URL_V3;
+                }
+            }
+        } else {
+            $urlIdent = self::API_CONFIG_CREDENTIAL_BASE_URL;
+            if ($serviceName) {
+                $service = $this->getService($serviceName);
+                if ($service[self::API_CONFIG_SERVICE_ENDPOINT_TYPE] == self::API_CONFIG_SERVICE_ENDPOINT_TYPE_DEALER_INTERFACE) {
+                    $urlIdent = self::API_CONFIG_CREDENTIAL_APP_URL;
+                }
             }
         }
         return $credentials[$urlIdent];
@@ -216,16 +254,48 @@ class EasyCreditApiConfig
 
     public function getRedirectUrl()
     {
-        return self::API_REDIRECT_URL;
+        if ($this->getEasyCreditUseApiVersionV3()) {
+            return self::API_REDIRECT_URL_V3;
+        } else {
+            return self::API_REDIRECT_URL;
+        }
     }
 
-    public function getEasyCreditInstalmentPaymentId()
+    /**
+     * @return string
+     */
+    public function getEasyCreditInstallmentPaymentId(): string
     {
-        return EasyCreditHelper::EASYCREDIT_PAYMENTID;
+        return EasyCreditHelper::EASYCREDIT_INSTALLMENT_PAYMENTID;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEasyCreditInvoicePaymentId(): string
+    {
+        return EasyCreditHelper::EASYCREDIT_INVOICE_PAYMENTID;
     }
 
     public function getEasyCreditModuleId()
     {
         return self::API_CONFIG_EASYCREDIT_MODULE_ID;
+    }
+
+    public function getEasyCreditUseApiVersionV3()
+    {
+        return $this->getApiConfigValue('oxpsECUseV3');
+    }
+
+    public function getEasyCreditUseHMAC()
+    {
+        $test = $this->getApiConfigValue('oxpsECUseHMAC');
+        return $this->getApiConfigValue('oxpsECUseHMAC');
+    }
+
+    public function getEasyCreditHMACHeader()
+    {
+        $test = $this->getApiConfigValue('oxpsECHMACHeader');
+        return $this->getApiConfigValue('oxpsECHMACHeader');
     }
 }

@@ -31,10 +31,9 @@ class EasyCreditSession extends EasyCreditSession_parent
      */
     public function setStorage($storage)
     {
-        if( empty($storage) ) {
+        if (empty($storage)) {
             $this->deleteVariable(self::API_CONFIG_STORAGE);
-        }
-        else {
+        } else {
             $this->setVariable(self::API_CONFIG_STORAGE, serialize($storage));
         }
     }
@@ -51,7 +50,7 @@ class EasyCreditSession extends EasyCreditSession_parent
             (string)$this->getVariable(self::API_CONFIG_STORAGE),
             ['allowed_classes' => [EasyCreditStorage::class]]
         );
-        if(!empty($storage) && $storage->hasExpired()) {
+        if (!empty($storage) && $storage->hasExpired()) {
             $this->clearStorage();
             $storage = null;
         }

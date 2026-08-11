@@ -36,13 +36,8 @@ class EasyCreditWebServiceClientFactory
      * @throws EasyCreditConfigException
      * @throws EasyCreditCurlException
      */
-    public static function getWebServiceClient(
-        $serviceName,
-        EasyCreditDic $dic,
-        array $additionalArguments = array(),
-        array $queryArguments = array(),
-        $addheaders = false
-    ) {
+    public static function getWebServiceClient($serviceName, EasyCreditDic $dic, array $additionalArguments = [], array $queryArguments = [], $addheaders = false)
+    {
         /** @var EasyCreditWebServiceClient $client */
         $client = oxNew(EasyCreditWebServiceClient::class);
 
@@ -67,12 +62,23 @@ class EasyCreditWebServiceClientFactory
             );
         }
 
-        if( $addheaders ) {
-            $headers = array(
-                "Content-Type: application/json;charset=UTF-8",
-                "tbk-rk-shop: " . $apiConfig->getWebshopId(),
-                "tbk-rk-token: " . $apiConfig->getWebShopToken()
-            );
+        if ($addheaders) {
+            if ($apiConfig->getEasyCreditUseApiVersionV3()) {
+                $headers = [
+                    'Authorization: Basic ' . base64_encode($apiConfig->getWebshopId() . ":" . $apiConfig->getWebShopToken()),
+                    'accept: application/problem+json',
+                    'Content-Type: application/json'
+                ];
+                if ($apiConfig->getEasyCreditUseHMAC() && !empty($apiConfig->getEasyCreditHMACHeader())) {
+                    $headers['Content-signature'] = 'hmacsha256=' . hash_hmac('sha256', json_encode($additionalArguments, JSON_PRETTY_PRINT), $apiConfig->getEasyCreditHMACHeader());
+                }
+            } else {
+                $headers = [
+                    "Content-Type: application/json;charset=UTF-8",
+                    "tbk-rk-shop: " . $apiConfig->getWebshopId(),
+                    "tbk-rk-token: " . $apiConfig->getWebShopToken(),
+                ];
+            }
             $client->setRequestHeaders($headers);
         }
 

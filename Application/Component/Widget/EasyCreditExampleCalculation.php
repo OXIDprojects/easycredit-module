@@ -141,16 +141,33 @@ class EasyCreditExampleCalculation extends WidgetController
         try {
             /** @var EasyCreditDic $dic */
             $dic = $this->getDic();
+            if (EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3()) {
+                $apiConfig = $dic->getApiConfig();
+                $articleData = $this->getBasketInfoV3();
 
-            $webServiceClient = EasyCreditWebServiceClientFactory::getWebServiceClient(
-                EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_MODELLRECHNUNG_GUENSTIGSTER_RATENPLAN,
-                $dic,
-                array(),
-                array(EasyCreditApiConfig::API_CONFIG_SERVICE_REST_ARGUMENT_FINANZIERUNGSBETRAG => $price->getBruttoPrice()));
-            return $webServiceClient->execute();
+                $webServiceClient = EasyCreditWebServiceClientFactory::getWebServiceClient(
+                    EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V3_MODELLRECHNUNG_GUENSTIGSTER_RATENPLAN,
+                    $dic,
+                    [$apiConfig->getWebShopId()],
+                    $articleData,
+                    true
+                );
+                $response = $webServiceClient->executeJsonRequest('POST', $webServiceClient->getFunction(), $articleData);
+                $plan = $this->getInstallmentPlanV3($response);
+                return $plan;
+            } else {
+                $webServiceClient = EasyCreditWebServiceClientFactory::getWebServiceClient(
+                    EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_MODELLRECHNUNG_GUENSTIGSTER_RATENPLAN,
+                    $dic,
+                    [],
+                    [EasyCreditApiConfig::API_CONFIG_SERVICE_REST_ARGUMENT_FINANZIERUNGSBETRAG => $price->getBruttoPrice()]);
+                return $webServiceClient->execute();
+            }
         } catch (\Exception $ex) {
             $this->getDic()->getLogging()->log($ex->getMessage());
         }
+
+        return false;
     }
 
     /**
@@ -196,4 +213,80 @@ class EasyCreditExampleCalculation extends WidgetController
     {
         return (Registry::getConfig()->getRequestParameter('ajax') == 1);
     }
+
+    /**
+     * Returns "warenkorbinfos"
+     *
+     * @return array
+     */
+    public function getBasketInfoV3()
+    {
+        $basketInfo = [];
+
+        $basketitemlist = $this->getBasket()->getBasketArticles();
+        $basketContents = $this->getBasket()->getContents();
+        if (empty($basketContents)) {
+            return $basketInfo;
+        }
+
+        foreach ($basketContents as $basketindex => $basketitem) {
+            $basketproduct = $basketitemlist[$basketindex];
+            $basketInfo[] = $this->getBasketPositionInfoV3($basketitem, $basketproduct);
+        }
+        // $return = ['articles' => $basketInfo];
+        $return = ['articles' => [['identifier' => 'Basket', 'price' => $this->getBasket()->getPrice()->getBruttoPrice()]]];
+        return $return;
+    }
+
+    /**
+     * Returns information about an certain basket position
+     *
+     * @param $basketitem BasketItem
+     * @param $basketproduct
+     *
+     * @return array
+     */
+    protected function getBasketPositionInfoV3($basketitem, $basketproduct)
+    {
+        $price = "";
+        $unitPrice = $basketitem->getUnitPrice();
+        if ($unitPrice) {
+            $price = $unitPrice->getPrice();
+        }
+            return [
+                    "identifier" => $basketitem->getTitle(),
+                    "price" => $price,
+            ];
+    }
+    
+    protected function getInstallmentPlanV3($response) {
+        $cheapestPlan = $response->installmentPlans[0]->plans[array_key_last($response->installmentPlans[0]->plans)];
+        $return = new \stdClass();
+        $return->anzahlRaten = $cheapestPlan->numberOfInstallments;
+        $return->betragRate = $cheapestPlan->installment;
+        $return->gesamtsumme = $cheapestPlan->totalValue;
+        return $return;
+    }
+    
+    public function getEasyCreditWebShopId() {
+        return $this->getDic()->getApiConfig()->getWebShopId();
+    }
+
+    public function getEasyCreditUseApiVersionV3() {
+        return $this->getDic()->getApiConfig()->getEasyCreditUseApiVersionV3();
+    }
+
+    /**
+     * Returns the price relevant for the example calculation.
+     *
+     * @return Price
+     * @throws SystemComponentException
+     */
+    public function getPriceV3()
+    {
+        $test = $this->getBasket()->getPrice()->getBruttoPrice();
+        return $test;
+    }
+    
+    
 }

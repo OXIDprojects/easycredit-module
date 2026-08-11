@@ -44,10 +44,9 @@ class EasyCreditBasket extends EasyCreditBasket_parent
      */
     public function getInterestsAmount()
     {
-        if ( EasyCreditHelper::isEasyCreditInstallmentById($this->getPaymentId())) {
-
+        if (EasyCreditHelper::isEasyCreditInstallmentById($this->getPaymentId() ?? '')) {
             $storage = $this->getDic()->getSession()->getStorage();
-            if( $storage ) {
+            if ($storage) {
                 return $storage->getInterestAmount();
             }
         }
@@ -75,7 +74,7 @@ class EasyCreditBasket extends EasyCreditBasket_parent
     public function setCost($sCostName, $oPrice = null)
     {
         parent::setCost($sCostName, $oPrice);
-        if(!$this->excludeInstalmentsCosts && $sCostName == "oxpayment") {
+        if (!$this->excludeInstalmentsCosts && $sCostName == "oxpayment") {
             $this->setCost('easycredit_interests', $this->calcInterestsCost());
         }
     }
@@ -85,8 +84,8 @@ class EasyCreditBasket extends EasyCreditBasket_parent
      *
      * @return Price
      */
-    public function calcInterestsCost() {
-
+    public function calcInterestsCost()
+    {
         /** @var $interestsPrice Price */
         $interestsPrice = oxNew(Price::class);
         if ($this->hasInterestsAmount()) {

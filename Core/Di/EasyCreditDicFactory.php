@@ -16,9 +16,7 @@ namespace OxidProfessionalServices\EasyCredit\Core\Di;
 
 use OxidEsales\Eshop\Core\Exception\SystemComponentException;
 use OxidEsales\Eshop\Core\Registry;
-use OxidProfessionalServices\EasyCredit\Application\Model\EasyCreditTradingApiAccess;
 use OxidProfessionalServices\EasyCredit\Core\CrossCutting\EasyCreditLogging;
-use OxidProfessionalServices\EasyCredit\Core\PayLoad\EasyCreditPayloadFactory;
 
 /**
  * Class DicFactory
@@ -39,7 +37,6 @@ class EasyCreditDicFactory
             EasyCreditDic::class,
             oxNew(EasyCreditDicSession::class, Registry::getSession()),
             oxNew(EasyCreditApiConfig::class, self::getApiConfigArray()),
-            oxNew(EasyCreditPayloadFactory::class),
             oxNew(EasyCreditLogging::class, self::getLoggingConfigArray()),
             oxNew(EasyCreditDicConfig::class, Registry::getConfig())
         );
@@ -52,16 +49,22 @@ class EasyCreditDicFactory
         $services = self::getServices();
         $validationSchemes = self::getValidationSchemes();
 
-        return array(
-            EasyCreditApiConfig::API_CONFIG_CREDENTIALS => array(
+        return [
+            EasyCreditApiConfig::API_CONFIG_CREDENTIALS => [
                 EasyCreditApiConfig::API_CONFIG_CREDENTIAL_BASE_URL      => $config->getConfigParam('oxpsECBaseUrl'),
                 EasyCreditApiConfig::API_CONFIG_CREDENTIAL_APP_URL       => $config->getConfigParam('oxpsECDealerInterfaceUrl'),
                 EasyCreditApiConfig::API_CONFIG_CREDENTIAL_WEBSHOP_ID    => $config->getConfigParam('oxpsECWebshopId'),
                 EasyCreditApiConfig::API_CONFIG_CREDENTIAL_WEBSHOP_TOKEN => $config->getConfigParam('oxpsECWebshopToken'),
-            ),
+                EasyCreditApiConfig::API_CONFIG_CREDENTIAL_BASE_URL_V3   => $config->getConfigParam('oxpsECBaseUrlV3'),
+                EasyCreditApiConfig::API_CONFIG_CREDENTIAL_APP_URL_V3    => $config->getConfigParam('oxpsECDealerInterfaceUrlV3'),
+            ],
             EasyCreditApiConfig::API_CONFIG_SERVICES => $services,
-            EasyCreditApiConfig::API_CONFIG_VALIDATION_SCHEMES => $validationSchemes
-        );
+            EasyCreditApiConfig::API_CONFIG_VALIDATION_SCHEMES => $validationSchemes,
+            EasyCreditApiConfig::API_CONFIG_V3_ENABLED => $config->getConfigParam('oxpsECUseV3'),
+            EasyCreditApiConfig::API_CONFIG_HMAC_HEADER_ENABLED => $config->getConfigParam('oxpsECUseHMAC'),
+            EasyCreditApiConfig::API_CONFIG_HMAC_HEADER =>$config->getConfigParam('oxpsECHMACHeader'),
+            
+        ];
     }
 
     private static function getLoggingConfigArray()

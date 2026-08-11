@@ -1,0 +1,2 @@
+[{$smarty.block.parent}]
+<script type="module" src="https://ratenkauf.easycredit.de/api/resource/webcomponents/v3/easycredit-components/easycredit-components.esm.js"></script>

@@ -1,2 +1,2 @@
-<col width="10%">
+<col width="15%">
 [{$smarty.block.parent}]

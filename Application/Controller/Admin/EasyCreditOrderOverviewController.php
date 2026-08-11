@@ -16,6 +16,7 @@ namespace OxidProfessionalServices\EasyCredit\Application\Controller\Admin;
 use OxidEsales\Eshop\Application\Model\Order;
 use OxidEsales\Eshop\Core\Field;
 use OxidProfessionalServices\EasyCredit\Application\Model\EasyCreditTradingApiAccess;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicFactory;
 
 /**
  * Class EasyCreditOrderOverviewController
@@ -108,7 +109,11 @@ class EasyCreditOrderOverviewController extends EasyCreditOrderOverviewControlle
         $tradingApiService->setOrderDeliveredState();
 
         $orderdata = $tradingApiService->getOrderData();
-        $state = $orderdata[0]->haendlerstatusV2;
+        if (EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3() && $this->order->oxorder__ecredisv3order->value == 1) {
+            $state = $orderdata->status;
+        } else {
+            $state = $orderdata[0]->haendlerstatusV2;
+        }
 
         $order = $this->loadOrder();
         $order->oxorder__ecreddeliverystate = new Field($state, Field::T_RAW);

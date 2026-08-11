@@ -44,5 +44,11 @@
       "fieldname": "tilgungsplanText",
       "required": true
     }
+  ],
+  "v3_integrationcheck": [
+    {
+      "fieldname": "message",
+      "required": true
+    }
   ]
 }

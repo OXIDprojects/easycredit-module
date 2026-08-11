@@ -29,7 +29,7 @@ class EasyCreditHttpClient
     /**
      * @var string[] Additional request headers.
      */
-    protected $_requestHeaders = array();
+    protected $_requestHeaders = [];
 
     /**
      * @var string Base url for the request.
@@ -98,9 +98,14 @@ class EasyCreditHttpClient
 
         $startTime       = microtime(true);
         $encodedResponse = $this->executeHttpRequest($httpMethod, $serviceUrl, $encodedData);
+        $statusCode      = curl_getinfo($this->_handle, CURLINFO_HTTP_CODE);
         $duration        = microtime(true) - $startTime;
         $response        = json_decode($encodedResponse);
-        $this->logging->logRestRequest($encodedData, $encodedResponse, $serviceUrl, $duration);
+        $this->logging->logRestRequest($encodedData, $encodedResponse, $serviceUrl, $duration, $statusCode);
+        if (!$response) {
+            $response = new \stdClass();
+        }
+        $response->statusCode = $statusCode;
         return $response;
     }
 
@@ -206,7 +211,7 @@ class EasyCreditHttpClient
     protected function setPostData($data)
     {
         if (!$data) {
-            $data = array();
+            $data = [];
         }
 
         curl_setopt($this->_handle, CURLOPT_POSTFIELDS, $data);

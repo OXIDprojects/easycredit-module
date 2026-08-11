@@ -29,16 +29,19 @@ use OxidProfessionalServices\EasyCredit\Core\Exception\EasyCreditException;
  */
 class EasyCreditTradingApiAccess
 {
-    const OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_LIEFERUNG_MELDEN            = 'LIEFERUNG_MELDEN';
+    const OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_LIEFERUNG_MELDEN = 'LIEFERUNG_MELDEN';
+    const OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_LIEFERUNG_MELDEN_V3 = 'REPORT_CAPTURE';
     const OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_LIEFERUNG_MELDEN_AUSLAUFEND = 'LIEFERUNG_MELDEN_AUSLAUFEND';
-    const OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_IN_ABRECHNUNG               = 'IN_ABRECHNUNG';
-    const OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_ABGERECHNET                 = 'ABGERECHNET';
-    const OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_AUSLAUFEND                  = 'AUSLAUFEND';
+    const OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_IN_ABRECHNUNG = 'IN_ABRECHNUNG';
+    const OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_ABGERECHNET = 'ABGERECHNET';
+    const OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_AUSLAUFEND = 'AUSLAUFEND';
 
     /**
      * @var Order|null
      */
     protected $order = null;
+
+    protected $orderData = null;
 
     /**
      * EasyCreditTradingApiAccess constructor. Set order object, if given
@@ -62,21 +65,65 @@ class EasyCreditTradingApiAccess
      */
     public function getOrderData($blUpdateLocalOrderState = false)
     {
-        $service  = $this->getService(
-            EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V2_DELIVERY_STATE,
-            EasyCreditDicFactory::getDic(),
-            [$this->order->oxorder__ecredfunctionalid->value],
-            [],
-            true
-        );
-        $response = $service->execute();
-        if ($blUpdateLocalOrderState) {
-            $state                                    = $response->ergebnisse[0]->haendlerstatusV2;
-            $this->order->oxorder__ecreddeliverystate = new Field($state, Field::T_RAW);
-            $this->order->save();
-        }
+        if ($this->orderData === null) {
+            if (EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3() && $this->order->oxorder__ecredisv3order->value == 1) {
+                $service = $this->getService(
+                    EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V3_DELIVERY_STATE,
+                    EasyCreditDicFactory::getDic(),
+                    [$this->order->oxorder__ecredfunctionalid->value],
+                    [],
+                    true
+                );
+                $response = $service->executeJsonRequest(
+                    $service->getHttpmethod(),
+                    $service->getFunction(),
+                    []);
+                if (!isset($response->orderDetails)) {
+                    $this->orderData = false;
+                }
+            } else {
+                $service = $this->getService(
+                    EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V2_DELIVERY_STATE,
+                    EasyCreditDicFactory::getDic(),
+                    [$this->order->oxorder__ecredfunctionalid->value],
+                    [],
+                    true
+                );
+                $response = $service->execute();
+                if (!isset($response->ergebnisse)) {
+                    $this->orderData = false;
+                }
+            }
+            
+            if ($this->orderData === false) {
+                return false;
+            }
 
-        return $response->ergebnisse;
+            if ($blUpdateLocalOrderState) {
+                if (EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3() && $this->order->oxorder__ecredisv3order->value == 1) {
+                    $state = $response->status;
+                } else {
+                    $state = $response->ergebnisse[0]->haendlerstatusV2;
+                }
+                $this->order->oxorder__ecreddeliverystate = new Field($state, Field::T_RAW);
+                $this->order->save();
+            }
+
+            if (EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3() && $this->order->oxorder__ecredisv3order->value == 1) {
+                // add additional information to response
+                $response->orderDetails->transactionId = $response->transactionId;
+                $response->orderDetails->status = $response->status;
+                $response->orderDetails->refundsTotalValue = $response->refundsTotalValue;
+                $response->orderDetails->creditAccountNumber = $response->creditAccountNumber;
+                $response->orderDetails->booking = $response->bookings;
+                $response->orderDetails->refundDetails = $response->refundDetails;
+                $this->orderData = $response->orderDetails;
+
+            } else {
+                $this->orderData = $response->ergebnisse;
+            }
+        }
+        return $this->orderData;
     }
 
     /**
@@ -92,12 +139,17 @@ class EasyCreditTradingApiAccess
     public function getOrderState($blUpdateLocalOrderState = false)
     {
         $state = $this->getOrderData($blUpdateLocalOrderState);
-        if (count($state)) {
-            $state = Registry::getLang()->translateString('OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_' . $state[0]->haendlerstatusV2);
+        if (EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3() && $this->order->oxorder__ecredisv3order->value == 1) {
+            if (!empty($state->status)) {
+                $state = Registry::getLang()->translateString('OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_V3_' . $state->status);
+            }
         } else {
-            $state = Registry::getLang()->translateString('OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_ERROR');
+            if (is_array($state) && !empty($state)) {
+                $state = Registry::getLang()->translateString('OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_' . $state[0]->haendlerstatusV2);
+            } else {
+                $state = Registry::getLang()->translateString('OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_ERROR');
+            }
         }
-
         return $state;
     }
 
@@ -111,13 +163,27 @@ class EasyCreditTradingApiAccess
      */
     public function setOrderDeliveredState()
     {
-        $service = $this->getService(
-            EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V2_DELIVERY_REPORT,
-            EasyCreditDicFactory::getDic(),
-            [$this->order->oxorder__ecredfunctionalid->value],
-            [],
-            true
-        );
+        if (EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3() && $this->order->oxorder__ecredisv3order->value == 1) {
+            $service = $this->getService(
+                EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V3_DELIVERY_REPORT,
+                EasyCreditDicFactory::getDic(),
+                [$this->order->oxorder__ecredfunctionalid->value],
+                [],
+                true
+            );
+            return $service->executeJsonRequest(
+                $service->getHttpmethod(),
+                $service->getFunction(),
+                ['trackingNumber' => $this->order->oxorder__oxtrackcode->value]);
+        } else {
+            $service = $this->getService(
+                EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V2_DELIVERY_REPORT,
+                EasyCreditDicFactory::getDic(),
+                [$this->order->oxorder__ecredfunctionalid->value],
+                [],
+                true
+            );
+        }
         return $service->execute();
     }
 
@@ -127,24 +193,18 @@ class EasyCreditTradingApiAccess
      *
      * @param               $serviceName
      * @param EasyCreditDic $dic
-     * @param array         $additionalArguments
-     * @param array         $queryArguments
-     * @param false         $addheaders
+     * @param array $additionalArguments
+     * @param array $queryArguments
+     * @param false $addheaders
      *
      * @return \OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditWebServiceClient
      * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
      * @throws \OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditCurlException
      * @throws \OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditConfigException
      */
-    protected function getService(
-        $serviceName,
-        EasyCreditDic $dic,
-        array $additionalArguments = array(),
-        array $queryArguments = array(),
-        $addheaders = false
-    ) {
-        return EasyCreditWebServiceClientFactory::getWebServiceClient($serviceName, $dic, $additionalArguments,
-                                                                      $queryArguments, $addheaders);
+    protected function getService($serviceName, EasyCreditDic $dic, array $additionalArguments = [], array $queryArguments = [], $addheaders = false)
+    {
+        return EasyCreditWebServiceClientFactory::getWebServiceClient($serviceName, $dic, $additionalArguments, $queryArguments, $addheaders);
     }
 
     /**
@@ -159,18 +219,32 @@ class EasyCreditTradingApiAccess
      */
     public function sendReversal($amount, $reason)
     {
-        $service  = $this->getService(
-            EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V2_ORDER_REVERSAL,
-            EasyCreditDicFactory::getDic(),
-            [$this->order->getFieldData('ecredfunctionalid')],
-            [],
-            true
-        );
-        $response = $service->execute([
-                                          'datum'  => date('Y-m-d'),
-                                          'grund'  => $reason,
-                                          'betrag' => $amount,
-                                      ]);
+        if (EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3() && $this->order->oxorder__ecredisv3order->value == 1) {
+            $service = $this->getService(
+                EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V3_ORDER_REVERSAL,
+                EasyCreditDicFactory::getDic(),
+                [$this->order->getFieldData('ecredfunctionalid')],
+                [],
+                true
+            );
+            $response = $service->execute([
+                'bookingId' => $reason,
+                'value' => $amount,
+            ]);
+        } else {
+            $service = $this->getService(
+                EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V2_ORDER_REVERSAL,
+                EasyCreditDicFactory::getDic(),
+                [$this->order->getFieldData('ecredfunctionalid')],
+                [],
+                true
+            );
+            $response = $service->execute([
+                'datum' => date('Y-m-d'),
+                'grund' => $reason,
+                'betrag' => $amount,
+            ]);
+        }
     }
 
     /**
@@ -188,7 +262,7 @@ class EasyCreditTradingApiAccess
      */
     public function loadOrders($from, $to, $state)
     {
-        $service  = $this->getService(
+        $service = $this->getService(
             EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V2_ORDER_OVERVIEW,
             EasyCreditDicFactory::getDic(),
             [],
@@ -197,9 +271,7 @@ class EasyCreditTradingApiAccess
         );
         $response = $service->execute();
 
-        $result = $this->assignShopOrderData($response->ergebnisse);
-
-        return $result;
+        return $this->assignShopOrderData($response->ergebnisse);
     }
 
     /**
@@ -214,7 +286,7 @@ class EasyCreditTradingApiAccess
         $results = [];
         foreach ($ecorderdata as $dataset) {
             $functionalId = $dataset->vorgangskennungFachlich;
-            $order        = oxNew(Order::class);
+            $order = oxNew(Order::class);
             try {
                 $order->loadByECFunctionalId($functionalId);
             } catch (EasyCreditException $e) {
@@ -222,7 +294,7 @@ class EasyCreditTradingApiAccess
                 continue;
             }
             $dataset->oxorderid = $order->getId();
-            $results[]          = $dataset;
+            $results[] = $dataset;
         }
 
         return $results;

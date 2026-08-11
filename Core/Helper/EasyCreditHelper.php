@@ -27,7 +27,9 @@ use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDic;
 class EasyCreditHelper
 {
     /** string paymentid */
-    const EASYCREDIT_PAYMENTID = "easycreditinstallment";
+    public const EASYCREDIT_INSTALLMENT_PAYMENTID = "easycreditinstallment";
+    
+    public const EASYCREDIT_INVOICE_PAYMENTID = "easycreditinvoice";
 
     /**
      * Returns the price relevant for the example calculation.
@@ -46,9 +48,9 @@ class EasyCreditHelper
             if ($article->load($articleId)) {
                 return $article->getPrice();
             }
-        } else {
-            return $basket->getPrice();
         }
+
+        return $basket->getPrice();
     }
 
     /**
@@ -122,6 +124,18 @@ class EasyCreditHelper
      */
     public static function isEasyCreditInstallmentById($paymentId)
     {
-        return $paymentId == self::EASYCREDIT_PAYMENTID;
+        return $paymentId == self::EASYCREDIT_INSTALLMENT_PAYMENTID;
+    }
+
+    /**
+     * Returns true if payment is ratenkauf by easyCredit
+     *
+     * @param $paymentId string
+     *
+     * @return bool
+     */
+    public static function isEasyCreditInvoiceById(string $paymentId): bool
+    {
+        return $paymentId === self::EASYCREDIT_INVOICE_PAYMENTID;
     }
 }
