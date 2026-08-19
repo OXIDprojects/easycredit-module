@@ -124,18 +124,6 @@ class EasyCreditHelper
      */
     public static function isEasyCreditInstallmentById(string $paymentId): bool
     {
-        return $paymentId === self::EASYCREDIT_INSTALLMENT_PAYMENTID;
-    }
-
-    /**
-     * Returns true if payment is ratenkauf by easyCredit
-     *
-     * @param $paymentId string
-     *
-     * @return bool
-     */
-    public static function isEasyCreditInvoiceById(string $paymentId): bool
-    {
-        return $paymentId === self::EASYCREDIT_INVOICE_PAYMENTID;
+        return $paymentId == self::EASYCREDIT_INSTALLMENT_PAYMENTID;
     }
 }

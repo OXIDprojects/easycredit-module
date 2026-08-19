@@ -107,7 +107,7 @@ class EasyCreditDispatcherController extends FrontendController
             $this->handleException($ex);
         }
         return "payment";
-    }    
+    }
 
     /**
      * Will be called by easyCredit
@@ -431,8 +431,8 @@ class EasyCreditDispatcherController extends FrontendController
      */
     protected function setEasyCreditInstallmentAsCurrentPayment()
     {
-        $paymentId = $this->getApiConfig()->getEasyCreditInstallmentPaymentId();
-        Registry::getSession()->setVariable('paymentid', $paymentId);
+        $paymentId = $this->getApiConfig()->getEasyCreditInstalmentPaymentId();
+        $this->getSession()->setVariable('paymentid', $paymentId);
         $this->getBasket()->setPayment($paymentId);
     }
 
@@ -550,7 +550,7 @@ class EasyCreditDispatcherController extends FrontendController
     /**
      * Calls webservice endpoint
      *
-     * @return string response of webservice
+     * @return \stdClass response of webservice
      * @throws \Exception if something happened
      * @var array $queryArguments query args
      * @var array $data postdata

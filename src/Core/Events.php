@@ -179,7 +179,7 @@ class Events
      */
     protected static function _getFolderToClear($sClearFolderPath = '')
     {
-        $sTempFolderPath = (string)Registry::getConfig()->getConfigParam('sCompileDir');
+        $sTempFolderPath = (string) Registry::getConfig()->getConfigParam('sCompileDir');
 
         if (!empty($sClearFolderPath) and (strpos($sClearFolderPath, $sTempFolderPath) !== false)) {
             $sFolderPath = $sClearFolderPath;

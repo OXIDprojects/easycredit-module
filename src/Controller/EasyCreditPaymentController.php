@@ -592,7 +592,7 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
     /**
      * Calls webservice endpoint
      *
-     * @return string response
+     * @return \stdClass response
      * @throws \Exception if something happened
      * @var array $queryArguments query args
      * @var string $endpoint name of the service

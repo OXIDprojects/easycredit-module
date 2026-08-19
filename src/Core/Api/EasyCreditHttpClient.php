@@ -15,6 +15,7 @@ namespace OxidSolutionCatalysts\EasyCredit\Core\Api;
 
 use OxidEsales\Eshop\Core\Exception\SystemComponentException;
 use OxidSolutionCatalysts\EasyCredit\Core\CrossCutting\EasyCreditLogging;
+use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDicFactory;
 
 /**
  * Class HttpClient: Client for the easycredit-module webservice.
@@ -133,7 +134,7 @@ class EasyCreditHttpClient
         $httpMethod = strtoupper($httpMethod);
         $this->handleHttpMethod($httpMethod, $data);
 
-        $this->addHeaders();
+        $this->addHeaders($data);
 
         $response = $this->curl_exec();
         $this->close();
@@ -158,8 +159,17 @@ class EasyCreditHttpClient
      *
      * @throws EasyCreditCurlException
      */
-    protected function addHeaders()
+    protected function addHeaders($data = null)
     {
+        $apiConfig = EasyCreditDicFactory::getDic()->getApiConfig();
+        $jsonRaw = trim($data, '"');
+        $jsonWihoutWhitespaces = str_replace(["\n", "\t"], ['', ''], $jsonRaw);
+        $json = $jsonWihoutWhitespaces.$apiConfig->getEasyCreditHMACHeader();
+
+        if ($apiConfig->getEasyCreditUseApiVersionV3() &&
+            !empty($apiConfig->getEasyCreditHMACHeader())) {
+            $this->_requestHeaders[] = 'Content-signature: sha256=' . hash('sha256', $json);
+        }
         curl_setopt($this->_handle, CURLOPT_HTTPHEADER, $this->_requestHeaders);
         $this->catchRequestError();
     }
