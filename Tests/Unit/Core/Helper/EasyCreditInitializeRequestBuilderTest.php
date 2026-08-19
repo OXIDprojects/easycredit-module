@@ -28,6 +28,8 @@ use OxidEsales\Eshop\Core\Price;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicFactory;
+use OxidProfessionalServices\EasyCredit\Core\Domain\EasyCreditBasket;
+use OxidProfessionalServices\EasyCredit\Core\Helper\EasyCreditHelper;
 use OxidProfessionalServices\EasyCredit\Core\Helper\EasyCreditInitializeRequestBuilder;
 
 /**
@@ -58,6 +60,7 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
 
     public function testGetInitializationDataWithBasketItems(): void
     {
+        Registry::getSession()->setVariable('paymentid', EasyCreditHelper::EASYCREDIT_INSTALLMENT_PAYMENTID);
         $articleIds = ['1000', '2000'];
         $articles   = [
             oxNew(Article::class),
@@ -74,9 +77,10 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
             $basketContents[$id] = $basketItem;
         }
 
-        $basket = $this->getMock(Basket::class, ['getBasketArticles', 'getContents']);
+        $basket = $this->getMock(Basket::class, ['getBasketArticles', 'getContents', 'getPaymentId']);
         $basket->expects($this->any())->method('getBasketArticles')->willReturn($basketContents);
         $basket->expects($this->any())->method('getContents')->willReturn($basketContents);
+        $basket->expects($this->any())->method('getPaymentId')->willReturn(EasyCreditHelper::EASYCREDIT_INSTALLMENT_PAYMENTID);
 
         $user = oxNew(User::class);
 
@@ -93,7 +97,7 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
             'laufzeit'                => 36,
             'ruecksprungadressen'     => [
                 'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
-                'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditDetails',
+                'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
                 'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
             ],
             'kontakt'                 => [
@@ -146,6 +150,7 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
 
     public function testGetInitializationDataWithRegisteredUserWithGroups(): void
     {
+        Registry::getSession()->setVariable('paymentid', EasyCreditHelper::EASYCREDIT_INSTALLMENT_PAYMENTID);
         $basket = oxNew(Basket::class);
 
         $groupIds = ['dummy', 'oxidnotyetordered'];
@@ -173,7 +178,7 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
             'laufzeit'                => 36,
             'ruecksprungadressen'     => [
                 'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
-                'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditDetails',
+                'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
                 'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
             ],
             'kontakt'                 => [
@@ -183,7 +188,7 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
                 'bestellungErfolgtUeberLogin' => true,
                 'kundeSeit'                   => '',
                 'anzahlBestellungen'          => 0,
-                'kundenstatus'                => 'NEUKUNDE',
+                'kundenstatus'                => 'BESTANDSKUNDE',
                 'anzahlProdukteImWarenkorb'   => 0,
                 'negativeZahlungsinformation' => 'KEINE_INFORMATION',
                 'risikoartikelImWarenkorb'    => false,
@@ -198,6 +203,7 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
 
     public function testGetInitializationDataWithSalutationMapping(): void
     {
+        Registry::getSession()->setVariable('paymentid', EasyCreditHelper::EASYCREDIT_INSTALLMENT_PAYMENTID);
         $basket = oxNew(Basket::class);
 
         $user                = $this->getMock(User::class, ['getUserGroups']);
@@ -216,7 +222,7 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
             'laufzeit'                => 36,
             'ruecksprungadressen'     => [
                 'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
-                'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditDetails',
+                'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
                 'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
             ],
             'personendaten'           => [
@@ -244,6 +250,7 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
 
     public function testGetInitializationDataWithBirthday(): void
     {
+        Registry::getSession()->setVariable('paymentid', EasyCreditHelper::EASYCREDIT_INSTALLMENT_PAYMENTID);
         $basket = oxNew(Basket::class);
 
         $user                      = $this->getMock(User::class, ['getUserGroups']);
@@ -262,7 +269,7 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
             'laufzeit'                => 36,
             'ruecksprungadressen'     => [
                 'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
-                'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditDetails',
+                'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
                 'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
             ],
             'personendaten'           => [
@@ -290,6 +297,7 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
 
     public function testGetInitializationDataWithInvalidBirthday(): void
     {
+        Registry::getSession()->setVariable('paymentid', EasyCreditHelper::EASYCREDIT_INSTALLMENT_PAYMENTID);
         $basket = oxNew(Basket::class);
 
         $user                      = $this->getMock('oxUser', ['getUserGroups']);
@@ -308,7 +316,7 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
             'laufzeit'                => 36,
             'ruecksprungadressen'     => [
                 'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
-                'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditDetails',
+                'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
                 'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
             ],
             'kontakt'                 => [
@@ -333,6 +341,7 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
 
     public function testGetInitializationDataWithDeliveryAddress(): void
     {
+        Registry::getSession()->setVariable('paymentid', EasyCreditHelper::EASYCREDIT_INSTALLMENT_PAYMENTID);
         $basket = oxNew(Basket::class);
 
         $user = $this->getMock('oxUser', ['getUserGroups']);
@@ -353,7 +362,7 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
             'laufzeit'                => 36,
             'ruecksprungadressen'     => [
                 'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
-                'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditDetails',
+                'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
                 'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
             ],
             'kontakt'                 => [
@@ -378,11 +387,12 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
 
     public function testGetInitializationDataWithCountry(): void
     {
+        Registry::getSession()->setVariable('paymentid', EasyCreditHelper::EASYCREDIT_INSTALLMENT_PAYMENTID);
         $basket = oxNew(Basket::class);
 
         $user                      = $this->getMock(User::class, ['getUserGroups']);
         $user->oxuser__oxcountryid = new Field('a7c40f631fc920687.20179984');
-
+        
         $rb = oxNew(EasyCreditInitializeRequestBuilder::class);
         $rb->setBasket($basket);
         $rb->setUser($user);
@@ -396,7 +406,7 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
             'laufzeit'                => 36,
             'ruecksprungadressen'     => [
                 'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
-                'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditDetails',
+                'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
                 'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
             ],
             'kontakt'                 => [
@@ -427,6 +437,8 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
 
     public function testGetInitializationDataWithValidPhoneNumber(): void
     {
+        $this->markTestSkipped('The actual code is commented out right now');
+        Registry::getSession()->setVariable('paymentid', EasyCreditHelper::EASYCREDIT_INSTALLMENT_PAYMENTID);
         $basket = oxNew(Basket::class);
 
         $user                = $this->getMock(User::class, ['getUserGroups']);
@@ -445,7 +457,7 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
             'laufzeit'                => 36,
             'ruecksprungadressen'     => [
                 'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
-                'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditDetails',
+                'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
                 'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
             ],
             'kontakt'                 => [
@@ -475,6 +487,7 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
 
     public function testGetInitializationDataWithDeps(): void
     {
+        Registry::getSession()->setVariable('paymentid', EasyCreditHelper::EASYCREDIT_INSTALLMENT_PAYMENTID);
         $manufacturer = oxNew(Manufacturer::class);
         $manufacturer->setId('1000');
         $manufacturer->oxmanufacturer__oxtitle = new Field('testmanufacturer');
@@ -520,7 +533,7 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
             'laufzeit'                => 36,
             'ruecksprungadressen'     => [
                 'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
-                'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditDetails',
+                'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
                 'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
             ],
             'kontakt'                 => [

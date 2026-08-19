@@ -48,7 +48,7 @@ class EasyCreditLoggingTest extends UnitTestCase
         $logging = oxNew(EasyCreditLogging::class, $logConfig);
 
         // 377 characters output expected
-        $this->assertEquals(377, $logging->logRestRequest('TestRequest', 'TestResponse', 'https://test.url', 350));
+        $this->assertEquals(380, $logging->logRestRequest('TestRequest', 'TestResponse', 'https://test.url', 350, 200));
     }
 
     public function testLogRequestDisabled()
@@ -61,7 +61,7 @@ class EasyCreditLoggingTest extends UnitTestCase
         /** @var EasyCreditLogging $logging */
         $logging = oxNew(EasyCreditLogging::class, $logConfig);
 
-        // 377 characters output expected
-        $this->assertNull($logging->logRestRequest('TestRequest', 'TestResponse', 'https://test.url', 350));
+        // 380 characters output expected
+        $this->assertNull($logging->logRestRequest('TestRequest', 'TestResponse', 'https://test.url', 350, 200));
     }
 }

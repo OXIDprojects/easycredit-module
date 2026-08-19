@@ -57,7 +57,7 @@ class EasyCreditBasketTest extends UnitTestCase
     public function testGetInterestsAmount(): void
     {
         $session = oxNew(EasyCreditSession::class);
-        $session->setVariable('paymentid', EasyCreditHelper::EASYCREDIT_PAYMENTID);
+        $session->setVariable('paymentid', EasyCreditHelper::EASYCREDIT_INSTALLMENT_PAYMENTID);
 
         $dic = $this->getMock(
             EasyCreditDic::class,
@@ -79,7 +79,7 @@ class EasyCreditBasketTest extends UnitTestCase
     public function testGetInterestsAmountNoStorage(): void
     {
         $session = oxNew(EasyCreditSession::class);
-        $session->setVariable('paymentid', EasyCreditHelper::EASYCREDIT_PAYMENTID);
+        $session->setVariable('paymentid', EasyCreditHelper::EASYCREDIT_INSTALLMENT_PAYMENTID);
 
         $dic = $this->getMock(
             EasyCreditDic::class,
@@ -136,7 +136,7 @@ class EasyCreditBasketTest extends UnitTestCase
     public function testCalcInterestsCost(): void
     {
         $session = oxNew(EasyCreditSession::class);
-        $session->setVariable('paymentid', EasyCreditHelper::EASYCREDIT_PAYMENTID);
+        $session->setVariable('paymentid', EasyCreditHelper::EASYCREDIT_INSTALLMENT_PAYMENTID);
 
         $dic = $this->getMock(
             EasyCreditDic::class,

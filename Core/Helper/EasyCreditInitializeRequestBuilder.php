@@ -679,7 +679,6 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
     {
         $customer = $this->getUser();
         if (EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3()) {
-            // StefTest
             $contacts = [
                 'email' => $customer->oxuser__oxusername->value,
                 // 'mobilePhoneNumber' => '',
@@ -689,6 +688,8 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
         } else {
             $contacts = [
                 'email' => $customer->oxuser__oxusername->value,
+                // 'skipMobilePhoneNumberCheck' => true,
+                // 'phoneNumber' => $customer->oxuser__oxfon->value,
             ];
         }
         /* EasyCredit redirect page is buggy with the telephone number at the moment - don't send a phone number and let the customer enter it on the EC site

@@ -34,7 +34,9 @@ class EasyCreditApiConfigTest extends UnitTestCase
         $credentials = $apiConfigArray[EasyCreditApiConfig::API_CONFIG_CREDENTIALS];
         $credentials[EasyCreditApiConfig::API_CONFIG_CREDENTIAL_WEBSHOP_ID] = self::WEBSHOP_ID;
         $credentials[EasyCreditApiConfig::API_CONFIG_CREDENTIAL_WEBSHOP_TOKEN] = self::WEBSHOP_TOKEN;
+        $credentials[EasyCreditApiConfig::API_CONFIG_V3_ENABLED] = false;
 
+        $apiConfigArray[EasyCreditApiConfig::API_CONFIG_V3_ENABLED] = false;
         $apiConfigArray[EasyCreditApiConfig::API_CONFIG_CREDENTIALS] = $credentials;
 
         /** @var EasyCreditDicFactory $apiConfig */
@@ -120,13 +122,91 @@ class EasyCreditApiConfigTest extends UnitTestCase
         $this->assertEquals('https://ratenkauf.easycredit.de/ratenkauf/content/intern/einstieg.jsf?vorgangskennung=%s', $this->apiConfig->getRedirectUrl());
     }
 
-    public function testGetEasyCreditInstalmentPaymentId()
+    public function testGetEasyCreditInstallmentPaymentId()
     {
-        $this->assertEquals('easycreditinstallment', $this->apiConfig->getEasyCreditInstalmentPaymentId());
+        $this->assertEquals('easycreditinstallment', $this->apiConfig->getEasyCreditInstallmentPaymentId());
     }
 
     public function testGetEasyCreditModuleId()
     {
         $this->assertEquals('oxpseasycredit', $this->apiConfig->getEasyCreditModuleId());
+    }
+
+    public function testGetRedirectUrlForApiVersionV3()
+    {
+        $apiConfigArray = EasyCreditDicFactory::getApiConfigArray();
+        $apiConfigArray[EasyCreditApiConfig::API_CONFIG_V3_ENABLED] = true;
+
+        $apiConfig = oxNew(EasyCreditApiConfig::class, $apiConfigArray);
+
+        $this->assertEquals(
+            'https://ratenkauf.easycredit.de/app/payment/%s/finanzierungsvorgaben',
+            $apiConfig->getRedirectUrl()
+        );
+    }
+
+    public function testGetBaseUrlForApiVersionV3RatenkaufEndpoint()
+    {
+        $apiConfigArray = EasyCreditDicFactory::getApiConfigArray();
+        $apiConfigArray[EasyCreditApiConfig::API_CONFIG_V3_ENABLED] = true;
+        $apiConfigArray[EasyCreditApiConfig::API_CONFIG_CREDENTIALS][EasyCreditApiConfig::API_CONFIG_CREDENTIAL_BASE_URL_V3] = 'https://ratenkauf-v3.example.test';
+
+        $apiConfig = oxNew(EasyCreditApiConfig::class, $apiConfigArray);
+
+        $this->assertEquals(
+            'https://ratenkauf-v3.example.test',
+            $apiConfig->getBaseUrl(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V3_VORGANG)
+        );
+    }
+
+    public function testGetBaseUrlForApiVersionV3DealerInterfaceEndpoint()
+    {
+        $apiConfigArray = EasyCreditDicFactory::getApiConfigArray();
+        $apiConfigArray[EasyCreditApiConfig::API_CONFIG_V3_ENABLED] = true;
+        $apiConfigArray[EasyCreditApiConfig::API_CONFIG_CREDENTIALS][EasyCreditApiConfig::API_CONFIG_CREDENTIAL_APP_URL_V3] = 'https://dealer-v3.example.test';
+
+        $apiConfig = oxNew(EasyCreditApiConfig::class, $apiConfigArray);
+
+        $this->assertEquals(
+            'https://dealer-v3.example.test',
+            $apiConfig->getBaseUrl(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V3_DELIVERY_STATE)
+        );
+    }
+
+    public function testGetServiceRestFunctionArgumentsForApiVersionV3ConsentTexts()
+    {
+        $apiConfigArray = EasyCreditDicFactory::getApiConfigArray();
+        $apiConfigArray[EasyCreditApiConfig::API_CONFIG_V3_ENABLED] = true;
+        $apiConfigArray[EasyCreditApiConfig::API_CONFIG_CREDENTIALS][EasyCreditApiConfig::API_CONFIG_CREDENTIAL_WEBSHOP_ID] = self::WEBSHOP_ID;
+
+        $apiConfig = oxNew(EasyCreditApiConfig::class, $apiConfigArray);
+
+        $expected = [EasyCreditApiConfig::API_CONFIG_SERVICE_REST_ARGUMENT_WEBSHOP_ID => self::WEBSHOP_ID];
+
+        $this->assertEquals(
+            $expected,
+            $apiConfig->getServiceRestFunctionArguments(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V3_ZUSTIMMUNGSTEXTE)
+        );
+    }
+
+    public function testGetServiceRestFunctionArgumentsForApiVersionV3DefaultEmpty()
+    {
+        $apiConfigArray = EasyCreditDicFactory::getApiConfigArray();
+        $apiConfigArray[EasyCreditApiConfig::API_CONFIG_V3_ENABLED] = true;
+        $apiConfigArray[EasyCreditApiConfig::API_CONFIG_CREDENTIALS][EasyCreditApiConfig::API_CONFIG_CREDENTIAL_WEBSHOP_ID] = self::WEBSHOP_ID;
+        
+        $apiConfig = oxNew(EasyCreditApiConfig::class, $apiConfigArray);
+
+        $expected = [EasyCreditApiConfig::API_CONFIG_SERVICE_REST_ARGUMENT_WEBSHOP_ID => self::WEBSHOP_ID];
+
+        $this->assertEquals(
+            [],
+            $apiConfig->getServiceRestFunctionArguments(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V3_VORGANG)
+        );
+    }
+
+    public function testGetEasyCreditInvoicePaymentId()
+    {
+        $this->assertEquals('easycreditinvoice', $this->apiConfig->getEasyCreditInvoicePaymentId());
     }
 }

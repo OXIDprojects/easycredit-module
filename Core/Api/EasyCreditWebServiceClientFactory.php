@@ -69,9 +69,6 @@ class EasyCreditWebServiceClientFactory
                     'accept: application/problem+json',
                     'Content-Type: application/json'
                 ];
-                if ($apiConfig->getEasyCreditUseHMAC() && !empty($apiConfig->getEasyCreditHMACHeader())) {
-                    $headers['Content-signature'] = 'hmacsha256=' . hash_hmac('sha256', json_encode($additionalArguments, JSON_PRETTY_PRINT), $apiConfig->getEasyCreditHMACHeader());
-                }
             } else {
                 $headers = [
                     "Content-Type: application/json;charset=UTF-8",

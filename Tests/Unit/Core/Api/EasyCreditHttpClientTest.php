@@ -47,13 +47,14 @@ class EasyCreditHttpClientTest extends UnitTestCase
     public function testExecuteJsonRequestWithData()
     {
         $client = $this->getMock(EasyCreditHttpClient::class, ['executeHttpRequest']);
-        $client->expects($this->any())->method('executeHttpRequest')->willReturn('{"success": true}');
+        $client->expects($this->any())->method('executeHttpRequest')->willReturn('{"success": true, "statusCode": null}');
 
         $logging = oxNew(EasyCreditLogging::class, []);
         $client->setLogging($logging);
 
         $expected = new \stdClass();
         $expected->success = true;
+        $expected->statusCode = null;
         $this->assertEquals($expected, $client->executeJsonRequest('GET', 'https://test.url', new \stdClass()));
     }
 
@@ -85,7 +86,7 @@ class EasyCreditHttpClientTest extends UnitTestCase
         $client = $this->getMock(EasyCreditHttpClient::class, ['curl_exec']);
         $client->expects($this->any())->method('curl_exec')->willReturn($expected);
 
-        $this->assertEquals($expected, $client->executeHttpRequest('POST', 'https://test.url', new \stdClass()));
+        $this->assertEquals($expected, $client->executeHttpRequest('POST', 'https://test.url'));
     }
 
 }
