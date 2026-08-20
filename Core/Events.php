@@ -197,7 +197,8 @@ class Events
     {
         try {
             $oDb = DatabaseProvider::getDb();
-            $sSql = file_get_contents(dirname(__FILE__) . '/../../installments/' . (string)$sSqlFile);
+            $file = dirname(__FILE__) . '/../installments/' . (string)$sSqlFile;
+            $sSql = file_get_contents($file);
             $aSql = (array)explode(';', $sSql);
 
             foreach ($aSql as $sQuery) {
