@@ -86,7 +86,7 @@ class EasyCreditOrder extends EasyCreditOrder_parent
      *
      * @param \OxidEsales\Eshop\Application\Model\Basket $oBasket Shopping basket object
      */
-    protected function loadFromBasket(\OxidEsales\Eshop\Application\Model\Basket $oBasket)
+    public function loadFromBasket(\OxidEsales\Eshop\Application\Model\Basket $oBasket)
     {
         parent::loadFromBasket($oBasket);
 
