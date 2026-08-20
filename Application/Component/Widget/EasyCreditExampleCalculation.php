@@ -279,7 +279,7 @@ class EasyCreditExampleCalculation extends WidgetController
     /**
      * Returns the price relevant for the example calculation.
      *
-     * @return Price
+     * @return float
      * @throws SystemComponentException
      */
     public function getPriceV3()
