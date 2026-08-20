@@ -431,7 +431,7 @@ class EasyCreditDispatcherController extends FrontendController
      */
     protected function setEasyCreditInstallmentAsCurrentPayment()
     {
-        $paymentId = $this->getApiConfig()->getEasyCreditInstalmentPaymentId();
+        $paymentId = $this->getApiConfig()->getEasyCreditInstallmentPaymentId();
         $this->getSession()->setVariable('paymentid', $paymentId);
         $this->getBasket()->setPayment($paymentId);
     }
