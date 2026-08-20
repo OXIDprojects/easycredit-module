@@ -3,7 +3,7 @@
 <dl>
     <dt>
         <input id="payment_[{$sPaymentID}]" type="radio" name="paymentid" value="[{$sPaymentID}]" [{if $oView->getCheckedPaymentId() == $paymentmethod->oxpayments__oxid->value && $easyCreditInstallmentIsPossible}]checked[{/if}][{if !$easyCreditInstallmentIsPossible}] disabled[{/if}]>
-        <label for="payment_[{$sPaymentID}]"[{if !$easyCreditIsPossible}] class="easycreditdisabled"[{/if}]><b>[{$paymentmethod->oxpayments__oxdesc->value}]</b></label>
+        <label for="payment_[{$sPaymentID}]"[{if !$easyCreditInstallmentIsPossible}] class="easycreditdisabled"[{/if}]><b>[{$paymentmethod->oxpayments__oxdesc->value}]</b></label>
         [{if !$easyCreditInstallmentIsPossible}]
             <div class="col-lg-offset-3">
                 <img class="payment-logo-easycredit" src="[{$oViewConf->getModuleUrl('oxpseasycredit')}]out/pictures/eclogo.png" alt="Easy Credit">

@@ -284,8 +284,7 @@ class EasyCreditExampleCalculation extends WidgetController
      */
     public function getPriceV3()
     {
-        $test = $this->getBasket()->getPrice()->getBruttoPrice();
-        return $test;
+        return EasyCreditHelper::getExampleCalculationPrice($this->getViewParameter("articleId"), $this->getBasket())->getBruttoPrice();
     }
     
     
