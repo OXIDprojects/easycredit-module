@@ -67,13 +67,10 @@
 
                 <div class="form-group">
                     <div class="col-lg-9 col-lg-offset-3 offset-lg-3">
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" name="easycreditinstallmentagreement" id="easycredit_installment_agreement" value=""> [{$oView->getInstallmentAgreementTxt()}]
-                                <div id="easycredit_installment_agreement_error" style="display:none;" class="text-danger">[{oxmultilang ident="OXPS_EASY_CREDIT_AGREEMENT_ERROR" }]</div>
-                                <div id="is_easycredit_api_version_3" style="display:none;">{{ isEasyCreditAPIV3 }}</div>
-                            </label>
-                        </div>
+                                <input type="checkbox" name="easycreditinstallmentagreement" id="easycredit_installment_agreement">
+                                <div>[{$oView->getInstallmentAgreementTxt()}]</div>
+                                <div id="easycredit_installment_agreement_error" style="display:none;" class="text-danger">[{oxmultilang ident="OXPS_EASY_CREDIT_INSTALLMENT_AGREEMENT_ERROR" }]</div>
+                                <div id="is_easycredit_api_version_3" style="display:none;">[{$isEasyCreditAPIV3}]</div>
                     </div>
                 </div>
 
