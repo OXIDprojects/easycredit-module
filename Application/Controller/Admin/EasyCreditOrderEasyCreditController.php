@@ -141,7 +141,7 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
             $decoded = base64_decode($response);
             $response = json_decode($decoded);
             if ($response === null) {
-                $response = unserialize($decoded, ['allowed_classes' => false]);
+                $response = unserialize($decoded, ['allowed_classes' => [\stdClass::class]]);
             }
             if (is_object($response) || is_array($response)) {
                 $response = json_encode($response, JSON_PRETTY_PRINT);
@@ -171,7 +171,6 @@ class EasyCreditOrderEasyCreditController extends \OxidEsales\Eshop\Application\
     protected function getEasyCreditOrderData()
     {
         $orderData = $this->getApiService()->getOrderData();
-        $test = $this->order->oxorder__ecredisv3order->value;
         if (EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3() && $this->order->oxorder__ecredisv3order->value == 1) {
             if (empty($orderData->status)) {
                 throw new EasyCreditException(

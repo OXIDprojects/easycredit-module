@@ -54,7 +54,6 @@ class EasyCreditOrderEasyCreditControllerTest extends UnitTestCase
 
     public function testGetEasyCreditConfirmationResponse(): void
     {
-        $this->markTestSkipped('StefTodo, warum Prüfsumme falsch?');
         $response         = new \stdClass();
         $response->result = 'test';
 

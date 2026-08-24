@@ -299,7 +299,6 @@ class EasyCreditDispatcherController extends FrontendController
      */
     protected function getInstalmentDecision()
     {
-        $test = EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3(); 
         if (EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3()) {
             $response = $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V3_DECISION, [$this->getTbVorgangskennung()], []);
             if (!isset($response->decision->decisionOutcome)) {

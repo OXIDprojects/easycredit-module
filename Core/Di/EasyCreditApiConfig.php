@@ -290,13 +290,11 @@ class EasyCreditApiConfig
 
     public function getEasyCreditUseHMAC()
     {
-        $test = $this->getApiConfigValue('oxpsECUseHMAC');
         return $this->getApiConfigValue('oxpsECUseHMAC');
     }
 
     public function getEasyCreditHMACHeader()
     {
-        $test = $this->getApiConfigValue('oxpsECHMACHeader');
         return $this->getApiConfigValue('oxpsECHMACHeader');
     }
 }

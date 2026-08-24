@@ -69,7 +69,7 @@
                     <div class="col-lg-9 col-lg-offset-3 offset-lg-3">
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" name="easycreditinvoiceagreement" id="easycredit_agreement" value=""> [{$oView->getInstallmentAgreementTxt()}]
+                                <input type="checkbox" name="easycreditinvoiceagreement" id="easycredit_invoice_agreement" value=""> [{$oView->getInvoiceAgreementTxt()}]
                                 <div id="easycredit_invoice_agreement_error" style="display:none;" class="text-danger">[{oxmultilang ident="OXPS_EASY_CREDIT_AGREEMENT_ERROR" }]</div>
                                 <div id="is_easycredit_api_version_3" style="display:none;">{{ isEasyCreditAPIV3 }}</div>
                             </label>
@@ -82,13 +82,15 @@
                         $("#paymentNextStepBottom").click(function(event){
                             $("#easycredit_invoice_agreement_error").hide();
                             var success = true;
-                            if ( $('#easycredit_invoice_agreement').is(':visible') && $('#easycredit_invoice_agreement').is(':not(:checked)') )
+                            if ($('#is_easycredit_api_version_3').value() || ($('#easycredit_invoice_agreement').is(':visible') && $('#easycredit_invoice_agreement').is(':not(:checked)')))
                             {
                                 event.preventDefault();
                                 $("#easycredit_invoice_agreement_error").show();
                             }
                             return true;
                         });
+        console.log('ahow');
+                        $(".payment-optionactivePayment").show();
                     [{/strip}]
                 [{/capture}]
                 [{oxscript add=$easycreditInvoiceAgreementValidationJS}]

@@ -8,6 +8,7 @@ use OxidEsales\Eshop\Application\Model\User;
 use OxidEsales\Eshop\Core\Field;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\TestingLibrary\UnitTestCase;
+use OxidProfessionalServices\EasyCredit\Application\Component\Widget\EasyCreditExampleCalculationPopup;
 use OxidProfessionalServices\EasyCredit\Application\Controller\EasyCreditPaymentController;
 use OxidProfessionalServices\EasyCredit\Core\CrossCutting\EasyCreditLogging;
 use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditApiConfig;
@@ -190,16 +191,16 @@ class EasyCreditPaymentTest extends UnitTestCase
 
     public function testValidatePaymentEasyCreditPossible()
     {
-        $this->markTestSkipped('StefTodo, warum Prüfsumme falsch?');
         Registry::getSession()->setVariable('paymentid', EasyCreditHelper::EASYCREDIT_INSTALLMENT_PAYMENTID);
+        $user = oxNew(User::class);
 
-        $payment = $this->getMock(EasyCreditPaymentController::class, ['isEasyCreditPossible']);
+        $payment = $this->getMock(EasyCreditPaymentController::class, ['getUser', 'isEasyCreditPossible']);
+        $payment->expects($this->any())->method('getUser')->willReturn($user);
         $payment->expects($this->any())->method('isEasyCreditPossible')->willReturn(true);
-        $user                      = $this->getMock(User::class, ['getUserGroups']);
         $user->oxuser__oxcountryid = new Field('a7c40f631fc920687.20179984');
         
 
-        $this->assertEquals('EasyCreditDispatcher?fnc=initializeandredirectInstallment', $payment->validatePayment());
+        $this->assertEquals('EasyCreditDispatcher?fnc=initializeandredirectInstallment&stoken='. Registry::getSession()->getSessionChallengeToken(), $payment->validatePayment());
     }
 
     public function testValidatePaymentEasyCreditPossibleAddProfileDataException()
@@ -238,11 +239,15 @@ class EasyCreditPaymentTest extends UnitTestCase
     public function testLoadAgreementTxt()
     {
         $response = new \stdClass();
-        $response->zustimmungDatenuebertragungPaymentPage = 'dummy';
+        $apiConfig = oxNew(EasyCreditApiConfig::class, EasyCreditDicFactory::getApiConfigArray());
+        if (true === $apiConfig->config['oxpsECUseV3']) {
+            $response->declarationOfConsent = 'dummy';
+        } else {
+            $response->zustimmungDatenuebertragungPaymentPage = 'dummy';
+        }
 
         $payment = $this->getMock(EasyCreditPaymentController::class, ['call']);
         $payment->expects($this->any())->method('call')->willReturn($response);
-
         $this->assertEquals('dummy', $payment->loadInstallmentAgreementTxt());
     }
 

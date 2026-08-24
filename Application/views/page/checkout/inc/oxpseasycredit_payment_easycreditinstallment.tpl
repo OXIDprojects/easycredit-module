@@ -69,28 +69,32 @@
                     <div class="col-lg-9 col-lg-offset-3 offset-lg-3">
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" name="easycreditagreement" id="easycredit_agreement" value=""> [{$oView->getInstallmentAgreementTxt()}]
-                                <div id="easycredit_agreement_error" style="display:none;" class="text-danger">[{oxmultilang ident="OXPS_EASY_CREDIT_AGREEMENT_ERROR" }]</div>
+                                <input type="checkbox" name="easycreditinstallmentagreement" id="easycredit_installment_agreement" value=""> [{$oView->getInstallmentAgreementTxt()}]
+                                <div id="easycredit_installment_agreement_error" style="display:none;" class="text-danger">[{oxmultilang ident="OXPS_EASY_CREDIT_AGREEMENT_ERROR" }]</div>
+                                <div id="is_easycredit_api_version_3" style="display:none;">{{ isEasyCreditAPIV3 }}</div>
                             </label>
                         </div>
                     </div>
                 </div>
 
-                [{capture assign="easycreditAgreementValidationJS"}]
+                [{capture assign="easycreditInstallmentAgreementValidationJS"}]
                     [{strip}]
                         $("#paymentNextStepBottom").click(function(event){
-                            $("#easycredit_agreement_error").hide();
+                            $("#easycredit_installment_agreement_error").hide();
                             var success = true;
-                            if ( $('#easycredit_agreement').is(':visible') && $('#easycredit_agreement').is(':not(:checked)') )
+                            if ($('#is_easycredit_api_version_3').value() ||
+                               ($('#easycreditinstallmentagreement').is(':visible') && $('#easycreditinstallmentagreement').is(':not(:checked)'))
+                            )
                             {
                                 event.preventDefault();
-                                $("#easycredit_agreement_error").show();
+                                $("#easycredit_installment_agreement_error").show();
                             }
                             return true;
                         });
+                        $(".payment-optionactivePayment").show();
                     [{/strip}]
                 [{/capture}]
-                [{oxscript add=$easycreditAgreementValidationJS}]
+                [{oxscript add=$easycreditInstallmentAgreementValidationJS}]
 
             [{/block}]
         [{/if}]

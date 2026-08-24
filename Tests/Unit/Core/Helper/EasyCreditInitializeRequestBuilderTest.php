@@ -27,6 +27,7 @@ use OxidEsales\Eshop\Core\Field;
 use OxidEsales\Eshop\Core\Price;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\TestingLibrary\UnitTestCase;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditApiConfig;
 use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicFactory;
 use OxidProfessionalServices\EasyCredit\Core\Domain\EasyCreditBasket;
 use OxidProfessionalServices\EasyCredit\Core\Helper\EasyCreditHelper;
@@ -91,60 +92,132 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
         $config = Registry::getConfig();
 
         $sslShopUrl = EasyCreditDicFactory::getDic()->getConfig()->getSslShopUrl();
-        $expected   = [
-            'integrationsart'         => 'PAYMENT_PAGE',
-            'shopKennung'             => $this->shopkennung,
-            'laufzeit'                => 36,
-            'ruecksprungadressen'     => [
-                'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
-                'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
-                'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
-            ],
-            'kontakt'                 => [
-                'email' => null
-            ],
-            'risikorelevanteAngaben'  => [
-                'bestellungErfolgtUeberLogin' => false,
-                'kundeSeit'                   => '',
-                'anzahlBestellungen'          => 0,
-                'kundenstatus'                => 'NEUKUNDE',
-                'anzahlProdukteImWarenkorb'   => 0,
-                'negativeZahlungsinformation' => 'KEINE_INFORMATION',
-                'risikoartikelImWarenkorb'    => false,
-                'logistikDienstleister'       => ''
-            ],
-            'technischeShopparameter' => [
-                'shopSystemHersteller' => 'OXID eShop '
-            ],
-            'warenkorbinfos'          => [
-                0 => [
-                    'produktbezeichnung' => null,
-                    'menge'              => 0.0,
-                    'preis'              => '',
-                    'hersteller'         => '',
-                    'produktkategorie'   => 'Bindungen',
-                    'artikelnummern'     => [
-                        0 => [
-                            'nummerntyp' => 'GTIN',
-                            'nummer'     => null
-                        ]
-                    ]
+        $apiConfig = oxNew(EasyCreditApiConfig::class, EasyCreditDicFactory::getApiConfigArray());
+        if (true === $apiConfig->config['oxpsECUseV3']) {
+            $expected = array (
+                'orderDetails' =>
+                    array (
+                        'orderValue' => 0.0,
+                        'invoiceAddress' =>
+                            array (
+                            ),
+                        'shippingAddress' =>
+                            array (
+                            ),
+                        'orderId' => '',
+                        'numberOfProductsInShoppingCart' => 0,
+                        'shoppingCartInformation' =>
+                            array (
+                                0 =>
+                                    array (
+                                        'productName' => NULL,
+                                        'quantity' => 0.0,
+                                        'price' => '',
+                                        'manufacturer' => '',
+                                        'productCategory' => 'Bindungen',
+                                    ),
+                                1 =>
+                                    array (
+                                        'productName' => NULL,
+                                        'quantity' => 0.0,
+                                        'price' => '',
+                                        'manufacturer' => '',
+                                        'productCategory' => 'Bindungen',
+                                    ),
+                            ),
+                    ),
+                'customer' =>
+                    array (
+                        'gender' => NULL,
+                        'firstName' => NULL,
+                        'lastName' => NULL,
+                        'birthDate' => NULL,
+                        'contact' =>
+                            array (
+                                'email' => NULL,
+                                'phoneNumber' => NULL,
+                            ),
+                    ),
+                'redirectLinks' =>
+                    array (
+                        'urlCancellation' => $sslShopUrl . 'index.php?lang=&sid=&shp=1&cl=payment',
+                        'urlSuccess' => $sslShopUrl. 'index.php?lang=&sid=&shp=1&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
+                        'urlDenial' => $sslShopUrl . 'index.php?lang=&sid=&shp=1&cl=payment',
+                    ),
+                'shopsystem' =>
+                    array (
+                        'shopSystemManufacturer' => 'OXID eShop ',
+                        'shopSystemModuleVersion' => NULL,
+                    ),
+                'financingTerm' => 36,
+                'customerRelationship' =>
+                    array (
+                        'orderDoneWithLogin' => false,
+                        'customerSince' => '',
+                        'numberOfOrders' => 0,
+                        'customerStatus' => 'NEW_CUSTOMER',
+                        'negativePaymentInformation' => 'NO_INFORMATION',
+                        'riskyItemsInShoppingCart' => false,
+                        'logisticsServiceProvider' => '',
+                    ),
+                'paymentType' => 'INSTALLMENT_PAYMENT',
+            );
+        } else {
+            $expected   = [
+                'integrationsart'         => 'PAYMENT_PAGE',
+                'shopKennung'             => $this->shopkennung,
+                'laufzeit'                => 36,
+                'ruecksprungadressen'     => [
+                    'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
+                    'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
+                    'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
                 ],
-                1 => [
-                    'produktbezeichnung' => null,
-                    'menge'              => 0.0,
-                    'preis'              => '',
-                    'hersteller'         => '',
-                    'produktkategorie'   => 'Bindungen',
-                    'artikelnummern'     => [
-                        0 => [
-                            'nummerntyp' => 'GTIN',
-                            'nummer'     => null
+                'kontakt'                 => [
+                    'email' => null
+                ],
+                'risikorelevanteAngaben'  => [
+                    'bestellungErfolgtUeberLogin' => false,
+                    'kundeSeit'                   => '',
+                    'anzahlBestellungen'          => 0,
+                    'kundenstatus'                => 'NEUKUNDE',
+                    'anzahlProdukteImWarenkorb'   => 0,
+                    'negativeZahlungsinformation' => 'KEINE_INFORMATION',
+                    'risikoartikelImWarenkorb'    => false,
+                    'logistikDienstleister'       => ''
+                ],
+                'technischeShopparameter' => [
+                    'shopSystemHersteller' => 'OXID eShop '
+                ],
+                'warenkorbinfos'          => [
+                    0 => [
+                        'produktbezeichnung' => null,
+                        'menge'              => 0.0,
+                        'preis'              => '',
+                        'hersteller'         => '',
+                        'produktkategorie'   => 'Bindungen',
+                        'artikelnummern'     => [
+                            0 => [
+                                'nummerntyp' => 'GTIN',
+                                'nummer'     => null
+                            ]
+                        ]
+                    ],
+                    1 => [
+                        'produktbezeichnung' => null,
+                        'menge'              => 0.0,
+                        'preis'              => '',
+                        'hersteller'         => '',
+                        'produktkategorie'   => 'Bindungen',
+                        'artikelnummern'     => [
+                            0 => [
+                                'nummerntyp' => 'GTIN',
+                                'nummer'     => null
+                            ]
                         ]
                     ]
                 ]
-            ]
-        ];
+            ];
+        }
         $this->assertEquals($expected, $rb->getInitializationData());
     }
 
@@ -172,32 +245,88 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
         $config = Registry::getConfig();
 
         $sslShopUrl = EasyCreditDicFactory::getDic()->getConfig()->getSslShopUrl();
-        $expected   = [
-            'integrationsart'         => 'PAYMENT_PAGE',
-            'shopKennung'             => $this->shopkennung,
-            'laufzeit'                => 36,
-            'ruecksprungadressen'     => [
-                'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
-                'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
-                'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
-            ],
-            'kontakt'                 => [
-                'email' => null
-            ],
-            'risikorelevanteAngaben'  => [
-                'bestellungErfolgtUeberLogin' => true,
-                'kundeSeit'                   => '',
-                'anzahlBestellungen'          => 0,
-                'kundenstatus'                => 'BESTANDSKUNDE',
-                'anzahlProdukteImWarenkorb'   => 0,
-                'negativeZahlungsinformation' => 'KEINE_INFORMATION',
-                'risikoartikelImWarenkorb'    => false,
-                'logistikDienstleister'       => ''
-            ],
-            'technischeShopparameter' => [
-                'shopSystemHersteller' => 'OXID eShop '
-            ]
-        ];
+        $apiConfig = oxNew(EasyCreditApiConfig::class, EasyCreditDicFactory::getApiConfigArray());
+        if (true === $apiConfig->config['oxpsECUseV3']) {
+            $expected   = array (
+                'orderDetails' =>
+                    array (
+                        'orderValue' => 0.0,
+                        'invoiceAddress' =>
+                            array (
+                            ),
+                        'shippingAddress' =>
+                            array (
+                            ),
+                        'orderId' => '',
+                        'numberOfProductsInShoppingCart' => 0,
+                        'shoppingCartInformation' =>
+                            array (
+                            ),
+                    ),
+                'customer' =>
+                    array (
+                        'gender' => NULL,
+                        'firstName' => NULL,
+                        'lastName' => NULL,
+                        'birthDate' => NULL,
+                        'contact' =>
+                            array (
+                                'email' => NULL,
+                                'phoneNumber' => NULL,
+                            ),
+                    ),
+                'redirectLinks' =>
+                    array (
+                        'urlCancellation' => $sslShopUrl . 'index.php?lang=&sid=&shp=1&cl=payment',
+                        'urlSuccess' => $sslShopUrl. 'index.php?lang=&sid=&shp=1&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
+                        'urlDenial' => $sslShopUrl . 'index.php?lang=&sid=&shp=1&cl=payment',
+                    ),
+                'shopsystem' =>
+                    array (
+                        'shopSystemManufacturer' => 'OXID eShop ',
+                        'shopSystemModuleVersion' => NULL,
+                    ),
+                'financingTerm' => 36,
+                'customerRelationship' =>
+                    array (
+                        'orderDoneWithLogin' => true,
+                        'customerSince' => '',
+                        'numberOfOrders' => 0,
+                        'customerStatus' => 'EXISTING_CUSTOMER',
+                        'negativePaymentInformation' => 'NO_INFORMATION',
+                        'riskyItemsInShoppingCart' => false,
+                        'logisticsServiceProvider' => '',
+                    ),
+                'paymentType' => 'INSTALLMENT_PAYMENT',
+            );
+        } else {
+            $expected   = [
+                'integrationsart'         => 'PAYMENT_PAGE',
+                'shopKennung'             => $this->shopkennung,
+                'laufzeit'                => 36,
+                'ruecksprungadressen'     => [
+                    'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
+                    'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
+                    'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
+                ],
+                'kontakt'                 => [
+                    'email' => null
+                ],
+                'risikorelevanteAngaben'  => [
+                    'bestellungErfolgtUeberLogin' => true,
+                    'kundeSeit'                   => '',
+                    'anzahlBestellungen'          => 0,
+                    'kundenstatus'                => 'BESTANDSKUNDE',
+                    'anzahlProdukteImWarenkorb'   => 0,
+                    'negativeZahlungsinformation' => 'KEINE_INFORMATION',
+                    'risikoartikelImWarenkorb'    => false,
+                    'logistikDienstleister'       => ''
+                ],
+                'technischeShopparameter' => [
+                    'shopSystemHersteller' => 'OXID eShop '
+                ]
+            ];
+        }
         $this->assertEquals($expected, $rb->getInitializationData());
     }
 
@@ -216,35 +345,91 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
         $config = Registry::getConfig();
 
         $sslShopUrl = EasyCreditDicFactory::getDic()->getConfig()->getSslShopUrl();
-        $expected   = [
-            'integrationsart'         => 'PAYMENT_PAGE',
-            'shopKennung'             => $this->shopkennung,
-            'laufzeit'                => 36,
-            'ruecksprungadressen'     => [
-                'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
-                'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
-                'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
-            ],
-            'personendaten'           => [
-                'anrede' => 'FRAU'
-            ],
-            'kontakt'                 => [
-                'email' => null
-            ],
-            'risikorelevanteAngaben'  => [
-                'bestellungErfolgtUeberLogin' => false,
-                'kundeSeit'                   => '',
-                'anzahlBestellungen'          => 0,
-                'kundenstatus'                => 'NEUKUNDE',
-                'anzahlProdukteImWarenkorb'   => 0,
-                'negativeZahlungsinformation' => 'KEINE_INFORMATION',
-                'risikoartikelImWarenkorb'    => false,
-                'logistikDienstleister'       => ''
-            ],
-            'technischeShopparameter' => [
-                'shopSystemHersteller' => 'OXID eShop '
-            ]
-        ];
+        $apiConfig = oxNew(EasyCreditApiConfig::class, EasyCreditDicFactory::getApiConfigArray());
+        if (true === $apiConfig->config['oxpsECUseV3']) {
+            $expected   =array (
+                'orderDetails' =>
+                    array (
+                        'orderValue' => 0.0,
+                        'invoiceAddress' =>
+                            array (
+                            ),
+                        'shippingAddress' =>
+                            array (
+                            ),
+                        'orderId' => '',
+                        'numberOfProductsInShoppingCart' => 0,
+                        'shoppingCartInformation' =>
+                            array (
+                            ),
+                    ),
+                'customer' =>
+                    array (
+                        'gender' => 'MRS',
+                        'firstName' => NULL,
+                        'lastName' => NULL,
+                        'birthDate' => NULL,
+                        'contact' =>
+                            array (
+                                'email' => NULL,
+                                'phoneNumber' => NULL,
+                            ),
+                    ),
+                'redirectLinks' =>
+                    array (
+                        'urlCancellation' => $sslShopUrl . 'index.php?lang=&sid=&shp=1&cl=payment',
+                        'urlSuccess' => $sslShopUrl. 'index.php?lang=&sid=&shp=1&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
+                        'urlDenial' => $sslShopUrl . 'index.php?lang=&sid=&shp=1&cl=payment',
+                    ),
+                'shopsystem' =>
+                    array (
+                        'shopSystemManufacturer' => 'OXID eShop ',
+                        'shopSystemModuleVersion' => NULL,
+                    ),
+                'financingTerm' => 36,
+                'customerRelationship' =>
+                    array (
+                        'orderDoneWithLogin' => false,
+                        'customerSince' => '',
+                        'numberOfOrders' => 0,
+                        'customerStatus' => 'NEW_CUSTOMER',
+                        'negativePaymentInformation' => 'NO_INFORMATION',
+                        'riskyItemsInShoppingCart' => false,
+                        'logisticsServiceProvider' => '',
+                    ),
+                'paymentType' => 'INSTALLMENT_PAYMENT',
+            );    
+        } else {
+            $expected   = [
+                'integrationsart'         => 'PAYMENT_PAGE',
+                'shopKennung'             => $this->shopkennung,
+                'laufzeit'                => 36,
+                'ruecksprungadressen'     => [
+                    'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
+                    'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
+                    'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
+                ],
+                'personendaten'           => [
+                    'anrede' => 'FRAU'
+                ],
+                'kontakt'                 => [
+                    'email' => null
+                ],
+                'risikorelevanteAngaben'  => [
+                    'bestellungErfolgtUeberLogin' => false,
+                    'kundeSeit'                   => '',
+                    'anzahlBestellungen'          => 0,
+                    'kundenstatus'                => 'NEUKUNDE',
+                    'anzahlProdukteImWarenkorb'   => 0,
+                    'negativeZahlungsinformation' => 'KEINE_INFORMATION',
+                    'risikoartikelImWarenkorb'    => false,
+                    'logistikDienstleister'       => ''
+                ],
+                'technischeShopparameter' => [
+                    'shopSystemHersteller' => 'OXID eShop '
+                ]
+            ];
+        }
         $this->assertEquals($expected, $rb->getInitializationData());
     }
 
@@ -263,35 +448,91 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
         $config = Registry::getConfig();
 
         $sslShopUrl = EasyCreditDicFactory::getDic()->getConfig()->getSslShopUrl();
-        $expected   = [
-            'integrationsart'         => 'PAYMENT_PAGE',
-            'shopKennung'             => $this->shopkennung,
-            'laufzeit'                => 36,
-            'ruecksprungadressen'     => [
-                'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
-                'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
-                'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
-            ],
-            'personendaten'           => [
-                'geburtsdatum' => '1985-07-13'
-            ],
-            'kontakt'                 => [
-                'email' => null
-            ],
-            'risikorelevanteAngaben'  => [
-                'bestellungErfolgtUeberLogin' => false,
-                'kundeSeit'                   => '',
-                'anzahlBestellungen'          => 0,
-                'kundenstatus'                => 'NEUKUNDE',
-                'anzahlProdukteImWarenkorb'   => 0,
-                'negativeZahlungsinformation' => 'KEINE_INFORMATION',
-                'risikoartikelImWarenkorb'    => false,
-                'logistikDienstleister'       => ''
-            ],
-            'technischeShopparameter' => [
-                'shopSystemHersteller' => 'OXID eShop '
-            ]
-        ];
+        $apiConfig = oxNew(EasyCreditApiConfig::class, EasyCreditDicFactory::getApiConfigArray());
+        if (true === $apiConfig->config['oxpsECUseV3']) {
+            $expected = array (
+                'orderDetails' =>
+                    array (
+                        'orderValue' => 0.0,
+                        'invoiceAddress' =>
+                            array (
+                            ),
+                        'shippingAddress' =>
+                            array (
+                            ),
+                        'orderId' => '',
+                        'numberOfProductsInShoppingCart' => 0,
+                        'shoppingCartInformation' =>
+                            array (
+                            ),
+                    ),
+                'customer' =>
+                    array (
+                        'gender' => NULL,
+                        'firstName' => NULL,
+                        'lastName' => NULL,
+                        'birthDate' => '1985-07-13',
+                        'contact' =>
+                            array (
+                                'email' => NULL,
+                                'phoneNumber' => NULL,
+                            ),
+                    ),
+                'redirectLinks' =>
+                    array (
+                        'urlCancellation' => $sslShopUrl . 'index.php?lang=&sid=&shp=1&cl=payment',
+                        'urlSuccess' => $sslShopUrl. 'index.php?lang=&sid=&shp=1&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
+                        'urlDenial' => $sslShopUrl . 'index.php?lang=&sid=&shp=1&cl=payment',
+                    ),
+                'shopsystem' =>
+                    array (
+                        'shopSystemManufacturer' => 'OXID eShop ',
+                        'shopSystemModuleVersion' => NULL,
+                    ),
+                'financingTerm' => 36,
+                'customerRelationship' =>
+                    array (
+                        'orderDoneWithLogin' => false,
+                        'customerSince' => '',
+                        'numberOfOrders' => 0,
+                        'customerStatus' => 'NEW_CUSTOMER',
+                        'negativePaymentInformation' => 'NO_INFORMATION',
+                        'riskyItemsInShoppingCart' => false,
+                        'logisticsServiceProvider' => '',
+                    ),
+                'paymentType' => 'INSTALLMENT_PAYMENT',
+            );
+        } else  {
+            $expected   = [
+                'integrationsart'         => 'PAYMENT_PAGE',
+                'shopKennung'             => $this->shopkennung,
+                'laufzeit'                => 36,
+                'ruecksprungadressen'     => [
+                    'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
+                    'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
+                    'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
+                ],
+                'personendaten'           => [
+                    'geburtsdatum' => '1985-07-13'
+                ],
+                'kontakt'                 => [
+                    'email' => null
+                ],
+                'risikorelevanteAngaben'  => [
+                    'bestellungErfolgtUeberLogin' => false,
+                    'kundeSeit'                   => '',
+                    'anzahlBestellungen'          => 0,
+                    'kundenstatus'                => 'NEUKUNDE',
+                    'anzahlProdukteImWarenkorb'   => 0,
+                    'negativeZahlungsinformation' => 'KEINE_INFORMATION',
+                    'risikoartikelImWarenkorb'    => false,
+                    'logistikDienstleister'       => ''
+                ],
+                'technischeShopparameter' => [
+                    'shopSystemHersteller' => 'OXID eShop '
+                ]
+            ];
+        }
         $this->assertEquals($expected, $rb->getInitializationData());
     }
 
@@ -310,32 +551,88 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
         $config = Registry::getConfig();
 
         $sslShopUrl = EasyCreditDicFactory::getDic()->getConfig()->getSslShopUrl();
-        $expected   = [
-            'integrationsart'         => 'PAYMENT_PAGE',
-            'shopKennung'             => $this->shopkennung,
-            'laufzeit'                => 36,
-            'ruecksprungadressen'     => [
-                'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
-                'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
-                'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
-            ],
-            'kontakt'                 => [
-                'email' => null
-            ],
-            'risikorelevanteAngaben'  => [
-                'bestellungErfolgtUeberLogin' => false,
-                'kundeSeit'                   => '',
-                'anzahlBestellungen'          => 0,
-                'kundenstatus'                => 'NEUKUNDE',
-                'anzahlProdukteImWarenkorb'   => 0,
-                'negativeZahlungsinformation' => 'KEINE_INFORMATION',
-                'risikoartikelImWarenkorb'    => false,
-                'logistikDienstleister'       => ''
-            ],
-            'technischeShopparameter' => [
-                'shopSystemHersteller' => 'OXID eShop '
-            ]
-        ];
+        $apiConfig = oxNew(EasyCreditApiConfig::class, EasyCreditDicFactory::getApiConfigArray());
+        if (true === $apiConfig->config['oxpsECUseV3']) {
+            $expected = array (
+                'orderDetails' =>
+                    array (
+                        'orderValue' => 0.0,
+                        'invoiceAddress' =>
+                            array (
+                            ),
+                        'shippingAddress' =>
+                            array (
+                            ),
+                        'orderId' => '',
+                        'numberOfProductsInShoppingCart' => 0,
+                        'shoppingCartInformation' =>
+                            array (
+                            ),
+                    ),
+                'customer' =>
+                    array (
+                        'gender' => NULL,
+                        'firstName' => NULL,
+                        'lastName' => NULL,
+                        'birthDate' => '',
+                        'contact' =>
+                            array (
+                                'email' => NULL,
+                                'phoneNumber' => NULL,
+                            ),
+                    ),
+                'redirectLinks' =>
+                    array (
+                        'urlCancellation' => $sslShopUrl . 'index.php?lang=&sid=&shp=1&cl=payment',
+                        'urlSuccess' => $sslShopUrl. 'index.php?lang=&sid=&shp=1&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
+                        'urlDenial' => $sslShopUrl . 'index.php?lang=&sid=&shp=1&cl=payment',
+                    ),
+                'shopsystem' =>
+                    array (
+                        'shopSystemManufacturer' => 'OXID eShop ',
+                        'shopSystemModuleVersion' => NULL,
+                    ),
+                'financingTerm' => 36,
+                'customerRelationship' =>
+                    array (
+                        'orderDoneWithLogin' => false,
+                        'customerSince' => '',
+                        'numberOfOrders' => 0,
+                        'customerStatus' => 'NEW_CUSTOMER',
+                        'negativePaymentInformation' => 'NO_INFORMATION',
+                        'riskyItemsInShoppingCart' => false,
+                        'logisticsServiceProvider' => '',
+                    ),
+                'paymentType' => 'INSTALLMENT_PAYMENT',
+            );
+        } else {
+            $expected   = [
+                'integrationsart'         => 'PAYMENT_PAGE',
+                'shopKennung'             => $this->shopkennung,
+                'laufzeit'                => 36,
+                'ruecksprungadressen'     => [
+                    'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
+                    'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
+                    'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
+                ],
+                'kontakt'                 => [
+                    'email' => null
+                ],
+                'risikorelevanteAngaben'  => [
+                    'bestellungErfolgtUeberLogin' => false,
+                    'kundeSeit'                   => '',
+                    'anzahlBestellungen'          => 0,
+                    'kundenstatus'                => 'NEUKUNDE',
+                    'anzahlProdukteImWarenkorb'   => 0,
+                    'negativeZahlungsinformation' => 'KEINE_INFORMATION',
+                    'risikoartikelImWarenkorb'    => false,
+                    'logistikDienstleister'       => ''
+                ],
+                'technischeShopparameter' => [
+                    'shopSystemHersteller' => 'OXID eShop '
+                ]
+            ];
+        }
         $this->assertEquals($expected, $rb->getInitializationData());
     }
 
@@ -356,32 +653,88 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
         $config = Registry::getConfig();
 
         $sslShopUrl = EasyCreditDicFactory::getDic()->getConfig()->getSslShopUrl();
-        $expected   = [
-            'integrationsart'         => 'PAYMENT_PAGE',
-            'shopKennung'             => $this->shopkennung,
-            'laufzeit'                => 36,
-            'ruecksprungadressen'     => [
-                'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
-                'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
-                'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
-            ],
-            'kontakt'                 => [
-                'email' => null
-            ],
-            'risikorelevanteAngaben'  => [
-                'bestellungErfolgtUeberLogin' => false,
-                'kundeSeit'                   => '',
-                'anzahlBestellungen'          => 0,
-                'kundenstatus'                => 'NEUKUNDE',
-                'anzahlProdukteImWarenkorb'   => 0,
-                'negativeZahlungsinformation' => 'KEINE_INFORMATION',
-                'risikoartikelImWarenkorb'    => false,
-                'logistikDienstleister'       => ''
-            ],
-            'technischeShopparameter' => [
-                'shopSystemHersteller' => 'OXID eShop '
-            ]
-        ];
+        $apiConfig = oxNew(EasyCreditApiConfig::class, EasyCreditDicFactory::getApiConfigArray());
+        if (true === $apiConfig->config['oxpsECUseV3']) {
+            $expected = array (
+                'orderDetails' =>
+                    array (
+                        'orderValue' => 0.0,
+                        'invoiceAddress' =>
+                            array (
+                            ),
+                        'shippingAddress' =>
+                            array (
+                            ),
+                        'orderId' => '',
+                        'numberOfProductsInShoppingCart' => 0,
+                        'shoppingCartInformation' =>
+                            array (
+                            ),
+                    ),
+                'customer' =>
+                    array (
+                        'gender' => NULL,
+                        'firstName' => NULL,
+                        'lastName' => NULL,
+                        'birthDate' => NULL,
+                        'contact' =>
+                            array (
+                                'email' => NULL,
+                                'phoneNumber' => NULL,
+                            ),
+                    ),
+                'redirectLinks' =>
+                    array (
+                        'urlCancellation' => $sslShopUrl . 'index.php?lang=&sid=&shp=1&cl=payment',
+                        'urlSuccess' => $sslShopUrl. 'index.php?lang=&sid=&shp=1&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
+                        'urlDenial' => $sslShopUrl . 'index.php?lang=&sid=&shp=1&cl=payment',
+                    ),
+                'shopsystem' =>
+                    array (
+                        'shopSystemManufacturer' => 'OXID eShop ',
+                        'shopSystemModuleVersion' => NULL,
+                    ),
+                'financingTerm' => 36,
+                'customerRelationship' =>
+                    array (
+                        'orderDoneWithLogin' => false,
+                        'customerSince' => '',
+                        'numberOfOrders' => 0,
+                        'customerStatus' => 'NEW_CUSTOMER',
+                        'negativePaymentInformation' => 'NO_INFORMATION',
+                        'riskyItemsInShoppingCart' => false,
+                        'logisticsServiceProvider' => '',
+                    ),
+                'paymentType' => 'INSTALLMENT_PAYMENT',
+            );
+        } else {
+            $expected   = [
+                'integrationsart'         => 'PAYMENT_PAGE',
+                'shopKennung'             => $this->shopkennung,
+                'laufzeit'                => 36,
+                'ruecksprungadressen'     => [
+                    'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
+                    'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
+                    'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
+                ],
+                'kontakt'                 => [
+                    'email' => null
+                ],
+                'risikorelevanteAngaben'  => [
+                    'bestellungErfolgtUeberLogin' => false,
+                    'kundeSeit'                   => '',
+                    'anzahlBestellungen'          => 0,
+                    'kundenstatus'                => 'NEUKUNDE',
+                    'anzahlProdukteImWarenkorb'   => 0,
+                    'negativeZahlungsinformation' => 'KEINE_INFORMATION',
+                    'risikoartikelImWarenkorb'    => false,
+                    'logistikDienstleister'       => ''
+                ],
+                'technischeShopparameter' => [
+                    'shopSystemHersteller' => 'OXID eShop '
+                ]
+            ];
+        }
         $this->assertEquals($expected, $rb->getInitializationData());
     }
 
@@ -400,38 +753,96 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
         $config = Registry::getConfig();
 
         $sslShopUrl = EasyCreditDicFactory::getDic()->getConfig()->getSslShopUrl();
-        $expected   = [
-            'integrationsart'         => 'PAYMENT_PAGE',
-            'shopKennung'             => $this->shopkennung,
-            'laufzeit'                => 36,
-            'ruecksprungadressen'     => [
-                'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
-                'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
-                'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
-            ],
-            'kontakt'                 => [
-                'email' => null
-            ],
-            'risikorelevanteAngaben'  => [
-                'bestellungErfolgtUeberLogin' => false,
-                'kundeSeit'                   => '',
-                'anzahlBestellungen'          => 0,
-                'kundenstatus'                => 'NEUKUNDE',
-                'anzahlProdukteImWarenkorb'   => 0,
-                'negativeZahlungsinformation' => 'KEINE_INFORMATION',
-                'risikoartikelImWarenkorb'    => false,
-                'logistikDienstleister'       => ''
-            ],
-            'technischeShopparameter' => [
-                'shopSystemHersteller' => 'OXID eShop '
-            ],
-            'rechnungsadresse'        => [
-                'land' => 'DE'
-            ],
-            'lieferadresse'           => [
-                'land' => 'DE'
-            ]
-        ];
+        $apiConfig = oxNew(EasyCreditApiConfig::class, EasyCreditDicFactory::getApiConfigArray());
+        if (true === $apiConfig->config['oxpsECUseV3']) {
+            $expected = array (
+                'orderDetails' =>
+                    array (
+                        'orderValue' => 0.0,
+                        'invoiceAddress' =>
+                            array (
+                                'country' => 'DE',
+                            ),
+                        'shippingAddress' =>
+                            array (
+                                'country' => 'DE',
+                            ),
+                        'orderId' => '',
+                        'numberOfProductsInShoppingCart' => 0,
+                        'shoppingCartInformation' =>
+                            array (
+                            ),
+                    ),
+                'customer' =>
+                    array (
+                        'gender' => NULL,
+                        'firstName' => NULL,
+                        'lastName' => NULL,
+                        'birthDate' => NULL,
+                        'contact' =>
+                            array (
+                                'email' => NULL,
+                                'phoneNumber' => NULL,
+                            ),
+                    ),
+                'redirectLinks' =>
+                    array (
+                        'urlCancellation' => $sslShopUrl . 'index.php?lang=&sid=&shp=1&cl=payment',
+                        'urlSuccess' => $sslShopUrl. 'index.php?lang=&sid=&shp=1&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
+                        'urlDenial' => $sslShopUrl . 'index.php?lang=&sid=&shp=1&cl=payment',
+                    ),
+                'shopsystem' =>
+                    array (
+                        'shopSystemManufacturer' => 'OXID eShop ',
+                        'shopSystemModuleVersion' => NULL,
+                    ),
+                'financingTerm' => 36,
+                'customerRelationship' =>
+                    array (
+                        'orderDoneWithLogin' => false,
+                        'customerSince' => '',
+                        'numberOfOrders' => 0,
+                        'customerStatus' => 'NEW_CUSTOMER',
+                        'negativePaymentInformation' => 'NO_INFORMATION',
+                        'riskyItemsInShoppingCart' => false,
+                        'logisticsServiceProvider' => '',
+                    ),
+                'paymentType' => 'INSTALLMENT_PAYMENT',
+            );
+        } else {
+            $expected   = [
+                'integrationsart'         => 'PAYMENT_PAGE',
+                'shopKennung'             => $this->shopkennung,
+                'laufzeit'                => 36,
+                'ruecksprungadressen'     => [
+                    'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
+                    'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
+                    'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
+                ],
+                'kontakt'                 => [
+                    'email' => null
+                ],
+                'risikorelevanteAngaben'  => [
+                    'bestellungErfolgtUeberLogin' => false,
+                    'kundeSeit'                   => '',
+                    'anzahlBestellungen'          => 0,
+                    'kundenstatus'                => 'NEUKUNDE',
+                    'anzahlProdukteImWarenkorb'   => 0,
+                    'negativeZahlungsinformation' => 'KEINE_INFORMATION',
+                    'risikoartikelImWarenkorb'    => false,
+                    'logistikDienstleister'       => ''
+                ],
+                'technischeShopparameter' => [
+                    'shopSystemHersteller' => 'OXID eShop '
+                ],
+                'rechnungsadresse'        => [
+                    'land' => 'DE'
+                ],
+                'lieferadresse'           => [
+                    'land' => 'DE'
+                ]
+            ];
+        }
         $this->assertEquals($expected, $rb->getInitializationData());
     }
 
@@ -527,60 +938,132 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
         $config = Registry::getConfig();
 
         $sslShopUrl = EasyCreditDicFactory::getDic()->getConfig()->getSslShopUrl();
-        $expected   = [
-            'integrationsart'         => 'PAYMENT_PAGE',
-            'shopKennung'             => $this->shopkennung,
-            'laufzeit'                => 36,
-            'ruecksprungadressen'     => [
-                'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
-                'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
-                'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
-            ],
-            'kontakt'                 => [
-                'email' => null
-            ],
-            'risikorelevanteAngaben'  => [
-                'bestellungErfolgtUeberLogin' => false,
-                'kundeSeit'                   => '',
-                'anzahlBestellungen'          => 0,
-                'kundenstatus'                => 'NEUKUNDE',
-                'anzahlProdukteImWarenkorb'   => 0,
-                'negativeZahlungsinformation' => 'KEINE_INFORMATION',
-                'risikoartikelImWarenkorb'    => false,
-                'logistikDienstleister'       => ''
-            ],
-            'technischeShopparameter' => [
-                'shopSystemHersteller' => 'OXID eShop '
-            ],
-            'warenkorbinfos'          => [
-                0 => [
-                    'produktbezeichnung' => null,
-                    'menge'              => 0.0,
-                    'preis'              => 250.72,
-                    'hersteller'         => null,
-                    'produktkategorie'   => 'testcategory',
-                    'artikelnummern'     => [
-                        0 => [
-                            'nummerntyp' => 'GTIN',
-                            'nummer'     => null
-                        ]
-                    ]
+        $apiConfig = oxNew(EasyCreditApiConfig::class, EasyCreditDicFactory::getApiConfigArray());
+        if (true === $apiConfig->config['oxpsECUseV3']) {
+            $expected = array (
+                'orderDetails' =>
+                    array (
+                        'orderValue' => 0.0,
+                        'invoiceAddress' =>
+                            array (
+                            ),
+                        'shippingAddress' =>
+                            array (
+                            ),
+                        'orderId' => '',
+                        'numberOfProductsInShoppingCart' => 0,
+                        'shoppingCartInformation' =>
+                            array (
+                                0 =>
+                                    array (
+                                        'productName' => NULL,
+                                        'quantity' => 0.0,
+                                        'price' => 250.72,
+                                        'manufacturer' => NULL,
+                                        'productCategory' => 'testcategory',
+                                    ),
+                                1 =>
+                                    array (
+                                        'productName' => NULL,
+                                        'quantity' => 0.0,
+                                        'price' => 250.72,
+                                        'manufacturer' => NULL,
+                                        'productCategory' => 'testcategory',
+                                    ),
+                            ),
+                    ),
+                'customer' =>
+                    array (
+                        'gender' => NULL,
+                        'firstName' => NULL,
+                        'lastName' => NULL,
+                        'birthDate' => NULL,
+                        'contact' =>
+                            array (
+                                'email' => NULL,
+                                'phoneNumber' => NULL,
+                            ),
+                    ),
+                'redirectLinks' =>
+                    array (
+                        'urlCancellation' => $sslShopUrl . 'index.php?lang=&sid=&shp=1&cl=payment',
+                        'urlSuccess' => $sslShopUrl. 'index.php?lang=&sid=&shp=1&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
+                        'urlDenial' => $sslShopUrl . 'index.php?lang=&sid=&shp=1&cl=payment',
+                    ),
+                'shopsystem' =>
+                    array (
+                        'shopSystemManufacturer' => 'OXID eShop ',
+                        'shopSystemModuleVersion' => NULL,
+                    ),
+                'financingTerm' => 36,
+                'customerRelationship' =>
+                    array (
+                        'orderDoneWithLogin' => false,
+                        'customerSince' => '',
+                        'numberOfOrders' => 0,
+                        'customerStatus' => 'NEW_CUSTOMER',
+                        'negativePaymentInformation' => 'NO_INFORMATION',
+                        'riskyItemsInShoppingCart' => false,
+                        'logisticsServiceProvider' => '',
+                    ),
+                'paymentType' => 'INSTALLMENT_PAYMENT',
+            );
+        } else {
+            $expected = [
+                'integrationsart' => 'PAYMENT_PAGE',
+                'shopKennung' => $this->shopkennung,
+                'laufzeit' => 36,
+                'ruecksprungadressen' => [
+                    'urlAbbruch' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
+                    'urlErfolg' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
+                    'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
                 ],
-                1 => [
-                    'produktbezeichnung' => null,
-                    'menge'              => 0.0,
-                    'preis'              => 250.72,
-                    'hersteller'         => null,
-                    'produktkategorie'   => 'testcategory',
-                    'artikelnummern'     => [
-                        0 => [
-                            'nummerntyp' => 'GTIN',
-                            'nummer'     => null
+                'kontakt' => [
+                    'email' => null
+                ],
+                'risikorelevanteAngaben' => [
+                    'bestellungErfolgtUeberLogin' => false,
+                    'kundeSeit' => '',
+                    'anzahlBestellungen' => 0,
+                    'kundenstatus' => 'NEUKUNDE',
+                    'anzahlProdukteImWarenkorb' => 0,
+                    'negativeZahlungsinformation' => 'KEINE_INFORMATION',
+                    'risikoartikelImWarenkorb' => false,
+                    'logistikDienstleister' => ''
+                ],
+                'technischeShopparameter' => [
+                    'shopSystemHersteller' => 'OXID eShop '
+                ],
+                'warenkorbinfos' => [
+                    0 => [
+                        'produktbezeichnung' => null,
+                        'menge' => 0.0,
+                        'preis' => 250.72,
+                        'hersteller' => null,
+                        'produktkategorie' => 'testcategory',
+                        'artikelnummern' => [
+                            0 => [
+                                'nummerntyp' => 'GTIN',
+                                'nummer' => null
+                            ]
+                        ]
+                    ],
+                    1 => [
+                        'produktbezeichnung' => null,
+                        'menge' => 0.0,
+                        'preis' => 250.72,
+                        'hersteller' => null,
+                        'produktkategorie' => 'testcategory',
+                        'artikelnummern' => [
+                            0 => [
+                                'nummerntyp' => 'GTIN',
+                                'nummer' => null
+                            ]
                         ]
                     ]
                 ]
-            ]
-        ];
+            ];
+        }
         $this->assertEquals($expected, $rb->getInitializationData());
     }
 }

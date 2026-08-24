@@ -210,7 +210,6 @@ class EasyCreditOrderTest extends UnitTestCase
 
     public function testGetUrlVorvertraglicheInformationen()
     {
-        $this->markTestSkipped('StefTodo, warum Prüfsumme falsch?');
         $session = oxNew(EasyCreditSession::class);
         $dic = $this->buildDic($session);
 

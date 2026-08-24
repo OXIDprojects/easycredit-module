@@ -121,6 +121,7 @@ class EasyCreditOrderController extends EasyCreditOrderController_parent
     {
         $allgemeineVorgangsdaten = $this->getAllgemeineVorgangsdaten();
         if ($allgemeineVorgangsdaten) {
+            $allgemeineVorgangsdaten = $this->fixObject($allgemeineVorgangsdaten); 
             return $allgemeineVorgangsdaten->urlVorvertraglicheInformationen;
         }
         return null;
@@ -207,5 +208,15 @@ class EasyCreditOrderController extends EasyCreditOrderController_parent
             $this->handleUserException("OXPS_EASY_CREDIT_ERROR_EXPIRED");
             Registry::getUtils()->redirect(Registry::getConfig()->getShopCurrentURL() . '&cl=payment', true, 302);
         }
+    }
+
+    /**
+     * Fix PHP_INCOMPLETE CLASS for Unit Tests
+     * @param $object
+     * @return mixed
+     */
+    function fixObject (&$object)
+    {
+            return ($object = unserialize (serialize ($object)));
     }
 }
