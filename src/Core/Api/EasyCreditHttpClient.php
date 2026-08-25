@@ -169,6 +169,7 @@ class EasyCreditHttpClient
         $json = $jsonWihoutWhitespaces.$apiConfig->getEasyCreditHMACHeader();
 
         if ($apiConfig->getEasyCreditUseApiVersionV3() &&
+            $apiConfig->getEasyCreditUseHMAC() &&
             !empty($apiConfig->getEasyCreditHMACHeader())) {
             $this->_requestHeaders[] = 'Content-signature: sha256=' . hash('sha256', $json);
         }
