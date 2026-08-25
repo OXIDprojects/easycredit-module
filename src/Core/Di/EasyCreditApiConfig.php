@@ -93,7 +93,7 @@ class EasyCreditApiConfig
     const API_REDIRECT_URL = "https://ratenkauf.easycredit.de/ratenkauf/content/intern/einstieg.jsf?vorgangskennung=%s";
     const API_REDIRECT_URL_V3 = "https://ratenkauf.easycredit.de/app/payment/%s/finanzierungsvorgaben";
 
-    private $config;
+    public $config;
 
     /**
      * ApiConfig constructor.
