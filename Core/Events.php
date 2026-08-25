@@ -51,17 +51,10 @@ class Events
     }
 
     /**
-     * Handles saved module settings.
+     * @return bool
+     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
      */
-    public static function onModuleSettingsSaved(): void
-    {
-        self::checkEasyCreditCredentials();
-    }
-
-    /**
-     * Handles saved module settings.
-     */
-    public static function checkEasyCreditCredentials(): void
+    public static function checkEasyCreditCredentials(): bool
     {
         $apiConfig = EasyCreditDicFactory::getDic()->getApiConfig();
         if ($apiConfig->getEasyCreditUseApiVersionV3()) {
@@ -84,20 +77,9 @@ class Events
                 EasyCreditDicFactory::getDic()->getLogging()->log($ex->getMessage());
             }
             if ($response && $response->message === $testMessage) {
-                Registry::getUtilsView()->addErrorToDisplay(
-                    oxNew(
-                        StandardException::class,
-                        'Die easyCredit Zugangsdaten für die API V3 konnten erfolgreich geprüft werden.'
-                    )
-                );
+                return true;
             } else {
-                EasyCreditDicFactory::getDic()->getLogging()->log('EasyCredit credentials are not valid.');
-                Registry::getUtilsView()->addErrorToDisplay(
-                    oxNew(
-                        StandardException::class,
-                        'Die easyCredit Zugangsdaten konnten nicht erfolgreich geprüft werden. Bitte prüfen Sie Webshop-ID, Token, HMAC Secret und API-URL V3.'
-                    )
-                );
+                return false;
             }
         }
     }

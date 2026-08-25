@@ -76,7 +76,7 @@ $aModule = [
     'blocks'      => [
         [
             'template' => 'module_config.tpl',
-            'block' => 'admin_module_config_var',
+            'block' => 'admin_module_config_form',
             'file' => 'Application/views/blocks/admin/oxpseasycredit_module_config_var.tpl'],
         [
             'template' => 'page/checkout/payment.tpl',
