@@ -55,6 +55,7 @@ $aModule = [
         \OxidEsales\Eshop\Application\Controller\Admin\OrderArticle::class  => \OxidProfessionalServices\EasyCredit\Application\Controller\Admin\EasyCreditOrderArticleController::class,
         \OxidEsales\Eshop\Application\Controller\Admin\OrderOverview::class => \OxidProfessionalServices\EasyCredit\Application\Controller\Admin\EasyCreditOrderOverviewController::class,
         \OxidEsales\Eshop\Application\Controller\Admin\OrderList::class     => \OxidProfessionalServices\EasyCredit\Application\Controller\Admin\EasyCreditOrderListController::class,
+        \OxidEsales\Eshop\Application\Controller\Admin\ModuleConfiguration::class => \OxidProfessionalServices\EasyCredit\Application\Controller\Admin\EasyCreditModuleConfiguration::class,
 
         # Extending core classes
         \OxidEsales\Eshop\Core\Session::class                               => \OxidProfessionalServices\EasyCredit\Core\Domain\EasyCreditSession::class,
@@ -73,6 +74,10 @@ $aModule = [
         'easycredit_overview_main.tpl'                        => 'oxps/easycredit/Application/views/admin/tpl/easycredit_overview_main.tpl',
     ],
     'blocks'      => [
+        [
+            'template' => 'module_config.tpl',
+            'block' => 'admin_module_config_var',
+            'file' => 'Application/views/blocks/admin/oxpseasycredit_module_config_var.tpl'],
         [
             'template' => 'page/checkout/payment.tpl',
             'block'    => 'select_payment',

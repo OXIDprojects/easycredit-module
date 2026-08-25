@@ -15,10 +15,14 @@ namespace OxidProfessionalServices\EasyCredit\Core;
 
 use OxidEsales\Eshop\Core\DatabaseProvider;
 use OxidEsales\Eshop\Core\DbMetaDataHandler;
+use OxidEsales\Eshop\Core\Exception\StandardException;
 use OxidEsales\Eshop\Core\Field;
 use \OxidEsales\Eshop\Core\Model\MultiLanguageModel;
 use OxidEsales\Eshop\Application\Model\Content;
 use OxidEsales\Eshop\Core\Registry;
+use OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditWebServiceClientFactory;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditApiConfig;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicFactory;
 
 /**
  * Class oxpsEasyCreditModule
@@ -80,14 +84,18 @@ class Events
                 EasyCreditDicFactory::getDic()->getLogging()->log($ex->getMessage());
             }
             if ($response && $response->message === $testMessage) {
-                // Do nothing
+                Registry::getUtilsView()->addErrorToDisplay(
+                    oxNew(
+                        StandardException::class,
+                        'Die easyCredit Zugangsdaten für die API V3 konnten erfolgreich geprüft werden.'
+                    )
+                );
             } else {
-                // StefTest: Translations
                 EasyCreditDicFactory::getDic()->getLogging()->log('EasyCredit credentials are not valid.');
                 Registry::getUtilsView()->addErrorToDisplay(
                     oxNew(
                         StandardException::class,
-                        'Die easyCredit Zugangsdaten konnten nicht erfolgreich geprüft werden. Bitte prüfen Sie Webshop-ID, Token und API-URL V3.'
+                        'Die easyCredit Zugangsdaten konnten nicht erfolgreich geprüft werden. Bitte prüfen Sie Webshop-ID, Token, HMAC Secret und API-URL V3.'
                     )
                 );
             }
