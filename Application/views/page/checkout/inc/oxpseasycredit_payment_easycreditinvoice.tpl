@@ -67,28 +67,11 @@
 
                 <div class="form-group">
                     <div class="col-lg-9 col-lg-offset-3 offset-lg-3">
-                                <input type="checkbox" name="easycredit_invoice_agreement" id="easycredit_invoice_agreement">
+                                <input type="checkbox" name="easycreditinvoiceagreement" id="easycredit_invoice_agreement">
                                 <div>[{$oView->getInvoiceAgreementTxt()}]</div>
-                                <div id="easycredit_invoice_agreement_error" style="display:none;" class="text-danger">[{oxmultilang ident="OXPS_EASY_CREDIT_INVOICE_AGREEMENT_ERROR" }]</div>
-                                <input type="hidden" id="is_easycredit_invoice_api_version_3" style="display:none;" value="[{$isEasyCreditAPIV3}]">
-                    </div>
                 </div>
 
-                [{capture assign="easycreditInvoiceAgreementValidationJS"}]
-                    [{strip}]
-                        $("#paymentNextStepBottom").click(function(event){
-                            $("#easycredit_invoice_agreement_error").hide();
-                            if ($('#is_easycredit_invoice_api_version_3').val() !== '1')
-                            {
-                                event.preventDefault();
-                                $("#easycredit_invoice_agreement_error").show();
-                            }
-                            return true;
-                        });
-                        $(".payment-optionactivePayment").show();
-                    [{/strip}]
-                [{/capture}]
-                [{oxscript add=$easycreditInvoiceAgreementValidationJS}]
+
 
             [{/block}]
         [{/if}]
