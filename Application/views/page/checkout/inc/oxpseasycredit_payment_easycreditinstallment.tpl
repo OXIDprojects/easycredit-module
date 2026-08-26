@@ -67,10 +67,10 @@
 
                 <div class="form-group">
                     <div class="col-lg-9 col-lg-offset-3 offset-lg-3">
-                                <input type="checkbox" name="easycreditinstallmentagreement" id="easycredit_installment_agreement">
+                                <input type="checkbox" name="easycredit_installment_agreement" id="easycredit_installment_agreement">
                                 <div>[{$oView->getInstallmentAgreementTxt()}]</div>
                                 <div id="easycredit_installment_agreement_error" style="display:none;" class="text-danger">[{oxmultilang ident="OXPS_EASY_CREDIT_INSTALLMENT_AGREEMENT_ERROR" }]</div>
-                                <div id="is_easycredit_api_version_3" style="display:none;">[{$isEasyCreditAPIV3}]</div>
+                                <input type="hidden" id="is_easycredit_installment_api_version_3" style="display:none;" value="[{$isEasyCreditAPIV3}]">
                     </div>
                 </div>
 
@@ -78,9 +78,8 @@
                     [{strip}]
                         $("#paymentNextStepBottom").click(function(event){
                             $("#easycredit_installment_agreement_error").hide();
-                            var success = true;
-                            if ($('#is_easycredit_api_version_3').value() ||
-                               ($('#easycreditinstallmentagreement').is(':visible') && $('#easycreditinstallmentagreement').is(':not(:checked)'))
+                            if ($('#is_easycredit_installment_api_version_3').val() !== '1' &&
+                               ($('#easycredit_installment_agreement').is(':visible') && $('#easycredit_installment_agreement').is(':not(:checked)'))
                             )
                             {
                                 event.preventDefault();
