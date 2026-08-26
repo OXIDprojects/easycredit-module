@@ -18,47 +18,48 @@
             </div>
         {% endif %}
         {% if easyCreditInvoiceIsPossible %}
-            <div class="col-lg-offset-3">
-                <img class="payment-logo-easycredit" src="{{ oViewConf.getModuleUrl('osceasycredit') }}img/ecinvoicelogo.png" alt="Easy Credit">
-            </div>
-            {% block checkout_payment_easycreditinvoiceagreement %}
-                <div class="clearfix"></div>
-
-                {% if oView.isProfileDataMissing() %}
-                    <div class="row easycredit-payment-missing-profile" style="margin-top:1em;margin-bottom:1em;">
-                        <div class="col-lg-9 col-lg-offset-3 offset-lg-3">
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <h3 class="panel-title">{{ translate({ ident: "OXPS_EASY_CREDIT_PAYMENT_PROFILEDATA_CAPTION" }) }}</h3>
-                                </div>
-                                <div class="panel-body">
-
-                                    {% if not oView.hasSalutation() %}
-                                        <div class="form-group">
-                                            <label class="control-label col-lg-3" for="invadr_oxuser__oxfname">{{ translate({ ident: "TITLE" }) }}</label>
-                                            <div class="col-lg-9">
-                                                {% include "form/fieldset/salutation.html.twig" with {name: "ecred[oxuser__oxsal]", class: "form-control selectpicker"} %}
+            <div id="easycredit_invoice_container">
+                <div class="col-lg-offset-3">
+                    <img class="payment-logo-easycredit" src="{{ oViewConf.getModuleUrl('osceasycredit') }}img/ecinvoicelogo.png" alt="Easy Credit">
+                </div>
+                {% block checkout_payment_easycreditinvoiceagreement %}
+                    <div class="clearfix"></div>
+    
+                    {% if oView.isProfileDataMissing() %}
+                        <div class="row easycredit-payment-missing-profile" style="margin-top:2em;margin-bottom:2em; margin-left: 20px">
+                            <div>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-default" style="font-size: 1rem">{{ translate({ ident: "OXPS_EASY_CREDIT_PAYMENT_PROFILEDATA_CAPTION" }) }}</h3>
+                                    </div>
+                                    <div class="panel-body">
+    
+                                        {% if not oView.hasSalutation() %}
+                                            <div class="form-group">
+                                                <label class="control-label col-lg-3" for="invadr_oxuser__oxfname">{{ translate({ ident: "TITLE" }) }}</label>
+                                                <div>
+                                                    {% include "form/fieldset/salutation.html.twig" with {name: "ecred[oxuser__oxsal]", class: "form-control selectpicker"} %}
+                                                </div>
                                             </div>
-                                        </div>
-                                    {% endif %}
+                                        {% endif %}
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                {% endif %}
-
-                <div class="form-group">
-                    <div class="col-lg-9 col-lg-offset-3 offset-lg-3">
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" name="easycreditinvoiceagreement" id="easycredit_invoice_agreement" value=""> {{ oView.getInvoiceAgreementTxt() }}
-                                <div id="easycredit_invoice_agreement_error" style="display:none;" class="text-danger">{{ translate({ ident: "OXPS_EASY_CREDIT_INVOICE_AGREEMENT_ERROR" }) }}</div>
-                                <div id="is_easycredit_api_version_3" style="display:none;">{{ isEasyCreditAPIV3 }}</div>
-                            </label>
+                    {% endif %}
+    
+                    <div class="form-group" style="margin-left:20px; margin-bottom:1em;">
+                        <div>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="easycreditinvoiceagreement" id="easycredit_invoice_agreement" value=""> {{ oView.getInvoiceAgreementTxt() }}
+                                    <div id="easycredit_invoice_agreement_error" style="display:none;" class="text-danger">{{ translate({ ident: "OXPS_EASY_CREDIT_INVOICE_AGREEMENT_ERROR" }) }}</div>
+                                    <div id="is_easycredit_api_version_3" style="display:none;">{{ isEasyCreditAPIV3 }}</div>
+                                </label>
+                            </div>
                         </div>
                     </div>
-                </div>
-
+            </div>    
                 {% capture assign = "easycreditAgreementValidationJS" %}
                     oscHandlePaymentCheckoutEvents();
                 {% endcapture %}

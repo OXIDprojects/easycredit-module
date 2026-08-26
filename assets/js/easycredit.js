@@ -8,24 +8,49 @@ function oscHandlePaymentCheckoutEvents() {
 
     let elemInstallmentPaymentRadio = document.getElementById('payment_easycreditinstallment');
     let elemInvoicePaymentRadio = document.getElementById('payment_easycreditinvoice');
+    let elemInstallmentContainer = document.getElementById('easycredit_installment_container');
+    let elemInvoiceContainer = document.getElementById('easycredit_invoice_container');
+    if (elemInstallmentContainer) {
+        console.log('Hide Installment Container');
+        elemInstallmentContainer.style.display = 'none';
+    }
+    if (elemInvoiceContainer) {
+        console.log('Hide Invoice Container');
+        elemInvoiceContainer.style.display = 'none';
+    }
     if ((elemInstallmentPaymentRadio && elemInstallmentPaymentRadio.checked === true) ||
         (elemInvoicePaymentRadio && elemInvoicePaymentRadio.checked === true)
     ) {
         oscApexAddEvents();
     }
+
+    // payment is pre-selected
+    if (elemInstallmentPaymentRadio && elemInstallmentPaymentRadio.checked === true){
+        elemInstallmentContainer.style.display = 'block';
+    }
+
+    if (elemInvoicePaymentRadio && elemInvoicePaymentRadio.checked === true){
+        elemInvoicePaymentRadio.style.display = 'block';
+    }
 }
 
 function oscHandlePaymentRadioChange(e) {
+    let elemInstallmentContainer = document.getElementById('easycredit_installment_container');
+    let elemInvoiceContainer = document.getElementById('easycredit_invoice_container');
     if (e.target.id === "payment_easycreditinstallment" && e.target.checked === true) {
         oscApexAddEvents();
+        elemInstallmentContainer.style.display = 'block';
     } else {
         oscApexRevertEvents();
+        elemInstallmentContainer.style.display = 'none';
     }
 
     if (e.target.id === "payment_easycreditinvoice" && e.target.checked === true) {
         oscApexAddEvents();
+        elemInvoiceContainer.style.display = 'block';
     } else {
         oscApexRevertEvents();
+        elemInvoiceContainer.style.display = 'none';
     }
 }
 
