@@ -2,6 +2,7 @@
 
 namespace OxidSolutionCatalysts\EasyCredit\Tests\Unit\Application\Controller\Admin;
 
+use OxidEsales\Eshop\Core\Registry;
 use PHPUnit\Framework\TestCase;
 use OxidSolutionCatalysts\EasyCredit\Controller\Admin\EasyCreditOrderEasyCreditController;
 use OxidEsales\Eshop\Application\Model\Order;
@@ -23,6 +24,7 @@ class EasyCreditOrderEasyCreditControllerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+        Registry::getLang()->setBaseLanguage(0);
     }
 
     /**

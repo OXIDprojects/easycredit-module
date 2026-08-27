@@ -6,11 +6,11 @@ use OxidEsales\Eshop\Application\Model\Order;
 use OxidEsales\Eshop\Application\Model\User;
 use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\Eshop\Core\Session;
 use PHPUnit\Framework\TestCase;
 use OxidSolutionCatalysts\EasyCredit\Controller\EasyCreditDispatcherController;
 use OxidSolutionCatalysts\EasyCredit\Core\CrossCutting\EasyCreditLogging;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDic;
-use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDicConfig;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDicFactory;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDicSession;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditApiConfig;
@@ -45,12 +45,17 @@ class EasyCreditDispatcherTest extends TestCase
         parent::tearDown();
     }
 
-    protected function buildDic($oxSession)
+    protected function buildDic($oxSession, $isV3 = false)
     {
         $session = oxNew(EasyCreditDicSession::class, $oxSession);
         $mockApiConfig = oxNew(EasyCreditApiConfig::class, EasyCreditDicFactory::getApiConfigArray());
         $mockLogging = $this->getMockBuilder(EasyCreditLogging::class)->disableOriginalConstructor()->getMock();
         $mockDicConfig = $this->getMockBuilder(Config::class)->disableOriginalConstructor()->getMock();
+        if ($isV3) {
+            $mockApiConfig->config["oxpsECUseV3"] = true;
+        } else {
+            $mockApiConfig->config["oxpsECUseV3"] = false;
+        }
 
         $mockDic = oxNew(
             EasyCreditDic::class,
@@ -65,7 +70,6 @@ class EasyCreditDispatcherTest extends TestCase
 
     public function testInitializeandredirect(): void
     {
-        $this->markTestSkipped('Does not run, investigate and fix');
         $session = oxNew(EasyCreditSession::class);
         $dic = $this->buildDic($session);
 
@@ -93,18 +97,26 @@ class EasyCreditDispatcherTest extends TestCase
         $dispatcher->expects($this->any())->method('getDic')->willReturn($dic);
         $dispatcher->setUser($user);
 
-        $this->assertEquals('payment', $dispatcher->initializeandredirect());
+        $this->assertEquals('payment', $dispatcher->initializeandredirectInstallment());
     }
 
     public function testGetEasyCreditDetails(): void
     {
         $dispatcher = $this->getMockBuilder(EasyCreditDispatcherController::class)
             ->disableOriginalConstructor()
-            ->setMethods(['processEasyCreditDetails'])
+            ->setMethods(['processEasyCreditDetails',
+                'getInstalmentDecision', 
+                'checkInitialization',
+                'checkAuthorization',
+                'loadEasyCreditFinancialInformation'])
             ->getMock();
         $dispatcher->expects($this->any())->method('processEasyCreditDetails')->willReturn(null);
+        $dispatcher->expects($this->any())->method('getInstalmentDecision')->willReturn(null);
+        $dispatcher->expects($this->any())->method('checkInitialization')->willReturn(null);
+        $dispatcher->expects($this->any())->method('checkAuthorization')->willReturn(null);
+        $dispatcher->expects($this->any())->method('loadEasyCreditFinancialInformation')->willReturn(null);
 
-        $this->assertEquals('order', $dispatcher->getEasyCreditDetails());
+        $this->assertEquals('order', $dispatcher->getEasyCreditInstallmentDetails());
     }
 
     public function testGetEasyCreditDetailsException(): void
@@ -120,12 +132,15 @@ class EasyCreditDispatcherTest extends TestCase
             ->getMock();
         $dispatcher->expects($this->any())->method('processEasyCreditDetails')->willThrowException(new \Exception('test'));
         $dispatcher->expects($this->any())->method('getDic')->willReturn($dic);
+        $user = oxNew(User::class);
+        $dispatcher->setUser($user);
 
-        $this->assertEquals('payment', $dispatcher->getEasyCreditDetails());
+        $this->assertEquals('payment', $dispatcher->getEasyCreditInstallmentDetails());
     }
 
     public function testGetEasyCreditDetailsDeps(): void
     {
+        Registry::getSession()->setVariable('paymentid', EasyCreditHelper::EASYCREDIT_INSTALLMENT_PAYMENTID);
         $session = oxNew(EasyCreditSession::class);
         $dic = $this->buildDic($session);
 
@@ -134,6 +149,7 @@ class EasyCreditDispatcherTest extends TestCase
             ->setMethods([
                 'getDic',
                 'getPrice',
+                'getPaymentId'
             ])
             ->getMock();
         $oxBasket->expects($this->any())->method('getDic')->willReturn($dic);
@@ -141,6 +157,7 @@ class EasyCreditDispatcherTest extends TestCase
         $price = oxNew('oxprice');
         $price->setPrice(0.0);
         $oxBasket->expects($this->any())->method('getPrice')->willReturn($price);
+        $oxBasket->expects($this->any())->method('getPaymentId')->willReturn(EasyCreditHelper::EASYCREDIT_INSTALLMENT_PAYMENTID);
 
         $user = oxNew(User::class);
 
@@ -172,7 +189,7 @@ class EasyCreditDispatcherTest extends TestCase
 
         $dispatcher->setUser($user);
 
-        $this->assertEquals('order', $dispatcher->getEasyCreditDetails());
+        $this->assertEquals('order', $dispatcher->getEasyCreditInstallmentDetails());
     }
 
     public function testIsInitializedEmptyStorage(): void
@@ -191,7 +208,7 @@ class EasyCreditDispatcherTest extends TestCase
         $dispatcher->setUser($user);
 
 
-        $this->assertEquals('payment', $dispatcher->getEasyCreditDetails());
+        $this->assertEquals('payment', $dispatcher->getEasyCreditInstallmentDetails());
     }
 
     public function testIsInitializedEmptyVorgangskennung(): void
@@ -219,7 +236,7 @@ class EasyCreditDispatcherTest extends TestCase
         $dispatcher->setUser($user);
 
 
-        $this->assertEquals('payment', $dispatcher->getEasyCreditDetails());
+        $this->assertEquals('payment', $dispatcher->getEasyCreditInstallmentDetails());
     }
 
     public function testIsInitializedInvalidHash(): void
@@ -247,12 +264,11 @@ class EasyCreditDispatcherTest extends TestCase
         $dispatcher->setUser($user);
 
 
-        $this->assertEquals('payment', $dispatcher->getEasyCreditDetails());
+        $this->assertEquals('payment', $dispatcher->getEasyCreditInstallmentDetails());
     }
 
     public function testInitialize(): void
     {
-        $this->markTestSkipped('Does not run, investigate and fix');
         $session = oxNew(EasyCreditSession::class);
         $dic = $this->buildDic($session);
 
@@ -276,7 +292,7 @@ class EasyCreditDispatcherTest extends TestCase
 
         $dispatcher->setUser($user);
 
-        $this->assertEquals('payment', $dispatcher->initializeandredirect());
+        $this->assertEquals('payment', $dispatcher->initializeandredirectInstallment());
     }
 
     public function testGetInstalmentDecision(): void
@@ -310,7 +326,7 @@ class EasyCreditDispatcherTest extends TestCase
         $dispatcher->setUser($user);
 
 
-        $this->assertEquals('payment', $dispatcher->getEasyCreditDetails());
+        $this->assertEquals('payment', $dispatcher->getEasyCreditInstallmentDetails());
     }
 
     public function testGetTbVorgangskennungNull(): void
@@ -337,7 +353,7 @@ class EasyCreditDispatcherTest extends TestCase
         $dispatcher->setUser($user);
 
 
-        $this->assertEquals('payment', $dispatcher->getEasyCreditDetails());
+        $this->assertEquals('payment', $dispatcher->getEasyCreditInstallmentDetails());
     }
 
     public function testLoadEasyCreditFinancialInformationWithoutStorage(): void
@@ -369,7 +385,7 @@ class EasyCreditDispatcherTest extends TestCase
         $dispatcher->setUser($user);
 
 
-        $this->assertEquals('payment', $dispatcher->getEasyCreditDetails());
+        $this->assertEquals('payment', $dispatcher->getEasyCreditInstallmentDetails());
     }
 
     public function testGetFormattedPaymentPlan(): void
@@ -434,7 +450,7 @@ class EasyCreditDispatcherTest extends TestCase
         $dispatcher->setUser($user);
 
 
-        $this->assertEquals('order', $dispatcher->getEasyCreditDetails());
+        $this->assertEquals('order', $dispatcher->getEasyCreditInstallmentDetails());
     }
 
     public function testCall(): void
@@ -467,7 +483,7 @@ class EasyCreditDispatcherTest extends TestCase
 
         $dispatcher->setUser($user);
 
-        $this->assertEquals('payment', $dispatcher->getEasyCreditDetails());
+        $this->assertEquals('payment', $dispatcher->getEasyCreditInstallmentDetails());
     }
 
     public function testGetDic(): void
@@ -478,12 +494,12 @@ class EasyCreditDispatcherTest extends TestCase
             ->getMock();
         $dispatcher->expects($this->any())->method('processEasyCreditDetails')->willThrowException(new \Exception('test'));
 
-        $this->assertEquals('payment', $dispatcher->getEasyCreditDetails());
+        $this->assertEquals('payment', $dispatcher->getEasyCreditInstallmentDetails());
     }
 
     protected function getPaymentHash($oxUser, $oxBasket, $dic): string
     {
-        return md5(json_encode($this->getCurrentInitializationData($oxUser, $oxBasket, $dic)));
+        return hash('sha256', json_encode($this->getCurrentInitializationData($oxUser, $oxBasket, $dic)));
     }
 
     protected function getCurrentInitializationData($oUser, $oBasket, $dic)

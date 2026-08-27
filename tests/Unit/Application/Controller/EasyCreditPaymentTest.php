@@ -73,13 +73,19 @@ class EasyCreditPaymentTest extends TestCase
         $this->assertNotNull($payment->getBasket());
     }
 
-    public function testIsEasyCreditPossible()
+    public function testisEasyCreditInstallmentPossible()
     {
         $payment = oxNew(PaymentController::class);
-        $this->assertFalse($payment->isEasyCreditPossible());
+        $this->assertFalse($payment->isEasyCreditInstallmentPossible());
     }
 
-    public function testIsEasyCreditPossibleAddressMismatch()
+    public function testIsEasyCreditInvoicePossible()
+    {
+        $payment = oxNew(PaymentController::class);
+        $this->assertFalse($payment->isEasyCreditInvoicePossible());
+    }
+
+    public function testisEasyCreditInstallmentPossibleAddressMismatch()
     {
         $payment = $this->getMockBuilder(EasyCreditPaymentController::class)
             ->disableOriginalConstructor()
@@ -87,10 +93,10 @@ class EasyCreditPaymentTest extends TestCase
             ->getMock();
         $payment->expects($this->any())->method('isAddressMismatch')->willReturn(true);
 
-        $this->assertFalse($payment->isEasyCreditPossible());
+        $this->assertFalse($payment->isEasyCreditInstallmentPossible());
     }
 
-    public function testIsEasyCreditPossibleExampleCalculation()
+    public function testisEasyCreditInstallmentPossibleExampleCalculation()
     {
         $payment = $this->getMockBuilder(EasyCreditPaymentController::class)
             ->disableOriginalConstructor()
@@ -98,7 +104,7 @@ class EasyCreditPaymentTest extends TestCase
             ->getMock();
         $payment->expects($this->any())->method('getExampleCalulation')->willReturn(false);
 
-        $this->assertFalse($payment->isEasyCreditPossible());
+        $this->assertFalse($payment->isEasyCreditInstallmentPossible());
     }
 
     public function testGetExampleCalculationResponse()
@@ -215,7 +221,7 @@ class EasyCreditPaymentTest extends TestCase
 
     public function testValidatePaymentEasyCreditNotPossible()
     {
-        Registry::getSession()->setVariable('paymentid', EasyCreditHelper::EASYCREDIT_PAYMENTID);
+        Registry::getSession()->setVariable('paymentid', EasyCreditHelper::EASYCREDIT_INSTALLMENT_PAYMENTID);
 
         $payment = oxNew(PaymentController::class);
         $this->assertNull($payment->validatePayment());
@@ -223,29 +229,29 @@ class EasyCreditPaymentTest extends TestCase
 
     public function testValidatePaymentEasyCreditPossible()
     {
-        Registry::getSession()->setVariable('paymentid', EasyCreditHelper::EASYCREDIT_PAYMENTID);
+        Registry::getSession()->setVariable('paymentid', EasyCreditHelper::EASYCREDIT_INSTALLMENT_PAYMENTID);
 
         $payment = $this->getMockBuilder(EasyCreditPaymentController::class)
             ->disableOriginalConstructor()
-            ->setMethods(['isEasyCreditPossible'])
+            ->setMethods(['isEasyCreditInstallmentPossible'])
             ->getMock();
-        $payment->expects($this->any())->method('isEasyCreditPossible')->willReturn(true);
+        $payment->expects($this->any())->method('isEasyCreditInstallmentPossible')->willReturn(true);
 
-        $this->assertEquals('EasyCreditDispatcher?fnc=initializeandredirect', $payment->validatePayment());
+        $this->assertEquals('EasyCreditDispatcher?fnc=initializeandredirectInstallment&stoken='. Registry::getSession()->getSessionChallengeToken(), $payment->validatePayment());
     }
 
     public function testValidatePaymentEasyCreditPossibleAddProfileDataException()
     {
-        Registry::getSession()->setVariable('paymentid', EasyCreditHelper::EASYCREDIT_PAYMENTID);
+        Registry::getSession()->setVariable('paymentid', EasyCreditHelper::EASYCREDIT_INSTALLMENT_PAYMENTID);
 
         $payment = $this->getMockBuilder(EasyCreditPaymentController::class)
             ->disableOriginalConstructor()
             ->setMethods([
-                'isEasyCreditPossible',
+                'isEasyCreditInstallmentPossible',
                 'addProfileData',
             ])
             ->getMock();
-        $payment->expects($this->any())->method('isEasyCreditPossible')->willReturn(true);
+        $payment->expects($this->any())->method('isEasyCreditInstallmentPossible')->willReturn(true);
         $payment->expects($this->any())->method('addProfileData')->willThrowException(new \Exception('TEST'));
 
         $this->assertNull($payment->validatePayment());
@@ -288,7 +294,12 @@ class EasyCreditPaymentTest extends TestCase
     public function testLoadAgreementTxt()
     {
         $response = new \stdClass();
-        $response->zustimmungDatenuebertragungPaymentPage = 'dummy';
+        $apiConfig = oxNew(EasyCreditApiConfig::class, EasyCreditDicFactory::getApiConfigArray());
+        if (true === $apiConfig->config['oxpsECUseV3']) {
+            $response->declarationOfConsent = 'dummy';
+        } else {
+            $response->zustimmungDatenuebertragungPaymentPage = 'dummy';
+        }
 
         $payment = $this->getMockBuilder(EasyCreditPaymentController::class)
             ->disableOriginalConstructor()
@@ -296,7 +307,7 @@ class EasyCreditPaymentTest extends TestCase
             ->getMock();
         $payment->expects($this->any())->method('call')->willReturn($response);
 
-        $this->assertEquals('dummy', $payment->loadAgreementTxt());
+        $this->assertEquals('dummy', $payment->loadInstallmentAgreementTxt());
     }
 
     public function testIsProfileDataMissing()

@@ -54,10 +54,30 @@ class EasyCreditBasketTest extends TestCase
         $this->assertNotTrue($oxBasket->hasInterestsAmount());
     }
 
+    public function testGetInterestsAmountNoStorage(): void
+    {
+        $session = oxNew(EasyCreditSession::class);
+        // $session->setVariable('paymentid', EasyCreditHelper::EASYCREDIT_INSTALLMENT_PAYMENTID);
+
+        $dic = $this->getMockBuilder(EasyCreditDic::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getSession'])
+            ->getMock();
+        $dic->expects($this->any())->method('getSession')->willReturn($session);
+
+        $oxBasket = $this->getMockBuilder(EasyCreditBasket::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getDic'])
+            ->getMock();
+        $oxBasket->expects($this->any())->method('getDic')->willReturn($dic);
+
+        $this->assertNull($oxBasket->getInterestsAmount());
+    }
+
     public function testGetInterestsAmount(): void
     {
         $session = oxNew(EasyCreditSession::class);
-        $session->setVariable('paymentid', EasyCreditHelper::EASYCREDIT_PAYMENTID);
+        $session->setVariable('paymentid', EasyCreditHelper::EASYCREDIT_INSTALLMENT_PAYMENTID);
 
         $dic = $this->getMockBuilder(EasyCreditDic::class)
             ->disableOriginalConstructor()
@@ -76,26 +96,6 @@ class EasyCreditBasketTest extends TestCase
         $oxBasket->expects($this->any())->method('getDic')->willReturn($dic);
 
         $this->assertEquals(20.7, $oxBasket->getInterestsAmount());
-    }
-
-    public function testGetInterestsAmountNoStorage(): void
-    {
-        $session = oxNew(EasyCreditSession::class);
-        $session->setVariable('paymentid', EasyCreditHelper::EASYCREDIT_PAYMENTID);
-
-        $dic = $this->getMockBuilder(EasyCreditDic::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['getSession'])
-            ->getMock();
-        $dic->expects($this->any())->method('getSession')->willReturn($session);
-
-        $oxBasket = $this->getMockBuilder(EasyCreditBasket::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['getDic'])
-            ->getMock();
-        $oxBasket->expects($this->any())->method('getDic')->willReturn($dic);
-
-        $this->assertNull($oxBasket->getInterestsAmount());
     }
 
     public function testSetCostExclude(): void
@@ -140,7 +140,7 @@ class EasyCreditBasketTest extends TestCase
     public function testCalcInterestsCost(): void
     {
         $session = oxNew(EasyCreditSession::class);
-        $session->setVariable('paymentid', EasyCreditHelper::EASYCREDIT_PAYMENTID);
+        $session->setVariable('paymentid', EasyCreditHelper::EASYCREDIT_INSTALLMENT_PAYMENTID);
 
         $dic = $this->getMockBuilder(EasyCreditDic::class)
             ->disableOriginalConstructor()
