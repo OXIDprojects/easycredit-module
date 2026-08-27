@@ -710,7 +710,7 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
             $convertedBirthday = $user->convertBirthday($birthday);
             if ($convertedBirthday) {
                 if (strtotime($convertedBirthday) > time()) {
-                    throw new EasyCreditException("OXPS_EASY_CREDIT_ERROR_DATEOFBIRTH_INVALID");
+                    throw new EasyCreditException((Registry::getLang()->translateString('OXPS_EASY_CREDIT_ERROR_DATEOFBIRTH_INVALID')));
                 }
                 return $convertedBirthday;
             }
