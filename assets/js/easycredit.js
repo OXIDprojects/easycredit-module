@@ -11,11 +11,9 @@ function oscHandlePaymentCheckoutEvents() {
     let elemInstallmentContainer = document.getElementById('easycredit_installment_container');
     let elemInvoiceContainer = document.getElementById('easycredit_invoice_container');
     if (elemInstallmentContainer) {
-        console.log('Hide Installment Container');
         elemInstallmentContainer.style.display = 'none';
     }
     if (elemInvoiceContainer) {
-        console.log('Hide Invoice Container');
         elemInvoiceContainer.style.display = 'none';
     }
     if ((elemInstallmentPaymentRadio && elemInstallmentPaymentRadio.checked === true) ||
@@ -30,7 +28,7 @@ function oscHandlePaymentCheckoutEvents() {
     }
 
     if (elemInvoicePaymentRadio && elemInvoicePaymentRadio.checked === true){
-        elemInvoicePaymentRadio.style.display = 'block';
+        elemInvoiceContainer.style.display = 'block';
     }
 }
 
@@ -38,19 +36,27 @@ function oscHandlePaymentRadioChange(e) {
     let elemInstallmentContainer = document.getElementById('easycredit_installment_container');
     let elemInvoiceContainer = document.getElementById('easycredit_invoice_container');
     if (e.target.id === "payment_easycreditinstallment" && e.target.checked === true) {
-        oscApexAddEvents();
-        elemInstallmentContainer.style.display = 'block';
+        if (elemInstallmentContainer) {
+            oscApexAddEvents();
+            elemInstallmentContainer.style.display = 'block';
+        }
     } else {
-        oscApexRevertEvents();
-        elemInstallmentContainer.style.display = 'none';
+        if (elemInstallmentContainer) {
+            oscApexRevertEvents();
+            elemInstallmentContainer.style.display = 'none';
+        }
     }
 
     if (e.target.id === "payment_easycreditinvoice" && e.target.checked === true) {
-        oscApexAddEvents();
-        elemInvoiceContainer.style.display = 'block';
+        if (elemInvoiceContainer) {
+            oscApexAddEvents();
+            elemInvoiceContainer.style.display = 'block';
+        }
     } else {
-        oscApexRevertEvents();
-        elemInvoiceContainer.style.display = 'none';
+        if (elemInvoiceContainer) {
+            oscApexRevertEvents();
+            elemInvoiceContainer.style.display = 'none';
+        }
     }
 }
 
@@ -95,27 +101,17 @@ function oscGetApexNextButton() {
 
 function oscHandlePaymentForm(e) {
     var paymentForm = document.getElementById('payment');
-    var isEasycreditApiVersion3 = document.getElementById('is_easycredit_api_version_3').innerHTML;
 
-    if (typeof (paymentForm.elements['payment_easycreditinstallment']) !== 'undefined' && paymentForm.elements['payment_easycreditinstallment'].checked === true) {
-        document.getElementById("easycredit_installment_agreement_error").style.display = "none";
-        if (typeof (isEasycreditApiVersion3) !== 'undefined' && isEasycreditApiVersion3 !== '1' && document.getElementById("easycredit_installment_agreement").checked === false) {
-            e.preventDefault();
-            document.getElementById("easycredit_installment_agreement_error").style.display = "";
-        } else {
-            paymentForm.submit();
+    if (paymentForm.elements['payment_easycreditinstallment'] && paymentForm.elements['payment_easycreditinstallment'].checked === true) {
+        if (document.getElementById("easycredit_installment_agreement_error")) {
+            document.getElementById("easycredit_installment_agreement_error").style.display = "none";
+            if (document.getElementById("easycredit_installment_agreement").checked === false) {
+                e.preventDefault();
+                document.getElementById("easycredit_installment_agreement_error").style.display = "block";
+            } else {
+                paymentForm.submit();
+            }
         }
-        return true;
-    }
-    if (typeof (paymentForm.elements['payment_easycreditinvoice']) !== 'undefined' && paymentForm.elements['payment_easycreditinvoice'].checked === true) {
-        document.getElementById("easycredit_invoice_agreement_error").style.display = "none";
-        if (typeof (isEasycreditApiVersion3) !== 'undefined' && isEasycreditApiVersion3 !== '1' && document.getElementById("easycredit_invoice_agreement").checked === false) {
-            e.preventDefault();
-            document.getElementById("easycredit_invoice_agreement_error").style.display = "";
-        } else {
-            paymentForm.submit();
-        }
-        return true;
     }
     return true
 }
