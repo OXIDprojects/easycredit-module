@@ -102,15 +102,13 @@ function oscGetApexNextButton() {
 function oscHandlePaymentForm(e) {
     var paymentForm = document.getElementById('payment');
 
-    if (paymentForm.elements['payment_easycreditinstallment'] && paymentForm.elements['payment_easycreditinstallment'].checked === true) {
-        if (document.getElementById("easycredit_installment_agreement_error")) {
-            document.getElementById("easycredit_installment_agreement_error").style.display = "none";
-            if (document.getElementById("easycredit_installment_agreement").checked === false) {
-                e.preventDefault();
-                document.getElementById("easycredit_installment_agreement_error").style.display = "block";
-            } else {
-                paymentForm.submit();
-            }
+    if (paymentForm.elements['payment_easycreditinstallment'] && paymentForm.elements['payment_easycreditinstallment'].checked === true && document.getElementById("easycredit_installment_agreement_error")) {
+        document.getElementById("easycredit_installment_agreement_error").style.display = "none";
+        if (document.getElementById("easycredit_installment_agreement").checked === false) {
+            e.preventDefault();
+            document.getElementById("easycredit_installment_agreement_error").style.display = "block";
+        } else {
+            paymentForm.submit();
         }
     } else {
         paymentForm.submit();
