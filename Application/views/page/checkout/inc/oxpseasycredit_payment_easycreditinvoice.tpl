@@ -14,7 +14,7 @@
             </div>
         [{/if}]
     </dt>
-    <dd class="payment-option[{if $oView->getCheckedPaymentId() == $paymentmethod->oxpayments__oxid->value}]activePayment[{/if}]">
+    <dd id="easycredit_invoice_container" class="payment-option[{if $oView->getCheckedPaymentId() == $paymentmethod->oxpayments__oxid->value}]activePayment[{/if}]">
         [{if $easyCreditInvoiceIsPossible}]
             <div class="col-lg-offset-3">
                 <img class="payment-logo-easycredit" src="[{$oViewConf->getModuleUrl('oxpseasycredit')}]out/pictures/eclogo.png" alt="Easy Credit">
@@ -70,8 +70,16 @@
                                 <input type="checkbox" name="easycreditinvoiceagreement" id="easycredit_invoice_agreement">
                                 <div>[{$oView->getInvoiceAgreementTxt()}]</div>
                 </div>
-
-
+                [{capture assign="easycreditInvoiceJS"}]
+                    [{strip}]
+                        if ($('#payment_easycreditinvoice').is(':checked')) {
+                            $('#easycredit_invoice_container').show();
+                        } else {
+                            $('#easycredit_invoice_container').hide();
+                        }
+                    [{/strip}]
+                [{/capture}]
+                [{oxscript add=$easycreditInvoiceJS}]
 
             [{/block}]
         [{/if}]

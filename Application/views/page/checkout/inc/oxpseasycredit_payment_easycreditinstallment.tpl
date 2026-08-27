@@ -14,7 +14,7 @@
             </div>
         [{/if}]
     </dt>
-    <dd class="payment-option[{if $oView->getCheckedPaymentId() == $paymentmethod->oxpayments__oxid->value}]activePayment[{/if}]">
+    <dd id="easycredit_installment_container" class="payment-option[{if $oView->getCheckedPaymentId() == $paymentmethod->oxpayments__oxid->value}]activePayment[{/if}]">
         [{if $easyCreditInstallmentIsPossible}]
             <div class="col-lg-offset-3">
                 <img class="payment-logo-easycredit" src="[{$oViewConf->getModuleUrl('oxpseasycredit')}]out/pictures/eclogo.png" alt="Easy Credit">
@@ -75,7 +75,7 @@
                     </div>
                 </div>
 
-                [{capture assign="easycreditInstallmentAgreementValidationJS"}]
+                [{capture assign="easycreditInstallmentJS"}]
                     [{strip}]
                             $("#paymentNextStepBottom").click(function(event){
                                 if ($('#easycredit_installment_agreement_error').length){
@@ -89,9 +89,15 @@
                                     return true;
                                 }
                             });
+                            if ($('#payment_easycreditinstallment').is(':checked')) {
+                                $('#easycredit_installment_container').show();
+                            }
+                            else {
+                                $('#easycredit_installment_container').hide();
+                            }
                     [{/strip}]
                 [{/capture}]
-                [{oxscript add=$easycreditInstallmentAgreementValidationJS}]
+                [{oxscript add=$easycreditInstallmentJS}]
 
             [{/block}]
         [{/if}]
