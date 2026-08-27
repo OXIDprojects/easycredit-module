@@ -78,7 +78,7 @@
                 [{capture assign="easycreditInstallmentAgreementValidationJS"}]
                     [{strip}]
                             $("#paymentNextStepBottom").click(function(event){
-                                if ($('easycredit_installment_agreement_error').length){
+                                if ($('#easycredit_installment_agreement_error').length){
                                     $('#easycredit_installment_agreement_error').hide();
                                     var success = true;
                                     if ( $('#easycredit_installment_agreement').is(':visible') && $('#easycredit_installment_agreement').is(':not(:checked)') )
