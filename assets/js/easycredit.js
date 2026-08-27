@@ -112,6 +112,7 @@ function oscHandlePaymentForm(e) {
                 paymentForm.submit();
             }
         }
+    } else {
+        paymentForm.submit();
     }
-    return true
 }
