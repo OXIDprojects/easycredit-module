@@ -24,10 +24,12 @@ function oscHandlePaymentCheckoutEvents() {
 
     // payment is pre-selected
     if (elemInstallmentPaymentRadio && elemInstallmentPaymentRadio.checked === true){
+        oscApexAddEvents();
         elemInstallmentContainer.style.display = 'block';
     }
 
     if (elemInvoicePaymentRadio && elemInvoicePaymentRadio.checked === true){
+        oscApexAddEvents();
         elemInvoiceContainer.style.display = 'block';
     }
 }
