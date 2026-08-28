@@ -679,7 +679,6 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
     {
         $customer = $this->getUser();
         if (EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3()) {
-            // StefTest
             $contacts = [
                 'email' => $customer->oxuser__oxusername->value,
                 // 'mobilePhoneNumber' => '',

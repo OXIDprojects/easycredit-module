@@ -485,7 +485,6 @@ class EasyCreditOrder extends EasyCreditOrder_parent
 
         if (EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3()) {
             $wsClient = EasyCreditWebServiceClientFactory::getWebServiceClient(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V3_BESTAETIGEN, $this->getDic(), [$processId], [], true);
-            // StefToDO check response status code for 202 => order can be saved
             $wsClient->executeJsonRequest($wsClient->getHttpmethod(), $wsClient->getFunction(), $requestData);
             // get updated transaction informantion and THEN check the Response for the fields
             $wsClient = EasyCreditWebServiceClientFactory::getWebServiceClient(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V3_FINANCIAL_INFORMATION, $this->getDic(), [$processId], [], true);

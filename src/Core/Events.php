@@ -85,7 +85,6 @@ class Events
             if ($response && $response->message === $testMessage) {
                 // Do nothing
             } else {
-                // StefTest: Translations
                 EasyCreditDicFactory::getDic()->getLogging()->log('EasyCredit credentials are not valid.');
                 Registry::getUtilsView()->addErrorToDisplay(
                     oxNew(
