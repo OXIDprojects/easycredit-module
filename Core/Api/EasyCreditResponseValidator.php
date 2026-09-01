@@ -168,7 +168,7 @@ class EasyCreditResponseValidator
      */
     protected function getDic()
     {
-        if(!$this->dic) {
+        if (!$this->dic) {
             $this->dic = EasyCreditDicFactory::getDic();
         }
 

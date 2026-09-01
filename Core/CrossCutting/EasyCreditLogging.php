@@ -52,14 +52,14 @@ class EasyCreditLogging
         $this->logFileName = $logFileName;
     }
 
-    public function logRestRequest($encodedData, $encodedResponse, $serviceUrl, $duration)
+    public function logRestRequest($encodedData, $encodedResponse, $serviceUrl, $duration, $statusCode)
     {
         if ($this->isLogEnabled()) {
-            return $this->log($this->buildRequestString($encodedData, $encodedResponse, $serviceUrl, $duration));
+            return $this->log($this->buildRequestString($encodedData, $encodedResponse, $serviceUrl, $duration, $statusCode));
         }
     }
 
-    protected function buildRequestString($encodedData, $encodedResponse, $serviceUrl, $duration)
+    protected function buildRequestString($encodedData, $encodedResponse, $serviceUrl, $duration, $statusCode)
     {
         $result = $serviceUrl . PHP_EOL;
         $result .= str_repeat('=', 60) . PHP_EOL;
@@ -70,7 +70,7 @@ class EasyCreditLogging
         }
 
         if ($encodedResponse) {
-            $result .= 'response:' . PHP_EOL;
+            $result .= 'response:' . $statusCode . PHP_EOL;
             $result .= $this->buildPrettyJsonString($encodedResponse);
         }
 

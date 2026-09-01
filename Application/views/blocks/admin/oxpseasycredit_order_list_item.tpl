@@ -13,8 +13,11 @@
 
 <td valign="top" class="[{$listclass}] ecorder" height="15"><div class="listitemfloating">
         &nbsp;<a href="Javascript:top.oxid.admin.editThis('[{$listitem->oxorder__oxid->value}]');" class="[{$listclass}]">
-            [{if $listitem->oxorder__ecredfunctionalid->value}]
-            [{oxmultilang ident="EASY_CREDIT_ORDER_TYPE"}]
+            [{if $listitem->oxorder__ecredfunctionalid->value && $listitem->oxorder__oxpaymenttype->value == 'easycreditinstallment'  }]
+                [{oxmultilang ident="EASY_CREDIT_ORDER_TYPE_INSTALLMENT"}]
+            [{/if}]
+            [{if $listitem->oxorder__ecredfunctionalid->value && $listitem->oxorder__oxpaymenttype->value == 'easycreditinvoice'  }]
+                [{oxmultilang ident="EASY_CREDIT_ORDER_TYPE_INVOICE"}]
             [{/if}]
         </a>
     </div>

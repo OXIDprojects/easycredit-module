@@ -1,10 +1,10 @@
-[{assign var="easyCreditInstallmentIsPossible" value=$oView->isEasyCreditInstallmentPossible() }]
+[{assign var="easyCreditInvoiceIsPossible" value=$oView->isEasyCreditInvoicePossible() }]
 [{assign var="isEasyCreditAPIV3" value=$oView->isEasyCreditAPIV3() }]
 <dl>
     <dt>
-        <input id="payment_[{$sPaymentID}]" type="radio" name="paymentid" value="[{$sPaymentID}]" [{if $oView->getCheckedPaymentId() == $paymentmethod->oxpayments__oxid->value && $easyCreditInstallmentIsPossible}]checked[{/if}][{if !$easyCreditInstallmentIsPossible}] disabled[{/if}]>
-        <label for="payment_[{$sPaymentID}]"[{if !$easyCreditInstallmentIsPossible}] class="easycreditdisabled"[{/if}]><b>[{$paymentmethod->oxpayments__oxdesc->value}]</b></label>
-        [{if !$easyCreditInstallmentIsPossible}]
+        <input id="payment_[{$sPaymentID}]" type="radio" name="paymentid" value="[{$sPaymentID}]" [{if $oView->getCheckedPaymentId() == $paymentmethod->oxpayments__oxid->value && $easyCreditInvoiceIsPossible}]checked[{/if}][{if !$easyCreditInvoiceIsPossible}] disabled[{/if}]>
+        <label for="payment_[{$sPaymentID}]"[{if !$easyCreditInvoiceIsPossible}] class="easycreditdisabled"[{/if}]><b>[{$paymentmethod->oxpayments__oxdesc->value}]</b></label>
+        [{if !$easyCreditInvoiceIsPossible}]
             <div class="col-lg-offset-3">
                 <img class="payment-logo-easycredit" src="[{$oViewConf->getModuleUrl('oxpseasycredit')}]out/pictures/eclogo.png" alt="Easy Credit">
                 [{assign var="errorMsgs" value=$oView->getErrorMessages()}]
@@ -14,8 +14,8 @@
             </div>
         [{/if}]
     </dt>
-    <dd id="easycredit_installment_container" class="payment-option[{if $oView->getCheckedPaymentId() == $paymentmethod->oxpayments__oxid->value}]activePayment[{/if}]">
-        [{if $easyCreditInstallmentIsPossible}]
+    <dd id="easycredit_invoice_container" class="payment-option[{if $oView->getCheckedPaymentId() == $paymentmethod->oxpayments__oxid->value}]activePayment[{/if}]">
+        [{if $easyCreditInvoiceIsPossible}]
             <div class="col-lg-offset-3">
                 <img class="payment-logo-easycredit" src="[{$oViewConf->getModuleUrl('oxpseasycredit')}]out/pictures/eclogo.png" alt="Easy Credit">
             </div>
@@ -38,7 +38,7 @@
                 [{/if}]
             [{/block}]
 
-            [{block name="checkout_payment_easycreditagreement"}]
+            [{block name="checkout_payment_easycreditinvoiceagreement"}]
 
                 <div class="clearfix"></div>
 
@@ -67,37 +67,19 @@
 
                 <div class="form-group">
                     <div class="col-lg-9 col-lg-offset-3 offset-lg-3">
-                                <input type="checkbox" name="easycreditinstallmentagreement" id="easycredit_installment_agreement">
-                                <div>[{$oView->getInstallmentAgreementTxt()}]</div>
-                                [{if !$isEasyCreditAPIV3}]
-                                    <div id="easycredit_installment_agreement_error" style="display:none;" class="text-danger">[{oxmultilang ident="OXPS_EASY_CREDIT_INSTALLMENT_AGREEMENT_ERROR" }]</div>
-                                [{/if}]
-                    </div>
+                                <input type="checkbox" name="easycreditinvoiceagreement" id="easycredit_invoice_agreement">
+                                <div>[{$oView->getInvoiceAgreementTxt()}]</div>
                 </div>
-
-                [{capture assign="easycreditInstallmentJS"}]
+                [{capture assign="easycreditInvoiceJS"}]
                     [{strip}]
-                            $("#paymentNextStepBottom").click(function(event){
-                                if ($('#easycredit_installment_agreement_error').length){
-                                    $('#easycredit_installment_agreement_error').hide();
-                                    var success = true;
-                                    if ( $('#easycredit_installment_agreement').is(':visible') && $('#easycredit_installment_agreement').is(':not(:checked)') )
-                                    {
-                                        event.preventDefault();
-                                        $('#easycredit_installment_agreement_error').show();
-                                    }
-                                    return true;
-                                }
-                            });
-                            if ($('#payment_easycreditinstallment').is(':checked')) {
-                                $('#easycredit_installment_container').show();
-                            }
-                            else {
-                                $('#easycredit_installment_container').hide();
-                            }
+                        if ($('#payment_easycreditinvoice').is(':checked')) {
+                            $('#easycredit_invoice_container').show();
+                        } else {
+                            $('#easycredit_invoice_container').hide();
+                        }
                     [{/strip}]
                 [{/capture}]
-                [{oxscript add=$easycreditInstallmentJS}]
+                [{oxscript add=$easycreditInvoiceJS}]
 
             [{/block}]
         [{/if}]

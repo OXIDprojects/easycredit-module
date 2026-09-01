@@ -41,15 +41,13 @@ class EasyCreditOrderController extends EasyCreditOrderController_parent
     public function getPayment()
     {
         if ($this->_oPayment === null) {
-
             /** @var $payment Payment */
             $payment = $this->parentGetPayment();
-            if ($payment && $payment->getId() == $this->getDic()->getApiConfig()->getEasyCreditInstalmentPaymentId()) {
-
+            if ($payment && $payment->getId() === $this->getDic()->getApiConfig()->getEasyCreditInstallmentPaymentId() ||
+                $payment->getId() === $this->getDic()->getApiConfig()->getEasyCreditInvoicePaymentId()) {
                 $this->checkStorage();
                 $this->appendInstalmentRatesToPaymentDescription($payment);
-            }
-            else {
+            } else {
                 $this->_oPayment = $payment;
             }
         }
@@ -76,12 +74,11 @@ class EasyCreditOrderController extends EasyCreditOrderController_parent
         try {
             /** @var $viewConfig ViewConfig */
             $viewConfig = $this->getViewConfig();
-            $logoFile = $viewConfig->getModulePath('oxpseasycredit', "out" . DIRECTORY_SEPARATOR . "pictures" . DIRECTORY_SEPARATOR . "eclogo.png");
-            if( file_exists($logoFile)) {
-                return $viewConfig->getModuleUrl('oxpseasycredit') . 'out/pictures/eclogo.png';
+            $logoFile = $viewConfig->getModulePath('osceasycredit', "img" . DIRECTORY_SEPARATOR . "ecinstallmentlogo.png");
+            if (file_exists($logoFile)) {
+                return $viewConfig->getModuleUrl('osceasycredit', 'img/ecinstallmentlogo.png');
             }
-        }
-        catch (\Exception $ex) {
+        } catch (\Exception $ex) {
             //that's expected, do nothing else
         }
         return null;
@@ -95,7 +92,7 @@ class EasyCreditOrderController extends EasyCreditOrderController_parent
     public function getTilgungsplanText()
     {
         $storage = $this->getDicSession()->getStorage();
-        if( $storage ) {
+        if ($storage) {
             return $storage->getTilgungsplanTxt();
         }
         return null;
@@ -109,7 +106,7 @@ class EasyCreditOrderController extends EasyCreditOrderController_parent
     protected function getAllgemeineVorgangsdaten()
     {
         $storage = $this->getDicSession()->getStorage();
-        if( $storage ) {
+        if ($storage) {
             return $storage->getAllgemeineVorgangsdaten();
         }
         return null;
@@ -123,7 +120,8 @@ class EasyCreditOrderController extends EasyCreditOrderController_parent
     public function getUrlVorvertraglicheInformationen()
     {
         $allgemeineVorgangsdaten = $this->getAllgemeineVorgangsdaten();
-        if( $allgemeineVorgangsdaten ) {
+        if ($allgemeineVorgangsdaten) {
+            $allgemeineVorgangsdaten = $this->fixObject($allgemeineVorgangsdaten); 
             return $allgemeineVorgangsdaten->urlVorvertraglicheInformationen;
         }
         return null;
@@ -137,7 +135,7 @@ class EasyCreditOrderController extends EasyCreditOrderController_parent
     public function getPaymentPlanTxt()
     {
         $storage = $this->getDicSession()->getStorage();
-        if( $storage ) {
+        if ($storage) {
             return $storage->getRatenplanTxt();
         }
         return null;
@@ -178,14 +176,13 @@ class EasyCreditOrderController extends EasyCreditOrderController_parent
      * Returns the dic container.
      *
      * @return EasyCreditDic
-     * @throws SystemComponentException^
+     * @throws SystemComponentException
      */
     protected function getDic()
     {
-        if(!$this->dic) {
+        if (!$this->dic) {
             $this->dic = EasyCreditDicFactory::getDic();
         }
-
         return $this->dic;
     }
 
@@ -211,5 +208,15 @@ class EasyCreditOrderController extends EasyCreditOrderController_parent
             $this->handleUserException("OXPS_EASY_CREDIT_ERROR_EXPIRED");
             Registry::getUtils()->redirect(Registry::getConfig()->getShopCurrentURL() . '&cl=payment', true, 302);
         }
+    }
+
+    /**
+     * Fix PHP_INCOMPLETE CLASS for Unit Tests
+     * @param $object
+     * @return mixed
+     */
+    function fixObject (&$object)
+    {
+            return ($object = unserialize (serialize ($object)));
     }
 }

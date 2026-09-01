@@ -15,10 +15,14 @@ namespace OxidProfessionalServices\EasyCredit\Core;
 
 use OxidEsales\Eshop\Core\DatabaseProvider;
 use OxidEsales\Eshop\Core\DbMetaDataHandler;
+use OxidEsales\Eshop\Core\Exception\StandardException;
 use OxidEsales\Eshop\Core\Field;
 use \OxidEsales\Eshop\Core\Model\MultiLanguageModel;
 use OxidEsales\Eshop\Application\Model\Content;
 use OxidEsales\Eshop\Core\Registry;
+use OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditWebServiceClientFactory;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditApiConfig;
+use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicFactory;
 
 /**
  * Class oxpsEasyCreditModule
@@ -28,30 +32,6 @@ use OxidEsales\Eshop\Core\Registry;
  */
 class Events
 {
-
-    /**
-     * Class constructor.
-     * Sets current module main data and loads the rest module info.
-     *
-     * Can see no reason for this
-    function __construct()
-    {
-        $sModuleId = 'oxpseasycredit';
-
-        $this->setModuleData(
-            array(
-                 'id'          => $sModuleId,
-                 'title'       => 'OXPS Easy Credit',
-                 'description' => 'OXPS Easy Credit Module',
-            )
-        );
-
-        $this->load($sModuleId);
-
-        Registry::set('oxpsEasyCreditModule', $this);
-    }*/
-
-
     /**
      * Module activation script.
      */
@@ -68,6 +48,38 @@ class Events
     public static function onDeactivate()
     {
         self::_dbEvent('uninstall.sql', 'Error deactivating module: ');
+    }
+
+
+    /**
+     * @return bool
+     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
+     */
+    public static function checkEasyCreditCredentials(): bool
+    {
+        try {
+            $webServiceClient = EasyCreditWebServiceClientFactory::getWebServiceClient(
+                EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V3_INTEGRATIONCHECK,
+                EasyCreditDicFactory::getDic(),
+                [],
+                [],
+                true
+            );
+            $testMessage = 'Ratenkauf Integration Check';
+            $response = $webServiceClient->executeJsonRequest(
+                'POST',
+                '/api/payment/v3/webshop/integrationcheck',
+                ['message' => $testMessage]
+            );
+        } catch (\Exception $ex) {
+            EasyCreditDicFactory::getDic()->getLogging()->log($ex->getMessage());
+            return false;
+        }
+        if ($response && $response->message === $testMessage) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -97,7 +109,7 @@ class Events
     /**
      * Get translated string by the translation code.
      *
-     * @param string  $sCode
+     * @param string $sCode
      * @param boolean $blUseModulePrefix If True - adds the module translations prefix, if False - not.
      *
      * @return string
@@ -115,7 +127,7 @@ class Events
      * Get CMS snippet content by identified ID.
      *
      * @param string $sIdentifier
-     * @param bool   $blNoHtml
+     * @param bool $blNoHtml
      *
      * @return string
      */
@@ -125,10 +137,10 @@ class Events
 
         /** @var Content|MultiLanguageModel $oContent */
         $oContent = oxNew(Content::class);
-        $oContent->loadByIdent(trim((string) $sIdentifier));
+        $oContent->loadByIdent(trim((string)$sIdentifier));
 
         if ($oContent->oxcontents__oxcontent instanceof Field) {
-            $sValue = (string) $oContent->oxcontents__oxcontent->getRawValue();
+            $sValue = (string)$oContent->oxcontents__oxcontent->getRawValue();
             $sValue = (empty($blNoHtml) ? $sValue : nl2br(strip_tags($sValue)));
         }
 
@@ -138,18 +150,18 @@ class Events
     /**
      * Get module setting value.
      *
-     * @param string  $sModuleSettingName Module setting parameter name (key).
-     * @param boolean $blUseModulePrefix  If True - adds the module settings prefix, if False - not.
+     * @param string $sModuleSettingName Module setting parameter name (key).
+     * @param boolean $blUseModulePrefix If True - adds the module settings prefix, if False - not.
      *
      * @return mixed
      */
     public function getSetting($sModuleSettingName, $blUseModulePrefix = true)
     {
         if ($blUseModulePrefix) {
-            $sModuleSettingName = 'oxpsEasyCredit' . (string) $sModuleSettingName;
+            $sModuleSettingName = 'oxpsEasyCredit' . (string)$sModuleSettingName;
         }
 
-        return Registry::getConfig()->getConfigParam((string) $sModuleSettingName);
+        return Registry::getConfig()->getConfigParam((string)$sModuleSettingName);
     }
 
     /**
@@ -166,15 +178,16 @@ class Events
      * Install/uninstall event.
      * Executes SQL queries form a file.
      *
-     * @param string $sSqlFile      SQL file located in module docs folder (usually install.sql or uninstall.sql).
+     * @param string $sSqlFile SQL file located in module docs folder (usually install.sql or uninstall.sql).
      * @param string $sFailureError An error message to show on failure.
      */
     protected static function _dbEvent($sSqlFile, $sFailureError = 'Operation failed: ')
     {
         try {
-            $oDb  = DatabaseProvider::getDb();
-            $sSql = file_get_contents(dirname(__FILE__) . '/../installments/' . (string) $sSqlFile);
-            $aSql = (array) explode(';', $sSql);
+            $oDb = DatabaseProvider::getDb();
+            $file = dirname(__FILE__) . '/../installments/' . (string)$sSqlFile;
+            $sSql = file_get_contents($file);
+            $aSql = (array)explode(';', $sSql);
 
             foreach ($aSql as $sQuery) {
                 if (!empty($sQuery)) {
@@ -203,7 +216,7 @@ class Events
      */
     protected static function _getFolderToClear($sClearFolderPath = '')
     {
-        $sTempFolderPath = (string) Registry::getConfig()->getConfigParam('sCompileDir');
+        $sTempFolderPath = (string)Registry::getConfig()->getConfigParam('sCompileDir');
 
         if (!empty($sClearFolderPath) and (strpos($sClearFolderPath, $sTempFolderPath) !== false)) {
             $sFolderPath = $sClearFolderPath;
@@ -224,7 +237,7 @@ class Events
      */
     protected static function _clear($sFileName, $sFilePath)
     {
-        if (!in_array($sFileName, array('.', '..', '.gitkeep', '.htaccess'))) {
+        if (!in_array($sFileName, ['.', '..', '.gitkeep', '.htaccess'])) {
             if (is_file($sFilePath)) {
                 @unlink($sFilePath);
             } else {
@@ -236,17 +249,18 @@ class Events
     /**
      * Adds easyCredit new columns
      */
-    protected static function _dbEventAddColums() {
+    protected static function _dbEventAddColums()
+    {
 
         $oDb = DatabaseProvider::getDb();
 
         $dbStructure = file_get_contents(dirname(__FILE__) . '/../installments/install_adddbcolumns.json');
-        if(!$dbStructure ) {
+        if (!$dbStructure) {
             return;
         }
 
         $addColumns = json_decode($dbStructure, true);
-        if( empty($addColumns) ) {
+        if (empty($addColumns)) {
             return;
         }
 
@@ -282,12 +296,12 @@ class Events
      * Install/uninstall event.
      * Executes SQL queries from a shop specific file.
      *
-     * @param string $sSqlFile      SQL file located in module docs folder (usually install.sql or uninstall.sql).
+     * @param string $sSqlFile SQL file located in module docs folder (usually install.sql or uninstall.sql).
      * @param string $sFailureError An error message to show on failure.
      */
     protected static function _dbEventShopSpecific($sSqlFile, $sFailureError = 'Operation failed: ')
     {
-        $sqls = file_get_contents(dirname(__FILE__) . '/../installments/' . (string) $sSqlFile);
+        $sqls = file_get_contents(dirname(__FILE__) . '/../installments/' . (string)$sSqlFile);
         $aShops = DatabaseProvider::getDb()->getAll('SELECT oxid FROM oxshops');
 
         // Iterate all SubShops
@@ -303,7 +317,6 @@ class Events
 
     protected static function _dbEventShopSpecificSql($sql, $aShops, $sFailureError)
     {
-
         foreach ($aShops as $sShopId) {
             $sShopId = reset($sShopId);
             if (!$sShopId) {

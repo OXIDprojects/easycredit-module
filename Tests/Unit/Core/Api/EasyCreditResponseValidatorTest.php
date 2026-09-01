@@ -59,7 +59,7 @@ class EasyCreditResponseValidatorTest extends UnitTestCase
             [
                 "fieldname"     => "ergebnis",
                 "required"      => true,
-                "requiredValue" => success
+                "requiredValue" => 'success'
             ]
         ];
 

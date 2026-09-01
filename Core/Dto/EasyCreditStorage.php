@@ -25,7 +25,7 @@ class EasyCreditStorage
     /** @var string */
     private $tbVorgangskennung;
 
-    /** @var string  */
+    /** @var string */
     private $fachlicheVorgangskennung;
 
     /** @var string */
@@ -46,11 +46,13 @@ class EasyCreditStorage
     /** @var string */
     private $ratenplanTxt;
 
-    function __construct($tbVorgangskennung,
-                         $fachlicheVorgangskennung,
-                         $authorizationHash,
-                         $authorizedAmount) {
-
+    function __construct(
+        $tbVorgangskennung,
+        $fachlicheVorgangskennung,
+        $authorizationHash,
+        $authorizedAmount
+    )
+    {
         $this->tbVorgangskennung = $tbVorgangskennung;
         $this->fachlicheVorgangskennung = $fachlicheVorgangskennung;
         $this->authorizationHash = $authorizationHash;
@@ -74,12 +76,12 @@ class EasyCreditStorage
      *
      * @return bool
      */
-    public function hasExpired() {
-
-        if( empty($this->lastUpdate) ) {
+    public function hasExpired()
+    {
+        if (empty($this->lastUpdate)) {
             return true;
         }
-        if (time() > ($this->lastUpdate + $this->getStorageExpiredTimeRange()) ) {
+        if (time() > ($this->lastUpdate + $this->getStorageExpiredTimeRange())) {
             return true;
         }
         return false;
