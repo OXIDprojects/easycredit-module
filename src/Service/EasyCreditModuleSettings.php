@@ -69,4 +69,29 @@ class EasyCreditModuleSettings
     {
         return $this->moduleSettingService->getBoolean('oxpsECExampleUseOwnjQuery', 'osceasycredit');
     }
+
+    public function getOxpsECBaseUrlV3()
+    {
+        return (string) $this->moduleSettingService->getString('oxpsECBaseUrlV3', 'osceasycredit');
+    }
+
+    public function getOxpsECDealerInterfaceUrlV3()
+    {
+        return (string) $this->moduleSettingService->getString('oxpsECDealerInterfaceUrlV3', 'osceasycredit');
+    }
+
+    public function getOxpsECUseV3()
+    {
+        return $this->moduleSettingService->getBoolean('oxpsECUseV3', 'osceasycredit');
+    }
+
+    public function getOxpsECUseHMAC()
+    {
+        return $this->moduleSettingService->getBoolean('oxpsECUseHMAC', 'osceasycredit');
+    }
+
+    public function getOxpsECHMACHeader()
+    {
+        return $this->moduleSettingService->getString('oxpsECHMACHeader', 'osceasycredit');
+    }
 }

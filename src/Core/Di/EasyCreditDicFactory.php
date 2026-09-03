@@ -57,11 +57,17 @@ class EasyCreditDicFactory
             EasyCreditApiConfig::API_CONFIG_CREDENTIALS => [
                 EasyCreditApiConfig::API_CONFIG_CREDENTIAL_BASE_URL      => $config->getOxpsECBaseUrl(),
                 EasyCreditApiConfig::API_CONFIG_CREDENTIAL_APP_URL       => $config->getOxpsECDealerInterfaceUrl(),
+                EasyCreditApiConfig::API_CONFIG_CREDENTIAL_BASE_URL_V3   => $config->getOxpsECBaseUrlV3(),
+                EasyCreditApiConfig::API_CONFIG_CREDENTIAL_APP_URL_V3    => $config->getOxpsECDealerInterfaceUrlV3(),
                 EasyCreditApiConfig::API_CONFIG_CREDENTIAL_WEBSHOP_ID    => $config->getOxpsECWebshopId(),
                 EasyCreditApiConfig::API_CONFIG_CREDENTIAL_WEBSHOP_TOKEN => $config->getOxpsECWebshopToken(),
             ],
             EasyCreditApiConfig::API_CONFIG_SERVICES => $services,
             EasyCreditApiConfig::API_CONFIG_VALIDATION_SCHEMES => $validationSchemes,
+            EasyCreditApiConfig::API_CONFIG_V3_ENABLED => $config->getOxpsECUseV3(),
+            EasyCreditApiConfig::API_CONFIG_HMAC_HEADER_ENABLED => $config->getOxpsECUseHMAC(),
+            EasyCreditApiConfig::API_CONFIG_HMAC_HEADER => $config->getOxpsECHMACHeader(),
+            
         ];
     }
 

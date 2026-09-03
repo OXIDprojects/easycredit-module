@@ -18,7 +18,8 @@ class EasyCreditTradingApiAccessTest extends TestCase
 {
     protected function setUp(): void
     {
-        parent::setUp();;
+        Registry::getLang()->setBaseLanguage(0);
+        parent::setUp();
     }
 
     protected function tearDown(): void

@@ -36,7 +36,13 @@
           "coltype": "TEXT",
           "colnullable": "NULL",
           "comment": "status of order - delivery reported, in account ..."
-        }
+        },
+        {
+          "colname": "ECREDISV3ORDER",
+          "coltype": "BOOLEAN",
+          "colnullable": "NULL",
+          "comment": "order was created with v3 api"
+        }        
       ]
     }
 }

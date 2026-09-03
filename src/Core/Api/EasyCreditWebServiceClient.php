@@ -14,6 +14,7 @@
 namespace OxidSolutionCatalysts\EasyCredit\Core\Api;
 
 use OxidEsales\Eshop\Core\Exception\SystemComponentException;
+use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDicFactory;
 
 /**
  * Class EasyCreditWebServiceClient
@@ -79,7 +80,12 @@ class EasyCreditWebServiceClient extends EasyCreditHttpClient
             }
         }
 
-        $function .= $this->addQueryArgs($queryArgs);
+        $isv3Url = strpos($function, 'v3/') !== false;
+        if (EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3() && $isv3Url !== false) {
+            // do nothing
+        } else {
+            $function .= $this->addQueryArgs($queryArgs);
+        }
 
         $this->_function = $function;
     }

@@ -52,10 +52,14 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
     protected $_oDelAddress;
 
     /** @var null|bool|\\stdClass */
-    private $easyCreditPossible;
+    private $easyCreditInstallmentPossible;
+
+    private $easyCreditInvoicePossible;
 
     /** @var string */
-    private $agreementTxt = false;
+    private $installmentAgreementTxt = false;
+
+    private $invoiceAgreementTxt = false;
 
     /**
      * Returns the dic container.
@@ -87,20 +91,34 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
      * @return bool|\\stdClass
      * @throws SystemComponentException
      */
-    public function isEasyCreditPossible()
+    public function isEasyCreditInstallmentPossible()
     {
-        if ($this->easyCreditPossible === null) {
-            $this->checkEasyCreditPossible();
+        if ($this->easyCreditInstallmentPossible === null) {
+            $this->checkEasyCreditInstallmentPossible();
         }
-        return $this->easyCreditPossible;
+        return $this->easyCreditInstallmentPossible;
+    }
+
+    /**
+     * Checks if ratenkauf is a valid payment in this checkout process. If not, false is returned.
+     *
+     * @return bool|\\stdClass
+     * @throws SystemComponentException
+     */
+    public function isEasyCreditInvoicePossible()
+    {
+        if ($this->easyCreditInvoicePossible === null) {
+            $this->checkEasyCreditInvoicePossible();
+        }
+        return $this->easyCreditInvoicePossible;
     }
 
     /**
      * Part of valid payment check
      */
-    protected function checkEasyCreditPossible()
+    protected function checkEasyCreditInstallmentPossible()
     {
-        $this->easyCreditPossible = true;
+        $this->easyCreditInstallmentPossible = true;
 
         $this->checkEasyCreditForeignAddress();
 
@@ -108,9 +126,25 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
 
         $this->checkEasyCreditPackstation();
 
-        $this->checkEasyCreditAgreementTxt();
+        $this->checkEasyCreditInstallmentAgreementTxt();
 
         $this->checkEasyCreditExampleCalulation();
+    }
+
+    /**
+     * Part of valid payment check
+     */
+    protected function checkEasyCreditInvoicePossible()
+    {
+        $this->easyCreditInvoicePossible = true;
+
+        $this->checkEasyCreditForeignAddress();
+
+        $this->checkEasyCreditAddressMismatch();
+
+        $this->checkEasyCreditPackstation();
+
+        $this->checkEasyCreditInvoiceAgreementTxt();
     }
 
     /**
@@ -119,8 +153,9 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
     protected function checkEasyCreditForeignAddress()
     {
         if ($this->isForeignAddress()) {
-            $this->errorMessages[]    = Registry::getLang()->translateString('OXPS_EASY_CREDIT_ERROR_NO_GERMAN_ADDRESS');
-            $this->easyCreditPossible = false;
+            $this->errorMessages[] = Registry::getLang()->translateString('OXPS_EASY_CREDIT_ERROR_NO_GERMAN_ADDRESS');
+            $this->easyCreditInstallmentPossible = false;
+            $this->easyCreditInvoicePossible = false;
         }
     }
 
@@ -130,8 +165,9 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
     protected function checkEasyCreditAddressMismatch()
     {
         if ($this->isAddressMismatch()) {
-            $this->errorMessages[]    = Registry::getLang()->translateString('OXPS_EASY_CREDIT_ERROR_DEL_ADDRESS');
-            $this->easyCreditPossible = false;
+            $this->errorMessages[] = Registry::getLang()->translateString('OXPS_EASY_CREDIT_ERROR_DEL_ADDRESS');
+            $this->easyCreditInstallmentPossible = false;
+            $this->easyCreditInvoicePossible = false;
         }
     }
 
@@ -141,20 +177,33 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
     protected function checkEasyCreditPackstation()
     {
         if ($this->isPackstation()) {
-            $this->errorMessages[]    = Registry::getLang()->translateString('OXPS_EASY_CREDIT_ERROR_PACKSTATION');
-            $this->easyCreditPossible = false;
+            $this->errorMessages[] = Registry::getLang()->translateString('OXPS_EASY_CREDIT_ERROR_PACKSTATION');
+            $this->easyCreditInstallmentPossible = false;
+            $this->easyCreditInvoicePossible = false;
         }
     }
 
     /**
      * Part of valid payment check
      */
-    protected function checkEasyCreditAgreementTxt()
+    protected function checkEasyCreditInstallmentAgreementTxt()
     {
-        $agreements = $this->getAgreementTxt();
+        $agreements = $this->getInstallmentAgreementTxt();
         if (empty($agreements)) {
-            $this->errorMessages[]    = Registry::getLang()->translateString('OXPS_EASY_CREDIT_ERROR_NO_AGREEMENTS');
-            $this->easyCreditPossible = false;
+            $this->errorMessages[] = Registry::getLang()->translateString('OXPS_EASY_CREDIT_INSTALLMENT_ERROR_NO_AGREEMENTS');
+            $this->easyCreditInstallmentPossible = false;
+        }
+    }
+
+    /**
+     * Part of valid payment check
+     */
+    protected function checkEasyCreditInvoiceAgreementTxt()
+    {
+        $agreements = $this->getInvoiceAgreementTxt();
+        if (empty($agreements)) {
+            $this->errorMessages[] = Registry::getLang()->translateString('OXPS_EASY_CREDIT_INVOICE_ERROR_NO_AGREEMENTS');
+            $this->easyCreditInvoicePossible = false;
         }
     }
 
@@ -165,10 +214,10 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
     {
         $response = $this->getExampleCalulation();
         if (is_string($response)) {
-            $this->errorMessages[]    = $response;
-            $this->easyCreditPossible = false;
+            $this->errorMessages[] = $response;
+            $this->easyCreditInstallmentPossible = false;
         } else {
-            $this->easyCreditPossible = $this->easyCreditPossible && true;
+            $this->easyCreditInstallmentPossible = $this->easyCreditInstallmentPossible && true;
         }
     }
 
@@ -195,7 +244,8 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
      * @return bool|\stdClass
      * @throws SystemComponentException
      */
-    protected function getExampleCalculationResponse() {
+    protected function getExampleCalculationResponse()
+    {
         $price = $this->getPrice();
 
         $payment = oxNew(Payment::class);
@@ -210,7 +260,11 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
         }
 
         try {
-            return $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_MODELLRECHNUNG_GUENSTIGSTER_RATENPLAN, [], [EasyCreditApiConfig::API_CONFIG_SERVICE_REST_ARGUMENT_FINANZIERUNGSBETRAG => $price->getBruttoPrice()]);
+            if ($this->getApiConfig()->getEasyCreditUseApiVersionV3()) {
+                return $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V3_MODELLRECHNUNG_GUENSTIGSTER_RATENPLAN, [],[$this->getApiConfig()->getWebShopId()]);
+            } else {
+                return $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_MODELLRECHNUNG_GUENSTIGSTER_RATENPLAN, [], [EasyCreditApiConfig::API_CONFIG_SERVICE_REST_ARGUMENT_FINANZIERUNGSBETRAG => $price->getBruttoPrice()]);
+            }
         } catch (\Exception $ex) {
             return $ex->getMessage();
         }
@@ -361,12 +415,12 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
     protected function equalAddresses($user, $delAddress)
     {
         return ($user->oxuser__oxfname->value == $delAddress->oxaddress__oxfname->value
-                && $user->oxuser__oxlname->value == $delAddress->oxaddress__oxlname->value
-                && $user->oxuser__oxstreet->value == $delAddress->oxaddress__oxstreet->value
-                && $user->oxuser__oxstreetnr->value == $delAddress->oxaddress__oxstreetnr->value
-                && $user->oxuser__oxzip->value == $delAddress->oxaddress__oxzip->value
-                && $user->oxuser__oxcity->value == $delAddress->oxaddress__oxcity->value
-                && $user->oxuser__oxcountryid->value == $delAddress->oxaddress__oxcountryid->value
+            && $user->oxuser__oxlname->value == $delAddress->oxaddress__oxlname->value
+            && $user->oxuser__oxstreet->value == $delAddress->oxaddress__oxstreet->value
+            && $user->oxuser__oxstreetnr->value == $delAddress->oxaddress__oxstreetnr->value
+            && $user->oxuser__oxzip->value == $delAddress->oxaddress__oxzip->value
+            && $user->oxuser__oxcity->value == $delAddress->oxaddress__oxcity->value
+            && $user->oxuser__oxcountryid->value == $delAddress->oxaddress__oxcountryid->value
         );
     }
 
@@ -396,8 +450,8 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
 
     protected function validateEasyCreditPayment($sPaymentId, $session)
     {
-        if ($sPaymentId == $this->getApiConfig()->getEasyCreditInstalmentPaymentId()) {
-            if (!$this->isEasyCreditPossible()) {
+        if ($sPaymentId == $this->getApiConfig()->getEasyCreditInstallmentPaymentId()) {
+            if (!$this->isEasyCreditInstallmentPossible()) {
                 $session->deleteVariable('paymentid');
                 if (!empty($this->errorMessages)) {
                     foreach ($this->errorMessages as $message) {
@@ -409,13 +463,33 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
 
             try {
                 $this->addProfileData();
-            } catch(\Exception $ex) {
+            } catch (\Exception $ex) {
                 $this->handleUserException($ex->getMessage());
                 return;
             }
-            return 'EasyCreditDispatcher?fnc=initializeandredirect&stoken=' . Registry::getSession()->getSessionChallengeToken();
+            return 'EasyCreditDispatcher?fnc=initializeandredirectInstallment&stoken=' . Registry::getSession()->getSessionChallengeToken();
         }
 
+        if ($sPaymentId == $this->getApiConfig()->getEasyCreditInvoicePaymentId()) {
+            if (!$this->isEasyCreditInvoicePossible()) {
+                $session->deleteVariable('paymentid');
+                if (!empty($this->errorMessages)) {
+                    foreach ($this->errorMessages as $message) {
+                        $this->handleUserException($message);
+                    }
+                }
+                return;
+            }
+
+            try {
+                $this->addProfileData();
+            } catch (\Exception $ex) {
+                $this->handleUserException($ex->getMessage());
+                return;
+            }
+            return 'EasyCreditDispatcher?fnc=initializeandredirectInvoice&stoken=' . Registry::getSession()->getSessionChallengeToken();
+        }
+        
         return parent::validatePayment();
     }
 
@@ -452,12 +526,25 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
      *
      * @return string agreement text
      */
-    public function getAgreementTxt()
+    public function getInstallmentAgreementTxt()
     {
-        if ($this->agreementTxt === false) {
-            $this->agreementTxt = $this->loadAgreementTxt();
+        if ($this->installmentAgreementTxt === false) {
+            $this->installmentAgreementTxt = $this->loadInstallmentAgreementTxt();
         }
-        return $this->agreementTxt;
+        return $this->installmentAgreementTxt;
+    }
+
+    /**
+     * Gets agreement text which has to be accepted by user to use easyCredit
+     *
+     * @return string agreement text
+     */
+    public function getInvoiceAgreementTxt()
+    {
+        if ($this->invoiceAgreementTxt === false) {
+            $this->invoiceAgreementTxt = $this->loadInvoiceAgreementTxt();
+        }
+        return $this->invoiceAgreementTxt;
     }
 
     /**
@@ -465,13 +552,39 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
      *
      * @return string agreements or null
      */
-    protected function loadAgreementTxt()
+    protected function loadInstallmentAgreementTxt()
     {
         try {
-            $response = $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_ZUSTIMMUNGSTEXTE, [$this->getWebshopId()]);
-            return $response->zustimmungDatenuebertragungPaymentPage;
-        } catch(\Exception $ex) {
-            Registry::getLogger()->error('EasyCredit loadAgreementTxt failed: ' . $ex->getMessage(), ['exception' => $ex]);
+            if ($this->getApiConfig()->getEasyCreditUseApiVersionV3()) {
+                $response = $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V3_ZUSTIMMUNGSTEXTE, [$this->getWebshopId()]);
+                return $response->declarationOfConsent;
+            } else {
+                $response = $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_ZUSTIMMUNGSTEXTE, [$this->getWebshopId()]);
+                return $response->zustimmungDatenuebertragungPaymentPage;
+            }
+        } catch (\Exception $ex) {
+            Registry::getLogger()->error('EasyCredit loadInstallmentAgreementTxt failed: ' . $ex->getMessage(), ['exception' => $ex]);
+        }
+        return null;
+    }
+
+    /**
+     * Loads agreements by webservice
+     *
+     * @return string agreements or null
+     */
+    protected function loadInvoiceAgreementTxt()
+    {
+        try {
+            if ($this->getApiConfig()->getEasyCreditUseApiVersionV3()) {
+                $response = $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V3_ZUSTIMMUNGSTEXTE, [$this->getWebshopId()]);
+                return $response->privacyApprovalForm;
+            } else {
+                $response = $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_ZUSTIMMUNGSTEXTE, [$this->getWebshopId()]);
+                return $response->zustimmungDatenuebertragungPaymentPage;
+            }
+        } catch (\Exception $ex) {
+            Registry::getLogger()->error('EasyCredit loadInvoiceAgreementTxt failed: ' . $ex->getMessage(), ['exception' => $ex]);
         }
         return null;
     }
@@ -479,20 +592,33 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
     /**
      * Calls webservice endpoint
      *
+     * @return \stdClass response
+     * @throws \Exception if something happened
+     * @var array $queryArguments query args
      * @var string $endpoint name of the service
      * @var array $additionalArguments args which can be used in url
-     * @var array $queryArguments query args
-     * @return string response
-     * @throws \Exception if something happened
      */
     protected function call($endpoint, $additionalArguments = [], $queryArguments = [])
     {
         try {
-            $webServiceClient = EasyCreditWebServiceClientFactory::getWebServiceClient($endpoint
-                , $this->getDic()
-                , $additionalArguments
-                , $queryArguments);
-            return $webServiceClient->execute();
+            if ($this->getApiConfig()->getEasyCreditUseApiVersionV3()) {
+                $webServiceClient = EasyCreditWebServiceClientFactory::getWebServiceClient(
+                    $endpoint,
+                    $this->getDic(),
+                    $additionalArguments,
+                    $queryArguments,
+                    true
+                );
+                return $webServiceClient->executeJsonRequest('GET', $webServiceClient->getFunction());
+            } else {
+                $webServiceClient = EasyCreditWebServiceClientFactory::getWebServiceClient(
+                    $endpoint,
+                    $this->getDic(),
+                    $additionalArguments,
+                    $queryArguments
+                );
+                return $webServiceClient->execute();
+            }
         } catch (\Exception $ex) {
             $this->handleException($ex);
             throw $ex;
@@ -584,7 +710,7 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
             $convertedBirthday = $user->convertBirthday($birthday);
             if ($convertedBirthday) {
                 if (strtotime($convertedBirthday) > time()) {
-                    throw new EasyCreditException("OXPS_EASY_CREDIT_ERROR_DATEOFBIRTH_INVALID");
+                    throw new EasyCreditException((Registry::getLang()->translateString('OXPS_EASY_CREDIT_ERROR_DATEOFBIRTH_INVALID')));
                 }
                 return $convertedBirthday;
             }
@@ -619,5 +745,22 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
         $oEx = oxNew(ExceptionToDisplay::class);
         $oEx->setMessage($i18nMessage);
         Registry::get("oxUtilsView")->addErrorToDisplay($oEx);
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isEasyCreditAPIV3(): bool
+    {
+        return $this->getApiConfig()->getEasyCreditUseApiVersionV3(); 
+    }
+
+    public function getPaymentList()
+    {
+        $paymentList = parent::getPaymentList();
+        if (!$this->isEasyCreditAPIV3()) {
+            unset($paymentList[$this->getApiConfig()->getEasyCreditInvoicePaymentId()]);
+        }
+        return $paymentList;
     }
 }

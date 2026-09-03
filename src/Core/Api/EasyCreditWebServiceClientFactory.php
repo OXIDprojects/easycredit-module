@@ -63,11 +63,22 @@ class EasyCreditWebServiceClientFactory
         }
 
         if ($addheaders) {
-            $headers = [
-                "Content-Type: application/json;charset=UTF-8",
-                "tbk-rk-shop: " . $apiConfig->getWebshopId(),
-                "tbk-rk-token: " . $apiConfig->getWebShopToken(),
-            ];
+            if ($apiConfig->getEasyCreditUseApiVersionV3()) {
+                $headers = [
+                    'Authorization: Basic ' . base64_encode($apiConfig->getWebshopId() . ":" . $apiConfig->getWebShopToken()),
+                    'accept: application/problem+json',
+                    'Content-Type: application/json'
+                ];
+                if ($apiConfig->getEasyCreditUseHMAC() && !empty($apiConfig->getEasyCreditHMACHeader())) {
+                    $headers['Content-signature'] = 'hmacsha256=' . hash_hmac('sha256', json_encode($additionalArguments, JSON_PRETTY_PRINT), $apiConfig->getEasyCreditHMACHeader());
+                }
+            } else {
+                $headers = [
+                    "Content-Type: application/json;charset=UTF-8",
+                    "tbk-rk-shop: " . $apiConfig->getWebshopId(),
+                    "tbk-rk-token: " . $apiConfig->getWebShopToken(),
+                ];
+            }
             $client->setRequestHeaders($headers);
         }
 
