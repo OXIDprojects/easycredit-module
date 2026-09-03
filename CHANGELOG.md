@@ -13,7 +13,7 @@ per shop, so existing installations keep working after the update.
 ### Added
 
 - Support for the easyCredit API v3 (`/api/payment/v3/*` and `/api/merchant/v3/*` endpoints), switchable via the new `oxpsECUseV3` module setting
-- New payment method `easycreditinvoice` ("easyCredit-Rechnungskauf") next to the existing installment payment, with its own payment template, agreement texts and amount range (50–5000)
+- New payment method `easycreditinvoice` ("easyCredit-Rechnungskauf") next to the existing installment payment, with its own payment template, agreement texts and amount range (50–5000). It is only offered in the checkout while API v3 is active.
 - HMAC request signing for API v3 via `Content-signature` header, configurable with `oxpsECUseHMAC` and `oxpsECHMACHeader`
 - Connection/credentials check against the v3 integration check endpoint, evaluated when saving the module configuration
 - easyCredit web components are loaded in the frontend for the v3 example calculation
@@ -37,7 +37,7 @@ per shop, so existing installations keep working after the update.
 - Frontend JavaScript validation of the payment step
 - Payment checkbox error when API v2 is active
 - Translations and agreement texts in the Azure theme
-- `install.sql` was not executed completely because of a missing statement separator, and `uninstall.sql` now also deactivates the invoice payment
+- `install.sql` was not executed completely during module activation, and `uninstall.sql` now also deactivates the invoice payment
 
 ## [3.0.10] - 2026-04-09
 
