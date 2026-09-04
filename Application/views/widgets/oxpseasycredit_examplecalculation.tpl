@@ -31,10 +31,16 @@
                             $('#easycredit-example-dialog').html(data);
     
                             $('#easycredit-example-dialog').dialog({
+                                draggable: false,
+                                resizable: false,
                                 close: true,
                                 modal: true,
                                 width: 570,
-                                height: 786
+                                height: 786,
+                                classes: {
+                                    "ui-dialog": "easycredit-widget",
+                                    "ui-dialog-titlebar-close": "btn-close"
+                                }
                             });
                         }
                     )
