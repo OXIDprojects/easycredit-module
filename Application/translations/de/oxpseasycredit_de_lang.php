@@ -48,6 +48,13 @@ $aLang = array(
     'OXPS_EASY_CREDIT_ERROR_BESTAETIGEN_FAILED'              => 'Die Ratenzahlung wurde von easyCredit leider nicht bestätigt. Bitte wählen Sie eine andere Zahlungsart.',
     'OXPS_EASY_CREDIT_PAYMENT_PROFILEDATA_CAPTION'           => 'Für eine optimale Ratenentscheidung vervollständigen Sie bitte diese Profildaten',
     'OXPS_EASY_CREDIT_VALIDATION_ERROR'                      => 'Es ist ein Fehler aufgetreten.',
+    'OXPS_EASY_CREDIT_ORDER_INFO'                            => 'Bestellinformation',
+    'OXPS_EASY_CREDIT_ERROR_FNAME_SMALL'                     => 'Der Vorname muss beim easyCredit-Ratenkauf mindestens zwei Zeichen lang sein.',
+    'OXPS_EASY_CREDIT_ERROR_FNAME_LONG'                      => 'Der Vorname darf bei easyCredit-Ratenkäufen maximal 27 Zeichen lang sein.',
+    'OXPS_EASY_CREDIT_ERROR_LNAME_SMALL'                     => 'Der Nachname muss beim easyCredit-Ratenkauf mindestens zwei Zeichen lang sein.',
+    'OXPS_EASY_CREDIT_ERROR_LNAME_LONG'                      => 'Der Nachname darf bei easyCredit-Ratenkäufen maximmal 27 Zeichen lang sein.',
+    'OXPS_EASY_CREDIT_ERROR_FNAME_CONTAINS_INVALID_CHAR'     => 'Ungültige Zeichen im Vornamensfeld beim easyCredit-Ratenkauf: %s',
+    'OXPS_EASY_CREDIT_ERROR_LNAME_CONTAINS_INVALID_CHAR'     => 'Ungültige Zeichen im Nachnamensfeld beim easyCredit-Ratenkauf: %s',
 
     'OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_LIEFERUNG_MELDEN' => 'Lieferung melden',
     'OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_V3_REPORT_CAPTURE' => 'Lieferung melden',
