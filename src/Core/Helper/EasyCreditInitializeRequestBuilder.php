@@ -25,10 +25,12 @@ use OxidEsales\Eshop\Application\Model\Order;
 use OxidEsales\Eshop\Application\Model\User;
 use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Exception\SystemComponentException;
+use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\Session;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditApiConfig;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDic;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDicFactory;
+use OxidSolutionCatalysts\EasyCredit\Core\Exception\EasyCreditException;
 
 /**
  * Class to build the data for request "VorgangInitialisierenRequest" as part of initialization of easyCredit
@@ -651,6 +653,7 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
     protected function getPersonals()
     {
         $user = $this->getUser();
+        $this->validateUser($user);
 
         if (EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3()) {
             return [
@@ -667,6 +670,47 @@ class EasyCreditInitializeRequestBuilder implements EasyCreditInitializeRequestB
                 'nachname' => $user->oxuser__oxlname->value,
                 'geburtsdatum' => $this->convertBirthday(),
             ];
+        }
+    }
+
+    private function validateUser($user)
+    {
+        $fname = $user->oxuser__oxfname->value;
+        $lname = $user->oxuser__oxlname->value;
+        $fnameLength = strlen($fname);
+        $lnameLength = strlen($lname);
+
+        if ($fnameLength < 2) {
+            throw new EasyCreditException('OXPS_EASY_CREDIT_ERROR_FNAME_SMALL');
+        }
+
+        if ($fnameLength > 27) {
+            throw new EasyCreditException('OXPS_EASY_CREDIT_ERROR_FNAME_LONG');
+        }
+
+        if ($lnameLength < 2) {
+            throw new EasyCreditException('OXPS_EASY_CREDIT_ERROR_LNAME_SMALL');
+        }
+
+        if ($lnameLength > 27) {
+            throw new EasyCreditException('OXPS_EASY_CREDIT_ERROR_LNAME_LONG');
+        }
+
+        // Define the allowed character set
+        $pattern = '/[^-a-zÀ-žA-ZäüößÄÖÜěščřžůďťňĎŇŤŠČŘŽŮĚO\'\.\, ]/';
+
+        // Check for invalid characters in first name
+        if (preg_match_all($pattern, $fname, $matches)) {
+            $invalidChars = implode(', ', array_unique($matches[0]));
+            $exceptionMessage = Registry::getLang()->translateString('OXPS_EASY_CREDIT_ERROR_FNAME_CONTAINS_INVALID_CHAR');
+            throw new EasyCreditException(sprintf($exceptionMessage, $invalidChars));
+        }
+
+        // Check for invalid characters in last name
+        if (preg_match_all($pattern, $lname, $matches)) {
+            $invalidChars = implode(', ', array_unique($matches[0]));
+            $exceptionMessage = Registry::getLang()->translateString('OXPS_EASY_CREDIT_ERROR_LNAME_CONTAINS_INVALID_CHAR');
+            throw new EasyCreditException(sprintf($exceptionMessage, $invalidChars));
         }
     }
 
