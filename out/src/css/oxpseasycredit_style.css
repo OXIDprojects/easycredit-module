@@ -4,6 +4,8 @@
     background-repeat: no-repeat;
     padding: 10px 0 20px 60px;
     background-position-y: center;
+    max-width: 100%;
+    z-index: 1111!important;
 }
 
 .easycredit-link {

@@ -17,7 +17,7 @@ use OxidEsales\Eshop\Core\DatabaseProvider;
 use OxidEsales\Eshop\Core\DbMetaDataHandler;
 use OxidEsales\Eshop\Core\Exception\StandardException;
 use OxidEsales\Eshop\Core\Field;
-use \OxidEsales\Eshop\Core\Model\MultiLanguageModel;
+use OxidEsales\Eshop\Core\Model\MultiLanguageModel;
 use OxidEsales\Eshop\Application\Model\Content;
 use OxidEsales\Eshop\Core\Registry;
 use OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditWebServiceClientFactory;

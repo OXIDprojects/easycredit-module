@@ -14,7 +14,7 @@
             </div>
         [{/if}]
     </dt>
-    <dd id="easycredit_invoice_container" class="payment-option[{if $oView->getCheckedPaymentId() == $paymentmethod->oxpayments__oxid->value}]activePayment[{/if}]">
+    <dd id="easycredit_invoice_container" class="payment-option[{if $oView->getCheckedPaymentId() == $paymentmethod->oxpayments__oxid->value}] activePayment[{/if}]">
         [{if $easyCreditInvoiceIsPossible}]
             <div class="col-lg-offset-3">
                 <img class="payment-logo-easycredit" src="[{$oViewConf->getModuleUrl('oxpseasycredit')}]out/pictures/eclogo.png" alt="Easy Credit">
