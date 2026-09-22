@@ -54,13 +54,13 @@ class EasyCreditOrder extends EasyCreditOrder_parent
     /**
      * Overrides standard oxid finalizeOrder method to handle easyCredit payment
      *
-     * @param $oBasket Basket object
+     * @param Basket $oBasket Basket object
      * @param object $oUser Current User object
      * @param bool $blRecalculatingOrder Order recalculation
      *
      * @return integer
      */
-    public function finalizeOrder($oBasket, $oUser, $blRecalculatingOrder = false)
+    public function finalizeOrder(Basket $oBasket, $oUser, $blRecalculatingOrder = false)
     {
         if (!$this->isEasyCreditInstallmentPayment($oBasket->getPaymentId()) &&
             !$this->isEasyCreditInvoicePayment($oBasket->getPaymentId())
@@ -84,9 +84,9 @@ class EasyCreditOrder extends EasyCreditOrder_parent
     /**
      * Set additional attributes to order if payment is easycredit-module instalment
      *
-     * @param $oBasket Shopping basket object
+     * @param Basket $oBasket Shopping basket object
      */
-    public function loadFromBasket($oBasket)
+    public function loadFromBasket(Basket $oBasket)
     {
         parent::loadFromBasket($oBasket);
 
