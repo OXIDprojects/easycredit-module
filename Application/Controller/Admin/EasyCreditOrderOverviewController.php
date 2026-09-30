@@ -109,13 +109,20 @@ class EasyCreditOrderOverviewController extends EasyCreditOrderOverviewControlle
         $tradingApiService->setOrderDeliveredState();
 
         $orderdata = $tradingApiService->getOrderData();
+        $order = $this->loadOrder();
         if (EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3() && $this->order->oxorder__ecredisv3order->value == 1) {
             $state = $orderdata->status;
+            // also update oxpaid date
+            if (($state === 'REPORT_CAPTURE' || $state === 'IN_BILLING') && $this->order->oxorder__oxpaid->value === '0000-00-00 00:00:00')
+            {
+                $order->oxorder__oxpaid = new Field(date('Y-m-d H:i:s'));
+            }
         } else {
             $state = $orderdata[0]->haendlerstatusV2;
+            if ($state === 'IN_ABRECHNUNG' && $this->order->oxorder__oxpaid->value === '0000-00-00 00:00:00') {
+                $order->oxorder__oxpaid = new Field(date('Y-m-d H:i:s'));
+            }
         }
-
-        $order = $this->loadOrder();
         $order->oxorder__ecreddeliverystate = new Field($state, Field::T_RAW);
         $order->save();
     }
