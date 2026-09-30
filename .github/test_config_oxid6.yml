@@ -1,0 +1,18 @@
+# This file is auto-generated during the composer install
+mandatory_parameters:
+  shop_path: source
+  shop_tests_path: tests
+  partial_module_paths: oxps/easycredit
+optional_parameters:
+  is_subshop: false
+  install_shop: false
+  restore_shop_after_tests_suite: false
+  restore_after_acceptance_tests: false
+  restore_after_unit_tests: false
+  tmp_path: /tmp/oxid_test_library/
+  database_restoration_class: DatabaseRestorer
+  activate_all_modules: false
+  run_tests_for_shop: false
+  run_tests_for_modules: true
+  browser_name: firefox
+  retry_times_after_test_fail: 2
