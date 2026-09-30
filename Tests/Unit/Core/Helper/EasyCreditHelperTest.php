@@ -115,7 +115,6 @@ class EasyCreditHelperTest extends UnitTestCase
 
     public function testGetModuleVersionOk(): void
     {
-        $this->markTestSkipped('Skipped for now');
         $apiConfig = oxNew(EasyCreditApiConfig::class, []);
         $dic       = oxNew(EasyCreditDic::class, null, $apiConfig, null, null, null);
 
