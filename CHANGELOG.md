@@ -25,6 +25,7 @@ per shop, so existing installations keep working after the update.
 
 ### Changed
 
+- Minimum requirements raised to OXID eShop 7.1 and PHP 8.1. The module only ships Twig templates, so OXID 7.0 with Smarty was never supported.
 - API v3 uses the existing webshop ID and token, but transmits them as HTTP Basic authentication. No new credentials have to be requested.
 - Additional language keys were added for invoice purchase and for the agreement error messages. Shops that maintain their own copies of the module language files should compare them with the new version.
 - Shops using a customized copy of the easyCredit payment templates should compare them with the new version: the checkout now uses separate redirect functions and separate containers for installment and invoice purchase.
@@ -75,3 +76,107 @@ per shop, so existing installations keep working after the update.
 
 - use ModuleSettings-Container not in the constructor of the viewConfig
 - Telephone-Validation in easyCredit-Wallet, not in OXID
+
+## [4.0.0] - 2025-04-01
+
+### Changed
+
+- Version for OXID 7
+
+### Fixed
+
+- [0007754](https://bugs.oxid-esales.com/view.php?id=7754): fix ModuleChainGenerator that has issue loading EasyCreditPayment
+
+## [3.0.8] - 2022-09-08
+
+### Changed
+
+- Rebranding easyCredit-Ratenkauf
+
+## [3.0.7] - 2022-02-28
+
+### Fixed
+
+- Bugfix release
+
+## [3.0.6] - 2022-02-08
+
+### Changed
+
+- Improve backwards compatibility to PHP 7.2
+- Calculate the installment plan only within the payment price range (by default 200 < x < 10000)
+
+## [3.0.5] - 2022-01-25
+
+### Changed
+
+- Remove payment costs in checkout
+- Add better default values for payment
+
+## [3.0.4] - 2021-12-17
+
+### Changed
+
+- Transfer order number to easyCredit
+- Remove "Ankaufsobergrenze"
+
+## [3.0.3] - 2021-11-19
+
+### Fixed
+
+- Bugfixes
+
+## [3.0.2] - 2021-11-16
+
+### Fixed
+
+- Bugfixes
+
+## [3.0.1] - 2021-11-02
+
+### Fixed
+
+- Bugfixes
+
+## [3.0.0] - 2021-10-11
+
+### Added
+
+- Integrate new API for dealer gateway
+- Transaction overview in admin backend
+- Cancellation (storno) in admin backend
+
+### Changed
+
+- Introduce namespaces
+- No more support for OXID <= 6.0
+
+## [2.0.6] - 2021-07-16
+
+### Fixed
+
+- Elimination of malfunctions in other payment modules
+
+## [2.0.5] - 2021-07-14
+
+### Changed
+
+- Birthday is not required
+- Possibility to use own jQuery UI library in frontend
+
+## [2.0.4] - 2020-12-11
+
+### Changed
+
+- Function check for OXID 6.2.3
+- easyCredit orders are not changeable (discounts, adding articles, ...) in OXID admin backend
+
+## [2.0.0] - 2020-04-30
+
+### Changed
+
+- Version for OXID 6 installable via Composer
+
+## [1.0.0]
+
+- Version for OXID 4 installable via FTP
