@@ -18,29 +18,22 @@ use OxidEsales\Eshop\Core\Field;
 use OxidProfessionalServices\EasyCredit\Application\Model\EasyCreditTradingApiAccess;
 use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicFactory;
 
-/**
- * Class EasyCreditOrderOverviewController
- * Extends the order overviww controller with functionality used for easy credit payment orders.
- * Extend sendOrder method to set state at ec interface to delivered
- *
- * @package OxidProfessionalServices\EasyCredit\Application\Controller\Admin
- */
-class EasyCreditOrderOverviewController extends EasyCreditOrderOverviewController_parent
+class EasyCreditOrderMainController extends EasyCreditOrderMainController_parent
 {
     /**
      * @var Order
      */
     protected $order;
-
+    
     /**
      * Set the state to delivered at easy credit trading gateway.
      *
      * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
      * @throws \OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditCurlException
      */
-    public function sendorder()
+    public function sendOrder()
     {
-        parent::sendorder();
+        parent::sendOrder();
         $functionalId = $this->loadFunctionalIdFromOrder();
         if (!is_null($functionalId)) {
             $this->setOrderDelivered();
@@ -126,5 +119,4 @@ class EasyCreditOrderOverviewController extends EasyCreditOrderOverviewControlle
         $order->oxorder__ecreddeliverystate = new Field($state, Field::T_RAW);
         $order->save();
     }
-
 }

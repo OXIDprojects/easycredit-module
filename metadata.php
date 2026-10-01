@@ -56,6 +56,7 @@ $aModule = [
         \OxidEsales\Eshop\Application\Controller\Admin\OrderOverview::class => \OxidProfessionalServices\EasyCredit\Application\Controller\Admin\EasyCreditOrderOverviewController::class,
         \OxidEsales\Eshop\Application\Controller\Admin\OrderList::class     => \OxidProfessionalServices\EasyCredit\Application\Controller\Admin\EasyCreditOrderListController::class,
         \OxidEsales\Eshop\Application\Controller\Admin\ModuleConfiguration::class => \OxidProfessionalServices\EasyCredit\Application\Controller\Admin\EasyCreditModuleConfiguration::class,
+        \OxidEsales\Eshop\Application\Controller\Admin\OrderMain::class => \OxidProfessionalServices\EasyCredit\Application\Controller\Admin\EasyCreditOrderMainController::class,
 
         # Extending core classes
         \OxidEsales\Eshop\Core\Session::class                               => \OxidProfessionalServices\EasyCredit\Core\Domain\EasyCreditSession::class,
