@@ -31,7 +31,6 @@ class EasyCreditExampleCalculationTest extends TestCase
 
     public function testGetExampleCalculationRate(): void
     {
-        $this->markTestSkipped('skipped for now');
         $calculation = oxNew(EasyCreditExampleCalculation::class);
 
         $this->assertNull($calculation->getExampleCalculationRate());
@@ -39,7 +38,6 @@ class EasyCreditExampleCalculationTest extends TestCase
 
     public function testGetExampleCalculationRateHasExampleCalculation(): void
     {
-        $this->markTestSkipped('skipped for now');
         $calculation = $this->getMockBuilder(EasyCreditExampleCalculation::class)
             ->disableOriginalConstructor()
             ->setMethods(['hasExampleCalculation'])
@@ -51,7 +49,6 @@ class EasyCreditExampleCalculationTest extends TestCase
 
     public function testHasExampleCalculation(): void
     {
-        $this->markTestSkipped('skipped for now');
         $calculation = oxNew(EasyCreditExampleCalculation::class);
 
         $this->assertFalse($calculation->hasExampleCalculation());

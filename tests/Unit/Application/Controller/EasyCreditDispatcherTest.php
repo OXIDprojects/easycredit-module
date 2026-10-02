@@ -5,6 +5,7 @@ namespace OxidSolutionCatalysts\EasyCredit\Tests\Unit\Application\Controller;
 use OxidEsales\Eshop\Application\Model\Order;
 use OxidEsales\Eshop\Application\Model\User;
 use OxidEsales\Eshop\Core\Config;
+use OxidEsales\Eshop\Core\Field;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\Session;
 use PHPUnit\Framework\TestCase;
@@ -140,7 +141,6 @@ class EasyCreditDispatcherTest extends TestCase
 
     public function testGetEasyCreditDetailsDeps(): void
     {
-        $this->markTestSkipped('skipped for now');
         Registry::getSession()->setVariable('paymentid', EasyCreditHelper::EASYCREDIT_INSTALLMENT_PAYMENTID);
         $session = oxNew(EasyCreditSession::class);
         $dic = $this->buildDic($session);
@@ -161,6 +161,8 @@ class EasyCreditDispatcherTest extends TestCase
         $oxBasket->expects($this->any())->method('getPaymentId')->willReturn(EasyCreditHelper::EASYCREDIT_INSTALLMENT_PAYMENTID);
 
         $user = oxNew(User::class);
+        $user->oxuser__oxfname = new Field('Max');
+        $user->oxuser__oxlname = new Field('Mustermann');
 
         $paymentHash = $this->getPaymentHash($user, $oxBasket, $dic);
 
@@ -391,7 +393,6 @@ class EasyCreditDispatcherTest extends TestCase
 
     public function testGetFormattedPaymentPlan(): void
     {
-        $this->markTestSkipped('skipped for now');
         $session = oxNew(EasyCreditSession::class);
         $dic = $this->buildDic($session);
 
@@ -405,6 +406,8 @@ class EasyCreditDispatcherTest extends TestCase
         $session->setVariable(EasyCreditSession::API_CONFIG_STORAGE, serialize($storage));
 
         $user = oxNew(User::class);
+        $user->oxuser__oxfname = new Field('Max');
+        $user->oxuser__oxlname = new Field('Mustermann');
 
         $dispatcher = $this->getMockBuilder(EasyCreditDispatcherController::class)
             ->disableOriginalConstructor()

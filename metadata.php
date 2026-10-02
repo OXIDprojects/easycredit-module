@@ -64,6 +64,7 @@ $aModule = [
         \OxidEsales\Eshop\Application\Model\Basket::class => OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditBasket::class,
         \OxidEsales\Eshop\Application\Model\Order::class => OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditOrder::class,
         \OxidEsales\Eshop\Core\ViewConfig::class => OxidSolutionCatalysts\EasyCredit\Core\EasyCreditViewConfig::class,
+        \OxidEsales\Eshop\Core\Email::class => OxidSolutionCatalysts\EasyCredit\Core\Domain\EasyCreditEmail::class,
     ],
     'settings'    => [
         [
@@ -155,7 +156,27 @@ $aModule = [
             'name'  => 'oxpsECLogging',
             'type'  => 'bool',
             'value' => false,
-        ]
+        ],
+        [
+            'group' => 'EasyCreditCancel',
+            'name'  => 'oxpsECAutomatedRefundOnCancel',
+            'type'  => 'bool',
+            'value' => false,
+        ],
+        [
+            'group'       => 'EasyCreditMails',
+            'name'        => 'oxpsECRefundMailRecipient',
+            'type'        => 'select',
+            'value'       => '0',
+            'constraints' => '0|1|2|3',
+        ],
+        [
+            'group'       => 'EasyCreditMails',
+            'name'        => 'oxpsECCancelMailRecipient',
+            'type'        => 'select',
+            'value'       => '0',
+            'constraints' => '0|1|2|3',
+        ],
     ],
     'events'      => [
         'onActivate'   => '\OxidSolutionCatalysts\EasyCredit\Core\Events::onActivate',

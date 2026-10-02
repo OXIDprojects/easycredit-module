@@ -1,29 +1,23 @@
 name: CI
 
-on: [push, pull_request]
+on:
+  # pushes only on the release branches (b-6.1.x, b-7.0.x, ...), everything else is tested via its pull request
+  push:
+    branches: ['b-*.x']
+  pull_request:
 
 jobs:
   run-b7-matrix:
-    if: startsWith(github.ref_name, 'b-7.')
+    if: startsWith(github.base_ref || github.ref_name, 'b-7.')
     runs-on: ${{ matrix.operating-system }}
     strategy:
       max-parallel: 15
       fail-fast: false
       matrix:
         operating-system: [ubuntu-latest]
-        oxid-versions: ['dev-b-7.0-ce', 'dev-b-7.1-ce', 'dev-b-7.2-ce', 'dev-b-7.3-ce', 'dev-b-7.4-ce', 'dev-b-7.5-ce']
+        oxid-versions: ['dev-b-7.1-ce', 'dev-b-7.2-ce', 'dev-b-7.3-ce', 'dev-b-7.4-ce', 'dev-b-7.5-ce']
         php-versions: ['8.1', '8.2', '8.3', '8.4', '8.5']
         exclude:
-          - oxid-versions: 'dev-b-7.0-ce'
-          - php-versions: '8.1'
-          - oxid-versions: 'dev-b-7.0-ce'
-            php-versions: '8.2'
-          - oxid-versions: 'dev-b-7.0-ce'
-            php-versions: '8.3'
-          - oxid-versions: 'dev-b-7.0-ce'
-            php-versions: '8.4'
-          - oxid-versions: 'dev-b-7.0-ce'
-            php-versions: '8.5'
           - oxid-versions: 'dev-b-7.1-ce'
             php-versions: '8.4'
           - oxid-versions: 'dev-b-7.1-ce'
@@ -140,32 +134,37 @@ jobs:
           docker compose exec -T \
             php composer update
           # fix exceptions after install the testing library
-          head -n -2 source/var/generated/generated_services.yaml  > source/var/generated/generated_services.yaml
+          head -n -2 source/var/generated/generated_services.yaml > generated_services.yaml.tmp
+          mv generated_services.yaml.tmp source/var/generated/generated_services.yaml
 
       - name: create test_config.yml
         run: |
           docker compose exec -T php mv /var/www/source/extensions/easycredit/.github/test_config_oxid7.yml /var/www/test_config.yml
 
       - name: Configure module for v3 API
+        env:
+          MODULE_SETTINGS_OXID7_V3: ${{ secrets.MODULE_SETTINGS_OXID7_V3 }}
         run: |
-          mkdir -p source/var/www/var/configuration/shops/1/modules
-          echo "${{ secrets.MODULE_SETTINGS_OXID7_V3 }}" > source/var/configuration/shops/1/modules/osceasycredit.yaml
+          mkdir -p source/var/configuration/shops/1/modules
+          printf '%s\n' "$MODULE_SETTINGS_OXID7_V3" > source/var/configuration/shops/1/modules/osceasycredit.yaml
           
       - name: Run tests with testing lib against v3 API
         run: |
           docker compose exec -T php /var/www/vendor/bin/runtests   
           
       - name: Configure module for v2 API
+        env:
+          MODULE_SETTINGS_OXID7_V2: ${{ secrets.MODULE_SETTINGS_OXID7_V2 }}
         run: |
-          mkdir -p source/var/www/var/configuration/shops/1/modules
-          echo "${{ secrets.MODULE_SETTINGS_OXID7_V2 }}" > source/var/configuration/shops/1/modules/osceasycredit.yaml
+          mkdir -p source/var/configuration/shops/1/modules
+          printf '%s\n' "$MODULE_SETTINGS_OXID7_V2" > source/var/configuration/shops/1/modules/osceasycredit.yaml
 
       - name: Run tests with testing lib against v2 API
         run: |
           docker compose exec -T php /var/www/vendor/bin/runtests          
 
   run-b6-matrix:
-    if: startsWith(github.ref_name, 'b-6.')
+    if: startsWith(github.base_ref || github.ref_name, 'b-6.')
     runs-on: ${{ matrix.operating-system }}
     strategy:
       max-parallel: 15
@@ -179,8 +178,6 @@ jobs:
             php-versions: '8.1'
           - oxid-versions: 'dev-b-6.3-ce'
             php-versions: '8.1'
-          - oxid-versions: 'dev-b-6.2-ce'
-            php-versions: '8.0'
     steps:
       - name: Clone testing environment
         run: git clone https://github.com/OXID-eSales/docker-eshop-sdk.git .
@@ -271,10 +268,13 @@ jobs:
           \rm -R source/source/tmp/*
 
       - name: configure module for v3 API
+        env:
+          MODULE_SETTINGS_OXID6_V3_PART1: ${{ secrets.MODULE_SETTINGS_OXID6_V3_PART1 }}
+          MODULE_SETTINGS_OXID6_V3_PART2: ${{ secrets.MODULE_SETTINGS_OXID6_V3_PART2 }}
         run: |
           mkdir -p source/var/configuration/environment/
-          echo '${{ secrets.MODULE_SETTINGS_OXID6_V3_PART1 }}' > source/var/configuration/environment/1.yaml
-          echo '${{ secrets.MODULE_SETTINGS_OXID6_V3_PART2 }}' >> source/var/configuration/environment/1.yaml
+          printf '%s\n' "$MODULE_SETTINGS_OXID6_V3_PART1" > source/var/configuration/environment/1.yaml
+          printf '%s\n' "$MODULE_SETTINGS_OXID6_V3_PART2" >> source/var/configuration/environment/1.yaml
           docker compose exec -T php php vendor/bin/oe-console oe:module:apply-configuration          
 
       - name: create test_config.yml
@@ -286,10 +286,13 @@ jobs:
           docker compose exec -T php /var/www/vendor/bin/runtests
 
       - name: configure module for v2 API
+        env:
+          MODULE_SETTINGS_OXID6_V2_PART1: ${{ secrets.MODULE_SETTINGS_OXID6_V2_PART1 }}
+          MODULE_SETTINGS_OXID6_V2_PART2: ${{ secrets.MODULE_SETTINGS_OXID6_V2_PART2 }}
         run: |
           mkdir -p source/var/configuration/environment/
-          echo '${{ secrets.MODULE_SETTINGS_OXID6_V2_PART1 }}' > source/var/configuration/environment/1.yaml
-          echo '${{ secrets.MODULE_SETTINGS_OXID6_V2_PART2 }}' >> source/var/configuration/environment/1.yaml
+          printf '%s\n' "$MODULE_SETTINGS_OXID6_V2_PART1" > source/var/configuration/environment/1.yaml
+          printf '%s\n' "$MODULE_SETTINGS_OXID6_V2_PART2" >> source/var/configuration/environment/1.yaml
           docker compose exec -T php php vendor/bin/oe-console oe:module:apply-configuration         
 
       - name: Run tests with testing lib against v2 API

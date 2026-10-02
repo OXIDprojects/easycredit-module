@@ -144,4 +144,34 @@ class EasyCreditHelperTest extends TestCase
 
         $this->assertEquals('', EasyCreditHelper::getModuleVersion($dic));
     }
+
+    public function acceptedResponseProvider(): array
+    {
+        $response = static function ($statusCode) {
+            $response = new \stdClass();
+            $response->statusCode = $statusCode;
+
+            return $response;
+        };
+
+        return [
+            'ok'                   => [$response(200), true],
+            'accepted'             => [$response(202), true],
+            'no content'           => [$response(204), true],
+            'bad request'          => [$response(400), false],
+            'conflict'             => [$response(409), false],
+            'server error'         => [$response(500), false],
+            'no connection'        => [$response(0), false],
+            'response without code' => [new \stdClass(), false],
+            'no response'          => [null, false],
+        ];
+    }
+
+    /**
+     * @dataProvider acceptedResponseProvider
+     */
+    public function testIsAcceptedResponse($response, bool $expected): void
+    {
+        $this->assertSame($expected, EasyCreditHelper::isAcceptedResponse($response));
+    }
 }

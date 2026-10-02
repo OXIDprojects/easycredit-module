@@ -138,4 +138,17 @@ class EasyCreditHelper
     {
         return $paymentId === self::EASYCREDIT_INVOICE_PAYMENTID;
     }
+
+    /**
+     * easyCredit answers an accepted request with a 2xx status code. The HTTP client does not
+     * throw on error codes, it only adds the code to the response.
+     *
+     * @param \stdClass|null $response
+     *
+     * @return bool
+     */
+    public static function isAcceptedResponse($response): bool
+    {
+        return isset($response->statusCode) && $response->statusCode >= 200 && $response->statusCode < 300;
+    }
 }

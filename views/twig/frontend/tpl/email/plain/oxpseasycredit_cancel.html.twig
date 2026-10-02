@@ -1,0 +1,32 @@
+{% set shop = oEmailView.getShop() %}
+{% set oViewConf = oEmailView.getViewConfig() %}
+{% block oxpseasycredit_email_plain_cancel_intro %}
+{% if isEasyCreditOwnerMail %}
+{{ translate({ ident: "OXPS_EASY_CREDIT_CANCEL_MAIL_INTRO_OWNER" }) }}
+{% else %}
+{{ translate({ ident: "OXPS_EASY_CREDIT_CANCEL_MAIL_SALUTATION" }) }} {{ order.oxorder__oxbillfname.getRawValue() }} {{ order.oxorder__oxbilllname.getRawValue() }},
+
+{{ translate({ ident: "OXPS_EASY_CREDIT_CANCEL_MAIL_INTRO" }) }}
+{% endif %}
+{% endblock %}
+
+{% block oxpseasycredit_email_plain_cancel_details %}
+{{ translate({ ident: "ORDER_NUMBER", suffix: "COLON" }) }} {{ order.oxorder__oxordernr.value }}
+{{ translate({ ident: "OXPS_EASY_CREDIT_CANCEL_MAIL_ORDER_TOTAL", suffix: "COLON" }) }} {{ format_price(order.oxorder__oxtotalordersum.value, { currency: currency }) }}
+{% if easyCreditRefundedAmount is not null %}
+{{ translate({ ident: "OXPS_EASY_CREDIT_CANCEL_MAIL_REFUNDED", suffix: "COLON" }) }} {{ format_price(easyCreditRefundedAmount, { currency: currency }) }}
+{% endif %}
+{% endblock %}
+
+{% block oxpseasycredit_email_plain_cancel_note %}
+{% if not isEasyCreditOwnerMail %}
+{% if easyCreditRefundedAmount is not null %}
+{{ translate({ ident: "OXPS_EASY_CREDIT_REFUND_MAIL_NOTE" }) }}
+{% else %}
+{{ translate({ ident: "OXPS_EASY_CREDIT_CANCEL_MAIL_NOTE_NO_REFUND" }) }}
+{% endif %}
+{% endif %}
+{% endblock %}
+
+{{ shop.oxshops__oxname.getRawValue() }}
+{{ shop.oxshops__oxurl.value }}

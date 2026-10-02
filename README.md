@@ -18,8 +18,12 @@ Contract, credentials and API questions: [easyCredit partner portal](https://par
 * Support for easyCredit API v3 and the legacy API v2, switchable per shop
 * Optional HMAC signing of API v3 requests
 * Example calculation (installment plan) on the product details page, in the basket and in the mini basket
-* Order handling in the OXID admin: additional tab "easyCredit Informationen" in the order view with transaction overview,
-  delivery reporting and cancellation (storno)
+* Order handling in the OXID admin: additional tab "easyCredit Informationen" in the order view with transaction overview
+  and reversal (Rückabwicklung)
+* Delivery report to easyCredit when the order is shipped in the admin; the order is marked as paid as soon as
+  easyCredit has accepted the report
+* Optional automatic reversal at easyCredit when an order is cancelled in the admin
+* Optional confirmation mails for reversals and cancellations to the customer and/or the shop owner (German only)
 * easyCredit orders are protected against changes in the admin (discounts, added articles etc.)
 * Optional request logging
 
@@ -87,6 +91,22 @@ reports whether the credentials are valid.
 * **Activate log** – writes the API requests and responses to `source/log/easycredit-module.log`. Enable only for
   debugging, the log contains order and customer data.
 
+### Cancellation and refund
+
+* **Refund automatically when an order is cancelled** (`oxpsECAutomatedRefundOnCancel`, off by default) – cancelling an
+  easyCredit order in the admin fully reverses the order value that is still open at easyCredit. If easyCredit rejects
+  the reversal, the order stays cancelled and an error message is shown; the reversal can then be done by hand in the
+  tab "easyCredit Informationen".
+
+### Confirmation mails
+
+* **Confirmation mail for refunds** (`oxpsECRefundMailRecipient`) and **Confirmation mail for cancellations**
+  (`oxpsECCancelMailRecipient`) – who is informed: nobody (default), the customer, the shop owner or both.
+* The refund mail is sent once easyCredit has accepted a reversal triggered in the tab "easyCredit Informationen".
+* The cancellation mail is sent when an easyCredit order is cancelled in the order list. If the cancellation reversed
+  the order at easyCredit, the mail states the refunded amount as well, so the customer gets one mail instead of two.
+* The mail texts are available in German only.
+
 ### Payment methods
 
 The payment methods can be adjusted like any other payment method in Shop Settings → Payment Methods (e.g. amount
@@ -95,8 +115,15 @@ easyCredit-Rechnungskauf is only offered in the checkout while API v3 is enabled
 
 ## Order handling
 
-easyCredit orders are processed in the admin under Administer Orders → Orders, tab "easyCredit Informationen". There you can see
-the transaction status at easyCredit, report the delivery and cancel the order.
+easyCredit orders are processed in the admin under Administer Orders → Orders:
+
+* **Ship the order** ("Jetzt versenden" in the tab "Overview" or "Main"): the delivery is reported to easyCredit. As
+  soon as easyCredit has accepted the report, the order is marked as paid (`oxorder.oxpaid`). easyCredit transfers the
+  money later, but the payment is guaranteed from this point on.
+* **Tab "easyCredit Informationen"**: transaction status at easyCredit and reversal of the order (full or partial,
+  with reason). The reversal only counts as done once easyCredit has accepted it.
+* **Cancel the order** in the order list: optionally reverses the open order value at easyCredit, see
+  [Cancellation and refund](#cancellation-and-refund).
 
 Orders placed with API v2 and API v3 can be processed side by side; the module remembers which API was used for
 each order.

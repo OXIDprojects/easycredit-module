@@ -5,8 +5,10 @@ namespace OxidSolutionCatalysts\EasyCredit\Tests\Unit\Application\Controller\Adm
 
 
 use Mollie\Payment\Application\Model\PaymentConfig;
+use OxidEsales\Eshop\Application\Controller\Admin\OrderOverview;
 use OxidEsales\Eshop\Application\Model\Order;
 use OxidEsales\Eshop\Core\Field;
+use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\UtilsObject;
 use PHPUnit\Framework\TestCase;
 use OxidSolutionCatalysts\EasyCredit\Controller\Admin\EasyCreditOrderOverviewController;
@@ -17,7 +19,10 @@ class EasyCreditOrderOverviewControllerTest extends TestCase
 {
     protected function setUp(): void
     {
-        parent::setUp();;
+        parent::setUp();
+        // let OXID build the module chain first, so all _parent aliases exist even if
+        // other modules are placed before easyCredit in the chain
+        Registry::getUtilsObject()->getClassName(OrderOverview::class);
     }
 
     protected function tearDown(): void
@@ -53,7 +58,8 @@ class EasyCreditOrderOverviewControllerTest extends TestCase
             ->onlyMethods(['getEditObjectId'])
             ->getMock();
 
-        $controller->expects($this->exactly(2))
+        // the number of calls depends on the other modules in the OrderOverview chain
+        $controller->expects($this->atLeastOnce())
             ->method('getEditObjectId')
             ->willReturn(null);
 

@@ -94,4 +94,19 @@ class EasyCreditModuleSettings
     {
         return $this->moduleSettingService->getString('oxpsECHMACHeader', 'osceasycredit');
     }
+
+    public function getOxpsECAutomatedRefundOnCancel(): bool
+    {
+        return $this->moduleSettingService->getBoolean('oxpsECAutomatedRefundOnCancel', 'osceasycredit');
+    }
+
+    public function getOxpsECRefundMailRecipient(): string
+    {
+        return (string) $this->moduleSettingService->getString('oxpsECRefundMailRecipient', 'osceasycredit');
+    }
+
+    public function getOxpsECCancelMailRecipient(): string
+    {
+        return (string) $this->moduleSettingService->getString('oxpsECCancelMailRecipient', 'osceasycredit');
+    }
 }

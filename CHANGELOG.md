@@ -20,6 +20,9 @@ per shop, so existing installations keep working after the update.
 - easyCredit web components are loaded in the frontend for the v3 example calculation
 - New module settings `oxpsECBaseUrlV3`, `oxpsECDealerInterfaceUrlV3`, `oxpsECUseV3`, `oxpsECUseHMAC`, `oxpsECHMACHeader`
 - New database column `oxorder.ECREDISV3ORDER` marking orders created with API v3, so orders placed via v2 and v3 can be processed side by side in the admin backend. The column is added by the module migration — please run the migrations after updating.
+- Orders are marked as paid (`oxorder.oxpaid`) as soon as easyCredit has accepted the delivery report that is sent when the order is shipped in the admin backend. easyCredit transfers the money later, but the payment is guaranteed at this point, so shop operators and connected ERP systems see the order as paid right away. Orders that easyCredit already reports as in billing or billed are marked as paid as well, an existing paid date is not changed.
+- [0007988](https://bugs.oxid-esales.com/view.php?id=7988): Confirmation mails for refunds and cancellations triggered in the backend. Two new module settings in the module configuration (group "Confirmation mails") decide who is notified, separately per event: `oxpsECRefundMailRecipient` and `oxpsECCancelMailRecipient`, each with `0` no mail (default), `1` customer, `2` shop owner, `3` both. Defaults are `0`, so updating the module does not start sending mail to existing customers unannounced. The refund mail is sent once easyCredit has accepted a reversal triggered in the "easyCredit Informationen" tab of the order. The cancellation mail is sent when an easyCredit order is cancelled in the order list and states the refunded amount if the cancellation reversed the order. Like the other frontend texts of the module, the mails are available in German only. A problem with sending a mail never aborts the backend action.
+- New module setting "Refund automatically when an order is cancelled" (`oxpsECAutomatedRefundOnCancel`, group "Cancellation and refund", off by default). With the option on, cancelling an easyCredit order in the backend fully reverses the order value that is still open at easyCredit. If easyCredit rejects the reversal, the cancellation stays in place and the merchant is asked to reverse the order by hand in the "easyCredit Informationen" tab.
 - HTTP status code of API calls is now written to the request log
 - Extended unit test coverage for the v3 request building and the dispatcher
 
@@ -34,6 +37,7 @@ per shop, so existing installations keep working after the update.
 
 ### Fixed
 
+- A reversal in the "easyCredit Informationen" tab is only reported as successful once easyCredit has accepted it. Before, the success message was shown even if easyCredit rejected the reversal or could not be reached.
 - Orders placed with API v2 used the v3 capture and delivery status endpoints while API v3 was active
 - Exception in the admin backend when an easyCredit order was opened before its order data was available
 - Installment calculator and display of the example plan in the full basket view when API v3 is active

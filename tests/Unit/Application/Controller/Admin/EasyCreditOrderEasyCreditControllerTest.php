@@ -8,9 +8,11 @@ use OxidSolutionCatalysts\EasyCredit\Controller\Admin\EasyCreditOrderEasyCreditC
 use OxidEsales\Eshop\Application\Model\Order;
 use OxidEsales\Eshop\Core\Field;
 use OxidSolutionCatalysts\EasyCredit\Model\EasyCreditTradingApiAccess;
+use OxidSolutionCatalysts\EasyCredit\Core\Api\EasyCreditCurlException;
 use OxidSolutionCatalysts\EasyCredit\Core\Api\EasyCreditWebServiceClient;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditApiConfig;
 use OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditDicFactory;
+use OxidSolutionCatalysts\EasyCredit\Core\Helper\EasyCreditRefundMailService;
 
 /**
  * Class EasyCreditOrderEasyCreditControllerTest
@@ -120,5 +122,71 @@ class EasyCreditOrderEasyCreditControllerTest extends TestCase
             ->willReturn($tradingApiService);
 
         $this->assertEquals($expected, $controller->getEasyCreditDeliveryState());
+    }
+
+    public function sendReversalProvider(): array
+    {
+        return [
+            'accepted by easyCredit'   => [200, null, true],
+            'rejected by easyCredit'   => [409, null, false],
+            'easyCredit not reachable' => [null, new EasyCreditCurlException('timeout'), false],
+        ];
+    }
+
+    /**
+     * The reversal only counts as done - success message and confirmation mail - once
+     * easyCredit accepted it.
+     *
+     * @dataProvider sendReversalProvider
+     */
+    public function testSendReversal(?int $statusCode, ?\Exception $exception, bool $expectSuccess): void
+    {
+        $_POST['reversal'] = [
+            'functionalid' => 'functionalId',
+            'amount'       => '19.90',
+            'reason'       => 'WIDERRUF_TEILWEISE',
+        ];
+
+        $order = oxNew(Order::class);
+        $order->oxorder__oxcurrency = new Field('EUR');
+
+        $apiService = $this->getMockBuilder(EasyCreditTradingApiAccess::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['sendReversal'])
+            ->getMock();
+        if ($exception) {
+            $apiService->expects($this->once())->method('sendReversal')->willThrowException($exception);
+        } else {
+            $response = new \stdClass();
+            $response->statusCode = $statusCode;
+            $apiService->expects($this->once())->method('sendReversal')->with(19.90, 'WIDERRUF_TEILWEISE')
+                ->willReturn($response);
+        }
+
+        $mailService = $this->getMockBuilder(EasyCreditRefundMailService::class)
+            ->onlyMethods(['sendRefundMail'])
+            ->getMock();
+        if ($expectSuccess) {
+            $mailService->expects($this->once())->method('sendRefundMail')->with($order, 19.90, 'EUR');
+        } else {
+            $mailService->expects($this->never())->method('sendRefundMail');
+        }
+
+        $controller = $this->getMockBuilder(EasyCreditOrderEasyCreditController::class)
+            ->onlyMethods(['validateInput', 'getApiService', 'getRefundMailService', 'getOrder'])
+            ->getMock();
+        $controller->method('getApiService')->willReturn($apiService);
+        $controller->method('getRefundMailService')->willReturn($mailService);
+        $controller->method('getOrder')->willReturn($order);
+
+        try {
+            $controller->sendReversal();
+        } finally {
+            unset($_POST['reversal']);
+        }
+
+        $viewData = $controller->getViewData();
+        $this->assertSame($expectSuccess, isset($viewData['reversalsuccess']));
+        $this->assertSame(!$expectSuccess, isset($viewData['reversalerror']));
     }
 }

@@ -34,6 +34,10 @@ class EasyCreditTradingApiAccess
     const OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_LIEFERUNG_MELDEN_AUSLAUFEND = 'LIEFERUNG_MELDEN_AUSLAUFEND';
     const OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_IN_ABRECHNUNG = 'IN_ABRECHNUNG';
     const OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_ABGERECHNET = 'ABGERECHNET';
+    const OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_IN_ABRECHNUNG_V3 = 'IN_BILLING';
+    const OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_ABGERECHNET_V3 = 'BILLED';
+
+    const REVERSAL_REASON_FULL = 'WIDERRUF_VOLLSTAENDIG';
     const OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_AUSLAUFEND = 'AUSLAUFEND';
 
     /**
@@ -213,6 +217,7 @@ class EasyCreditTradingApiAccess
      * @param $amount
      * @param $reason
      *
+     * @return \stdClass response of easyCredit, see EasyCreditHelper::isAcceptedResponse()
      * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
      * @throws \OxidSolutionCatalysts\EasyCredit\Core\Api\EasyCreditCurlException
      * @throws \OxidSolutionCatalysts\EasyCredit\Core\Di\EasyCreditConfigException
@@ -245,6 +250,25 @@ class EasyCreditTradingApiAccess
                 'betrag' => $amount,
             ]);
         }
+
+        return $response;
+    }
+
+    /**
+     * Current order value at easyCredit, i.e. the amount that can still be reversed.
+     *
+     * @return float
+     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
+     * @throws \OxidSolutionCatalysts\EasyCredit\Core\Api\EasyCreditCurlException
+     */
+    public function getCurrentOrderValue(): float
+    {
+        $orderData = $this->getOrderData();
+        if (EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3() && $this->order->oxorder__ecredisv3order->value == 1) {
+            return (float)($orderData->currentOrderValue ?? 0);
+        }
+
+        return (float)($orderData[0]->bestellwertAktuell ?? 0);
     }
 
     /**
