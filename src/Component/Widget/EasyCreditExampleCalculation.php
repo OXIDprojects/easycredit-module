@@ -271,7 +271,13 @@ class EasyCreditExampleCalculation extends WidgetController
     }
     
     protected function getInstallmentPlanV3($response) {
-        $cheapestPlan = $response->installmentPlans[0]->plans[array_key_last($response->installmentPlans[0]->plans)];
+        // easyCredit answers without plans e.g. for amounts outside the offered plans or on errors;
+        // no example calculation then instead of a TypeError in the widget
+        $plans = $response->installmentPlans[0]->plans ?? null;
+        if (!is_array($plans) || empty($plans)) {
+            return null;
+        }
+        $cheapestPlan = $plans[array_key_last($plans)];
         $return = new StdClass();
         $return->anzahlRaten = $cheapestPlan->numberOfInstallments;
         $return->betragRate = $cheapestPlan->installment;

@@ -4,7 +4,7 @@ mandatory_parameters:
   module_ids: 'osceasycredit'
 optional_parameters:
   is_subshop: false
-  install_shop: true
+  install_shop: false
   restore_shop_after_tests_suite: false
   test_database_name: example
   restore_after_acceptance_tests: false

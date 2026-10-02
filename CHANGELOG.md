@@ -48,6 +48,7 @@ per shop, so existing installations keep working after the update.
 - Payment checkbox error when API v2 is active
 - Default URLs in the module configuration
 - Unclosed `div` element in the payment template
+- Example calculation (API v3): the widget no longer ends in a `TypeError` ("array_key_last(): Argument #1 ($array) must be of type array, null given") when easyCredit answers without an installment plan, e.g. for an amount outside the offered plans or on an error response. `getInstallmentPlanV3()` in `src/Component/Widget/EasyCreditExampleCalculation.php` read `installmentPlans[0]->plans` unchecked; it now returns `null` in that case, so `hasExampleCalculation()` is `false` and the page renders without the example calculation. Covered by two new unit tests. The same fix was made in the OXID 6 module (branch `b-6.1.x`).
 
 ## [4.0.3] - 2026-06-11
 
