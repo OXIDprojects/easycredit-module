@@ -58,4 +58,23 @@ $aLang = array(
 
     'OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_LIEFERUNG_MELDEN' => 'Lieferung melden',
     'OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_V3_REPORT_CAPTURE' => 'Lieferung melden',
+
+    'OXPS_EASY_CREDIT_REFUND_MAIL_TITLE'                     => 'Rückerstattung zu Ihrer Bestellung',
+    'OXPS_EASY_CREDIT_REFUND_MAIL_SUBJECT'                   => 'Rückerstattung zu Ihrer Bestellung %s',
+    'OXPS_EASY_CREDIT_REFUND_MAIL_SUBJECT_OWNER'             => 'easyCredit: Rückerstattung zur Bestellung %s veranlasst',
+    'OXPS_EASY_CREDIT_REFUND_MAIL_SALUTATION'                => 'Guten Tag',
+    'OXPS_EASY_CREDIT_REFUND_MAIL_INTRO'                     => 'wir haben eine Rückerstattung für Sie veranlasst.',
+    'OXPS_EASY_CREDIT_REFUND_MAIL_INTRO_OWNER'               => 'Für die folgende Bestellung wurde eine Rückerstattung veranlasst (easyCredit).',
+    'OXPS_EASY_CREDIT_REFUND_MAIL_AMOUNT'                    => 'Erstatteter Betrag',
+    'OXPS_EASY_CREDIT_REFUND_MAIL_ORDER_TOTAL'               => 'Bestellwert',
+    'OXPS_EASY_CREDIT_REFUND_MAIL_NOTE'                      => 'Die Rückerstattung wurde Ihrer ursprünglich verwendeten Zahlungsart gutgeschrieben. Die Wertstellung hängt von Ihrem Zahlungsmittel und Ihrer Bank ab.',
+    'OXPS_EASY_CREDIT_CANCEL_MAIL_TITLE'                     => 'Stornierung Ihrer Bestellung',
+    'OXPS_EASY_CREDIT_CANCEL_MAIL_SUBJECT'                   => 'Stornierung Ihrer Bestellung %s',
+    'OXPS_EASY_CREDIT_CANCEL_MAIL_SUBJECT_OWNER'             => 'easyCredit: Bestellung %s storniert',
+    'OXPS_EASY_CREDIT_CANCEL_MAIL_SALUTATION'                => 'Guten Tag',
+    'OXPS_EASY_CREDIT_CANCEL_MAIL_INTRO'                     => 'Ihre Bestellung wurde storniert.',
+    'OXPS_EASY_CREDIT_CANCEL_MAIL_INTRO_OWNER'               => 'Die folgende Bestellung wurde storniert.',
+    'OXPS_EASY_CREDIT_CANCEL_MAIL_ORDER_TOTAL'               => 'Bestellwert',
+    'OXPS_EASY_CREDIT_CANCEL_MAIL_REFUNDED'                  => 'Erstatteter Betrag',
+    'OXPS_EASY_CREDIT_CANCEL_MAIL_NOTE_NO_REFUND'            => 'Sollte für diese Bestellung bereits eine Zahlung erfolgt sein, erhalten Sie die Rückerstattung in einer separaten Nachricht bestätigt.',
 );

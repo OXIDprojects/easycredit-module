@@ -33,7 +33,7 @@ $aModule = [
         'en' => 'Use easyCredit-Ratenkauf for purchases in OXID',
     ],
     'thumbnail'   => 'out/pictures/picture.png',
-    'version'     => '3.1.0-rc.3',
+    'version'     => '3.1.0-rc.4',
     'author'      => 'OXID Solution Catalysts',
     'url'         => 'https://www.oxid-esales.com',
     'email'       => 'info@oxid-esales.com',
@@ -62,7 +62,8 @@ $aModule = [
         \OxidEsales\Eshop\Core\Session::class                               => \OxidProfessionalServices\EasyCredit\Core\Domain\EasyCreditSession::class,
         \OxidEsales\Eshop\Application\Model\Payment::class                  => \OxidProfessionalServices\EasyCredit\Core\Domain\EasyCreditPayment::class,
         \OxidEsales\Eshop\Application\Model\Basket::class                   => \OxidProfessionalServices\EasyCredit\Core\Domain\EasyCreditBasket::class,
-        \OxidEsales\Eshop\Application\Model\Order::class                    => \OxidProfessionalServices\EasyCredit\Core\Domain\EasyCreditOrder::class
+        \OxidEsales\Eshop\Application\Model\Order::class                    => \OxidProfessionalServices\EasyCredit\Core\Domain\EasyCreditOrder::class,
+        \OxidEsales\Eshop\Core\Email::class                                 => \OxidProfessionalServices\EasyCredit\Core\Domain\EasyCreditEmail::class
     ],
     'templates'   => [
         'page/checkout/inc/payment_easycreditinstallment.tpl' => 'oxps/easycredit/Application/views/page/checkout/inc/oxpseasycredit_payment_easycreditinstallment.tpl',
@@ -73,6 +74,10 @@ $aModule = [
         'easycredit_overview.tpl'                             => 'oxps/easycredit/Application/views/admin/tpl/easycredit_overview.tpl',
         'easycredit_overview_list.tpl'                        => 'oxps/easycredit/Application/views/admin/tpl/easycredit_overview_list.tpl',
         'easycredit_overview_main.tpl'                        => 'oxps/easycredit/Application/views/admin/tpl/easycredit_overview_main.tpl',
+        'oxpseasycredit_email_html_refund.tpl'                => 'oxps/easycredit/Application/views/email/html/oxpseasycredit_refund.tpl',
+        'oxpseasycredit_email_plain_refund.tpl'               => 'oxps/easycredit/Application/views/email/plain/oxpseasycredit_refund.tpl',
+        'oxpseasycredit_email_html_cancel.tpl'                => 'oxps/easycredit/Application/views/email/html/oxpseasycredit_cancel.tpl',
+        'oxpseasycredit_email_plain_cancel.tpl'               => 'oxps/easycredit/Application/views/email/plain/oxpseasycredit_cancel.tpl',
     ],
     'blocks'      => [
         [
@@ -291,7 +296,27 @@ $aModule = [
             'name'  => 'oxpsECLogging',
             'type'  => 'bool',
             'value' => false,
-        ]
+        ],
+        [
+            'group' => 'EasyCreditCancel',
+            'name'  => 'oxpsECAutomatedRefundOnCancel',
+            'type'  => 'bool',
+            'value' => false,
+        ],
+        [
+            'group'       => 'EasyCreditMails',
+            'name'        => 'oxpsECRefundMailRecipient',
+            'type'        => 'select',
+            'value'       => '0',
+            'constraints' => '0|1|2|3',
+        ],
+        [
+            'group'       => 'EasyCreditMails',
+            'name'        => 'oxpsECCancelMailRecipient',
+            'type'        => 'select',
+            'value'       => '0',
+            'constraints' => '0|1|2|3',
+        ],
     ],
     'events'      => [
         'onActivate'   => '\OxidProfessionalServices\EasyCredit\Core\Events::onActivate',

@@ -14,9 +14,7 @@
 namespace OxidProfessionalServices\EasyCredit\Application\Controller\Admin;
 
 use OxidEsales\Eshop\Application\Model\Order;
-use OxidEsales\Eshop\Core\Field;
 use OxidProfessionalServices\EasyCredit\Application\Model\EasyCreditTradingApiAccess;
-use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDicFactory;
 
 /**
  * Class EasyCreditOrderOverviewController
@@ -41,9 +39,9 @@ class EasyCreditOrderOverviewController extends EasyCreditOrderOverviewControlle
     public function sendorder()
     {
         parent::sendorder();
-        $functionalId = $this->loadFunctionalIdFromOrder();
-        if (!is_null($functionalId)) {
-            $this->setOrderDelivered();
+        $order = $this->loadOrder();
+        if ($order && !empty($order->oxorder__ecredfunctionalid->value)) {
+            $order->oscSetOrderDelivered();
         }
     }
 
@@ -60,18 +58,6 @@ class EasyCreditOrderOverviewController extends EasyCreditOrderOverviewControlle
     {
         $tradingApiService = $this->getService($order);
         return $tradingApiService->getOrderState();
-    }
-
-    /**
-     * Load functional id from current order.
-     *
-     * @return string|null
-     */
-    protected function loadFunctionalIdFromOrder()
-    {
-        $this->loadOrder();
-
-        return $this->order->oxorder__ecredfunctionalid->value;
     }
 
     /**
@@ -99,32 +85,4 @@ class EasyCreditOrderOverviewController extends EasyCreditOrderOverviewControlle
 
         return $this->order;
     }
-
-    /**
-     * Set order delivered state at easy credit interface and in order data.
-     */
-    protected function setOrderDelivered(): void
-    {
-        $tradingApiService = $this->getService($this->order);
-        $tradingApiService->setOrderDeliveredState();
-
-        $orderdata = $tradingApiService->getOrderData();
-        $order = $this->loadOrder();
-        if (EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3() && $this->order->oxorder__ecredisv3order->value == 1) {
-            $state = $orderdata->status;
-            // also update oxpaid date
-            if (($state === 'REPORT_CAPTURE' || $state === 'IN_BILLING') && $this->order->oxorder__oxpaid->value === '0000-00-00 00:00:00')
-            {
-                $order->oxorder__oxpaid = new Field(date('Y-m-d H:i:s'));
-            }
-        } else {
-            $state = $orderdata[0]->haendlerstatusV2;
-            if ($state === 'IN_ABRECHNUNG' && $this->order->oxorder__oxpaid->value === '0000-00-00 00:00:00') {
-                $order->oxorder__oxpaid = new Field(date('Y-m-d H:i:s'));
-            }
-        }
-        $order->oxorder__ecreddeliverystate = new Field($state, Field::T_RAW);
-        $order->save();
-    }
-
 }

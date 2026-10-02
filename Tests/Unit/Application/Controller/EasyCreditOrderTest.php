@@ -7,6 +7,7 @@ use OxidEsales\Eshop\Application\Model\Order;
 use OxidEsales\Eshop\Application\Model\Payment;
 use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Field;
+use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\ViewConfig;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidProfessionalServices\EasyCredit\Application\Controller\EasyCreditOrderController;
@@ -35,6 +36,9 @@ class EasyCreditOrderTest extends UnitTestCase
     public function setUp(): void
     {
         parent::setUp();
+        // let OXID build the module chain first, so all _parent aliases exist even if
+        // other modules are placed before easyCredit in the chain
+        Registry::getUtilsObject()->getClassName(OrderController::class);
     }
 
     /**

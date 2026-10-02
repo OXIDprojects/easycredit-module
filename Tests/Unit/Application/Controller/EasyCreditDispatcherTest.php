@@ -99,26 +99,19 @@ class EasyCreditDispatcherTest extends UnitTestCase
 
     public function testGetEasyCreditDetails(): void
     {
-        $this->markTestSkipped('Skipped because of checksum error');
-        $session = oxNew(EasyCreditSession::class);
-        $dic = $this->buildDic($session);
-
-        $storage = oxNew(
-            EasyCreditStorage::class,
-            'tbVorgangskennung',
-            'fachlicheVorgangskennung',
-            'b8d01510bbbf5fe767f068122ba0b0c4',
-            0.0
-        );
-        $session->setVariable(EasyCreditSession::API_CONFIG_STORAGE, serialize($storage));
-
-        $dispatcher = $this->getMock(EasyCreditDispatcherController::class, ['getDic', 'call', 'isInitialized']);
-        $dispatcher->expects($this->any())->method('getDic')->willReturn($dic);
-        $dispatcher->expects($this->any())->method('isInitialized')->willReturn(true);
-        $user = oxNew(User::class);
-        $user->oxuser__oxcountryid = new Field('a7c40f631fc920687.20179984');
-        $dispatcher->setUser($user);
-        
+        $dispatcher = $this->getMockBuilder(EasyCreditDispatcherController::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['processEasyCreditDetails',
+                'getInstalmentDecision', 
+                'checkInitialization',
+                'checkAuthorization',
+                'loadEasyCreditFinancialInformation'])
+            ->getMock();
+        $dispatcher->expects($this->any())->method('processEasyCreditDetails')->willReturn(null);
+        $dispatcher->expects($this->any())->method('getInstalmentDecision')->willReturn(null);
+        $dispatcher->expects($this->any())->method('checkInitialization')->willReturn(null);
+        $dispatcher->expects($this->any())->method('checkAuthorization')->willReturn(null);
+        $dispatcher->expects($this->any())->method('loadEasyCreditFinancialInformation')->willReturn(null);
 
         $this->assertEquals('order', $dispatcher->getEasyCreditInstallmentDetails());
     }
@@ -138,7 +131,6 @@ class EasyCreditDispatcherTest extends UnitTestCase
 
     public function testGetEasyCreditDetailsDeps(): void
     {
-        $this->markTestSkipped('Skipped because of checksum error');
         $session = oxNew(EasyCreditSession::class);
         $dic = $this->buildDic($session);
 
@@ -150,6 +142,8 @@ class EasyCreditDispatcherTest extends UnitTestCase
         $oxBasket->expects($this->any())->method('getPrice')->willReturn($price);
 
         $user = oxNew(User::class);
+        $user->oxuser__oxfname = new Field('Max');
+        $user->oxuser__oxlname = new Field('Mustermann');
 
         $paymentHash = $this->getPaymentHash($user, $oxBasket, $dic);
 
@@ -179,7 +173,6 @@ class EasyCreditDispatcherTest extends UnitTestCase
 
     public function testGetEasyCreditDetailsDepsv3(): void
     {
-        $this->markTestSkipped('Skipped because of checksum error');
         $session = oxNew(EasyCreditSession::class);
         $dic = $this->buildDic($session, true);
 
@@ -191,6 +184,8 @@ class EasyCreditDispatcherTest extends UnitTestCase
         $oxBasket->expects($this->any())->method('getPrice')->willReturn($price);
 
         $user = oxNew(User::class);
+        $user->oxuser__oxfname = new Field('Max');
+        $user->oxuser__oxlname = new Field('Mustermann');
 
         $paymentHash = $this->getPaymentHash($user, $oxBasket, $dic);
 
@@ -207,9 +202,9 @@ class EasyCreditDispatcherTest extends UnitTestCase
         $dispatcher->expects($this->any())->method('getDic')->willReturn($dic);
 
         $response = new \stdClass();
-        $entscheidung = new \stdClass();
-        $entscheidung->entscheidungsergebnis = EasyCreditDispatcherController::INSTALMENT_DECISION_OK_V3;
-        $response->entscheidung = $entscheidung;
+        $decision = new \stdClass();
+        $decision->decisionOutcome = EasyCreditDispatcherController::INSTALMENT_DECISION_OK_V3;
+        $response->decision = $decision;
         $dispatcher->expects($this->any())->method('call')->willReturn($response);
 
         $dispatcher->setUser($user);
@@ -379,7 +374,6 @@ class EasyCreditDispatcherTest extends UnitTestCase
 
     public function testGetFormattedPaymentPlan(): void
     {
-        $this->markTestSkipped('Skipped for now');
         $session = oxNew(EasyCreditSession::class);
         $dic = $this->buildDic($session);
 
@@ -393,21 +387,23 @@ class EasyCreditDispatcherTest extends UnitTestCase
         $session->setVariable(EasyCreditSession::API_CONFIG_STORAGE, serialize($storage));
 
         $user = oxNew(User::class);
+        $user->oxuser__oxfname = new Field('Max');
+        $user->oxuser__oxlname = new Field('Mustermann');
 
         $dispatcher = $this->getMock(EasyCreditDispatcherController::class, ['getDic', 'call', 'isInitialized']);
         $dispatcher->expects($this->any())->method('getDic')->willReturn($dic);
         $dispatcher->expects($this->any())->method('isInitialized')->willReturn(true);
 
-        $apiConfig = oxNew(EasyCreditApiConfig::class, EasyCreditDicFactory::getApiConfigArray());
-        if (true === $apiConfig->config['oxpsECUseV3']) {
+        // the mocked responses have to match the API version of the dic the dispatcher uses
+        if ($dic->getApiConfig()->getEasyCreditUseApiVersionV3()) {
             $dispatcher->expects($this->any())->method('call')->willReturnCallback(
                 function($endpoint) {
                     switch ($endpoint) {
                         case EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V3_DECISION:
                             $decisionResponse = new \stdClass();
-                            $entscheidung = new \stdClass();
-                            $entscheidung->entscheidungsergebnis = EasyCreditDispatcherController::INSTALMENT_DECISION_OK_V3;
-                            $decisionResponse->entscheidung = $entscheidung;
+                            $decision = new \stdClass();
+                            $decision->decisionOutcome = EasyCreditDispatcherController::INSTALMENT_DECISION_OK_V3;
+                            $decisionResponse->decision = $decision;
                             return $decisionResponse;
 
                         case EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V3_VORGANG:

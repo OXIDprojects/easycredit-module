@@ -85,6 +85,9 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
 
         $user = oxNew(User::class);
 
+        $user->oxuser__oxfname = new Field('Max');
+        $user->oxuser__oxlname = new Field('Mustermann');
+
         $rb = oxNew(EasyCreditInitializeRequestBuilder::class);
         $rb->setBasket($basket);
         $rb->setUser($user);
@@ -103,6 +106,8 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
                             ),
                         'shippingAddress' =>
                             array (
+                                'firstName' => 'Max',
+                                'lastName' => 'Mustermann',
                             ),
                         'orderId' => '',
                         'numberOfProductsInShoppingCart' => 0,
@@ -129,8 +134,8 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
                 'customer' =>
                     array (
                         'gender' => NULL,
-                        'firstName' => NULL,
-                        'lastName' => NULL,
+                        'firstName' => 'Max',
+                        'lastName' => 'Mustermann',
                         'birthDate' => NULL,
                         'contact' =>
                             array (
@@ -171,6 +176,14 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
                     'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
                     'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
                     'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
+                ],
+                'lieferadresse' => [
+                    'vorname' => 'Max',
+                    'nachname' => 'Mustermann'
+                ],
+                'personendaten' => [
+                    'vorname' => 'Max',
+                    'nachname' => 'Mustermann'
                 ],
                 'kontakt'                 => [
                     'email' => null
@@ -237,6 +250,8 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
         $user = $this->getMock(User::class, ['getUserGroups']);
         $user->expects($this->any())->method('getUserGroups')->willReturn($groups);
         $user->oxuser__oxpassword = new Field('password');
+        $user->oxuser__oxfname = new Field('Max');
+        $user->oxuser__oxlname = new Field('Mustermann');
 
         $rb = oxNew(EasyCreditInitializeRequestBuilder::class);
         $rb->setBasket($basket);
@@ -256,6 +271,8 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
                             ),
                         'shippingAddress' =>
                             array (
+                                'firstName' => 'Max',
+                                'lastName' => 'Mustermann',
                             ),
                         'orderId' => '',
                         'numberOfProductsInShoppingCart' => 0,
@@ -266,8 +283,8 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
                 'customer' =>
                     array (
                         'gender' => NULL,
-                        'firstName' => NULL,
-                        'lastName' => NULL,
+                        'firstName' => 'Max',
+                        'lastName' => 'Mustermann',
                         'birthDate' => NULL,
                         'contact' =>
                             array (
@@ -309,6 +326,14 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
                     'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
                     'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
                 ],
+                'lieferadresse' => [
+                    'vorname' => 'Max',
+                    'nachname' => 'Mustermann'
+                ],
+                'personendaten' => [
+                    'vorname' => 'Max',
+                    'nachname' => 'Mustermann'
+                ],
                 'kontakt'                 => [
                     'email' => null
                 ],
@@ -337,6 +362,8 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
 
         $user                = $this->getMock(User::class, ['getUserGroups']);
         $user->oxuser__oxsal = new Field('MRS');
+        $user->oxuser__oxfname = new Field('Max');
+        $user->oxuser__oxlname = new Field('Mustermann');
 
         $rb = oxNew(EasyCreditInitializeRequestBuilder::class);
         $rb->setBasket($basket);
@@ -356,6 +383,8 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
                             ),
                         'shippingAddress' =>
                             array (
+                                'firstName' => 'Max',
+                                'lastName' => 'Mustermann',
                             ),
                         'orderId' => '',
                         'numberOfProductsInShoppingCart' => 0,
@@ -366,8 +395,8 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
                 'customer' =>
                     array (
                         'gender' => 'MRS',
-                        'firstName' => NULL,
-                        'lastName' => NULL,
+                        'firstName' => 'Max',
+                        'lastName' => 'Mustermann',
                         'birthDate' => NULL,
                         'contact' =>
                             array (
@@ -409,7 +438,13 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
                     'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
                     'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
                 ],
+                'lieferadresse' => [
+                    'vorname' => 'Max',
+                    'nachname' => 'Mustermann'
+                ],
                 'personendaten'           => [
+                    'vorname' => 'Max',
+                    'nachname' => 'Mustermann',
                     'anrede' => 'FRAU'
                 ],
                 'kontakt'                 => [
@@ -440,6 +475,8 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
 
         $user                      = $this->getMock(User::class, ['getUserGroups']);
         $user->oxuser__oxbirthdate = new Field('1985-07-13');
+        $user->oxuser__oxfname = new Field('Max');
+        $user->oxuser__oxlname = new Field('Mustermann');
 
         $rb = oxNew(EasyCreditInitializeRequestBuilder::class);
         $rb->setBasket($basket);
@@ -459,6 +496,8 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
                             ),
                         'shippingAddress' =>
                             array (
+                                'firstName' => 'Max',
+                                'lastName' => 'Mustermann',
                             ),
                         'orderId' => '',
                         'numberOfProductsInShoppingCart' => 0,
@@ -469,8 +508,8 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
                 'customer' =>
                     array (
                         'gender' => NULL,
-                        'firstName' => NULL,
-                        'lastName' => NULL,
+                        'firstName' => 'Max',
+                        'lastName' => 'Mustermann',
                         'birthDate' => '1985-07-13',
                         'contact' =>
                             array (
@@ -512,7 +551,13 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
                     'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
                     'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
                 ],
+                'lieferadresse' => [
+                    'vorname' => 'Max',
+                    'nachname' => 'Mustermann'
+                ],
                 'personendaten'           => [
+                    'vorname' => 'Max',
+                    'nachname' => 'Mustermann',
                     'geburtsdatum' => '1985-07-13'
                 ],
                 'kontakt'                 => [
@@ -543,6 +588,8 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
 
         $user                      = $this->getMock('oxUser', ['getUserGroups']);
         $user->oxuser__oxbirthdate = new Field('12345');
+        $user->oxuser__oxfname = new Field('Max');
+        $user->oxuser__oxlname = new Field('Mustermann');
 
         $rb = oxNew(EasyCreditInitializeRequestBuilder::class);
         $rb->setBasket($basket);
@@ -562,6 +609,8 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
                             ),
                         'shippingAddress' =>
                             array (
+                                'firstName' => 'Max',
+                                'lastName' => 'Mustermann',
                             ),
                         'orderId' => '',
                         'numberOfProductsInShoppingCart' => 0,
@@ -572,8 +621,8 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
                 'customer' =>
                     array (
                         'gender' => NULL,
-                        'firstName' => NULL,
-                        'lastName' => NULL,
+                        'firstName' => 'Max',
+                        'lastName' => 'Mustermann',
                         'birthDate' => '',
                         'contact' =>
                             array (
@@ -615,6 +664,14 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
                     'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
                     'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
                 ],
+                'lieferadresse' => [
+                    'vorname' => 'Max',
+                    'nachname' => 'Mustermann'
+                ],
+                'personendaten' => [
+                    'vorname' => 'Max',
+                    'nachname' => 'Mustermann'
+                ],
                 'kontakt'                 => [
                     'email' => null
                 ],
@@ -645,6 +702,9 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
 
         $deliveryAddress = oxNew(Address::class);
 
+        $user->oxuser__oxfname = new Field('Max');
+        $user->oxuser__oxlname = new Field('Mustermann');
+
         $rb = oxNew(EasyCreditInitializeRequestBuilder::class);
         $rb->setBasket($basket);
         $rb->setUser($user);
@@ -674,8 +734,8 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
                 'customer' =>
                     array (
                         'gender' => NULL,
-                        'firstName' => NULL,
-                        'lastName' => NULL,
+                        'firstName' => 'Max',
+                        'lastName' => 'Mustermann',
                         'birthDate' => NULL,
                         'contact' =>
                             array (
@@ -716,6 +776,10 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
                     'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
                     'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
                     'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
+                ],
+                'personendaten' => [
+                    'vorname' => 'Max',
+                    'nachname' => 'Mustermann'
                 ],
                 'kontakt'                 => [
                     'email' => null
@@ -746,6 +810,9 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
         $user                      = $this->getMock(User::class, ['getUserGroups']);
         $user->oxuser__oxcountryid = new Field('a7c40f631fc920687.20179984');
         
+        $user->oxuser__oxfname = new Field('Max');
+        $user->oxuser__oxlname = new Field('Mustermann');
+
         $rb = oxNew(EasyCreditInitializeRequestBuilder::class);
         $rb->setBasket($basket);
         $rb->setUser($user);
@@ -766,6 +833,8 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
                         'shippingAddress' =>
                             array (
                                 'country' => 'DE',
+                                'firstName' => 'Max',
+                                'lastName' => 'Mustermann',
                             ),
                         'orderId' => '',
                         'numberOfProductsInShoppingCart' => 0,
@@ -776,8 +845,8 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
                 'customer' =>
                     array (
                         'gender' => NULL,
-                        'firstName' => NULL,
-                        'lastName' => NULL,
+                        'firstName' => 'Max',
+                        'lastName' => 'Mustermann',
                         'birthDate' => NULL,
                         'contact' =>
                             array (
@@ -819,6 +888,10 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
                     'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
                     'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
                 ],
+                'personendaten' => [
+                    'vorname' => 'Max',
+                    'nachname' => 'Mustermann'
+                ],
                 'kontakt'                 => [
                     'email' => null
                 ],
@@ -839,7 +912,9 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
                     'land' => 'DE'
                 ],
                 'lieferadresse'           => [
-                    'land' => 'DE'
+                    'land' => 'DE',
+                    'vorname' => 'Max',
+                    'nachname' => 'Mustermann'
                 ]
             ];
         }
@@ -854,6 +929,8 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
 
         $user                = $this->getMock(User::class, ['getUserGroups']);
         $user->oxuser__oxfon = new Field('+49 123-1234');
+        $user->oxuser__oxfname = new Field('Max');
+        $user->oxuser__oxlname = new Field('Mustermann');
 
         $rb = oxNew(EasyCreditInitializeRequestBuilder::class);
         $rb->setBasket($basket);
@@ -870,6 +947,14 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
                 'urlAbbruch'   => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
                 'urlErfolg'    => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
                 'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
+            ],
+            'lieferadresse' => [
+                'vorname' => 'Max',
+                'nachname' => 'Mustermann'
+            ],
+            'personendaten' => [
+                'vorname' => 'Max',
+                'nachname' => 'Mustermann'
             ],
             'kontakt'                 => [
                 'email'                             => null,
@@ -931,6 +1016,9 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
 
         $user = oxNew(User::class);
 
+        $user->oxuser__oxfname = new Field('Max');
+        $user->oxuser__oxlname = new Field('Mustermann');
+
         $rb = oxNew(EasyCreditInitializeRequestBuilder::class);
         $rb->setBasket($basket);
         $rb->setUser($user);
@@ -949,6 +1037,8 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
                             ),
                         'shippingAddress' =>
                             array (
+                                'firstName' => 'Max',
+                                'lastName' => 'Mustermann',
                             ),
                         'orderId' => '',
                         'numberOfProductsInShoppingCart' => 0,
@@ -975,8 +1065,8 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
                 'customer' =>
                     array (
                         'gender' => NULL,
-                        'firstName' => NULL,
-                        'lastName' => NULL,
+                        'firstName' => 'Max',
+                        'lastName' => 'Mustermann',
                         'birthDate' => NULL,
                         'contact' =>
                             array (
@@ -1017,6 +1107,14 @@ class EasyCreditInitializeRequestBuilderTest extends UnitTestCase
                     'urlAbbruch' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment',
                     'urlErfolg' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=EasyCreditDispatcher&fnc=getEasyCreditInstallmentDetails',
                     'urlAblehnung' => $sslShopUrl . 'index.php?lang=&sid=&shp=' . $config->getBaseShopId() . '&cl=payment'
+                ],
+                'lieferadresse' => [
+                    'vorname' => 'Max',
+                    'nachname' => 'Mustermann'
+                ],
+                'personendaten' => [
+                    'vorname' => 'Max',
+                    'nachname' => 'Mustermann'
                 ],
                 'kontakt' => [
                     'email' => null

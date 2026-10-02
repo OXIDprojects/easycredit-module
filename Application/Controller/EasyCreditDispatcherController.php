@@ -225,7 +225,7 @@ class EasyCreditDispatcherController extends FrontendController
     {
         $this->getDicSession()->clearStorage();
 
-        if (EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3()) {
+        if ($this->getDic()->getApiConfig()->getEasyCreditUseApiVersionV3()) {
             $response = $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V3_VORGANG, [], [], $data);
             $storage = oxNew(
                 EasyCreditStorage::class,
@@ -299,7 +299,7 @@ class EasyCreditDispatcherController extends FrontendController
      */
     protected function getInstalmentDecision()
     {
-        if (EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3()) {
+        if ($this->getDic()->getApiConfig()->getEasyCreditUseApiVersionV3()) {
             $response = $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V3_DECISION, [$this->getTbVorgangskennung()], []);
             if (!isset($response->decision->decisionOutcome)) {
                 return null;
@@ -352,7 +352,7 @@ class EasyCreditDispatcherController extends FrontendController
     {
 
         $storage = $this->getInstalmentStorage();
-        if (EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3()) {
+        if ($this->getDic()->getApiConfig()->getEasyCreditUseApiVersionV3()) {
             return sprintf($this->getApiConfig()->getRedirectUrl(), $storage->getTbVorgangskennung());
         } else {
             return sprintf($this->getApiConfig()->getRedirectUrl(), $storage->getTbVorgangskennung());
@@ -399,7 +399,7 @@ class EasyCreditDispatcherController extends FrontendController
      */
     protected function checkAuthorization()
     {
-        if (EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3()) {
+        if ($this->getDic()->getApiConfig()->getEasyCreditUseApiVersionV3()) {
             if ($this->getInstalmentDecision() !== self::INSTALMENT_DECISION_OK_V3) {
                 throw new EasyCreditException("OXPS_EASY_CREDIT_ERROR_NOT_APPROVED");
             }
@@ -457,7 +457,7 @@ class EasyCreditDispatcherController extends FrontendController
             throw new EasyCreditException("OXPS_EASY_CREDIT_ERROR_EXPIRED");
         }
 
-        if (EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3()) {
+        if ($this->getDic()->getApiConfig()->getEasyCreditUseApiVersionV3()) {
             $response = $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V3_FINANCIAL_INFORMATION, [$storage->getTbVorgangskennung()]);
             $allgemeineVorgangsdaten = $response->decision->urlPreContractualInformation;
             $tilgungsplanText = $response->decision->amortizationPlanText;
@@ -500,7 +500,7 @@ class EasyCreditDispatcherController extends FrontendController
     protected function getFormattedPaymentPlan($paymentPlan)
     {
         if (is_object($paymentPlan)) {
-            if (EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3()) {
+            if ($this->getDic()->getApiConfig()->getEasyCreditUseApiVersionV3()) {
                 $rateTotalCount = (int)$paymentPlan->paymentPlan->numberOfInstallments;
                 $ratePerMonth = (float)$paymentPlan->paymentPlan->installment;
                 $lastRate = (float)$paymentPlan->paymentPlan->lastInstallment;
@@ -525,7 +525,7 @@ class EasyCreditDispatcherController extends FrontendController
      */
     protected function getInterestAmount($paymentPlan)
     {
-        if (EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3()) {
+        if ($this->getDic()->getApiConfig()->getEasyCreditUseApiVersionV3()) {
             $interestAmount = (float)$paymentPlan->interests->interest;
         } else {
             $interestAmount = (float)$paymentPlan->zinsen->anfallendeZinsen;
@@ -558,7 +558,7 @@ class EasyCreditDispatcherController extends FrontendController
      */
     protected function call($endpoint, $additionalArguments = [], $queryArguments = [], $data = null)
     {
-        if (EasyCreditDicFactory::getDic()->getApiConfig()->getEasyCreditUseApiVersionV3()) {
+        if ($this->getDic()->getApiConfig()->getEasyCreditUseApiVersionV3()) {
             $webServiceClient = EasyCreditWebServiceClientFactory::getWebServiceClient(
                 $endpoint,
                 $this->getDic(),

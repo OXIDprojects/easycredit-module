@@ -504,4 +504,51 @@ class EasyCreditOrder extends EasyCreditOrder_parent
             throw new EasyCreditException("No order with functional ID: $functionalId ");
         }
     }
+
+    /**
+     * Reports the delivery (capture) to easyCredit and stores the resulting delivery state.
+     * The order counts as paid as soon as easyCredit accepted the delivery report, even though
+     * easyCredit transfers the money later. Orders that are already in billing are marked as paid as well.
+     */
+    public function oscSetOrderDelivered()
+    {
+        $tradingApiService = oxNew(EasyCreditTradingApiAccess::class, $this);
+        $deliveryReportResponse = $tradingApiService->setOrderDeliveredState();
+        $orderdata = $tradingApiService->getOrderData();
+        if ($this->getDic()->getApiConfig()->getEasyCreditUseApiVersionV3() && $this->oxorder__ecredisv3order->value == 1) {
+            $state = $orderdata->status ?? null;
+            $billingStates = [
+                EasyCreditTradingApiAccess::OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_IN_ABRECHNUNG_V3,
+                EasyCreditTradingApiAccess::OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_ABGERECHNET_V3,
+            ];
+        } else {
+            $state = $orderdata[0]->haendlerstatusV2 ?? null;
+            $billingStates = [
+                EasyCreditTradingApiAccess::OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_IN_ABRECHNUNG,
+                EasyCreditTradingApiAccess::OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_ABGERECHNET,
+            ];
+        }
+
+        if (
+            $this->oxorder__oxpaid->value === '0000-00-00 00:00:00'
+            && ($this->oscIsDeliveryReportAccepted($deliveryReportResponse) || in_array($state, $billingStates, true))
+        ) {
+            $this->oxorder__oxpaid = new Field(date('Y-m-d H:i:s'));
+        }
+
+        $this->oxorder__ecreddeliverystate = new Field($state, Field::T_RAW);
+        $this->save();
+    }
+
+    /**
+     * easyCredit answers a successful delivery report with a 2xx status code.
+     *
+     * @param \stdClass|null $response
+     *
+     * @return bool
+     */
+    protected function oscIsDeliveryReportAccepted($response): bool
+    {
+        return EasyCreditHelper::isAcceptedResponse($response);
+    }
 }

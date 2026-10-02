@@ -191,7 +191,6 @@ class EasyCreditPaymentTest extends UnitTestCase
 
     public function testValidatePaymentEasyCreditPossible()
     {
-        $this->markTestSkipped('Skipped for now');
         Registry::getSession()->setVariable('paymentid', EasyCreditHelper::EASYCREDIT_INSTALLMENT_PAYMENTID);
         $user = oxNew(User::class);
 

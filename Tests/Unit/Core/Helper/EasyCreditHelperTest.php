@@ -20,6 +20,8 @@ use OxidEsales\Eshop\Application\Model\Basket;
 use OxidEsales\Eshop\Application\Model\Shop;
 use OxidEsales\Eshop\Core\Field;
 use OxidEsales\Eshop\Core\Price;
+use OxidEsales\Eshop\Core\UtilsObject;
+use OxidEsales\Eshop\Core\Module\Module;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditApiConfig;
 use OxidProfessionalServices\EasyCredit\Core\Di\EasyCreditDic;
@@ -115,11 +117,20 @@ class EasyCreditHelperTest extends UnitTestCase
 
     public function testGetModuleVersionOk(): void
     {
-        $this->markTestSkipped('Skipped for now');
+        $expected = '3.0.0';
+
+        $module = $this->getMockBuilder(Module::class)->disableOriginalConstructor()->getMock();
+        $module->method('load')->willReturn(true);
+        $module->method('getInfo')->willReturn($expected);
+
+        UtilsObject::setClassInstance(Module::class, $module);
+
         $apiConfig = oxNew(EasyCreditApiConfig::class, []);
         $dic       = oxNew(EasyCreditDic::class, null, $apiConfig, null, null, null);
 
-        $this->assertEquals('3.0.10', EasyCreditHelper::getModuleVersion($dic));
+        $this->assertEquals($expected, EasyCreditHelper::getModuleVersion($dic));
+
+        UtilsObject::resetClassInstances();
     }
 
     public function testGetModuleVersionWrongModuleId(): void
@@ -129,5 +140,35 @@ class EasyCreditHelperTest extends UnitTestCase
         $dic = oxNew(EasyCreditDic::class, null, $apiConfig, null, null, null);
 
         $this->assertEquals('', EasyCreditHelper::getModuleVersion($dic));
+    }
+
+    public function acceptedResponseProvider(): array
+    {
+        $response = static function ($statusCode) {
+            $response = new \stdClass();
+            $response->statusCode = $statusCode;
+
+            return $response;
+        };
+
+        return [
+            'ok'                   => [$response(200), true],
+            'accepted'             => [$response(202), true],
+            'no content'           => [$response(204), true],
+            'bad request'          => [$response(400), false],
+            'conflict'             => [$response(409), false],
+            'server error'         => [$response(500), false],
+            'no connection'        => [$response(0), false],
+            'response without code' => [new \stdClass(), false],
+            'no response'          => [null, false],
+        ];
+    }
+
+    /**
+     * @dataProvider acceptedResponseProvider
+     */
+    public function testIsAcceptedResponse($response, bool $expected): void
+    {
+        $this->assertSame($expected, EasyCreditHelper::isAcceptedResponse($response));
     }
 }

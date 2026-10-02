@@ -6,6 +6,7 @@ namespace OxidProfessionalServices\EasyCredit\Tests\Unit\Application\Model;
 
 use OxidEsales\Eshop\Application\Model\Order;
 use OxidEsales\Eshop\Core\Field;
+use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidProfessionalServices\EasyCredit\Application\Model\EasyCreditTradingApiAccess;
 use OxidProfessionalServices\EasyCredit\Core\Api\EasyCreditWebServiceClient;
@@ -66,7 +67,9 @@ class EasyCreditTradingApiAccessTest extends UnitTestCase
             ->onlyMethods(['getOrderData'])->getMock();
         $model->expects($this->once())->method('getOrderData')->willReturn([]);
 
-        $this->assertEquals('OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_ERROR', $model->getOrderState());
+        // the delivery states are only translated in the admin language files
+        $this->setAdminMode(true);
+        $this->assertEquals(Registry::getLang()->translateString('OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_ERROR'), $model->getOrderState());
     }
 
     public function testGetOrderStateValidState()
@@ -80,6 +83,8 @@ class EasyCreditTradingApiAccessTest extends UnitTestCase
             ->onlyMethods(['getOrderData'])->getMock();
         $model->expects($this->once())->method('getOrderData')->willReturn([$return]);
 
-        $this->assertEquals('OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_IN_ABRECHNUNG', $model->getOrderState());
+        // the delivery states are only translated in the admin language files
+        $this->setAdminMode(true);
+        $this->assertEquals(Registry::getLang()->translateString('OXPS_EASY_CREDIT_ADMIN_DELIVERY_STATE_IN_ABRECHNUNG'), $model->getOrderState());
     }
 }

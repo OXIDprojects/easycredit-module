@@ -19,6 +19,10 @@ per shop, so existing installations keep working after the update.
 - easyCredit web components are loaded in the frontend for the v3 example calculation
 - New module settings `oxpsECBaseUrlV3`, `oxpsECDealerInterfaceUrlV3`, `oxpsECUseV3`, `oxpsECUseHMAC`, `oxpsECHMACHeader`
 - New database column `oxorder.ECREDISV3ORDER` marking orders created with API v3, so orders placed via v2 and v3 can be processed side by side in the admin backend
+- Orders are marked as paid (`oxorder.oxpaid`) as soon as easyCredit has accepted the delivery report that is sent when the order is shipped in the admin backend. easyCredit transfers the money later, but the payment is guaranteed at this point, so shop operators and connected ERP systems see the order as paid right away. Orders that easyCredit already reports as in billing or billed are marked as paid as well, an existing paid date is not changed.
+- The delivery is also reported to easyCredit when the order is shipped from the "Main" tab of the order, not only from the "Overview" tab
+- [0007988](https://bugs.oxid-esales.com/view.php?id=7988): Confirmation mails for refunds and cancellations triggered in the backend. Two new module settings in the module configuration (group "Confirmation mails") decide who is notified, separately per event: `oxpsECRefundMailRecipient` and `oxpsECCancelMailRecipient`, each with `0` no mail (default), `1` customer, `2` shop owner, `3` both. Defaults are `0`, so updating the module does not start sending mail to existing customers unannounced. The refund mail is sent once easyCredit has accepted a reversal triggered in the "easyCredit Informationen" tab of the order. The cancellation mail is sent when an easyCredit order is cancelled in the order list and states the refunded amount if the cancellation reversed the order. Like the other frontend texts of the module, the mails are available in German only. A problem with sending a mail never aborts the backend action.
+- New module setting "Refund automatically when an order is cancelled" (`oxpsECAutomatedRefundOnCancel`, group "Cancellation and refund", off by default). With the option on, cancelling an easyCredit order in the backend fully reverses the order value that is still open at easyCredit. If easyCredit rejects the reversal, the cancellation stays in place and the merchant is asked to reverse the order by hand in the "easyCredit Informationen" tab.
 - HTTP status code of API calls is now written to the request log
 - Extended unit test coverage for the v3 request building and the dispatcher
 
@@ -32,6 +36,7 @@ per shop, so existing installations keep working after the update.
 
 ### Fixed
 
+- A reversal in the "easyCredit Informationen" tab is only reported as successful once easyCredit has accepted it. Before, the success message was shown even if easyCredit rejected the reversal or could not be reached.
 - The example calculation returned no price when an article ID was given but the article could not be loaded
 - Price calculation of the example calculation on the product detail page
 - Frontend JavaScript validation of the payment step
@@ -58,3 +63,103 @@ per shop, so existing installations keep working after the update.
 - Replace `getRawValue()` with `value` for payment description in Smarty template
 - Replace MD5 with SHA-256 for payment integrity hash in EasyCreditInitializeRequestBuilder
 - Add SECURITY.md documenting known security considerations and intentionally unfixed items
+
+## [3.0.9] - 2025-03-04
+
+### Fixed
+
+- [0007754](https://bugs.oxid-esales.com/view.php?id=7754): fix ModuleChainGenerator that has issue loading EasyCreditPayment
+
+## [3.0.8] - 2022-09-08
+
+### Changed
+
+- Rebranding easyCredit-Ratenkauf
+
+## [3.0.7] - 2022-02-28
+
+### Fixed
+
+- Bugfix release
+
+## [3.0.6] - 2022-02-08
+
+### Changed
+
+- Improve backwards compatibility to PHP 7.2
+- Calculate the installment plan only within the payment price range (by default 200 < x < 10000)
+
+## [3.0.5] - 2022-01-25
+
+### Changed
+
+- Remove payment costs in checkout
+- Add better default values for payment
+
+## [3.0.4] - 2021-12-17
+
+### Changed
+
+- Transfer order number to easyCredit
+- Remove "Ankaufsobergrenze"
+
+## [3.0.3] - 2021-11-19
+
+### Fixed
+
+- Bugfixes
+
+## [3.0.2] - 2021-11-16
+
+### Fixed
+
+- Bugfixes
+
+## [3.0.1] - 2021-11-02
+
+### Fixed
+
+- Bugfixes
+
+## [3.0.0] - 2021-10-11
+
+### Added
+
+- Integrate new API for dealer gateway
+- Transaction overview in admin backend
+- Cancellation (storno) in admin backend
+
+### Changed
+
+- Introduce namespaces
+- No more support for OXID <= 6.0
+
+## [2.0.6] - 2021-07-16
+
+### Fixed
+
+- Elimination of malfunctions in other payment modules
+
+## [2.0.5] - 2021-07-14
+
+### Changed
+
+- Birthday is not required
+- Possibility to use own jQuery UI library in frontend
+
+## [2.0.4] - 2020-12-11
+
+### Changed
+
+- Function check for OXID 6.2.3
+- easyCredit orders are not changeable (discounts, adding articles, ...) in OXID admin backend
+
+## [2.0.0] - 2020-04-30
+
+### Changed
+
+- Version for OXID 6 installable via Composer
+
+## [1.0.0]
+
+- Version for OXID 4 installable via FTP
