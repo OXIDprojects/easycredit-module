@@ -194,9 +194,9 @@ class EasyCreditPaymentTest extends UnitTestCase
         Registry::getSession()->setVariable('paymentid', EasyCreditHelper::EASYCREDIT_INSTALLMENT_PAYMENTID);
         $user = oxNew(User::class);
 
-        $payment = $this->getMock(EasyCreditPaymentController::class, ['getUser', 'isEasyCreditPossible']);
+        $payment = $this->getMock(EasyCreditPaymentController::class, ['getUser', 'isEasyCreditInstallmentPossible']);
         $payment->expects($this->any())->method('getUser')->willReturn($user);
-        $payment->expects($this->any())->method('isEasyCreditPossible')->willReturn(true);
+        $payment->expects($this->any())->method('isEasyCreditInstallmentPossible')->willReturn(true);
         $user->oxuser__oxcountryid = new Field('a7c40f631fc920687.20179984');
         
 
@@ -207,8 +207,8 @@ class EasyCreditPaymentTest extends UnitTestCase
     {
         Registry::getSession()->setVariable('paymentid', EasyCreditHelper::EASYCREDIT_INSTALLMENT_PAYMENTID);
 
-        $payment = $this->getMock(EasyCreditPaymentController::class, ['isEasyCreditPossible', 'addProfileData']);
-        $payment->expects($this->any())->method('isEasyCreditPossible')->willReturn(true);
+        $payment = $this->getMock(EasyCreditPaymentController::class, ['isEasyCreditInstallmentPossible', 'addProfileData']);
+        $payment->expects($this->any())->method('isEasyCreditInstallmentPossible')->willReturn(true);
         $payment->expects($this->any())->method('addProfileData')->willThrowException(new \Exception('TEST'));
 
         $this->assertNull($payment->validatePayment());

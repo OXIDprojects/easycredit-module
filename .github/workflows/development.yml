@@ -145,8 +145,15 @@ jobs:
         env:
           MODULE_SETTINGS_OXID7_V3: ${{ secrets.MODULE_SETTINGS_OXID7_V3 }}
         run: |
-          mkdir -p source/var/configuration/shops/1/modules
-          printf '%s\n' "$MODULE_SETTINGS_OXID7_V3" > source/var/configuration/shops/1/modules/osceasycredit.yaml
+          # Environment overlay (moduleSettings only); never overwrite the module configuration
+          # itself, it carries id, moduleSource etc. and the shop dies without them.
+          if [ -z "$MODULE_SETTINGS_OXID7_V3" ]; then
+            echo "::warning::Secret MODULE_SETTINGS_OXID7_V3 is not set, running tests with the default module configuration"
+            exit 0
+          fi
+          mkdir -p source/var/configuration/environment/shops/1/modules
+          printf '%s\n' "$MODULE_SETTINGS_OXID7_V3" > source/var/configuration/environment/shops/1/modules/osceasycredit.yaml
+          docker compose exec -T php /var/www/vendor/bin/oe-console oe:cache:clear
           
       - name: Run tests with testing lib against v3 API
         run: |
@@ -156,8 +163,15 @@ jobs:
         env:
           MODULE_SETTINGS_OXID7_V2: ${{ secrets.MODULE_SETTINGS_OXID7_V2 }}
         run: |
-          mkdir -p source/var/configuration/shops/1/modules
-          printf '%s\n' "$MODULE_SETTINGS_OXID7_V2" > source/var/configuration/shops/1/modules/osceasycredit.yaml
+          # Environment overlay (moduleSettings only); never overwrite the module configuration
+          # itself, it carries id, moduleSource etc. and the shop dies without them.
+          if [ -z "$MODULE_SETTINGS_OXID7_V2" ]; then
+            echo "::warning::Secret MODULE_SETTINGS_OXID7_V2 is not set, running tests with the default module configuration"
+            exit 0
+          fi
+          mkdir -p source/var/configuration/environment/shops/1/modules
+          printf '%s\n' "$MODULE_SETTINGS_OXID7_V2" > source/var/configuration/environment/shops/1/modules/osceasycredit.yaml
+          docker compose exec -T php /var/www/vendor/bin/oe-console oe:cache:clear
 
       - name: Run tests with testing lib against v2 API
         run: |
@@ -272,6 +286,10 @@ jobs:
           MODULE_SETTINGS_OXID6_V3_PART1: ${{ secrets.MODULE_SETTINGS_OXID6_V3_PART1 }}
           MODULE_SETTINGS_OXID6_V3_PART2: ${{ secrets.MODULE_SETTINGS_OXID6_V3_PART2 }}
         run: |
+          if [ -z "$MODULE_SETTINGS_OXID6_V3_PART1$MODULE_SETTINGS_OXID6_V3_PART2" ]; then
+            echo "::warning::Secrets MODULE_SETTINGS_OXID6_V3_PART1/_PART2 are not set, running tests with the default module configuration"
+            exit 0
+          fi
           mkdir -p source/var/configuration/environment/
           printf '%s\n' "$MODULE_SETTINGS_OXID6_V3_PART1" > source/var/configuration/environment/1.yaml
           printf '%s\n' "$MODULE_SETTINGS_OXID6_V3_PART2" >> source/var/configuration/environment/1.yaml
@@ -290,6 +308,10 @@ jobs:
           MODULE_SETTINGS_OXID6_V2_PART1: ${{ secrets.MODULE_SETTINGS_OXID6_V2_PART1 }}
           MODULE_SETTINGS_OXID6_V2_PART2: ${{ secrets.MODULE_SETTINGS_OXID6_V2_PART2 }}
         run: |
+          if [ -z "$MODULE_SETTINGS_OXID6_V2_PART1$MODULE_SETTINGS_OXID6_V2_PART2" ]; then
+            echo "::warning::Secrets MODULE_SETTINGS_OXID6_V2_PART1/_PART2 are not set, running tests with the default module configuration"
+            exit 0
+          fi
           mkdir -p source/var/configuration/environment/
           printf '%s\n' "$MODULE_SETTINGS_OXID6_V2_PART1" > source/var/configuration/environment/1.yaml
           printf '%s\n' "$MODULE_SETTINGS_OXID6_V2_PART2" >> source/var/configuration/environment/1.yaml
