@@ -90,4 +90,39 @@ class EasyCreditExampleCalculationTest extends UnitTestCase
 
         $this->assertFalse($calculation->isAjax());
     }
+
+    public function testGetInstallmentPlanV3WithoutPlansReturnsNull(): void
+    {
+        $calculation = $this->getMockBuilder(EasyCreditExampleCalculation::class)
+            ->disableOriginalConstructor()
+            ->setMethods([])
+            ->getMock();
+        $method = new \ReflectionMethod(EasyCreditExampleCalculation::class, 'getInstallmentPlanV3');
+        $method->setAccessible(true);
+
+        $this->assertNull($method->invoke($calculation, null));
+        $this->assertNull($method->invoke($calculation, json_decode('{}')));
+        $this->assertNull($method->invoke($calculation, json_decode('{"installmentPlans":[]}')));
+        $this->assertNull($method->invoke($calculation, json_decode('{"installmentPlans":[{"plans":[]}]}')));
+    }
+
+    public function testGetInstallmentPlanV3ReturnsLastPlan(): void
+    {
+        $calculation = $this->getMockBuilder(EasyCreditExampleCalculation::class)
+            ->disableOriginalConstructor()
+            ->setMethods([])
+            ->getMock();
+        $method = new \ReflectionMethod(EasyCreditExampleCalculation::class, 'getInstallmentPlanV3');
+        $method->setAccessible(true);
+        $response = json_decode('{"installmentPlans":[{"plans":['
+            . '{"numberOfInstallments":6,"installment":50.5,"totalValue":303},'
+            . '{"numberOfInstallments":12,"installment":25.5,"totalValue":306}'
+            . ']}]}');
+
+        $plan = $method->invoke($calculation, $response);
+
+        $this->assertSame(12, $plan->anzahlRaten);
+        $this->assertSame(25.5, $plan->betragRate);
+        $this->assertSame(306, $plan->gesamtsumme);
+    }
 }

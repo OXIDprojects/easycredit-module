@@ -43,6 +43,7 @@ per shop, so existing installations keep working after the update.
 - Payment checkbox error when API v2 is active
 - Translations and agreement texts in the Azure theme
 - `install.sql` was not executed completely during module activation, and `uninstall.sql` now also deactivates the invoice payment
+- Example calculation (API v3): the widget no longer ends in a `TypeError` ("array_key_last(): Argument #1 ($array) must be of type array, null given") when easyCredit answers without an installment plan, e.g. for an amount outside the offered plans or on an error response. `getInstallmentPlanV3()` in `Application/Component/Widget/EasyCreditExampleCalculation.php` read `installmentPlans[0]->plans` unchecked; it now returns `null` in that case, so `hasExampleCalculation()` is `false` and the page renders without the example calculation. Covered by two new unit tests. The same fix was made in the OXID 7 module (branch `b-7.0.x`).
 
 ## [3.0.10] - 2026-04-09
 
