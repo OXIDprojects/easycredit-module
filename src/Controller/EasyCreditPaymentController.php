@@ -261,13 +261,43 @@ class EasyCreditPaymentController extends EasyCreditPaymentController_parent
 
         try {
             if ($this->getApiConfig()->getEasyCreditUseApiVersionV3()) {
-                return $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V3_MODELLRECHNUNG_GUENSTIGSTER_RATENPLAN, [],[$this->getApiConfig()->getWebShopId()]);
+                return $this->getExampleCalculationResponseV3($price);
             } else {
                 return $this->call(EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V1_MODELLRECHNUNG_GUENSTIGSTER_RATENPLAN, [], [EasyCreditApiConfig::API_CONFIG_SERVICE_REST_ARGUMENT_FINANZIERUNGSBETRAG => $price->getBruttoPrice()]);
             }
         } catch (\Exception $ex) {
             return $ex->getMessage();
         }
+    }
+
+    /**
+     * Requests the installment plans for the given price from API v3.
+     *
+     * @param Price $price
+     *
+     * @return \stdClass|string response, or an error message if easyCredit offers no installment plan
+     */
+    protected function getExampleCalculationResponseV3($price)
+    {
+        $webServiceClient = EasyCreditWebServiceClientFactory::getWebServiceClient(
+            EasyCreditApiConfig::API_CONFIG_SERVICE_NAME_V3_MODELLRECHNUNG_GUENSTIGSTER_RATENPLAN,
+            $this->getDic(),
+            [$this->getApiConfig()->getWebShopId()],
+            [],
+            true
+        );
+        $response = $webServiceClient->executeJsonRequest(
+            'POST',
+            $webServiceClient->getFunction(),
+            ['articles' => [['identifier' => 'Basket', 'price' => $price->getBruttoPrice()]]]
+        );
+
+        // the HTTP client does not throw on 4xx responses, so a missing plan is the only sign of an error
+        if (empty($response->installmentPlans[0]->plans)) {
+            return Registry::getLang()->translateString('OXPS_EASY_CREDIT_INSTALMENT_NO_PLAN');
+        }
+
+        return $response;
     }
 
     /**

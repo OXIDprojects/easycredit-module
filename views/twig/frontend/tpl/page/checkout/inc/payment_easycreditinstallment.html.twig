@@ -49,14 +49,16 @@
     
                     <div class="form-group" style="margin-left:20px; margin-bottom:1em;">
                         <div>
-                            <div class="checkbox">
-                                <label>
-                                    <input type="checkbox" name="easycreditinstallmentagreement" id="easycredit_installment_agreement" value="" /> {{ oView.getInstallmentAgreementTxt() }}
-                                    {% if not isEasyCreditAPIV3 %}
+                            {% if isEasyCreditAPIV3 %}
+                                {{ oView.getInstallmentAgreementTxt() }}
+                            {% else %}
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="easycreditinstallmentagreement" id="easycredit_installment_agreement" value="" /> {{ oView.getInstallmentAgreementTxt() }}
                                         <div id="easycredit_installment_agreement_error" style="display:none;" class="text-danger">{{ translate({ ident: "OXPS_EASY_CREDIT_INSTALLMENT_AGREEMENT_ERROR" }) }}</div>
-                                    {% endif %}
-                                </label>
-                            </div>
+                                    </label>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
             </div>

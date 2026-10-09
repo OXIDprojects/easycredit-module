@@ -33,10 +33,12 @@ per shop, so existing installations keep working after the update.
 - Additional language keys were added for invoice purchase and for the agreement error messages. Shops that maintain their own copies of the module language files should compare them with the new version.
 - Shops using a customized copy of the easyCredit payment templates should compare them with the new version: the checkout now uses separate redirect functions and separate containers for installment and invoice purchase.
 - The agreement texts are only displayed once the corresponding payment method is selected, matching the behaviour of the OXID 6 version
+- With API v3 the agreement texts are shown as plain text without a checkbox. The checkbox was not required there and had no effect. With API v2 the checkbox stays mandatory for installment purchase.
 - For developers extending the module: several public methods and constants were renamed for the installment/invoice split and to correct the spelling `Instalment` → `Installment`, and `EasyCreditOrder::loadFromBasket()` is now public for better compatibility with other modules. Own extensions of easyCredit classes should be checked against the new signatures.
 
 ### Fixed
 
+- API v3: the installment plan check in the payment step requested `/api/ratenrechner/v3/webshop/%s/installmentplans` with the unresolved placeholder and as `GET` without basket data, which easyCredit answered with HTTP 400. Because the HTTP client does not throw on 4xx responses, the check never failed and only produced failed requests in the easyCredit log. The webshop ID is now part of the URL and the request is sent as `POST` with the basket amount, like the example calculation widget does. If easyCredit returns no installment plan, installment purchase is no longer offered for that basket.
 - A reversal in the "easyCredit Informationen" tab is only reported as successful once easyCredit has accepted it. Before, the success message was shown even if easyCredit rejected the reversal or could not be reached.
 - Orders placed with API v2 used the v3 capture and delivery status endpoints while API v3 was active
 - Exception in the admin backend when an easyCredit order was opened before its order data was available

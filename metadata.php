@@ -33,7 +33,7 @@ $aModule = [
         'en' => 'Use easyCredit-Ratenkauf for purchases in OXID',
     ],
     'thumbnail'   => 'img/picture.png',
-    'version'     => '4.1.0-rc.4',
+    'version'     => '4.1.0-rc.5',
     'author'      => 'OXID Solution Catalysts',
     'url'         => 'https://www.oxid-esales.com',
     'email'       => 'info@oxid-esales.com',
