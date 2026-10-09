@@ -67,8 +67,8 @@
 
                 <div class="form-group">
                     <div class="col-lg-9 col-lg-offset-3 offset-lg-3">
-                                <input type="checkbox" name="easycreditinvoiceagreement" id="easycredit_invoice_agreement">
                                 <div>[{$oView->getInvoiceAgreementTxt()}]</div>
+                    </div>
                 </div>
                 [{capture assign="easycreditInvoiceJS"}]
                     [{strip}]

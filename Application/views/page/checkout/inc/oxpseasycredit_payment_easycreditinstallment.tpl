@@ -67,7 +67,9 @@
 
                 <div class="form-group">
                     <div class="col-lg-9 col-lg-offset-3 offset-lg-3">
-                                <input type="checkbox" name="easycreditinstallmentagreement" id="easycredit_installment_agreement">
+                                [{if !$isEasyCreditAPIV3}]
+                                    <input type="checkbox" name="easycreditinstallmentagreement" id="easycredit_installment_agreement">
+                                [{/if}]
                                 <div>[{$oView->getInstallmentAgreementTxt()}]</div>
                                 [{if !$isEasyCreditAPIV3}]
                                     <div id="easycredit_installment_agreement_error" style="display:none;" class="text-danger">[{oxmultilang ident="OXPS_EASY_CREDIT_INSTALLMENT_AGREEMENT_ERROR" }]</div>
