@@ -38,7 +38,7 @@ use OxidSolutionCatalysts\EasyCredit\Core\Helper\EasyCreditHelper;
  */
 class EasyCreditApiConfig
 {
-    const API_CONFIG_EASYCREDIT_MODULE_ID = "oxpseasycredit";
+    const API_CONFIG_EASYCREDIT_MODULE_ID = "osceasycredit";
 
     const API_CONFIG_CREDENTIALS = 'credentials';
     const API_CONFIG_CREDENTIAL_BASE_URL = 'oxpsEasyCreditWebshopBaseUrl';

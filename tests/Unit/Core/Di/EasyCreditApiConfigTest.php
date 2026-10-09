@@ -129,7 +129,7 @@ class EasyCreditApiConfigTest extends TestCase
 
     public function testGetEasyCreditModuleId()
     {
-        $this->assertEquals('oxpseasycredit', $this->apiConfig->getEasyCreditModuleId());
+        $this->assertEquals('osceasycredit', $this->apiConfig->getEasyCreditModuleId());
     }
 
     public function testGetRedirectUrlForApiVersionV3()
