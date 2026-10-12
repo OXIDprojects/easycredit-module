@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
-## [4.1.0] - UNRELEASED
+## [4.1.0] - 2026-10-12
 
 This release adds support for the easyCredit API v3 and the additional payment
 method "easyCredit-Rechnungskauf". API v2 remains supported and stays selectable
